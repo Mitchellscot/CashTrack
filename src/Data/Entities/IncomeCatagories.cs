@@ -7,7 +7,7 @@ namespace CashTrack.Data.Entities
     [Table("income_categories")]
     public class IncomeCategories : IEntity
     {
-        public int Id { get; set; }
+        public int id { get; set; }
         [StringLength(50)]
         [Required]
         public string category { get; set; }

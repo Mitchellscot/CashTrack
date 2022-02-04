@@ -16,7 +16,6 @@ using Microsoft.Extensions.Logging;
 using CashTrack.Repositories.MerchantRepository;
 using CashTrack.Services.MerchantService;
 using CashTrack.Services.ExpenseService;
-using CashTrack.Services.UserService;
 using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Services.SubCategoryService;
 using CashTrack.Services.MainCategoriesService;
@@ -119,7 +118,7 @@ namespace CashTrack
             services.AddScoped<IMerchantService, MerchantService>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUserService, UserService>();
+            //services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
             services.AddScoped<ISubCategoryService, SubCategoryService>();
             services.AddScoped<IMainCategoriesService, MainCategoriesService>();

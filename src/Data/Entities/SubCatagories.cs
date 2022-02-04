@@ -7,7 +7,7 @@ namespace CashTrack.Data.Entities
     [Table("sub_categories")]
     public class SubCategories : IEntity
     {
-        public int Id { get; set; }
+        public int id { get; set; }
         [StringLength(50)]
         [Required]
         public string sub_category_name { get; set; }

@@ -11,7 +11,7 @@ namespace CashTrack.Data.Entities
     [Table("merchants")]
     public class Merchants : IEntity
     {
-        public int Id { get; set; }
+        public int id { get; set; }
         [StringLength(250)]
         [Required]
         public string name { get; set; }
