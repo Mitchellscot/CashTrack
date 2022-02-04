@@ -9,7 +9,6 @@ using CashTrack.Common.Exceptions;
 
 namespace CashTrack.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class IncomeController : ControllerBase

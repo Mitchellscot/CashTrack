@@ -19,7 +19,6 @@ namespace CashTrack.Controllers
             this._userService = userService;
         }
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<UserModels.Response>> GetUserById(int id)
         {
             try
@@ -37,7 +36,6 @@ namespace CashTrack.Controllers
             }
         }
         [HttpGet("all")]
-        [Authorize]
         public async Task<ActionResult<UserModels.Response[]>> GetAllUsers()
         {
             try

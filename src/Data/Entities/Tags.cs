@@ -7,7 +7,7 @@ namespace CashTrack.Data.Entities
     [Table("tags")]
     public class Tags : IEntity
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         [Required]
         [StringLength(50)]
         public string tag_name { get; set; }
