@@ -35,7 +35,7 @@ namespace CashTrack.Repositories
         {
             return await _ctx.Set<T>()
                         .AsQueryable()
-                        .SingleOrDefaultAsync(x => x.id == id);
+                        .SingleOrDefaultAsync(x => x.Id == id);
         }
 
         public async virtual Task<T[]> FindWithPagination(Expression<System.Func<T, bool>> predicate, int pageNumber, int pageSize)

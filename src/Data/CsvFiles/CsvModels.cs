@@ -10,7 +10,7 @@ namespace CashTrack.Data.CsvFiles
         public class CsvExpense
         {
             private DateTimeOffset? _date;
-            public int id { get; set; }
+            public int Id { get; set; }
             public DateTimeOffset? date
             {
                 get => _date;
@@ -28,19 +28,19 @@ namespace CashTrack.Data.CsvFiles
         }
         public class CsvExpenseMainCategory
         {
-            public int id { get; set; }
+            public int Id { get; set; }
             public string? main_category_name { get; set; }
         }
         public class CsvExpenseSubCategory
         {
-            public int id { get; set; }
+            public int Id { get; set; }
             public string? sub_category_name { get; set; }
             public int main_categoryid { get; set; }
             public bool in_use { get; set; }
         }
         public class CsvMerchant
         {
-            public int id { get; set; }
+            public int Id { get; set; }
             public string? name { get; set; }
             public bool suggest_on_lookup { get; set; }
             public string? city { get; set; }
@@ -51,14 +51,14 @@ namespace CashTrack.Data.CsvFiles
         }
         public class CsvIncomeCategory
         {
-            public int id { get; set; }
+            public int Id { get; set; }
             public string? category { get; set; }
             public string? description { get; set; }
             public bool in_use { get; set; }
         }
         public class CsvIncomeSource
         {
-            public int id { get; set; }
+            public int Id { get; set; }
             public string? source { get; set; }
             public string? description { get; set; }
             public bool in_use { get; set; }
@@ -66,7 +66,7 @@ namespace CashTrack.Data.CsvFiles
         public class CsvIncome
         {
             private DateTimeOffset? _date;
-            public int id { get; set; }
+            public int Id { get; set; }
             public DateTimeOffset? date
             {
                 get => _date;
@@ -83,7 +83,7 @@ namespace CashTrack.Data.CsvFiles
         }
         public class CsvUser
         {
-            public int id { get; set; }
+            public int Id { get; set; }
             public string? first_name { get; set; }
             public string? last_name { get; set; }
             public string? email { get; set; }

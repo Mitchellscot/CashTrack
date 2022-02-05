@@ -35,7 +35,7 @@ namespace CashTrack.Repositories.ExpenseReviewRepository
                         .Where(x => x.is_reviewed == false)
                         .Include(x => x.suggested_category)
                         .Include(x => x.suggested_merchant)
-                        .SingleOrDefaultAsync(x => x.id == id);
+                        .SingleOrDefaultAsync(x => x.Id == id);
         }
     }
 }

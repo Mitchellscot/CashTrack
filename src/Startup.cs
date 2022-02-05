@@ -1,7 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,12 +12,10 @@ using Microsoft.AspNetCore.Mvc;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.UserRepository;
 using CashTrack.Repositories.TagRepository;
-using CashTrack.Services.AuthenticationService;
 using Microsoft.Extensions.Logging;
 using CashTrack.Repositories.MerchantRepository;
 using CashTrack.Services.MerchantService;
 using CashTrack.Services.ExpenseService;
-using CashTrack.Services.UserService;
 using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Services.SubCategoryService;
 using CashTrack.Services.MainCategoriesService;
@@ -35,6 +32,8 @@ using CashTrack.Repositories.ExpenseReviewRepository;
 using CashTrack.Services.ExpenseReviewService;
 using CashTrack.Services.IncomeReviewService;
 using CashTrack.Repositories.IncomeReviewRepository;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 
 namespace CashTrack
 {
@@ -59,44 +58,67 @@ namespace CashTrack
             string connectionString = _config.GetConnectionString(db);
             Console.WriteLine($"Using connection string: {connectionString}");
 
+            if (_env.IsDevelopment())
+            {
+                //for ef core logging
+                services.AddLogging(loggingBuilder =>
+                {
+                    loggingBuilder.AddConsole()
+                        .AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.Information);
+                    loggingBuilder.AddDebug();
+                });
+
+            }
             services.AddDbContext<AppDbContext>(options =>
             {
-                options.UseNpgsql(connectionString);
-                options.EnableSensitiveDataLogging(true);
+                options.UseSqlServer(connectionString);
+                if (_env.IsDevelopment()) { options.EnableSensitiveDataLogging(true); }
             });
 
-            //for ef core logging
-            services.AddLogging(loggingBuilder =>
+            services.AddAuthentication(options =>
             {
-                loggingBuilder.AddConsole()
-                    .AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.Information);
-                loggingBuilder.AddDebug();
+                options.DefaultScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
+
+            }).AddIdentityCookies();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/login";
             });
 
-            //needed for webpack proxy - remove in prod
-            services.AddCors();
+            //see what is in identity core vs add identity. Can also do adddefault identity https://stackoverflow.com/questions/55361533/addidentity-vs-addidentitycore
+            services.AddIdentityCore<Users>(options =>
+            {
+                options.Stores.MaxLengthForKeys = 36;
+                options.SignIn.RequireConfirmedAccount = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredUniqueChars = 0;
+                options.Password.RequiredUniqueChars = 0;
+                options.Password.RequiredLength = 4;
+                options.Password.RequireDigit = false;
+                options.Lockout.MaxFailedAccessAttempts = 3;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            }).AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders()
+            .AddSignInManager<SignInManager<Users>>();
 
             services.AddAutoMapper(typeof(Startup));
 
-            services.AddControllersWithViews(options =>
-            {
-                options.Filters.Add(typeof(CustomValidationFilter));
-            })
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
+            services.AddRazorPages()
+                    .AddFluentValidation(fv =>
+                fv.RegisterValidatorsFromAssemblyContaining<Startup>()
+            );
 
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            });
-
+            services.AddTransient<ICurrentUserService, ContextUserService>();
             services.AddScoped<IExpenseRepository, ExpenseRepository>();
             services.AddScoped<IExpenseService, ExpenseService>();
             services.AddScoped<IMerchantRepository, MerchantRepository>();
             services.AddScoped<IMerchantService, MerchantService>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            //services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
             services.AddScoped<ISubCategoryService, SubCategoryService>();
             services.AddScoped<IMainCategoriesService, MainCategoriesService>();
@@ -114,11 +136,6 @@ namespace CashTrack
 
             services.Configure<AppSettings>(_config.GetSection("AppSettings"));
 
-            // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-           {
-               configuration.RootPath = "./ClientApp/build";
-           });
         }
 
         public void Configure(IApplicationBuilder app)
@@ -129,41 +146,23 @@ namespace CashTrack
             }
             else
             {
+                //both are for https
                 app.UseExceptionHandler("/Error");
+                app.UseHttpsRedirection();
             }
 
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
 
             app.UseRouting();
 
-            // global cors policy
-            app.UseCors(x => x
-                .WithOrigins("http://localhost:3000")
-                .AllowAnyMethod()
-                .AllowAnyHeader());
-
-            // custom jwt auth middleware
-            app.UseMiddleware<JwtMiddleware>();
-            //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapRazorPages().RequireAuthorization();
+                endpoints.MapControllers().RequireAuthorization();
             });
-
-            app.UseSpa(spa =>
-           {
-               spa.Options.SourcePath = "ClientApp";
-
-               if (_env.IsDevelopment())
-               {
-                   spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
-                   spa.UseReactDevelopmentServer(npmScript: "start");
-               }
-           });
         }
     }
 }

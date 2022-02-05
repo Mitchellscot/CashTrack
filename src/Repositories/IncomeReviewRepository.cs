@@ -33,7 +33,7 @@ public class IncomeReviewRepository : TransactionRepository<IncomeReview>
                     .AsQueryable()
                     .Include(x => x.suggested_category)
                     .Include(x => x.suggested_source)
-                    .SingleOrDefaultAsync(x => x.id == id);
+                    .SingleOrDefaultAsync(x => x.Id == id);
     }
 }
 

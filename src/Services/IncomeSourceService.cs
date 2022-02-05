@@ -31,12 +31,12 @@ public class IncomeSourceService : IIncomeSourceService
             throw new DuplicateNameException(nameof(IncomeSources), request.Name);
 
         var sourceEntity = _mapper.Map<IncomeSources>(request);
-        sourceEntity.id = await _repo.GetCount(x => true) + 1;
+        sourceEntity.Id = await _repo.GetCount(x => true) + 1;
 
         if (!await _repo.Create(sourceEntity))
             throw new Exception("Couldn't save income category to the database.");
 
-        request.Id = sourceEntity.id;
+        request.Id = sourceEntity.Id;
         return request;
     }
 
@@ -86,12 +86,12 @@ public class IncomeSourcesProfile : Profile
         //todo: make this more interesting by putting some more data on it.
         //What would be cool to see when looking at a table of income soures?
         CreateMap<IncomeSources, IncomeSourceListItem>()
-            .ForMember(x => x.Id, o => o.MapFrom(src => src.id))
+            .ForMember(x => x.Id, o => o.MapFrom(src => src.Id))
             .ForMember(x => x.Name, o => o.MapFrom(src => src.source))
             .ReverseMap();
 
         CreateMap<AddEditIncomeSource, IncomeSources>()
-            .ForMember(x => x.id, o => o.MapFrom(src => src.Id))
+            .ForMember(x => x.Id, o => o.MapFrom(src => src.Id))
             .ForMember(x => x.source, o => o.MapFrom(src => src.Name))
             .ForMember(x => x.description, o => o.MapFrom(src => src.Description))
             .ForMember(x => x.in_use, o => o.MapFrom(src => src.InUse))

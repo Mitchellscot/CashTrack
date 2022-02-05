@@ -1,6 +1,0 @@
-export const errorConst = {
-    CLEAR: 'CLEAR_LOGIN_ERROR',
-    INPUT: 'LOGIN_INPUT_ERROR',
-    FAILED: 'LOGIN_FAILED',
-    NO_CODE: 'LOGIN_FAILED_NO_CODE'
-}
