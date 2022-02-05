@@ -3,10 +3,11 @@ using Microsoft.Extensions.Configuration;
 using CashTrack.Data.Entities;
 using CashTrack.Data.CsvFiles;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace CashTrack.Data
 {
-    public class AppDbContext : IdentityDbContext<Users>
+    public class AppDbContext : IdentityDbContext<Users, IdentityRole<int>, int>
     {
 
         //public DbSet<Users> Users { get; set; }

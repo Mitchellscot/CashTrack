@@ -53,13 +53,13 @@ public class ExpenseReviewMapper : Profile
     public ExpenseReviewMapper()
     {
         CreateMap<ExpenseReview, ExpenseReviewListItem>()
-            .ForMember(x => x.Id, o => o.MapFrom(src => src.id))
+            .ForMember(x => x.Id, o => o.MapFrom(src => src.Id))
             .ForMember(x => x.Date, o => o.MapFrom(src => src.date))
             .ForMember(x => x.Amount, o => o.MapFrom(src => src.amount))
             .ForMember(x => x.Notes, o => o.MapFrom(src => src.notes))
-            .ForMember(x => x.SuggestedCategoryId, o => o.MapFrom(src => src.suggested_category.id))
+            .ForMember(x => x.SuggestedCategoryId, o => o.MapFrom(src => src.suggested_category.Id))
             .ForMember(x => x.SuggestedCategory, o => o.MapFrom(src => src.suggested_category.sub_category_name))
-            .ForMember(x => x.SuggestedMerchantId, o => o.MapFrom(src => src.suggested_merchant.id))
+            .ForMember(x => x.SuggestedMerchantId, o => o.MapFrom(src => src.suggested_merchant.Id))
             .ForMember(x => x.SuggestedMerchant, o => o.MapFrom(src => src.suggested_merchant.name))
             .ReverseMap();
     }

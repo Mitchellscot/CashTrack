@@ -38,7 +38,7 @@ public class AddEditExpenseValidators : AbstractValidator<AddEditExpense>
         RuleFor(x => x.SubCategoryId).NotEmpty().GreaterThan(0).WithMessage("Must provide a category ID");
         RuleFor(x => x.SubCategoryId).MustAsync(async (model, value, _) =>
         {
-            return (await _categoryRepo.Find(x => true)).Any(x => x.id == value);
+            return (await _categoryRepo.Find(x => true)).Any(x => x.Id == value);
         }).WithMessage("Invalid Category Id");
 
         When(x => x.MerchantId != null,
@@ -164,7 +164,7 @@ public class AddEditIncomeValidators : AbstractValidator<AddEditIncome>
         RuleFor(x => x.CategoryId).NotEmpty().GreaterThan(0).WithMessage("Must provide a category ID");
         RuleFor(x => x.CategoryId).MustAsync(async (model, value, _) =>
         {
-            return (await _categoryRepo.Find(x => true)).Any(x => x.id == value);
+            return (await _categoryRepo.Find(x => true)).Any(x => x.Id == value);
         }).WithMessage("Invalid Category Id");
 
         When(x => x.SourceId != null,

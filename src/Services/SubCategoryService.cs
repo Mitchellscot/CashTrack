@@ -39,10 +39,10 @@ public class SubCategoryService : ISubCategoryService
 
         var categoryViewModels = categories.Select(c => new SubCategoryListItem
         {
-            Id = c.id,
+            Id = c.Id,
             Name = c.sub_category_name,
             MainCategoryName = c.main_category.main_category_name,
-            NumberOfExpenses = (int)_expenseRepo.GetCount(x => x.categoryid == c.id).Result
+            NumberOfExpenses = (int)_expenseRepo.GetCount(x => x.categoryid == c.Id).Result
         }).ToArray();
 
         return new SubCategoryResponse(request.PageNumber, request.PageSize, count, categoryViewModels);
@@ -55,13 +55,13 @@ public class SubCategoryService : ISubCategoryService
 
         var subCategoryEntity = _mapper.Map<SubCategories>(request);
 
-        subCategoryEntity.id = await _subCategoryRepo.GetCount(x => true) + 1;
+        subCategoryEntity.Id = await _subCategoryRepo.GetCount(x => true) + 1;
 
         if (!await _subCategoryRepo.Create(subCategoryEntity))
             throw new Exception("Couldn't save category to the database");
 
         //Here i am setting the id and then returning addedit because I'm lazy and returning the entity causes json circular reference issues.
-        request.Id = subCategoryEntity.id;
+        request.Id = subCategoryEntity.Id;
 
         return request;
     }
@@ -98,14 +98,14 @@ public class SubCategoryMapperProfile : Profile
     public SubCategoryMapperProfile()
     {
         CreateMap<SubCategories, SubCategoryListItem>()
-            .ForMember(c => c.Id, o => o.MapFrom(src => src.id))
+            .ForMember(c => c.Id, o => o.MapFrom(src => src.Id))
             .ForMember(c => c.Name, o => o.MapFrom(src => src.sub_category_name))
             .ForMember(c => c.MainCategoryName, o => o.MapFrom(src => src.main_category.main_category_name))
-            .ForMember(c => c.Id, o => o.MapFrom(src => src.id))
+            .ForMember(c => c.Id, o => o.MapFrom(src => src.Id))
             .ReverseMap();
 
         CreateMap<AddEditSubCategory, SubCategories>()
-            .ForMember(c => c.id, o => o.MapFrom(src => src.Id))
+            .ForMember(c => c.Id, o => o.MapFrom(src => src.Id))
             .ForMember(c => c.sub_category_name, o => o.MapFrom(src => src.Name))
             .ForMember(c => c.main_categoryid, o => o.MapFrom(src => src.MainCategoryId))
             .ForMember(c => c.notes, o => o.MapFrom(src => src.Notes))

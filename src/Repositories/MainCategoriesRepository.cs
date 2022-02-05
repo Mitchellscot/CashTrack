@@ -64,7 +64,7 @@ namespace CashTrack.Repositories.MainCategoriesRepository
         {
             try
             {
-                var category = await _context.MainCategories.Where(x => x.id == id).SingleOrDefaultAsync();
+                var category = await _context.MainCategories.Where(x => x.Id == id).SingleOrDefaultAsync();
                 if (category == null)
                     throw new CategoryNotFoundException(id.ToString());
 

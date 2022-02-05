@@ -71,12 +71,12 @@ public class ExpenseService : IExpenseService
 
         var expense = _mapper.Map<Expenses>(request);
         //I manually set the id here because when I use the test database it messes with the id autogeneration
-        expense.id = ((int)await _expenseRepo.GetCount(x => true)) + 1;
+        expense.Id = ((int)await _expenseRepo.GetCount(x => true)) + 1;
         var success = await _expenseRepo.Create(expense);
         if (!success)
             throw new Exception("Couldn't save expense to the database.");
 
-        request.Id = expense.id;
+        request.Id = expense.Id;
 
         return request;
     }
@@ -101,7 +101,7 @@ public class ExpenseMapperProfile : Profile
     {
 
         CreateMap<Expenses, ExpenseListItem>()
-            .ForMember(e => e.Id, o => o.MapFrom(src => src.id))
+            .ForMember(e => e.Id, o => o.MapFrom(src => src.Id))
             .ForMember(e => e.Date, o => o.MapFrom(src => src.date))
             .ForMember(e => e.Amount, o => o.MapFrom(src => src.amount))
             .ForMember(e => e.Notes, o => o.MapFrom(src => src.notes))
@@ -112,7 +112,7 @@ public class ExpenseMapperProfile : Profile
                 src => src.expense_tags.Select(a => new TagModel() { Id = a.tag_id, TagName = a.tag.tag_name })));
 
         CreateMap<AddEditExpense, Expenses>()
-            .ForMember(e => e.id, o => o.MapFrom(src => src.Id))
+            .ForMember(e => e.Id, o => o.MapFrom(src => src.Id))
             .ForMember(e => e.date, o => o.MapFrom(src => src.Date.ToUniversalTime()))
             .ForMember(e => e.amount, o => o.MapFrom(src => src.Amount))
             .ForMember(e => e.notes, o => o.MapFrom(src => src.Notes))
@@ -122,7 +122,7 @@ public class ExpenseMapperProfile : Profile
 
         //goes it Tags Service when created
         CreateMap<Tags, TagModel>()
-            .ForMember(t => t.Id, o => o.MapFrom(src => src.id))
+            .ForMember(t => t.Id, o => o.MapFrom(src => src.Id))
             .ForMember(t => t.TagName, o => o.MapFrom(src => src.tag_name))
             .ReverseMap();
     }
