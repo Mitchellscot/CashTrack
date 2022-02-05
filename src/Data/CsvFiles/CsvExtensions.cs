@@ -13,7 +13,7 @@ namespace CashTrack.Data.CsvFiles
                 var columns = line.Split(',');
                 yield return new CsvModels.CsvExpense()
                 {
-                    id = Convert.ToInt32(columns[0]),
+                    Id = Convert.ToInt32(columns[0]),
                     date = DateTimeOffset.Parse(columns[1],
                     null
                     , DateTimeStyles.AdjustToUniversal),
@@ -32,7 +32,7 @@ namespace CashTrack.Data.CsvFiles
                 var columns = line.Split(',');
                 yield return new CsvModels.CsvExpenseMainCategory()
                 {
-                    id = Convert.ToInt32(columns[0]),
+                    Id = Convert.ToInt32(columns[0]),
                     main_category_name = columns[1],
                 };
             }
@@ -44,7 +44,7 @@ namespace CashTrack.Data.CsvFiles
                 var columns = line.Split(',');
                 yield return new CsvModels.CsvExpenseSubCategory()
                 {
-                    id = Convert.ToInt32(columns[0]),
+                    Id = Convert.ToInt32(columns[0]),
                     sub_category_name = columns[1],
                     main_categoryid = Convert.ToInt32(columns[2]),
                     in_use = ParseBoolean(columns[3])
@@ -58,7 +58,7 @@ namespace CashTrack.Data.CsvFiles
                 var columns = line.Split(',');
                 yield return new CsvModels.CsvMerchant()
                 {
-                    id = Convert.ToInt32(columns[0]),
+                    Id = Convert.ToInt32(columns[0]),
                     name = columns[1],
                     suggest_on_lookup = ParseBoolean(columns[2]),
                     city = null,
@@ -75,7 +75,7 @@ namespace CashTrack.Data.CsvFiles
                 var columns = line.Split(',');
                 yield return new CsvModels.CsvIncomeCategory()
                 {
-                    id = Convert.ToInt32(columns[0]),
+                    Id = Convert.ToInt32(columns[0]),
                     category = columns[1],
                     description = columns[2],
                     in_use = true
@@ -89,7 +89,7 @@ namespace CashTrack.Data.CsvFiles
                 var columns = line.Split(',');
                 yield return new CsvModels.CsvIncomeSource()
                 {
-                    id = Convert.ToInt32(columns[0]),
+                    Id = Convert.ToInt32(columns[0]),
                     source = columns[1],
                     description = columns[2],
                     in_use = true
@@ -103,7 +103,7 @@ namespace CashTrack.Data.CsvFiles
                 var columns = line.Split(',');
                 yield return new CsvModels.CsvIncome()
                 {
-                    id = Convert.ToInt32(columns[0]),
+                    Id = Convert.ToInt32(columns[0]),
                     date = DateTimeOffset.Parse(columns[1], null
                     , DateTimeStyles.AdjustToUniversal),
                     amount = Math.Round(Convert.ToDecimal(columns[2]), 2),
@@ -120,7 +120,7 @@ namespace CashTrack.Data.CsvFiles
                 var columns = line.Split(',');
                 yield return new CsvModels.CsvUser()
                 {
-                    id = Convert.ToInt32(columns[0]),
+                    Id = Convert.ToInt32(columns[0]),
                     first_name = columns[1],
                     last_name = columns[2],
                     email = columns[3],

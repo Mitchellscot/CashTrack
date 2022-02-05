@@ -49,11 +49,11 @@ public class MerchantService : IMerchantService
 
         var merchantViewModels = merchantEntities.Select(m => new MerchantListItem
         {
-            Id = m.id,
+            Id = m.Id,
             Name = m.name,
             City = m.city,
             IsOnline = m.is_online,
-            NumberOfExpenses = _expenseRepo.GetCount(x => x.merchantid == m.id).Result
+            NumberOfExpenses = _expenseRepo.GetCount(x => x.merchantid == m.Id).Result
         }).ToArray();
 
         return new MerchantResponse(request.PageNumber, request.PageSize, count, merchantViewModels);
@@ -69,7 +69,7 @@ public class MerchantService : IMerchantService
             .Take(10)
             .Select(x => new ExpenseQuickView()
             {
-                Id = x.id,
+                Id = x.Id,
                 Date = x.date.Date.ToShortDateString(),
                 Amount = x.amount,
                 SubCategory = x.category == null ? "none" : x.category.sub_category_name
@@ -100,7 +100,7 @@ public class MerchantService : IMerchantService
         var subCategories = await _subCategoryRepo.Find(x => true);
 
         var merchantExpenseCategories = subCategories.GroupJoin(merchantExpenses,
-            c => c.id, e => e.category.id, (c, g) => new
+            c => c.Id, e => e.category.Id, (c, g) => new
             {
                 Category = c.sub_category_name,
                 Expenses = g
@@ -111,7 +111,7 @@ public class MerchantService : IMerchantService
             }).Where(x => x.Count > 0).OrderByDescending(x => x.Count).ToDictionary(k => k.Category, v => v.Count);
 
         var merchantExpenseAmounts = subCategories.GroupJoin(merchantExpenses,
-            c => c.id, e => e.category.id, (c, g) => new
+            c => c.Id, e => e.category.Id, (c, g) => new
             {
                 Category = c.sub_category_name,
                 Expenses = g
@@ -125,7 +125,7 @@ public class MerchantService : IMerchantService
 
         var merchantDetail = new MerchantDetail()
         {
-            Id = merchantEntity.id,
+            Id = merchantEntity.Id,
             Name = merchantEntity.name,
             SuggestOnLookup = merchantEntity.suggest_on_lookup,
             City = merchantEntity.city,
@@ -152,12 +152,12 @@ public class MerchantService : IMerchantService
         var merchantEntity = _mapper.Map<Merchants>(request);
 
         //I manually set the id here because when I use the test database it messes with the id autogeneration
-        merchantEntity.id = await _merchantRepo.GetCount(x => true) + 1;
+        merchantEntity.Id = await _merchantRepo.GetCount(x => true) + 1;
 
         if (!await _merchantRepo.Create(merchantEntity))
             throw new Exception("Couldn't save merchant to the database");
 
-        request.Id = merchantEntity.id;
+        request.Id = merchantEntity.Id;
 
         return request;
     }
@@ -183,14 +183,14 @@ public class MerchantMapperProfile : Profile
     public MerchantMapperProfile()
     {
         CreateMap<Merchants, MerchantListItem>()
-            .ForMember(m => m.Id, o => o.MapFrom(src => src.id))
+            .ForMember(m => m.Id, o => o.MapFrom(src => src.Id))
             .ForMember(m => m.Name, o => o.MapFrom(src => src.name))
             .ForMember(m => m.City, o => o.MapFrom(src => src.city))
             .ForMember(m => m.IsOnline, o => o.MapFrom(src => src.is_online))
             .ReverseMap();
 
         CreateMap<AddEditMerchant, Merchants>()
-            .ForMember(m => m.id, o => o.MapFrom(src => src.Id))
+            .ForMember(m => m.Id, o => o.MapFrom(src => src.Id))
             .ForMember(m => m.name, o => o.MapFrom(src => src.Name))
             .ForMember(m => m.is_online, o => o.MapFrom(src => src.IsOnline))
             .ForMember(m => m.city, o => o.MapFrom(src => src.City))

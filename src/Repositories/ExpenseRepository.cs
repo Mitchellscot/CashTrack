@@ -45,7 +45,7 @@ public class ExpenseRepository : IExpenseRepository
                 .Include(x => x.merchant)
                 .Include(x => x.category)
                 .ThenInclude(x => x.main_category)
-                .SingleOrDefaultAsync(x => x.id == id);
+                .SingleOrDefaultAsync(x => x.Id == id);
             if (expense == null)
                 throw new ExpenseNotFoundException(id.ToString());
 
@@ -68,7 +68,7 @@ public class ExpenseRepository : IExpenseRepository
                     .Include(x => x.category)
                     .ThenInclude(x => x.main_category)
                     .OrderByDescending(x => x.date)
-                    .ThenByDescending(x => x.id)
+                    .ThenByDescending(x => x.Id)
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
                     .ToArrayAsync();

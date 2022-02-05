@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace CashTrack.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class SubCategoryController : ControllerBase

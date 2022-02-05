@@ -45,7 +45,7 @@ namespace CashTrack.Services.MainCategoriesService
             if (!await _mainCategoryRepo.Create(category))
                 throw new Exception("Unable to save category to the database");
 
-            request.Id = category.id;
+            request.Id = category.Id;
 
             return request;
         }
@@ -68,9 +68,9 @@ namespace CashTrack.Services.MainCategoriesService
             var categories = await _mainCategoryRepo.Find(predicate);
             var listItems = categories.Select(mc => new MainCategoryListItem()
             {
-                Id = mc.id,
+                Id = mc.Id,
                 Name = mc.main_category_name,
-                NumberOfSubCategories = (int)_subCategoryRepository.GetCount(c => c.main_categoryid == mc.id).Result
+                NumberOfSubCategories = (int)_subCategoryRepository.GetCount(c => c.main_categoryid == mc.Id).Result
             }).ToArray();
 
             var response = new MainCategoryResponse()
@@ -108,7 +108,7 @@ public class MainCategoryProfile : Profile
     public MainCategoryProfile()
     {
         CreateMap<AddEditMainCategory, MainCategories>()
-            .ForMember(c => c.id, o => o.MapFrom(src => src.Id))
+            .ForMember(c => c.Id, o => o.MapFrom(src => src.Id))
             .ForMember(c => c.main_category_name, o => o.MapFrom(src => src.Name));
     }
 }

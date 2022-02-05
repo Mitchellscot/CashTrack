@@ -30,12 +30,12 @@ public class IncomeService : IIncomeService
 
         var income = _mapper.Map<Incomes>(request);
 
-        income.id = ((int)await _repo.GetCount(x => true)) + 1;
+        income.Id = ((int)await _repo.GetCount(x => true)) + 1;
         var success = await _repo.Create(income);
         if (!success)
             throw new Exception("Couldn't save income to the database.");
 
-        request.Id = income.id;
+        request.Id = income.Id;
 
         return request;
     }
@@ -79,7 +79,7 @@ public class IncomeMapperProfile : Profile
     public IncomeMapperProfile()
     {
         CreateMap<Incomes, IncomeListItem>()
-            .ForMember(x => x.Id, o => o.MapFrom(x => x.id))
+            .ForMember(x => x.Id, o => o.MapFrom(x => x.Id))
             .ForMember(x => x.Date, o => o.MapFrom(x => x.date))
             .ForMember(x => x.Amount, o => o.MapFrom(x => x.amount))
             .ForMember(x => x.Category, o => o.MapFrom(x => x.category.category))
@@ -88,7 +88,7 @@ public class IncomeMapperProfile : Profile
 
         CreateMap<AddEditIncome, Incomes>()
             .ForMember(x => x.date, o => o.MapFrom(src => src.Date.ToUniversalTime()))
-            .ForMember(x => x.id, o => o.MapFrom(src => src.Id))
+            .ForMember(x => x.Id, o => o.MapFrom(src => src.Id))
             .ForMember(x => x.amount, o => o.MapFrom(src => src.Amount))
             .ForMember(x => x.categoryid, o => o.MapFrom(src => src.CategoryId))
             .ForMember(x => x.sourceid, o => o.MapFrom(src => src.SourceId))

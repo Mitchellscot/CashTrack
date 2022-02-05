@@ -10,7 +10,7 @@ using CashTrack.Repositories.Common;
 
 namespace CashTrack.Repositories.UserRepository;
 
-public interface IUserRepository : IRepository<Users>
+public interface IUserRepository
 {
 
 }
@@ -36,21 +36,22 @@ public class UserRepository : IUserRepository
     }
     public async Task<Users> FindById(int id)
     {
-        try
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.id == id);
-            if (user == null)
-            {
-                throw new UserNotFoundException(id.ToString());
-            }
+        //try
+        //{
+        //    var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        //    if (user == null)
+        //    {
+        //        throw new UserNotFoundException(id.ToString());
+        //    }
 
-            return user;
-        }
-        catch (Exception)
-        {
+        //    return user;
+        //}
+        //catch (Exception)
+        //{
 
-            throw;
-        }
+        //    throw;
+        //}
+        throw new NotImplementedException();
     }
     public Task<bool> Create(Users entity)
     {

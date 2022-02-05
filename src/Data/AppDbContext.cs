@@ -2,13 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using CashTrack.Data.Entities;
 using CashTrack.Data.CsvFiles;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace CashTrack.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<Users, IdentityRole<int>, int>
     {
 
-        public DbSet<Users> Users { get; set; }
+        //public DbSet<Users> Users { get; set; }
         public DbSet<Expenses> Expenses { get; set; }
         public DbSet<Incomes> Incomes { get; set; }
         public DbSet<MainCategories> MainCategories { get; set; }
@@ -29,6 +31,7 @@ namespace CashTrack.Data
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
+            base.OnModelCreating(mb);
             var csvFileDirectory = _config["CsvFileDirectory"];
 
             mb.Entity<ExpenseTags>().HasKey(et => new { et.expense_id, et.tag_id });
@@ -42,13 +45,13 @@ namespace CashTrack.Data
                 .WithMany(e => e.expense_tags)
                 .HasForeignKey(et => et.tag_id);
 
-            //mb.Entity<MainCategories>().HasData(CsvParser.ProcessMainCategoryFile(csvFileDirectory + "main-categories.csv"));
-            //mb.Entity<SubCategories>().HasData(CsvParser.ProcessSubCategoryFile(csvFileDirectory + "sub-categories.csv"));
-            //mb.Entity<Merchants>().HasData(CsvParser.ProcessMerchantFile(csvFileDirectory + "merchants.csv"));
-            //mb.Entity<Expenses>().HasData(CsvParser.ProcessExpenseFile(csvFileDirectory + "expenses.csv"));
-            //mb.Entity<IncomeCategories>().HasData(CsvParser.ProcessIncomeCategoryFile(csvFileDirectory + "income-categories.csv"));
-            //mb.Entity<IncomeSources>().HasData(CsvParser.ProcessIncomeSourceFile(csvFileDirectory + "income-sources.csv"));
-            //mb.Entity<Incomes>().HasData(CsvParser.ProcessIncomeFile(csvFileDirectory + "incomes.csv"));
+            mb.Entity<MainCategories>().HasData(CsvParser.ProcessMainCategoryFile(csvFileDirectory + "main-categories.csv"));
+            mb.Entity<SubCategories>().HasData(CsvParser.ProcessSubCategoryFile(csvFileDirectory + "sub-categories.csv"));
+            mb.Entity<Merchants>().HasData(CsvParser.ProcessMerchantFile(csvFileDirectory + "merchants.csv"));
+            mb.Entity<Expenses>().HasData(CsvParser.ProcessExpenseFile(csvFileDirectory + "expenses.csv"));
+            mb.Entity<IncomeCategories>().HasData(CsvParser.ProcessIncomeCategoryFile(csvFileDirectory + "income-categories.csv"));
+            mb.Entity<IncomeSources>().HasData(CsvParser.ProcessIncomeSourceFile(csvFileDirectory + "income-sources.csv"));
+            mb.Entity<Incomes>().HasData(CsvParser.ProcessIncomeFile(csvFileDirectory + "incomes.csv"));
             //mb.Entity<Users>().HasData(CsvParser.ProcessUserFile(csvFileDirectory + "users.csv"));
 
         }

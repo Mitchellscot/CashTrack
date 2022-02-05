@@ -63,7 +63,7 @@ public class IncomeCategoryRepository : IIncomeCategoryRepository
         try
         {
             var category = await _ctx.IncomeCategories
-                .Where(x => x.id == id)
+                .Where(x => x.Id == id)
                 .SingleOrDefaultAsync();
             if (category == null)
                 throw new CategoryNotFoundException(id.ToString());

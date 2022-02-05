@@ -32,12 +32,12 @@ public class IncomeCategoryService : IIncomeCategoryService
             throw new DuplicateNameException(nameof(IncomeCategories), request.Name);
 
         var incomeCategoryEntity = _mapper.Map<IncomeCategories>(request);
-        incomeCategoryEntity.id = await _repo.GetCount(x => true) + 1;
+        incomeCategoryEntity.Id = await _repo.GetCount(x => true) + 1;
 
         if (!await _repo.Create(incomeCategoryEntity))
             throw new Exception("Couldn't save income category to the database.");
 
-        request.Id = incomeCategoryEntity.id;
+        request.Id = incomeCategoryEntity.Id;
         return request;
     }
 
@@ -87,12 +87,12 @@ public class IncomeCategoryProfile : Profile
         //Maybe add a property on the List Item that associates the item with a number of incomes ???? 
         //You would have to get rid of this map then.
         CreateMap<IncomeCategories, IncomeCategoryListItem>()
-            .ForMember(x => x.Id, o => o.MapFrom(src => src.id))
+            .ForMember(x => x.Id, o => o.MapFrom(src => src.Id))
             .ForMember(x => x.Name, o => o.MapFrom(src => src.category))
             .ReverseMap();
 
         CreateMap<AddEditIncomeCategory, IncomeCategories>()
-            .ForMember(dest => dest.id, o => o.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Id, o => o.MapFrom(src => src.Id))
             .ForMember(dest => dest.category, o => o.MapFrom(src => src.Name))
             .ForMember(dest => dest.description, o => o.MapFrom(src => src.Description))
             .ForMember(dest => dest.in_use, o => o.MapFrom(src => src.InUse))
