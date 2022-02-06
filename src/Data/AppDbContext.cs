@@ -37,13 +37,21 @@ namespace CashTrack.Data
             mb.Entity<ExpenseTags>().HasKey(et => new { et.expense_id, et.tag_id });
 
             mb.Entity<ExpenseTags>()
-                .HasOne<Expenses>(et => et.expense)
+                .HasOne(et => et.expense)
                 .WithMany(e => e.expense_tags)
                 .HasForeignKey(et => et.expense_id);
             mb.Entity<ExpenseTags>()
-                .HasOne<Tags>(et => et.tag)
+                .HasOne(et => et.tag)
                 .WithMany(e => e.expense_tags)
                 .HasForeignKey(et => et.tag_id);
+
+            mb.Entity<Users>().ToTable("users");
+            mb.Entity<IdentityUserClaim<int>>().ToTable("users_claims");
+            mb.Entity<IdentityUserToken<int>>().ToTable("users_tokens");
+            mb.Ignore<IdentityRole<int>>();
+            mb.Ignore<IdentityRoleClaim<int>>();
+            mb.Ignore<IdentityUserRole<int>>();
+            mb.Ignore<IdentityUserLogin<int>>();
 
             mb.Entity<MainCategories>().HasData(CsvParser.ProcessMainCategoryFile(csvFileDirectory + "main-categories.csv"));
             mb.Entity<SubCategories>().HasData(CsvParser.ProcessSubCategoryFile(csvFileDirectory + "sub-categories.csv"));
