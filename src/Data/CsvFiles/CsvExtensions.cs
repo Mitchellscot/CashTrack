@@ -121,10 +121,11 @@ namespace CashTrack.Data.CsvFiles
                 yield return new CsvModels.CsvUser()
                 {
                     Id = Convert.ToInt32(columns[0]),
-                    first_name = columns[1],
-                    last_name = columns[2],
-                    email = columns[3],
-                    password_hash = columns[4]
+                    UserName = columns[1],
+                    FirstName = columns[2],
+                    LastName = columns[3],
+                    Email = columns[4],
+                    PasswordHash = columns[5]
                 };
             }
         }

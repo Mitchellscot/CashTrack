@@ -134,7 +134,6 @@ namespace CashTrack
             services.AddScoped<IIncomeReviewService, IncomeReviewService>();
             services.AddScoped<IRepository<IncomeReview>, IncomeReviewRepository>();
 
-            services.Configure<AppSettings>(_config.GetSection("AppSettings"));
 
         }
 
