@@ -10,7 +10,7 @@ using CashTrack.Repositories.Common;
 
 namespace CashTrack.Repositories.UserRepository;
 
-public interface IUserRepository
+public interface IUserRepository : IRepository<Users>
 {
 
 }
@@ -36,31 +36,31 @@ public class UserRepository : IUserRepository
     }
     public async Task<Users> FindById(int id)
     {
-        //try
-        //{
-        //    var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-        //    if (user == null)
-        //    {
-        //        throw new UserNotFoundException(id.ToString());
-        //    }
+        try
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            if (user == null)
+            {
+                throw new UserNotFoundException(id.ToString());
+            }
 
-        //    return user;
-        //}
-        //catch (Exception)
-        //{
+            return user;
+        }
+        catch (Exception)
+        {
 
-        //    throw;
-        //}
+            throw;
+        }
         throw new NotImplementedException();
     }
     public Task<bool> Create(Users entity)
     {
-        //not creating users
+        //using userManager to create
         throw new NotImplementedException();
     }
     public Task<bool> Delete(Users entity)
     {
-        //not deleting
+        //using userManager to delete
         throw new NotImplementedException();
     }
     public Task<Users[]> FindWithPagination(Expression<Func<Users, bool>> predicate, int pageNumber, int pageSize)
@@ -70,7 +70,7 @@ public class UserRepository : IUserRepository
     }
     public Task<bool> Update(Users entity)
     {
-        //might add this later, change password, email, etc.
+        //using userManager to update
         throw new NotImplementedException();
     }
 

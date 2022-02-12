@@ -34,6 +34,7 @@ using CashTrack.Services.IncomeReviewService;
 using CashTrack.Repositories.IncomeReviewRepository;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using CashTrack.Services.UserService;
 
 namespace CashTrack
 {
@@ -98,6 +99,7 @@ namespace CashTrack
                 options.Password.RequiredUniqueChars = 0;
                 options.Password.RequiredLength = 4;
                 options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
                 options.Lockout.MaxFailedAccessAttempts = 3;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
             }).AddEntityFrameworkStores<AppDbContext>()
@@ -118,7 +120,7 @@ namespace CashTrack
             services.AddScoped<IMerchantService, MerchantService>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-            //services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
             services.AddScoped<ISubCategoryService, SubCategoryService>();
             services.AddScoped<IMainCategoriesService, MainCategoriesService>();
