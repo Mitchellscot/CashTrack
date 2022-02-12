@@ -7,41 +7,75 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CashTrack.styles.css" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">CashTrack</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div>
-            </div>
+        <nav sticky="top" class="d-flex justify-content-between flex-md-nowrap p-0 shadow bg-primary">
+            <a href="/" class="d-flex justify-content-center navbar-brand col-md-2 col-lg-2 md-0 px-0 py-1">
+                <img src="/images/ct-white-text.png" height="75" width="150" alt="logo" />
+            </a>
+            <ul class="px-3">
+                <li class="text-nowrap">
+                    <!-- icon -->
+                    <a id="logoutButton" class="mr-4" fontSize="2rem">log out</a>
+                </li>
+            </ul>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- sidebar goes here -->
+            <nav class="sidebar col-md-2 col-lg-2 d-md-block bg-light collapse pt-3 sidebar-sticky">
+                <ul class="nav flex-column align-items-center sidebar-heading">
+                    <li class="nav-link bungee">
+                        <a class="text-primary" href="#">
+                            Budget&nbsp;&nbsp;&nbsp;&nbsp;
+                            <!-- icon -->
+
+                        </a>
+                    </li>
+                    <li class="nav-link bungee">
+                        <a class="text-primary" href="#">
+                            Expenses&nbsp;&nbsp;
+                            <!-- icon -->
+
+                        </a>
+                    </li>
+                    <li class="nav-link bungee">
+                        <a class="text-primary" href="#">
+                            Income&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <!-- icon -->
+
+                        </a>
+                    </li>
+                    <li class="nav-link bungee">
+                        <a class="text-primary" href="#">
+                            Reports&nbsp;&nbsp;&nbsp;
+                            <!-- icon -->
+
+                        </a>
+                    </li>
+                    <li class="nav-link bungee">
+                        <a class="text-primary" href="#">
+                            Settings&nbsp;
+                            <!-- icon -->
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+            <!-- end -->
+            <div class="col ml-sm-auto px-md-2 py-2 col-md-10 col-lg-10">
+                <main role="main" class="d-flex flex-wrap flex-md-nowrap pt-4 border border-bottom-0 rounded-top">
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2022 - Mitchell Scott
-        </div>
-    </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CashTrack.Pages
 {
+    [AllowAnonymous]
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;

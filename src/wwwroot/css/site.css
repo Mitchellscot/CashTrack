@@ -1,18 +1,68 @@
-html {
-  font-size: 14px;
+.border {
+    border-width: 2px !important;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+html, body, nav {
+    height: 100%;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+.navbar-brand {
+    background-color: rgba(0, 0, 0, .25);
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+    padding: 0;
+    margin: 0;
 }
 
-body {
-  margin-bottom: 60px;
+.navbar .form-control {
+    padding: .75rem 1rem;
+    border-width: 0;
+    border-radius: 0;
+}
+
+#logoutButton {
+    cursor: pointer;
+}
+
+.sidebar {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100; /* Behind the navbar */
+    padding: 100px 0 0; /* Height of navbar */
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+@media (max-width: 767.98px) {
+    .sidebar {
+        top: 5rem;
+        padding: 0;
+    }
+}
+
+.sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 75px);
+    padding-top: 1rem;
+    overflow-x: hidden;
+    overflow-y: hidden; /* Scrollable contents if viewport is shorter than content. */
+
+}
+
+.sidebar .nav-link {
+    font-family: 'Bungee', cursive;
+    font-weight: 500;
+}
+
+.sidebar-heading {
+    font-size: .2rem;
+    text-transform: uppercase;
+}
+
+.sidebar-heading, a {
+    text-decoration: none;
+}
+
+.nav-link {
+    font-size: 1.5rem;
 }
