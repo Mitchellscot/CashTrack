@@ -1,43 +1,69 @@
-﻿//using AutoMapper;
-//using CashTrack.Data.Entities;
-//using CashTrack.Models.UserModels;
-//using CashTrack.Repositories.UserRepository;
-//using System.Threading.Tasks;
+﻿using AutoMapper;
+using CashTrack.Data.Entities;
+using CashTrack.Models.UserModels;
+using CashTrack.Repositories.UserRepository;
+using Microsoft.AspNetCore.Identity;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
-//namespace CashTrack.Services.UserService;
+namespace CashTrack.Services.UserService;
 
-//public interface IUserService
-//{
-//    Task<UserModels.Response> GetUserByIdAsync(int id);
-//    Task<UserModels.Response[]> GetAllUsersAsync();
-//}
-//public class UserService : IUserService
-//{
-//    private readonly IUserRepository _userRepo;
-//    private readonly IMapper _mapper;
+public interface IUserService
+{
+    Task<UserModels.Response> GetUserByIdAsync(int id);
+    Task<UserModels.Response[]> GetAllUsersAsync();
+    Task<UserModels.Response> CreateUserAsync(UserModels.AddEditUser request);
+}
+public class UserService : IUserService
+{
+    private readonly IUserRepository _userRepo;
+    private readonly IMapper _mapper;
+    private readonly UserManager<Users> _userManager;
+    private readonly SignInManager<Users> _signInManager;
 
-//    public UserService(IUserRepository userRepo, IMapper mapper) => (_userRepo, _mapper) = (userRepo, mapper);
+    public UserService(IUserRepository userRepo, IMapper mapper, UserManager<Users> userManager, SignInManager<Users> signInManager) => (_userRepo, _mapper, _userManager, _signInManager) = (userRepo, mapper, userManager, signInManager);
 
-//    public async Task<UserModels.Response[]> GetAllUsersAsync()
-//    {
-//        var users = await _userRepo.Find(x => true);
-//        return _mapper.Map<UserModels.Response[]>(users);
-//    }
+    public async Task<UserModels.Response> CreateUserAsync(UserModels.AddEditUser request)
+    {
+        var newUser = new Users()
+        {
+            Email = request.Email,
+            UserName = request.FirstName,
+            FirstName = request.FirstName,
+            LastName = request.LastName
+        };
+        var result = await _userManager.CreateAsync(newUser, request.Password);
+        if (!result.Succeeded)
+            throw new Exception(string.Join(", ", result.Errors.Select(x => x.Description)));
 
-//    public async Task<UserModels.Response> GetUserByIdAsync(int id)
-//    {
-//        var user = await _userRepo.FindById(id);
-//        return _mapper.Map<UserModels.Response>(user);
-//    }
-//}
-//public class UserMapperProfile : Profile
-//{
-//    public UserMapperProfile()
-//    {
-//        CreateMap<Users, UserModels.Response>()
-//            .ForMember(u => u.id, o => o.MapFrom(src => src.id))
-//            .ForMember(u => u.FirstName, o => o.MapFrom(src => src.first_name))
-//            .ForMember(u => u.LastName, o => o.MapFrom(src => src.last_name))
-//            .ForMember(u => u.Email, o => o.MapFrom(src => src.email));
-//    }
-//}
+        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        await _signInManager.RefreshSignInAsync(user);
+
+        return _mapper.Map<UserModels.Response>(user);
+    }
+
+    public async Task<UserModels.Response[]> GetAllUsersAsync()
+    {
+        var users = await _userRepo.Find(x => true);
+        return _mapper.Map<UserModels.Response[]>(users);
+    }
+
+    public async Task<UserModels.Response> GetUserByIdAsync(int id)
+    {
+        var user = await _userRepo.FindById(id);
+        return _mapper.Map<UserModels.Response>(user);
+    }
+}
+public class UserMapperProfile : Profile
+{
+    public UserMapperProfile()
+    {
+        CreateMap<Users, UserModels.Response>()
+            .ForMember(u => u.id, o => o.MapFrom(src => src.Id))
+            .ForMember(u => u.FirstName, o => o.MapFrom(src => src.FirstName))
+            .ForMember(u => u.LastName, o => o.MapFrom(src => src.LastName))
+            .ForMember(u => u.Email, o => o.MapFrom(src => src.Email));
+    }
+}

@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace CashTrack.Pages
 {
-    [AllowAnonymous]
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
@@ -15,9 +15,13 @@ namespace CashTrack.Pages
             _logger = logger;
         }
 
-        public void OnGet()
+        public ActionResult OnGetAsync()
         {
-
+            if (User.Identity.IsAuthenticated)
+            {
+                return Page();
+            }
+            return Challenge();
         }
     }
 }

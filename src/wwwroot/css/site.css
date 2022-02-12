@@ -46,7 +46,6 @@ html, body, nav {
     padding-top: 1rem;
     overflow-x: hidden;
     overflow-y: hidden; /* Scrollable contents if viewport is shorter than content. */
-
 }
 
 .sidebar .nav-link {
@@ -65,4 +64,10 @@ html, body, nav {
 
 .nav-link {
     font-size: 1.5rem;
+}
+
+.validation-summary-errors ul {
+    padding-left: 0;
+    list-style: none;
+    text-align: center;
 }
