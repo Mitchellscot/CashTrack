@@ -7,7 +7,6 @@ namespace CashTrack.Data.Entities
     [Table("users")]
     public class Users : IdentityUser<int>, IEntity
     {
-        new public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
     }
