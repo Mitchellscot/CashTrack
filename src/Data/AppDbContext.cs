@@ -5,6 +5,8 @@ using CashTrack.Data.CsvFiles;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace CashTrack.Data
 {
@@ -36,7 +38,7 @@ namespace CashTrack.Data
             mb.Initialize(_config.GetSection("Users").Get<Users[]>(), _config["CsvFileDirectory"]);
         }
     }
-    //model builder extention to seed DB data
+    //model builder extension to seed DB data
     public static class SeedData
     {
         public static void Initialize(this ModelBuilder mb, Users[] users, string csvFileDirectory)
@@ -59,7 +61,16 @@ namespace CashTrack.Data
                 var hashed = password.HashPassword(seededUser, user.PasswordHash);
                 seededUser.PasswordHash = hashed;
                 mb.Entity<Users>().HasData(seededUser);
+                var claim = new IdentityUserClaim<int>()
+                {
+                    Id = user.Id,
+                    UserId = user.Id,
+                    ClaimType = ClaimTypes.NameIdentifier,
+                    ClaimValue = user.UserName,
+                };
+                mb.Entity<IdentityUserClaim<int>>().HasData(claim);
             }
+
             mb.Entity<ExpenseTags>().HasKey(et => new { et.expense_id, et.tag_id });
 
             mb.Entity<ExpenseTags>()
@@ -74,10 +85,10 @@ namespace CashTrack.Data
             mb.Entity<Users>().ToTable("users");
             mb.Entity<IdentityUserClaim<int>>().ToTable("users_claims");
             mb.Entity<IdentityUserToken<int>>().ToTable("users_tokens");
+            mb.Entity<IdentityUserLogin<int>>().ToTable("users_logins");
             mb.Ignore<IdentityRole<int>>();
             mb.Ignore<IdentityRoleClaim<int>>();
             mb.Ignore<IdentityUserRole<int>>();
-            mb.Ignore<IdentityUserLogin<int>>();
 
             mb.Entity<MainCategories>().HasData(CsvParser.ProcessMainCategoryFile(csvFileDirectory + "main-categories.csv"));
             mb.Entity<SubCategories>().HasData(CsvParser.ProcessSubCategoryFile(csvFileDirectory + "sub-categories.csv"));
@@ -86,6 +97,8 @@ namespace CashTrack.Data
             mb.Entity<IncomeCategories>().HasData(CsvParser.ProcessIncomeCategoryFile(csvFileDirectory + "income-categories.csv"));
             mb.Entity<IncomeSources>().HasData(CsvParser.ProcessIncomeSourceFile(csvFileDirectory + "income-sources.csv"));
             mb.Entity<Incomes>().HasData(CsvParser.ProcessIncomeFile(csvFileDirectory + "incomes.csv"));
+
+
         }
     }
 }

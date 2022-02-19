@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CashTrack.Pages
 {
+
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
@@ -17,11 +18,7 @@ namespace CashTrack.Pages
 
         public ActionResult OnGetAsync()
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                return Page();
-            }
-            return Challenge();
+            return Page();
         }
     }
 }

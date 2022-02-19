@@ -16,7 +16,7 @@
 </li>
 <li class="text-nowrap">
     <!-- icon -->
-    <form asp-controller="Login" asp-action="Logout" method="post" id="logoutForm">
+    <form method="post" asp-page="/Account/Logout" asp-route-returnurl="/" id="logoutForm">
         <button type="submit" class="btn btn-secondary">Log Out</button>
     </form>
 </li>

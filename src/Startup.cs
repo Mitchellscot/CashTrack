@@ -73,19 +73,12 @@ namespace CashTrack
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlServer(connectionString);
-                if (_env.IsDevelopment()) { options.EnableSensitiveDataLogging(true); }
+                if (_env.IsDevelopment())
+                    options.EnableSensitiveDataLogging(true);
             });
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
-            }).AddIdentityCookies();
-
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.LoginPath = "/login";
-            });
+            services.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
+            services.ConfigureApplicationCookie(o => o.LoginPath = "/login");
 
             services.AddIdentityCore<Users>(options =>
             {
@@ -111,7 +104,6 @@ namespace CashTrack
                 fv.RegisterValidatorsFromAssemblyContaining<Startup>()
             );
 
-            services.AddTransient<ICurrentUserService, ContextUserService>();
             services.AddScoped<IExpenseRepository, ExpenseRepository>();
             services.AddScoped<IExpenseService, ExpenseService>();
             services.AddScoped<IMerchantRepository, MerchantRepository>();

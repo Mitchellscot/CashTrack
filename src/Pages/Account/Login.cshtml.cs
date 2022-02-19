@@ -18,14 +18,16 @@ namespace CashTrack.Pages
     {
         private readonly SignInManager<Users> _signInManager;
         private readonly UserManager<Users> _userManager;
-
+        public string ReturnUrl { get; set; }
         [BindProperty, Display(Name = "User Name")]
         public string UserName { get; set; }
+        [BindProperty, Display(Name = "Password")]
         public string Password { get; set; }
         public LoginModel(SignInManager<Users> signInManager, UserManager<Users> userManager) => (_signInManager, _userManager) = (signInManager, userManager);
 
         public async Task<IActionResult> OnPostAsync()
         {
+            ReturnUrl ??= Url.Content("~/");
             if (!ModelState.IsValid)
                 return Page();
 
@@ -36,7 +38,11 @@ namespace CashTrack.Pages
                 return Page();
             };
 
-            await _signInManager.SignInAsync(user, true);
+            var result = await _signInManager.PasswordSignInAsync(UserName, Password, true, false);
+            if (result.Succeeded)
+            {
+                return LocalRedirect(ReturnUrl);
+            }
 
             //var claims = new List<Claim>
             //{
