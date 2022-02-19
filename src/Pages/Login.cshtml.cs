@@ -29,7 +29,7 @@ namespace CashTrack.Pages
             if (!ModelState.IsValid)
                 return Page();
 
-            var user = await _userManager.FindByEmailAsync(UserName);
+            var user = await _userManager.FindByNameAsync(UserName);
             if (user == null)
             {
                 ModelState.AddModelError("", "User Not Found");

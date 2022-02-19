@@ -4,6 +4,7 @@ using CashTrack.Data.Entities;
 using CashTrack.Data.CsvFiles;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace CashTrack.Data
 {
@@ -32,8 +33,33 @@ namespace CashTrack.Data
         protected override void OnModelCreating(ModelBuilder mb)
         {
             base.OnModelCreating(mb);
-            var csvFileDirectory = _config["CsvFileDirectory"];
-
+            mb.Initialize(_config.GetSection("Users").Get<Users[]>(), _config["CsvFileDirectory"]);
+        }
+    }
+    //model builder extention to seed DB data
+    public static class SeedData
+    {
+        public static void Initialize(this ModelBuilder mb, Users[] users, string csvFileDirectory)
+        {
+            foreach (var user in users)
+            {
+                var password = new PasswordHasher<Users>();
+                var seededUser = new Users()
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    NormalizedEmail = user.NormalizedEmail,
+                    NormalizedUserName = user.NormalizedUserName,
+                    SecurityStamp = Guid.NewGuid().ToString("D"),
+                    EmailConfirmed = true
+                };
+                var hashed = password.HashPassword(seededUser, user.PasswordHash);
+                seededUser.PasswordHash = hashed;
+                mb.Entity<Users>().HasData(seededUser);
+            }
             mb.Entity<ExpenseTags>().HasKey(et => new { et.expense_id, et.tag_id });
 
             mb.Entity<ExpenseTags>()
@@ -60,8 +86,6 @@ namespace CashTrack.Data
             mb.Entity<IncomeCategories>().HasData(CsvParser.ProcessIncomeCategoryFile(csvFileDirectory + "income-categories.csv"));
             mb.Entity<IncomeSources>().HasData(CsvParser.ProcessIncomeSourceFile(csvFileDirectory + "income-sources.csv"));
             mb.Entity<Incomes>().HasData(CsvParser.ProcessIncomeFile(csvFileDirectory + "incomes.csv"));
-            //mb.Entity<Users>().HasData(CsvParser.ProcessUserFile(csvFileDirectory + "users.csv"));
-
         }
     }
 }

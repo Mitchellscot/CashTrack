@@ -80,7 +80,6 @@ namespace CashTrack
             {
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
-
             }).AddIdentityCookies();
 
             services.ConfigureApplicationCookie(options =>
@@ -88,7 +87,6 @@ namespace CashTrack
                 options.LoginPath = "/login";
             });
 
-            //see what is in identity core vs add identity. Can also do adddefault identity https://stackoverflow.com/questions/55361533/addidentity-vs-addidentitycore
             services.AddIdentityCore<Users>(options =>
             {
                 options.Stores.MaxLengthForKeys = 36;
