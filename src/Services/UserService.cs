@@ -5,6 +5,7 @@ using CashTrack.Repositories.UserRepository;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CashTrack.Services.UserService;
@@ -33,6 +34,7 @@ public class UserService : IUserService
             FirstName = request.FirstName,
             LastName = request.LastName
         };
+
         var result = await _userManager.CreateAsync(newUser, request.Password);
         if (!result.Succeeded)
             throw new Exception(string.Join(", ", result.Errors.Select(x => x.Description)));
