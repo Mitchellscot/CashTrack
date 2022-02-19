@@ -44,8 +44,6 @@ html, body, nav {
     top: 0;
     height: calc(100vh - 75px);
     padding-top: 1rem;
-    overflow-x: hidden;
-    overflow-y: hidden; /* Scrollable contents if viewport is shorter than content. */
 }
 
 .sidebar .nav-link {
@@ -70,4 +68,11 @@ html, body, nav {
     padding-left: 0;
     list-style: none;
     text-align: center;
+}
+main {
+    height: 100%;
+}
+body {
+    overflow-x: hidden;
+    overflow-y: auto; /* Change to hidden to remove scroll bar */
 }
