@@ -13,7 +13,6 @@ namespace CashTrack.Data
     public class AppDbContext : IdentityDbContext<Users, IdentityRole<int>, int>
     {
 
-        //public DbSet<Users> Users { get; set; }
         public DbSet<Expenses> Expenses { get; set; }
         public DbSet<Incomes> Incomes { get; set; }
         public DbSet<MainCategories> MainCategories { get; set; }
@@ -97,8 +96,6 @@ namespace CashTrack.Data
             mb.Entity<IncomeCategories>().HasData(CsvParser.ProcessIncomeCategoryFile(csvFileDirectory + "income-categories.csv"));
             mb.Entity<IncomeSources>().HasData(CsvParser.ProcessIncomeSourceFile(csvFileDirectory + "income-sources.csv"));
             mb.Entity<Incomes>().HasData(CsvParser.ProcessIncomeFile(csvFileDirectory + "incomes.csv"));
-
-
         }
     }
 }

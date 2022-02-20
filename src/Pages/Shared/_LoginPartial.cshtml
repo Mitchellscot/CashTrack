@@ -3,20 +3,13 @@
 @inject SignInManager<Users> SignInManager
 @inject UserManager<Users> UserManager
 
-
-<li class="text-nowrap">
-    @if (User.Identity.IsAuthenticated)
-    {
-        <span>Hello, @User.Identity.Name</span>
-    }
-    else
-    {
-        <a asp-page="/Login">Sign In</a>
-    }
-</li>
-<li class="text-nowrap">
+<li class="text-nowrap list-unstyled">
     <!-- icon -->
     <form method="post" asp-page="/Account/Logout" asp-route-returnurl="/" id="logoutForm">
-        <button type="submit" class="btn btn-secondary">Log Out</button>
+        <button  style="background: none; padding: 0px; border: none;"  type="submit">
+        <i class="bi bi-box-arrow-right text-white" role="img"
+            style="font-size: 2.5rem;"
+            ></i>
+        </button>
     </form>
 </li>

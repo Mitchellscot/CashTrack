@@ -4,11 +4,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using CashTrack.Common;
 using Microsoft.EntityFrameworkCore;
 using CashTrack.Data;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Mvc;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.UserRepository;
 using CashTrack.Repositories.TagRepository;
@@ -32,7 +30,6 @@ using CashTrack.Repositories.ExpenseReviewRepository;
 using CashTrack.Services.ExpenseReviewService;
 using CashTrack.Services.IncomeReviewService;
 using CashTrack.Repositories.IncomeReviewRepository;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using CashTrack.Services.UserService;
 
@@ -125,8 +122,6 @@ namespace CashTrack
             services.AddScoped<IExpenseReviewService, ExpenseReviewService>();
             services.AddScoped<IIncomeReviewService, IncomeReviewService>();
             services.AddScoped<IRepository<IncomeReview>, IncomeReviewRepository>();
-
-
         }
 
         public void Configure(IApplicationBuilder app)
