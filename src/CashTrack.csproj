@@ -32,7 +32,6 @@
 		<Compile Remove="Migrations\**" />
 		<EmbeddedResource Remove="Migrations\**" />
 		<None Remove="Migrations\**" />
-		<Folder Include="wwwroot\" />
 	</ItemGroup>
 	<ItemGroup>
 		<Content Update="appsettings.json">
