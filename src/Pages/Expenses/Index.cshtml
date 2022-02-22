@@ -7,6 +7,24 @@
 <div class="container-fluid">
     <div class="row">
         <form action="post">
+
+            <div class="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" id="nav-dropdown" data-bs-toggle="dropdown">Search By</button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item text-center text-dark" href="#">Date</a></li>
+                    <li><a class="dropdown-item text-center text-dark" href="#">Notes</a></li>
+                    <li><a class="dropdown-item text-center text-dark" href="#">Amount</a></li>
+                    <hr class="dropdown-divider">
+                    <li><a class="dropdown-item text-center text-dark" href="#">Merchant</a></li>
+                    <li><a class="dropdown-item text-center text-dark" href="#">Category</a></li>
+                    <li><a class="dropdown-item text-center text-dark" href="#">Sub Category</a></li>
+                    <hr class="dropdown-divider">
+                    <li><a class="dropdown-item text-center text-dark" href="#">Option 1</a></li>
+                    <li><a class="dropdown-item text-center text-dark" href="#">Option 1</a></li>
+                    <li><a class="dropdown-item text-center text-dark" href="#">Option 1</a></li>
+                </ul>
+            </div>
+
             <div>
                 <label @*asp-for=@Model.Query*@ class="form-label">Search</label>
                 <input type="text" class="form-control" id="query" />

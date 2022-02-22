@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CashTrack</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrapDARK.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CashTrack.styles.css" asp-append-version="true" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,44 +26,83 @@
     <div class="container-fluid">
         <div class="row">
             <!-- sidebar goes here -->
-            <nav class="sidebar col-md-2 col-lg-2 d-md-block bg-light collapse pt-3 sidebar-sticky">
-                <ul class="nav flex-column align-items-center sidebar-heading">
-                    <li class="nav-link bungee">
-                        <a class="text-primary" href="#">
-                            Budget&nbsp;&nbsp;&nbsp;&nbsp;
-                            <!-- icon -->
+            <nav class="sidebar col-md-2 col-lg-2 d-md-block bg-light collapse pt-3 px-4 sidebar-sticky container">
+                <div class="nav bungee row sidebar-heading align-items-center">
 
+                    <div class="col-lg-9 col-md-6 nav-link bungee">
+                        <a class="text-primary" asp-page="/expenses/index">
+                            Expenses
                         </a>
-                    </li>
-                    <li class="nav-link bungee">
-                        <a class="text-primary" href="#">
-                            Expenses&nbsp;&nbsp;
-                            <!-- icon -->
+                    </div>
+                    <div class="col-2 col-md-2">
+                        <a class="text-primary" asp-page="/expenses/index">
+                            <i class="bi bi-receipt text-primary" role="img" style="font-size: 1.5rem;"></i>
+                        </a>
+                    </div>
+                </div>
 
+                <div class="nav bungee row sidebar-heading align-items-center">
+                    <div class="col-lg-9 col-md-6 nav-link bungee">
+                        <a class="text-primary" asp-page="/income">
+                            Income
                         </a>
-                    </li>
-                    <li class="nav-link bungee">
-                        <a class="text-primary" href="#">
-                            Income&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <!-- icon -->
+                    </div>
+                    <div class="col-2">
+                        <a class="text-primary" asp-page="/income">
+                            <i class="bi bi-cash-coin text-primary" role="img" style="font-size: 1.5rem;"></i>
+                        </a>
+                    </div>
+                </div>
 
+                <div class="nav bungee row sidebar-heading align-items-center">
+                    <div class="col-lg-9 col-md-6 nav-link bungee">
+                        <a class="text-primary" asp-page="/merchants">
+                            Merchants
                         </a>
-                    </li>
-                    <li class="nav-link bungee">
-                        <a class="text-primary" href="#">
-                            Reports&nbsp;&nbsp;&nbsp;
-                            <!-- icon -->
+                    </div>
+                    <div class="col-2">
+                        <a class="text-primary" asp-page="/merchants">
+                            <i class="bi bi-shop text-primary" role="img" style="font-size: 1.5rem;"></i>
+                        </a>
+                    </div>
+                </div>
 
+                <div class="nav bungee row sidebar-heading align-items-center">
+                    <div class="col-lg-9 col-md-6 nav-link bungee">
+                        <a class="text-primary" asp-page="/categories">
+                            Categories
                         </a>
-                    </li>
-                    <li class="nav-link bungee">
-                        <a class="text-primary" href="#">
-                            Settings&nbsp;
-                            <!-- icon -->
+                    </div>
+                    <div class="col-2">
+                        <a class="text-primary" asp-page="/categories">
+                            <i class="bi bi-diagram-3 text-primary" role="img" style="font-size: 1.5rem;"></i>
                         </a>
-                    </li>
-
-                </ul>
+                    </div>
+                </div>
+                <div class="nav bungee row sidebar-heading align-items-center">
+                    <div class="col-lg-9 col-md-6 nav-link bungee">
+                        <a class="text-primary" asp-page="/budget">
+                            Budget
+                        </a>
+                    </div>
+                    <div class="col-2">
+                        <a class="text-primary" asp-page="/budget">
+                            <i class="bi bi-pie-chart text-primary" role="img" style="font-size: 1.5rem;"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="nav bungee row sidebar-heading align-items-center">
+                    <div class="col-lg-9 col-md-6 nav-link bungee">
+                        <a class="text-primary" asp-page="/settings">
+                            Settings
+                        </a>
+                    </div>
+                    <div class="col-2">
+                        <a class="text-primary" asp-page="/settings">
+                            <i class="bi bi-gear text-primary" role="img" style="font-size: 1.5rem;"></i>
+                        </a>
+                    </div>
+                </div>
             </nav>
             <!-- end -->
             <div class="col ml-sm-auto px-md-2 py-2 col-md-10 col-lg-10">
