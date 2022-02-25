@@ -6,11 +6,11 @@
 }
 
 <div class="container-fluid">
-    <form action="post" asp-page-handler="Query">
+    <form action="post" >
         <div class="row">
             <div class="col-6">
                 <div class="input-group">
-                    <select asp-items="Html.GetEnumSelectList<DateOptions>()" class="custom-select" name="queryType">
+                    <select asp-items="Html.GetEnumSelectList<DateOptions>()" class="custom-select">
                         <option value="">Search</option>
                     </select>
                     <input type="date" class="form-control">
@@ -81,7 +81,7 @@
                                 @foreach (var tag in expense.Tags)
                                 {
                                     <span>tag.TagName</span>
-                                    ;
+                                    
                                 };
                             </td>
                         </tr>
