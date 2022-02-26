@@ -6,88 +6,121 @@
 }
 
 <div class="container-fluid">
-    <form action="post">
-        <div class="row">
+    <form method="get">
+
+        <div class="row mb-3 justify-content-center">
+
             <div class="col-6">
                 <div class="input-group">
-                    <select asp-items="Html.GetEnumSelectList<DateOptions>()" class="custom-select">
-                        <option value="">Search</option>
+                    <label class="input-group-text" for=@Model.q>Search</label>
+                    <input data-val="true" asp-for=@Model.q type="text" class="form-control w-50">
+                    <span asp-validation-for="q"></span>
+                    <select class="form-select text-center" name="type">
+                        <option>Search By</option>
+                        <option value="Date">Date</option>
+                        <option value="Amount">Amount</option>
+                        <option value="Merchant">Merchant</option>
+                        <option value="SubCategory">Sub Category</option>
+                        <option value="MainCategory">Main Category</option>
+                        <option value="Tag">Tags</option>
                     </select>
-                    <input type="date" class="form-control">
-                    <div class="input-group-append">
-                        <button class="btn btn-secondary" type="button">Search</button>
-                    </div>
+                    <button class="btn btn-secondary" type="submit">ICON</button>
                 </div>
             </div>
             <div class="col-6">
-                <button class="btn btn-primary">Last 30 Days</button>
-                <button class="btn btn-primary">Current Month</button>
-                <button class="btn btn-primary">Current Quarter</button>
-                <button class="btn btn-primary">Current Year</button>
-                <button class="btn btn-primary">Date Range</button>
+                <button class="btn-sm btn-secondary">Date Range</button>
+                <button class="btn-sm btn-secondary">Current Month</button>
+                <button class="btn-sm btn-secondary">Current Quarter</button>
+                <button class="btn-sm btn-secondary">Current Year</button>
+                <button class="btn-sm btn-secondary">Last 30 Days</button>
             </div>
         </div>
-    </form>
-    @*  style="background-color: red;"*@
-    <div class="row">
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover table-sm">
-                <thead>
-                    <tr>
-                        <th>
-                            Purchase Date
-                        </th>
-                        <th>
-                            Amount
-                        </th>
-                        <th>
-                            Merchant
-                        </th>
-                        <th>
-                            Sub Category
-                        </th>
-                        <th>
-                            Main Category
-                        </th>
-                        <th>
-                            Tags
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var expense in Model.ExpenseResponse.ListItems)
-                    {
-                        <tr>
-                            <td>
-                                @expense.Date
-                            </td>
-                            <td>
-                                @expense.Amount
-
-                            </td>
-                            <td>
-                                @expense.Merchant
-
-                            </td>
-                            <td>
-                                @expense.SubCategory
-
-                            </td>
-                            <td>
-                                @expense.MainCategory
-
-                            </td>
-                            <td>
-                                @foreach (var tag in expense.Tags)
-                                {
-                                    <span>tag.TagName</span>
-
-                                };
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <div class="alert alert-danger col-4 py-0 offset-4" asp-validation-summary="All">
         </div>
-    </div>
+    </form>
+
+    @*  style="background-color: red;"*@
+    @if (Model.ExpenseResponse != null)
+    {
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-sm">
+                    <thead>
+                        <tr class="text-center">
+                            <th width="10%">
+                                Purchase Date
+                            </th>
+                            <th width="10%">
+                                Amount
+                            </th>
+                            <th width="15%">
+                                Merchant
+                            </th>
+                            <th width="10%">
+                                Sub Category
+                            </th>
+                            <th width="10%">
+                                Main Category
+                            </th>
+                            <th width="15%">
+                                Tags
+                            </th>
+                            <th width="20%">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var expense in Model.ExpenseResponse.ListItems)
+                        {
+                            <tr class="text-center">
+                                <td>
+                                    @expense.Date.Date.ToShortDateString()
+                                </td>
+                                <td>
+                                    @expense.Amount
+
+                                </td>
+                                <td>
+                                    @expense.Merchant
+
+                                </td>
+                                <td>
+                                    @expense.SubCategory
+
+                                </td>
+                                <td>
+                                    @expense.MainCategory
+
+                                </td>
+                                <td>
+                                    @foreach (var tag in expense.Tags)
+                                    {
+                                        <span>tag.TagName</span>
+
+                                    }
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <nav>
+            <ul class="pagination justify-content-end">
+                <li class="page-item disabled">
+                    <a class="page-link">Previous</a>
+                </li>
+                @Model.ExpenseResponse.
+                <li class="page-item"><a class="page-link" href="#">@Model.ExpenseResponse.PageNumber == 1 ? Model.ExpenseResponse.PageNumber : Model.ExpenseResponse.PageNumber -1 </a></li>
+                <li class="page-item"><a class="page-link" href="#">@Model.ExpenseResponse.PageNumber</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    }
 </div>

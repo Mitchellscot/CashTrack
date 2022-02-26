@@ -7,7 +7,7 @@ namespace CashTrack.Models.Common
     public abstract class PaginationRequest
     {
         public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 25;
+        public int PageSize { get; set; } = 20;
         public string Query { get; set; } = null;
     }
     public abstract class PaginationResponse<T> where T : class

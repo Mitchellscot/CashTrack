@@ -2,6 +2,11 @@
     border-width: 2px !important;
 }
 
+.validation-summary-valid {
+    display: none;
+}
+
+
 html, body, nav {
     height: 100%;
 }
@@ -69,9 +74,11 @@ html, body, nav {
     list-style: none;
     text-align: center;
 }
+
 main {
     height: 100%;
 }
+
 body {
     overflow-x: hidden;
     overflow-y: auto; /* Change to hidden to remove scroll bar */
