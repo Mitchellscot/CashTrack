@@ -12,9 +12,6 @@
 
             <div class="col-6">
                 <div class="input-group">
-                    <label class="input-group-text" for=@Model.q>Search</label>
-                    <input data-val="true" asp-for=@Model.q type="text" class="form-control w-50">
-                    <span asp-validation-for="q"></span>
                     <select class="form-select text-center" name="type">
                         <option>Search By</option>
                         <option value="Date">Date</option>
@@ -24,7 +21,11 @@
                         <option value="MainCategory">Main Category</option>
                         <option value="Tag">Tags</option>
                     </select>
-                    <button class="btn btn-secondary" type="submit">ICON</button>
+                    <input data-val="true" asp-for=@Model.q type="text" class="form-control w-50">
+                    <span asp-validation-for="q"></span>
+                    <button class="btn btn-secondary" type="submit"><i class="bi bi-search text-white" role="img"
+            style="font-size: 1rem;"
+            ></i></button>
                 </div>
             </div>
             <div class="col-6">
