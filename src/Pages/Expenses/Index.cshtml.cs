@@ -18,14 +18,14 @@ namespace CashTrack.Pages.Expenses
         [BindProperty]
         public string q { get; set; }
         [BindProperty]
-        public string type { get; set; }
+        public QueryOptions query { get; set; }
         [BindProperty]
         public ExpenseResponse ExpenseResponse { get; set; }
 
 
-        public async Task<ActionResult> OnGet(string q, string type)
+        public async Task<ActionResult> OnGet(string q, QueryOptions query)
         {
-            if (type == "Date")
+            if (query == QueryOptions.Date && q != null)
             {
                 if (!DateTime.TryParse(q, out _))
                 {
