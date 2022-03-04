@@ -6,22 +6,16 @@
 }
 
 <div class="container-fluid">
-    <form method="get">
+    <form method="get" id="queryForm">
 
         <div class="row mb-3 justify-content-center">
 
             <div class="col-6">
                 <div class="input-group">
-                    <select class="form-select text-center" name="type">
-                        <option>Search By</option>
-                        <option value="Date">Date</option>
-                        <option value="Amount">Amount</option>
-                        <option value="Merchant">Merchant</option>
-                        <option value="SubCategory">Sub Category</option>
-                        <option value="MainCategory">Main Category</option>
-                        <option value="Tag">Tags</option>
+                    <select asp-for="query" asp-items="Html.GetEnumSelectList<QueryOptions>()" class="form-select text-center" id="querySelect">
+                        
                     </select>
-                    <input data-val="true" asp-for=@Model.q type="text" class="form-control w-50">
+                    <input data-val="true" asp-for=@Model.q type="date" class="form-control w-50" id="queryInput">
                     <span asp-validation-for="q"></span>
                     <button class="btn btn-secondary" type="submit"><i class="bi bi-search text-white" role="img"
             style="font-size: 1rem;"
@@ -125,3 +119,49 @@
         </nav>
     }
 </div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+<script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        console.log("Hello Mitchell");
+        $("#querySelect").change(() => {
+            //let currentInputType = $("#queryInput").prop("type"); -- this selects the current input type
+            let selectListValue = $("#querySelect").val();
+            console.log(`This is the selected value: ${selectListValue}`);
+            let inputType = ChangeInputType(selectListValue);
+            console.log(`This is after the function ran ${inputType}`);
+            $("#queryInput").prop("type", inputType);
+            $("#queryInput").val("");
+        });
+    });
+
+    const ChangeInputType = (option) => {
+        console.log(`the parameter: ${option}`);
+        if(option == ""){ return "date"; }
+        let inputType="";
+        switch(option){
+            case "0":
+                inputType = "date";
+                break;
+            case "1":
+                inputType = "text";
+                break;
+            case "2":
+                inputType = "text";
+                break;
+            case "3":
+                inputType = "text";
+                break;
+            case "4":
+                inputType = "text";
+                break;
+            case "5":
+                inputType = "text";
+                break;
+        }
+        return inputType;
+    }
+</script>
