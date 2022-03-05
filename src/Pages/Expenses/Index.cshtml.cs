@@ -144,6 +144,18 @@ namespace CashTrack.Pages.Expenses
             TempData["Message"] = "Sucessfully deleted expense!";
             return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
         }
+        //public async Task<IActionResult> OnPostEdit(int expenseId, int query, string q, string q2, int pageNumber)
+        //{
+        //    not sure what to do here yet
+        //    var success = await _service.DeleteExpenseAsync(expenseId);
+        //    if (!success)
+        //    {
+        //        ModelState.AddModelError("", "Unable to delete the expense");
+        //        return Page();
+        //    }
+        //    TempData["Message"] = "Sucessfully deleted expense!";
+        //    return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
+        //}
 
         private void PrepareForm(int query)
         {
