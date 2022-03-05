@@ -8,31 +8,47 @@
 <div class="container-fluid">
     <form method="get" id="queryForm">
 
-        <div class="row mb-3 justify-content-center">
+        <div class="row mb-3 flex-nowrap">
 
-            <div class="col-6">
+            <div class="col-5">
                 <div class="input-group">
-                    <select data-width="100% asp-for="query" asp-items="Html.GetEnumSelectList<QueryOptions>()" class="form-select text-center" id="querySelect" name="query">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">Search</div>
+                    </div>
+                    <select data-width="100%" asp-items="Model.queryOptions" class="form-select text-center" id="querySelect" asp-for="query">
                     </select>
-                    <input data-val="true" asp-for=@Model.q type="date" class="form-control w-50" id="qInput">
+                    <input data-val="true" asp-for=@Model.q type="@Model.inputType" class="form-control w-50 text-center" id="qInput">
                     <input style="display: none;" data-val="true" asp-for=@Model.q2 type="date" class="form-control" id="q2Input">
                     <button class="btn btn-secondary" type="submit">
-                        <i class="bi bi-search text-white" role="img"
+                        <i class="bi bi-search text-white mx-3" role="img"
                            style="font-size: 1rem;"></i>
                     </button>
                 </div>
             </div>
-            <div class="col-6">
-                <span asp-validation-for="q"></span>
+            <div class="col-3 p-0">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">Current</div>
+                    </div>
+                    <a asp-page="./Index" asp-route-query="11" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary">Month</a>
+                    <a asp-page="./Index" asp-route-query="12" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary">Quarter</a>
+                    <a asp-page="./Index" asp-route-query="13" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary">Year</a>
+                    <a asp-page="./Index" asp-route-query="14" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary">30 Days</a>
+                </div>
+            </div>
+            <div class="col-3 text-center border rounded my-0 py-0">
                 @if (Model.ExpenseResponse != null)
                 {
-                    <div>Total Amount: $@Model.ExpenseResponse.TotalAmount</div>
-                    <div>Count: @Model.ExpenseResponse.TotalCount</div>
+                    <div><strong>Total: $@Model.ExpenseResponse.TotalAmount</strong></div>
+                    <div><strong>Count: @Model.ExpenseResponse.TotalCount</strong></div>
                 }
-
-                <button class="btn-sm btn-primary">Add an Expense</button>
+            </div>
+            <div class="col-1 d-flex justify-content-end p-0">
+                <button class="btn btn-primary">Add Expense</button>
+                @*<span asp-validation-for="q"></span>*@
             </div>
         </div>
+        <input type="hidden" asp-for="@Model.pageNumber" />
         <div class="alert alert-danger col-4 py-0 offset-4" asp-validation-summary="All">
         </div>
     </form>
@@ -106,18 +122,79 @@
                 </table>
             </div>
         </div>
-        <nav>
+
+        <nav class="py-0">
             <ul class="pagination justify-content-end">
-                <li class="page-item disabled">
-                    <a class="page-link">Previous</a>
-                </li>
-                @Model.ExpenseResponse.
-                <li class="page-item"><a class="page-link" href="#">@Model.ExpenseResponse.PageNumber == 1 ?                        @Model.ExpenseResponse.PageNumber : Model.ExpenseResponse.PageNumber -1 </a></li>
-                <li class="page-item"><a class="page-link" href="#">@Model.ExpenseResponse.PageNumber</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
+
+                @if (Model.pageNumber == 1)
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">&laquo;</a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
+                   asp-route-q2="@Model.q2"
+                   asp-route-pageNumber="1">1</a>
+                    </li>
+                }
+                else if (Model.pageNumber > 1)
+                {
+                    var previousPageNumber = Model.pageNumber - 1;
+                    <li class="page-item">
+                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
+                   asp-route-q2="@Model.q2" asp-route-pageNumber="1">&laquo;</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
+                   asp-route-q2="@Model.q2" asp-route-pageNumber="@previousPageNumber">&lsaquo;</a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
+                   asp-route-q2="@Model.q2" asp-route-pageNumber="@Model.pageNumber">@Model.pageNumber</a>
+                    </li>
+                }
+                @if ((Model.ExpenseResponse.TotalPages - 1) > Model.pageNumber)
+                {
+                    var calculatedPageNumber = Model.pageNumber + 1;
+                    <li class="page-item">
+                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
+                   asp-route-q2="@Model.q2"
+                   asp-route-pageNumber="@calculatedPageNumber">&rsaquo;</a>
+                    </li>
+                }
+                else if ((Model.ExpenseResponse.TotalPages - 1) == Model.pageNumber)
+                {
+                    var calculatedPageNumber = Model.pageNumber + 1;
+                    <li class="page-item">
+                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
+                   asp-route-q2="@Model.q2"
+                   asp-route-pageNumber="@calculatedPageNumber">&rsaquo;</a>
+                    </li>
+                }
+                @if (Model.ExpenseResponse.TotalPages != Model.pageNumber)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
+                   asp-route-q2="@Model.q2"
+                   asp-route-pageNumber="@Model.ExpenseResponse.TotalPages">&raquo;</a>
+                    </li>
+                }
+                else if (Model.ExpenseResponse.TotalPages == Model.pageNumber)
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
+                   asp-route-q2="@Model.q2"
+                   asp-route-pageNumber="@Model.ExpenseResponse.TotalPages">&raquo;</a>
+                    </li>
+                }
+                else if(Model.ExpenseResponse.TotalPages == 1)
+                {
+                   <li class="page-item disabled">
+                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
+                   asp-route-q2="@Model.q2"
+                   asp-route-pageNumber="@Model.ExpenseResponse.TotalPages">&raquo;</a>
+                    </li>
+                }
             </ul>
         </nav>
     }
@@ -129,6 +206,25 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        let q = getQueries()["q"];
+        console.log(`q: ${q}`);
+        let q2 = getQueries()["q2"];
+        console.log(`q2: ${q2}`);
+        $("#qInput").val(q);
+        $("#q2Input").val(q2);
+
+        let selectListValue = $("#querySelect").val();
+        let inputType = ChangeInputType(selectListValue);
+        $("#qInput").prop("type", inputType);
+
+        //change the input type based on selection
+        $("#querySelect").change(() => {
+            let selectListValue = $("#querySelect").val();
+            let inputType = ChangeInputType(selectListValue);
+            $("#qInput").prop("type", inputType);
+            $("#qInput").val("");
+
+        });
         //change the input attributes based on the dropdown selection
         $("#querySelect").change(() => {
             let selectList = $("#querySelect").val();
@@ -144,29 +240,32 @@
                  $("#q2Input").removeClass("w-25");
                  $("#q2Input").hide();
             }
-            if(selectList === "9"){
-                 $("#qInput").prop('min', "1");
+            if(selectList === "5"){
                  $("#qInput").prop('step', "any");
                  $("#qInput").prop('min', "0.00");
             }
-            else if(selectList !== "9"){
+            if(selectList !== "5"){
+                 $("#qInput").removeAttr('min');
+                 $("#qInput").removeAttr('step');
+                 $("#qInput").removeAttr('min');
+            }
+            if(selectList === "4"){
+                 $("#qInput").prop('min', "2012");
+                 let currentYear = new Date().getFullYear();
+                 $("#qInput").prop('max', currentYear);
+                 $("#qInput").val(parseInt(new Date().getFullYear()));
+            }
+            if(selectList !== "4"){
                  $("#qInput").removeAttr('min');
                  $("#qInput").removeAttr('step');
                  $("#qInput").removeAttr('min');
             }
         });
-        //change the input type based on selection
-        $("#querySelect").change(() => {
-            let selectListValue = $("#querySelect").val();
-            let inputType = ChangeInputType(selectListValue);
-            $("#qInput").prop("type", inputType);
-            $("#qInput").val("");
 
-        });
         //if it's a query of the amount, make it a nice loking decimal
         $('#qInput').change(() => {
             let selectListValue = $("#querySelect").val();
-            if(selectListValue == "9"){
+            if(selectListValue == "5"){
                 let amount = $("#qInput").val();
                 let rounded = Math.round(amount * 100) / 100;
                 let finalNumber = rounded.toFixed(2);
@@ -186,45 +285,46 @@
                 inputType = "date";
                 break;
             case "2":
-                inputType = "date";
+                inputType = "month";
                 break;
             case "3":
-                inputType = "date";
+                inputType = "month";
                 break;
             case "4":
-                inputType = "date";
+                inputType = "number";
                 break;
             case "5":
-                inputType = "date";
+                inputType = "number";
                 break;
             case "6":
-                inputType = "date";
+                inputType = "text";
                 break;
             case "7":
-                inputType = "date";
+                inputType = "text";
                 break;
             case "8":
-                inputType = "date";
+                inputType = "text";
                 break;
             case "9":
-                inputType = "number";
+                inputType = "text";
                 break;
             case "10":
                 inputType = "text";
                 break;
-            case "11":
-                inputType = "text";
-                break;
-            case "12":
-                inputType = "text";
-                break;
-            case "13":
-                inputType = "text";
-                break;
-            case "14":
-                inputType = "text";
-                break;
         }
         return inputType;
+    }
+    //if you want to grab values from query string
+    const getQueries = () =>
+    {
+        let queries = [], hash;
+        let values = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(let i = 0; i < values.length; i++)
+        {
+            hash = values[i].split('=');
+            queries.push(hash[0]);
+            queries[hash[0]] = hash[1];
+        }
+        return queries;
     }
 </script>
