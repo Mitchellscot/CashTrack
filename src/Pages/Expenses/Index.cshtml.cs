@@ -26,7 +26,8 @@ namespace CashTrack.Pages.Expenses
         public string inputType { get; set; } = "date";
         [BindProperty(SupportsGet = true)]
         public int pageNumber { get; set; } = 1;
-
+        [TempData]
+        public string Message { get; set; }
 
         public async Task<ActionResult> OnGet(string q, int query, string q2, int pageNumber)
         {
@@ -131,6 +132,17 @@ namespace CashTrack.Pages.Expenses
 
             ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.All, PageNumber = this.pageNumber });
             return Page();
+        }
+        public async Task<IActionResult> OnPostDelete(int expenseId, int query, string q, string q2, int pageNumber)
+        {
+            var success = await _service.DeleteExpenseAsync(expenseId);
+            if (!success)
+            {
+                ModelState.AddModelError("", "Unable to delete the expense");
+                return Page();
+            }
+            TempData["Message"] = "Sucessfully deleted expense!";
+            return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
         }
 
         private void PrepareForm(int query)
