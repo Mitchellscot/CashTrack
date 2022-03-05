@@ -4,6 +4,7 @@ using CashTrack.Services.ExpenseService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
 
@@ -14,69 +15,64 @@ namespace CashTrack.Pages.Expenses
         private readonly IExpenseService _service;
 
         public Index(IExpenseService service) => _service = service;
-
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public string q { get; set; }
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public string q2 { get; set; }
-        [BindProperty]
-        public QueryOptions query { get; set; }
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
+        public int query { get; set; }
         public ExpenseResponse ExpenseResponse { get; set; }
+        public SelectList queryOptions { get; set; }
+        public string inputType { get; set; } = "date";
+        [BindProperty(SupportsGet = true)]
+        public int pageNumber { get; set; } = 1;
 
-        public async Task<ActionResult> OnGet(string q, QueryOptions query, string q2)
+
+        public async Task<ActionResult> OnGet(string q, int query, string q2, int pageNumber)
         {
-            if (query == QueryOptions.Date && q != null)
+            PrepareForm(query);
+
+
+            if (query == 0 && q != null)
             {
-                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificDate, BeginDate = DateTime.Parse(q) });
+                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificDate, BeginDate = DateTime.Parse(q), PageNumber = pageNumber });
                 return Page();
             }
-            if (query == QueryOptions.DateRange && q != null && q2 != null)
+            if (query == 1 && q != null && q2 != null)
             {
-                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.DateRange, BeginDate = DateTime.Parse(q), EndDate = DateTime.Parse(q2) });
+                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.DateRange, BeginDate = DateTime.Parse(q), EndDate = DateTime.Parse(q2), PageNumber = pageNumber });
                 return Page();
             }
-            if (query == QueryOptions.Month && q != null)
+            if (query == 2 && q != null)
             {
-                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificMonthAndYear, BeginDate = DateTime.Parse(q) });
+                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificMonthAndYear, BeginDate = DateTime.Parse(q), PageNumber = pageNumber });
                 return Page();
             }
-            if (query == QueryOptions.Quarter && q != null)
+            if (query == 3 && q != null)
             {
-                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificQuarter, BeginDate = DateTime.Parse(q) });
+                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificQuarter, BeginDate = DateTime.Parse(q), PageNumber = pageNumber });
                 return Page();
             }
-            if (query == QueryOptions.Year && q != null)
+            if (query == 4 && q != null)
             {
-                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificYear, BeginDate = DateTime.Parse(q) });
-                return Page();
+                int year;
+                if (int.TryParse(q, out year))
+                {
+                    ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificYear, BeginDate = new DateTime(year, 1, 1), PageNumber = pageNumber });
+                    return Page();
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Unable to convert the given year. Please try again.");
+                    return Page();
+                }
             }
-            if (query == QueryOptions.CurrentMonth)
-            {
-                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.CurrentMonth });
-                return Page();
-            }
-            if (query == QueryOptions.CurrentQuarter)
-            {
-                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.CurrentQuarter });
-                return Page();
-            }
-            if (query == QueryOptions.CurrentYear)
-            {
-                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.CurrentYear });
-                return Page();
-            }
-            if (query == QueryOptions.Last30Days)
-            {
-                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.Last30Days });
-                return Page();
-            }
-            if (query == QueryOptions.Amount)
+            if (query == 5)
             {
                 decimal amount;
                 if (Decimal.TryParse(q, out amount))
                 {
-                    ExpenseResponse = await _service.GetExpensesByAmountAsync(new AmountSearchRequest() { Query = amount });
+                    ExpenseResponse = await _service.GetExpensesByAmountAsync(new AmountSearchRequest() { Query = amount, PageNumber = pageNumber });
                     return Page();
                 }
                 else
@@ -85,34 +81,71 @@ namespace CashTrack.Pages.Expenses
                     return Page();
                 }
             }
-            if (query == QueryOptions.Notes)
+
+            if (query == 6)
             {
-                ExpenseResponse = await _service.GetExpensesByNotesAsync(new ExpenseRequest() { Query = q });
+                ExpenseResponse = await _service.GetExpensesByNotesAsync(new ExpenseRequest() { Query = q, PageNumber = pageNumber });
                 return Page();
             }
-            if (query == QueryOptions.Merchant)
-            {
-                ModelState.AddModelError("", "Not Implemented Yet");
-                return Page();
-            }
-            if (query == QueryOptions.SubCategory)
+            if (query == 7)
             {
                 ModelState.AddModelError("", "Not Implemented Yet");
                 return Page();
             }
-            if (query == QueryOptions.MainCategory)
+            if (query == 8)
             {
                 ModelState.AddModelError("", "Not Implemented Yet");
                 return Page();
             }
-            if (query == QueryOptions.Tag)
+            if (query == 9)
+            {
+                ModelState.AddModelError("", "Not Implemented Yet");
+                return Page();
+            }
+            if (query == 10)
             {
                 ModelState.AddModelError("", "Not Implemented Yet");
                 return Page();
             }
 
-            ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.All });
+            if (query == 11)
+            {
+                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.CurrentMonth, PageNumber = pageNumber });
+                return Page();
+            }
+            if (query == 12)
+            {
+                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.CurrentQuarter, PageNumber = pageNumber });
+                return Page();
+            }
+            if (query == 13)
+            {
+                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.CurrentYear, PageNumber = pageNumber });
+                return Page();
+            }
+            if (query == 14)
+            {
+                ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.Last30Days, PageNumber = pageNumber });
+                return Page();
+            }
+
+            ExpenseResponse = await _service.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.All, PageNumber = this.pageNumber });
             return Page();
+        }
+
+        private void PrepareForm(int query)
+        {
+            if (ExpenseResponse != null)
+            {
+                pageNumber = ExpenseResponse.PageNumber;
+            }
+            queryOptions = new SelectList(ExpenseQueryOptions.GetAll, "Key", "Value", query);
+
+            inputType = query <= 6 ? "date" : "text";
+            if (query == 2 || query == 3)
+                inputType = "number";
+            if (query == 4 || query == 5)
+                inputType = "number";
         }
     }
 }
