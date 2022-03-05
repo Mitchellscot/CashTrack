@@ -12,22 +12,25 @@
 
             <div class="col-6">
                 <div class="input-group">
-                    <select asp-for="query" asp-items="Html.GetEnumSelectList<QueryOptions>()" class="form-select text-center" id="querySelect">
-                        
+                    <select data-width="100% asp-for="query" asp-items="Html.GetEnumSelectList<QueryOptions>()" class="form-select text-center" id="querySelect" name="query">
                     </select>
-                    <input data-val="true" asp-for=@Model.q type="date" class="form-control w-50" id="queryInput">
-                    <span asp-validation-for="q"></span>
-                    <button class="btn btn-secondary" type="submit"><i class="bi bi-search text-white" role="img"
-            style="font-size: 1rem;"
-            ></i></button>
+                    <input data-val="true" asp-for=@Model.q type="date" class="form-control w-50" id="qInput">
+                    <input style="display: none;" data-val="true" asp-for=@Model.q2 type="date" class="form-control" id="q2Input">
+                    <button class="btn btn-secondary" type="submit">
+                        <i class="bi bi-search text-white" role="img"
+                           style="font-size: 1rem;"></i>
+                    </button>
                 </div>
             </div>
             <div class="col-6">
-                <button class="btn-sm btn-secondary">Date Range</button>
-                <button class="btn-sm btn-secondary">Current Month</button>
-                <button class="btn-sm btn-secondary">Current Quarter</button>
-                <button class="btn-sm btn-secondary">Current Year</button>
-                <button class="btn-sm btn-secondary">Last 30 Days</button>
+                <span asp-validation-for="q"></span>
+                @if (Model.ExpenseResponse != null)
+                {
+                    <div>Total Amount: $@Model.ExpenseResponse.TotalAmount</div>
+                    <div>Count: @Model.ExpenseResponse.TotalCount</div>
+                }
+
+                <button class="btn-sm btn-primary">Add an Expense</button>
             </div>
         </div>
         <div class="alert alert-danger col-4 py-0 offset-4" asp-validation-summary="All">
@@ -109,7 +112,7 @@
                     <a class="page-link">Previous</a>
                 </li>
                 @Model.ExpenseResponse.
-                <li class="page-item"><a class="page-link" href="#">@Model.ExpenseResponse.PageNumber == 1 ? Model.ExpenseResponse.PageNumber : Model.ExpenseResponse.PageNumber -1 </a></li>
+                <li class="page-item"><a class="page-link" href="#">@Model.ExpenseResponse.PageNumber == 1 ?                        @Model.ExpenseResponse.PageNumber : Model.ExpenseResponse.PageNumber -1 </a></li>
                 <li class="page-item"><a class="page-link" href="#">@Model.ExpenseResponse.PageNumber</a></li>
                 <li class="page-item"><a class="page-link" href="#">3</a></li>
                 <li class="page-item">
@@ -120,26 +123,59 @@
     }
 </div>
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+<partial name="_ValidationScriptsPartial" />
 }
 <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
 
 <script type="text/javascript">
     $(document).ready(function () {
-        console.log("Hello Mitchell");
+        //change the input attributes based on the dropdown selection
         $("#querySelect").change(() => {
-            //let currentInputType = $("#queryInput").prop("type"); -- this selects the current input type
+            let selectList = $("#querySelect").val();
+            if(selectList === "1"){
+                 $("#q2Input").show();
+                 $("#qInput").removeClass("w-50");
+                 $("#qInput").addClass("w-25");
+                 $("#q2Input").addClass("w-25");
+            }
+            if(selectList !== "1"){
+                 $("#qInput").addClass("w-50");
+                 $("#q2Input").val("");
+                 $("#q2Input").removeClass("w-25");
+                 $("#q2Input").hide();
+            }
+            if(selectList === "9"){
+                 $("#qInput").prop('min', "1");
+                 $("#qInput").prop('step', "any");
+                 $("#qInput").prop('min', "0.00");
+            }
+            else if(selectList !== "9"){
+                 $("#qInput").removeAttr('min');
+                 $("#qInput").removeAttr('step');
+                 $("#qInput").removeAttr('min');
+            }
+        });
+        //change the input type based on selection
+        $("#querySelect").change(() => {
             let selectListValue = $("#querySelect").val();
-            console.log(`This is the selected value: ${selectListValue}`);
             let inputType = ChangeInputType(selectListValue);
-            console.log(`This is after the function ran ${inputType}`);
-            $("#queryInput").prop("type", inputType);
-            $("#queryInput").val("");
+            $("#qInput").prop("type", inputType);
+            $("#qInput").val("");
+
+        });
+        //if it's a query of the amount, make it a nice loking decimal
+        $('#qInput').change(() => {
+            let selectListValue = $("#querySelect").val();
+            if(selectListValue == "9"){
+                let amount = $("#qInput").val();
+                let rounded = Math.round(amount * 100) / 100;
+                let finalNumber = rounded.toFixed(2);
+                $("#qInput").val(finalNumber);
+            }
         });
     });
 
     const ChangeInputType = (option) => {
-        console.log(`the parameter: ${option}`);
         if(option == ""){ return "date"; }
         let inputType="";
         switch(option){
@@ -147,18 +183,45 @@
                 inputType = "date";
                 break;
             case "1":
-                inputType = "text";
+                inputType = "date";
                 break;
             case "2":
-                inputType = "text";
+                inputType = "date";
                 break;
             case "3":
-                inputType = "text";
+                inputType = "date";
                 break;
             case "4":
-                inputType = "text";
+                inputType = "date";
                 break;
             case "5":
+                inputType = "date";
+                break;
+            case "6":
+                inputType = "date";
+                break;
+            case "7":
+                inputType = "date";
+                break;
+            case "8":
+                inputType = "date";
+                break;
+            case "9":
+                inputType = "number";
+                break;
+            case "10":
+                inputType = "text";
+                break;
+            case "11":
+                inputType = "text";
+                break;
+            case "12":
+                inputType = "text";
+                break;
+            case "13":
+                inputType = "text";
+                break;
+            case "14":
                 inputType = "text";
                 break;
         }

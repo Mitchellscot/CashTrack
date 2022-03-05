@@ -1,7 +1,7 @@
 ﻿namespace CashTrack.Models.Common
 {
     public enum DateOptions
-    { 
+    {
         _,
         All,
         SpecificDate,
