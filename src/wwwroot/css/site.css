@@ -83,3 +83,8 @@ body {
     overflow-x: hidden;
     overflow-y: auto; /* Change to hidden to remove scroll bar */
 }
+td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
