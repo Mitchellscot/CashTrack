@@ -54,7 +54,7 @@
     </form>
     @if (Model.Message != null)
     {
-        <div class="alert alert-success col-4 py-0 offset-4">@Model.Message</div>
+        <div class="alert alert-success col-4 py-0 offset-4 text-center">@Model.Message</div>
     }
     @*  style="background-color: red;"*@
     @if (Model.ExpenseResponse != null)
@@ -115,16 +115,46 @@
                                     @expense.Notes
                                 </td>
                                 <td>
-                                    @*<a asp-page="./Edit" type=button></a>*@
-                                    <form method="post" asp-page="./Index" asp-page-handler="Delete" asp-route-expenseId="@expense.Id"
-                                  asp-route-query="@Model.query" asp-route-q="@Model.q"
-                                  asp-route-q2="@Model.q2"
-                                  asp-route-pageNumber="@Model.pageNumber" id="logoutForm">
-                                        <button style="background: none; padding: 0px; border: none;" type="submit">
-                                            <i class="bi bi-trash text-primary" role="img"
-                                       style="font-size: 1.25rem;"></i>
-                                        </button>
-                                    </form>
+
+
+                                    @*Model*@
+                                    <div class="modal fade" id="deleteModal-@expense.Id">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header text-center">
+                                                    <h5 class="modal-title text-center"><strong>Are you sure you want to Delete this Expense?</strong></h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true"></span>
+                                                    </button>
+                                                </div>
+
+                                                <div class="modal-footer d-flex justify-content-evenly">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <form method="post"
+                                                  asp-page="./Index"
+                                                  asp-page-handler="Delete"
+                                                  asp-route-expenseId="@expense.Id"
+                                                  asp-route-query="@Model.query"
+                                                  asp-route-q="@Model.q"
+                                                  asp-route-q2="@Model.q2"
+                                                  asp-route-pageNumber="@Model.pageNumber" id="logoutForm">
+                                                        <button type="submit" class="btn btn-outline-danger">DELETE</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal-@expense.Id">
+
+                                        <i class="bi bi-trash text-primary" role="img"
+                                   style="font-size: 1.25rem;"></i>
+
+                                    </button>
+
                                 </td>
                             </tr>
                         }
@@ -221,9 +251,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         let q = getQueries()["q"];
-        console.log(`q: ${q}`);
         let q2 = getQueries()["q2"];
-        console.log(`q2: ${q2}`);
         $("#qInput").val(q);
         $("#q2Input").val(q2);
 
