@@ -16,6 +16,7 @@ public interface ISubCategoryService
     Task<SubCategoryResponse> GetSubCategoriesAsync(SubCategoryRequest request);
     Task<SubCategoryDetail> GetSubCategoryDetailsAsync(int id);
     Task<AddEditSubCategory> CreateSubCategoryAsync(AddEditSubCategory request);
+    Task<SubCategories[]> GetAllSubCategoriesAsync();
     Task<bool> UpdateSubCategoryAsync(AddEditSubCategory request);
     Task<bool> DeleteSubCategoryAsync(int id);
 }
@@ -90,6 +91,11 @@ public class SubCategoryService : ISubCategoryService
     {
         //think on this one
         throw new NotImplementedException();
+    }
+
+    public async Task<SubCategories[]> GetAllSubCategoriesAsync()
+    {
+        return await _subCategoryRepo.Find(x => true);
     }
 }
 

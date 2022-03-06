@@ -1,4 +1,5 @@
 ﻿using CashTrack.Common.Exceptions;
+using CashTrack.Data.Entities;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Http;
@@ -17,11 +18,24 @@ namespace CashTrack.Controllers
         public SubCategoryController(ISubCategoryService subCategoryService) => _subCategoryService = subCategoryService;
 
         [HttpGet]
-        public async Task<ActionResult<SubCategoryResponse>> GetAllSubCategories([FromQuery] SubCategoryRequest request)
+        public async Task<ActionResult<SubCategoryResponse>> GetSubCategories([FromQuery] SubCategoryRequest request)
         {
             try
             {
                 var categories = await _subCategoryService.GetSubCategoriesAsync(request);
+                return Ok(categories);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpGet("all")]
+        public async Task<ActionResult<SubCategories[]>> GetAllSubCategories()
+        {
+            try
+            {
+                var categories = await _subCategoryService.GetAllSubCategoriesAsync();
                 return Ok(categories);
             }
             catch (Exception ex)

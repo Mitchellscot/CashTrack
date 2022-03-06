@@ -21,7 +21,7 @@ namespace CashTrack.Tests.Controllers
         public async void GetAll()
         {
             var request = new SubCategoryRequest();
-            var result = await _sut.GetAllSubCategories(request);
+            var result = await _sut.GetSubCategories(request);
             var viewResult = Assert.IsType<ActionResult<SubCategoryResponse>>(result);
             _service.Verify(s => s.GetSubCategoriesAsync(It.IsAny<SubCategoryRequest>()), Times.AtLeastOnce());
         }
