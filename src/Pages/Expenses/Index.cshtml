@@ -17,7 +17,7 @@
                     </div>
                     <select data-width="100%" asp-items="Model.queryOptions" class="form-select text-center" id="querySelect" asp-for="query">
                     </select>
-                    <select style="display: none;" data-width="100%" class="form-select text-center" id="categorySelect" asp-for="query">
+                    <select style="display: none;" data-width="100%" class="form-select text-center" id="categorySelect" asp-for="@Model.q">
                     </select>
                     <input data-val="true" asp-for=@Model.q type="@Model.inputType" class="form-control w-50 text-center" id="qInput">
                     <input style="display: none;" data-val="true" asp-for=@Model.q2 type="date" class="form-control" id="q2Input">
@@ -325,12 +325,7 @@
                  $("#qInput").removeAttr('step');
                  $("#qInput").removeAttr('min');
             }
-            if(selectList !== "9")
-            {
-                 $("#qInput").show();
-                 $("#categorySelect").empty();
-                 $("#categorySelect").hide();
-            }
+
             if(selectList === "9"){
                  $("#qInput").hide();
                  $("#categorySelect").show();
@@ -345,6 +340,32 @@
                     }
                 });
                 }
+            if(selectList !== "9")
+            {
+                 $("#qInput").show();
+                 $("#categorySelect").empty();
+                 $("#categorySelect").hide();
+            }
+            if(selectList === "8"){
+                 $("#qInput").hide();
+                 $("#categorySelect").show();
+                 $.ajax({
+                    url: `/api/subcategory/all`,
+                    method: 'GET'
+                 }).then((response) => {
+                    $("#categorySelect").empty();
+                    console.log(response.listItems);
+                    for(let category of response.listItems){
+                    $("#categorySelect").append(`<option value=${category.id}>${category.name}</option>`);
+                    }
+                });
+                }
+            if(selectList !== "8")
+            {
+                 $("#qInput").show();
+                 $("#categorySelect").empty();
+                 $("#categorySelect").hide();
+            }
             });
 
         //if it's a query of the amount, make it a nice loking decimal
