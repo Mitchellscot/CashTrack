@@ -17,6 +17,8 @@
                     </div>
                     <select data-width="100%" asp-items="Model.queryOptions" class="form-select text-center" id="querySelect" asp-for="query">
                     </select>
+                    <select style="display: none;" data-width="100%" class="form-select text-center" id="categorySelect" asp-for="query">
+                    </select>
                     <input data-val="true" asp-for=@Model.q type="@Model.inputType" class="form-control w-50 text-center" id="qInput">
                     <input style="display: none;" data-val="true" asp-for=@Model.q2 type="date" class="form-control" id="q2Input">
                     <button class="btn btn-secondary" type="submit">
@@ -36,15 +38,22 @@
                     <a asp-page="./Index" asp-route-query="14" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary">30 Days</a>
                 </div>
             </div>
-            <div class="col-3 text-center border rounded my-0 py-0">
-                @if (Model.ExpenseResponse != null)
-                {
-                    <div><strong>Total: $@Model.ExpenseResponse.TotalAmount</strong></div>
-                    <div><strong>Count: @Model.ExpenseResponse.TotalCount</strong></div>
-                }
-            </div>
+            @if (Model.Message != null)
+            {
+                <div class="col-3 text-center border rounded my-0 py-0 alert alert-success align-self-center">@Model.Message</div>
+            }
+            @if (Model.Message == null && Model.ExpenseResponse != null)
+            {
+                <div class="col-3 text-center border rounded align-self-center">
+                    <div>
+                        <strong class="p-3 m-1">Total: $ @Model.ExpenseResponse.TotalAmount</strong>
+                        <strong class="p-3 m-1">Count: @Model.ExpenseResponse.TotalCount</strong>
+                    </div>
+                </div>
+
+            }
             <div class="col-1 d-flex justify-content-end p-0">
-                <button class="btn btn-primary">Add Expense</button>
+                <button class="btn btn-info">Add Expense</button>
                 @*<span asp-validation-for="q"></span>*@
             </div>
         </div>
@@ -52,10 +61,7 @@
         <div class="alert alert-danger col-4 py-0 offset-4" asp-validation-summary="All">
         </div>
     </form>
-    @if (Model.Message != null)
-    {
-        <div class="alert alert-success col-4 py-0 offset-4 text-center">@Model.Message</div>
-    }
+
     @*  style="background-color: red;"*@
     @if (Model.ExpenseResponse != null)
     {
@@ -63,7 +69,7 @@
             <div class="table-responsive">
                 <table class="table table-bordered table-hover table-sm">
                     <thead>
-                        <tr class="text-center">
+                        <tr class="text-center table-primary">
                             <th width="10%">
                                 Purchase Date
                             </th>
@@ -115,21 +121,23 @@
                                     @expense.Notes
                                 </td>
                                 <td>
-
-
                                     @*Model*@
                                     <div class="modal fade" id="deleteModal-@expense.Id">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header text-center">
-                                                    <h5 class="modal-title text-center"><strong>Are you sure you want to Delete this Expense?</strong></h5>
+                                                    <h5 class="modal-title text-center">
+                                                        <strong>Are you sure you want to Delete this Expense?</strong>
+                                                    </h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true"></span>
                                                     </button>
                                                 </div>
 
                                                 <div class="modal-footer d-flex justify-content-evenly">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                        Cancel
+                                                    </button>
                                                     <form method="post"
                                                   asp-page="./Index"
                                                   asp-page-handler="Delete"
@@ -138,27 +146,41 @@
                                                   asp-route-q="@Model.q"
                                                   asp-route-q2="@Model.q2"
                                                   asp-route-pageNumber="@Model.pageNumber" id="logoutForm">
-                                                        <button type="submit" class="btn btn-outline-danger">DELETE</button>
+                                                        <button type="submit" class="btn btn-danger">DELETE</button>
                                                     </form>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
+                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#detailModal-@expense.Id" class="px-2">
 
+                                        <i class="bi bi-zoom-in text-primary" role="img"
+                                   style="font-size: 1.25rem;"></i>
+
+                                    </button>
 
                                     <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal-@expense.Id">
+                                    data-bs-target="#editModal-@expense.Id" class="px-2">
+
+                                        <i class="bi bi-pencil text-primary" role="img"
+                                   style="font-size: 1.25rem;"></i>
+                                    </button>
+
+                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal-@expense.Id" class="px-2">
 
                                         <i class="bi bi-trash text-primary" role="img"
                                    style="font-size: 1.25rem;"></i>
 
                                     </button>
 
+
+
                                 </td>
                             </tr>
                         }
-
                     </tbody>
                 </table>
             </div>
@@ -249,7 +271,8 @@
 <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
 
 <script type="text/javascript">
-    $(document).ready(function () {
+    $(document).ready(() => {
+
         let q = getQueries()["q"];
         let q2 = getQueries()["q2"];
         $("#qInput").val(q);
@@ -302,7 +325,27 @@
                  $("#qInput").removeAttr('step');
                  $("#qInput").removeAttr('min');
             }
-        });
+            if(selectList !== "9")
+            {
+                 $("#qInput").show();
+                 $("#categorySelect").empty();
+                 $("#categorySelect").hide();
+            }
+            if(selectList === "9"){
+                 $("#qInput").hide();
+                 $("#categorySelect").show();
+                 $.ajax({
+                    url: `/api/maincategory`,
+                    method: 'GET'
+                 }).then((response) => {
+                    $("#categorySelect").empty();
+                    for(let category of response.mainCategories)
+                    {
+                    $("#categorySelect").append(`<option value=${category.id}>${category.name}</option>`);
+                    }
+                });
+                }
+            });
 
         //if it's a query of the amount, make it a nice loking decimal
         $('#qInput').change(() => {
