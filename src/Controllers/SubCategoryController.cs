@@ -5,6 +5,7 @@ using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CashTrack.Controllers
@@ -31,7 +32,7 @@ namespace CashTrack.Controllers
             }
         }
         [HttpGet("all")]
-        public async Task<ActionResult<SubCategories[]>> GetAllSubCategories()
+        public async Task<ActionResult<SubCategoryListItem[]>> GetAllSubCategoriesForDropDownList()
         {
             try
             {

@@ -79,14 +79,14 @@
                             <th width="10%">
                                 Merchant
                             </th>
+                            <th width="35%">
+                                Notes
+                            </th>
                             <th width="15%">
                                 Sub Category
                             </th>
                             <th width="10%">
                                 Main Category
-                            </th>
-                            <th width="35%">
-                                Notes
                             </th>
                             <th width="10%">
                                 Actions
@@ -110,15 +110,15 @@
 
                                 </td>
                                 <td>
+                                    @expense.Notes
+                                </td>
+                                <td>
                                     @expense.SubCategory
 
                                 </td>
                                 <td>
                                     @expense.MainCategory
 
-                                </td>
-                                <td>
-                                    @expense.Notes
                                 </td>
                                 <td>
                                     @*Model*@
@@ -354,18 +354,12 @@
                     method: 'GET'
                  }).then((response) => {
                     $("#categorySelect").empty();
-                    console.log(response.listItems);
-                    for(let category of response.listItems){
+                    console.log(response);
+                    for(let category of response){
                     $("#categorySelect").append(`<option value=${category.id}>${category.name}</option>`);
                     }
-                });
+                }).catch((error) => alert(error));
                 }
-            if(selectList !== "8")
-            {
-                 $("#qInput").show();
-                 $("#categorySelect").empty();
-                 $("#categorySelect").hide();
-            }
             });
 
         //if it's a query of the amount, make it a nice loking decimal
