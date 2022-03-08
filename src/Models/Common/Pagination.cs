@@ -19,7 +19,7 @@ namespace CashTrack.Models.Common
         public IEnumerable<T> ListItems { get; private set; }
 
         //in order to deserialize this object from JSON these data types need to be primitive
-        //I tried having a PaginatioRequest object as the parameter but it didn't work when deserializing json (which makes sense).
+        //I tried having a PaginationRequest object as the parameter but it didn't work when deserializing json (which makes sense).
         //Also the parameter names have to match what would be on the json, otherqise the compiler won't be able to figure it out.
         //This makes it so you have to break up pagenumber and pagesize when calling the constructor, but whatever.
         protected PaginationResponse(int pageNumber, int pageSize, int count, IEnumerable<T> listItems)

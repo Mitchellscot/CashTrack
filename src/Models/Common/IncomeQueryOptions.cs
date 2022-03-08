@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace CashTrack.Models.Common
 {
-    public static class ExpenseQueryOptions
+    public static class IncomeQueryOptions
     {
         public static readonly Dictionary<int, string> GetAll = new Dictionary<int, string>()
         {
@@ -13,10 +14,8 @@ namespace CashTrack.Models.Common
             { 4, "Year" },
             { 5, "Amount" },
             { 6, "Notes" },
-            { 7, "Merchant" },
-            { 8, "Sub Category" },
-            { 9, "Main Category" },
-            { 10, "Tag" }
+            { 7, "Source" },
+            { 8, "Income Category" },
         };
     }
 }
