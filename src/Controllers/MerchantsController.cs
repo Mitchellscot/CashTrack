@@ -4,6 +4,7 @@ using CashTrack.Services.MerchantService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CashTrack.Controllers
@@ -22,6 +23,19 @@ namespace CashTrack.Controllers
             try
             {
                 var response = await _service.GetMerchantsAsync(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpGet("match")]
+        public async Task<ActionResult<string[]>> GetMatchingMerchants([FromQuery] string merchantName)
+        {
+            try
+            {
+                var response = await _service.GetMatchingMerchantsAsync(merchantName);
                 return Ok(response);
             }
             catch (Exception ex)

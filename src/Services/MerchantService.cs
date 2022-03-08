@@ -16,6 +16,7 @@ namespace CashTrack.Services.MerchantService;
 public interface IMerchantService
 {
     Task<MerchantResponse> GetMerchantsAsync(MerchantRequest request);
+    Task<string[]> GetMatchingMerchantsAsync(string match);
     Task<MerchantDetail> GetMerchantDetailAsync(int id);
     Task<AddEditMerchant> CreateMerchantAsync(AddEditMerchant request);
     Task<bool> UpdateMerchantAsync(AddEditMerchant request);
@@ -177,6 +178,11 @@ public class MerchantService : IMerchantService
 
         return await _merchantRepo.Delete(merchant);
     }
+
+    public async Task<string[]> GetMatchingMerchantsAsync(string match)
+    {
+        return (await _merchantRepo.Find(x => x.name.StartsWith(match))).Select(x => x.name).Take(10).ToArray();
+    }
 }
 public class MerchantMapperProfile : Profile
 {
@@ -197,5 +203,6 @@ public class MerchantMapperProfile : Profile
             .ForMember(m => m.state, o => o.MapFrom(src => src.State))
             .ForMember(m => m.notes, o => o.MapFrom(src => src.Notes))
             .ReverseMap();
+
     }
 }

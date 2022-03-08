@@ -23,7 +23,7 @@ namespace CashTrack.Pages.Expenses
         public int query { get; set; }
         public ExpenseResponse ExpenseResponse { get; set; }
         public SelectList queryOptions { get; set; }
-        public string inputType { get; set; } = "date";
+        public string inputType { get; set; }
         [BindProperty(SupportsGet = true)]
         public int pageNumber { get; set; } = 1;
         [TempData]
@@ -90,6 +90,7 @@ namespace CashTrack.Pages.Expenses
             }
             if (query == 7)
             {
+                //merchant
                 ModelState.AddModelError("", "Not Implemented Yet");
                 return Page();
             }
@@ -144,18 +145,6 @@ namespace CashTrack.Pages.Expenses
             TempData["Message"] = "Sucessfully deleted expense!";
             return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
         }
-        //public async Task<IActionResult> OnPostEdit(int expenseId, int query, string q, string q2, int pageNumber)
-        //{
-        //    not sure what to do here yet
-        //    var success = await _service.DeleteExpenseAsync(expenseId);
-        //    if (!success)
-        //    {
-        //        ModelState.AddModelError("", "Unable to delete the expense");
-        //        return Page();
-        //    }
-        //    TempData["Message"] = "Sucessfully deleted expense!";
-        //    return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
-        //}
 
         private void PrepareForm(int query)
         {
@@ -165,11 +154,24 @@ namespace CashTrack.Pages.Expenses
             }
             queryOptions = new SelectList(ExpenseQueryOptions.GetAll, "Key", "Value", query);
 
-            inputType = query <= 6 ? "date" : "text";
-            if (query == 2 || query == 3)
-                inputType = "number";
-            if (query == 4 || query == 5)
-                inputType = "number";
+            switch (query)
+            {
+                case 0 or 1:
+                    inputType = "date";
+                    break;
+                case 2 or 3:
+                    inputType = "month";
+                    break;
+                case 4 or 5:
+                    inputType = "number";
+                    break;
+                case 6 or 7 or 8 or 9 or 10:
+                    inputType = "text";
+                    break;
+                default:
+                    inputType = "date";
+                    break;
+            }
         }
     }
 }
