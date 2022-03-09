@@ -1,0 +1,57 @@
+﻿@model CashTrack.Pages.Shared._PaginationPartialModel
+@{
+    var start = Math.Max(Model.PageNumber - 1, 1);
+    var end = Math.Min(Model.PageNumber + 3, Model.TotalPages);
+    var disabled = Model.PageNumber == Model.TotalPages ? "disabled" : "";
+}
+@if (Model.TotalPages > 1)
+{
+    <nav class="py-0">
+        <ul class="pagination justify-content-end">
+            @if (Model.PageNumber >= 3)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+               asp-page="@Model.PathLink"
+               asp-route-query="@Model.Query"
+               asp-route-q="@Model.q"
+               asp-route-q2="@Model.q2"
+               asp-route-pageNumber="1">
+                        &laquo;
+                    </a>
+                </li>
+            }
+
+            @for (int i = start; i <= end; i++)
+            {
+                var active = (i == Model.PageNumber) ? "active" : "";
+                <li class="page-item @active">
+                    <a class="page-link"
+               asp-page="@Model.PathLink"
+               asp-route-query="@Model.Query"
+               asp-route-q="@Model.q"
+               asp-route-q2="@Model.q2"
+               asp-route-pageNumber="@i">@i</a>
+                </li>
+            }
+            @if (Model.TotalPages > 4 && Model.PageNumber <= Model.TotalPages - 4)
+            {
+                @if (Model.PageNumber != (Model.TotalPages - 4))
+                {
+                    <li class="page-item"><a class="page-link disabled">...</a></li>
+                }
+
+                <li class="page-item @disabled">
+                    <a class="page-link"
+               asp-page="@Model.PathLink"
+               asp-route-query="@Model.Query"
+               asp-route-q="@Model.q"
+               asp-route-q2="@Model.q2"
+               asp-route-pageNumber="@Model.TotalPages">
+                        @Model.TotalPages
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
