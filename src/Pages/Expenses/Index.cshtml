@@ -7,10 +7,10 @@
 }
 
 <div class="container-fluid">
-    <form method="get" id="queryForm">
 
-        <div class="row">
-            <div class="col-xl-6 col-12 mb-1 mr-auto">
+    <div class="row">
+        <div class="col-xl-6 col-12 mb-1 mr-auto">
+            <form method="get">
                 <div class="input-group">
                     <div class="input-group-prepend d-none d-sm-block">
                         <div class="input-group-text">Search</div>
@@ -25,198 +25,227 @@
                         <i class="bi bi-search text-white mx-3" role="img"
                            style="font-size: 1rem;"></i>
                     </button>
+                    <input type="hidden" asp-for="@Model.pageNumber" value="1" />
+
                 </div>
-            </div>
-            <div class="col-xl-4 col-6 px-xl-0 d-none d-sm-block">
-                <div class="btn-group" role="group">
-                    <div class="input-group-prepend d-none d-md-block">
-                        <div class="input-group-text">Current</div>
-                    </div>
-                    <a asp-page="./Index" asp-route-query="11" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary">Month</a>
-                    <a asp-page="./Index" asp-route-query="12" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary">Quarter</a>
-                    <a asp-page="./Index" asp-route-query="13" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary">Year</a>
-                    <a asp-page="./Index" asp-route-query="14" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary" style="height: 38px; overflow: hidden;">30 Days</a>
+            </form>
+        </div>
+        <div class="col-xl-4 col-6 px-xl-0 d-none d-sm-block">
+            <div class="btn-group" role="group">
+                <div class="input-group-prepend d-none d-md-block">
+                    <div class="input-group-text">Current</div>
                 </div>
+                <a asp-page="./Index" asp-route-query="11" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary">Month</a>
+                <a asp-page="./Index" asp-route-query="12" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary">Quarter</a>
+                <a asp-page="./Index" asp-route-query="13" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary">Year</a>
+                <a asp-page="./Index" asp-route-query="14" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary" style="height: 38px; overflow: hidden;">30 Days</a>
             </div>
-            <div class="col-4 col-xl-1 d-xl-none d-flex justify-content-end">
-                @if (Model.Message != null)
-                {
-                    <div class="col-xl-2 text-center border rounded my-0 py-0 alert alert-success align-self-center">@Model.Message</div>
-                }
-                <div asp-validation-summary="All"></div>
-            </div>
-            <input type="hidden" asp-for="@Model.pageNumber" value="1" />
-    </form>
-    <div class="col-xl-2 col-2 d-flex justify-content-end">
-        <button class="btn btn-primary text-wrap" style="height: 38px;">Add Expense</button>
+        </div>
+        <div class="col-4 col-xl-1 d-xl-none d-flex justify-content-end">
+            @if (Model.Message != null)
+            {
+                <div class="col-xl-2 text-center border rounded my-0 py-0 alert alert-success align-self-center">@Model.Message</div>
+            }
+            <div asp-validation-summary="All"></div>
+        </div>
+        <div class="col-xl-2 col-2 d-flex justify-content-end">
+            <button class="btn btn-primary text-wrap" style="height: 38px;" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Add Expense</button>
+        </div>
     </div>
-</div>
-
-@*  style="background-color: red;"*@
-@if (Model.ExpenseResponse.TotalCount > 0)
-{
-    <div class="row">
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover table-sm mb-0">
-                <thead>
-                    <tr class="text-center table-primary">
-                        <th width="10%">
-                            Date
-                        </th>
-                        <th width="10%">
-                            Amount
-                        </th>
-                        <th width="10%">
-                            Merchant
-                        </th>
-                        <th width="30%">
-                            Notes
-                        </th>
-                        <th width="10%">
-                            Category
-                        </th>
-                        <th width="10%">
-                            Main
-                        </th>
-                        <th width="10%">
-                            Actions
-                        </th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var expense in Model.ExpenseResponse.ListItems)
-                    {
-                        <tr class="text-center">
-                            <td>
-                                @expense.Date.Date.ToShortDateString()
-                            </td>
-                            <td>
-                                @expense.Amount
-
-                            </td>
-                            <td>
-                                @expense.Merchant
-
-                            </td>
-                            <td>
-                                @expense.Notes
-                            </td>
-                            <td>
-                                @expense.SubCategory
-
-                            </td>
-                            <td>
-                                @expense.MainCategory
-
-                            </td>
-                            <td>
-                                @*Delete Model*@
-                                <div class="modal fade" id="deleteModal-@expense.Id">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header text-center">
-                                                <h5 class="modal-title text-center">
-                                                    <strong>Are you sure you want to Delete this Expense?</strong>
-                                                </h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true"></span>
-                                                </button>
-                                            </div>
-
-                                            <div class="modal-footer d-flex justify-content-evenly">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                    Cancel
-                                                </button>
-                                                <form method="post"
-                                              asp-page="./Index"
-                                              asp-page-handler="Delete"
-                                              asp-route-expenseId="@expense.Id"
-                                              asp-route-query="@Model.query"
-                                              asp-route-q="@Model.q"
-                                              asp-route-q2="@Model.q2"
-                                              asp-route-pageNumber="@Model.pageNumber" id="logoutForm">
-                                                    <button type="submit" class="btn btn-danger">DELETE</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
-                                data-bs-target="#detailModal-@expense.Id" class="px-2">
-
-                                    <i class="bi bi-zoom-in text-primary" role="img"
-                               style="font-size: 1.25rem;"></i>
-
-                                </button>
-
-                                <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
-                                data-bs-target="#editModal-@expense.Id" class="px-2">
-
-                                    <i class="bi bi-pencil text-primary" role="img"
-                               style="font-size: 1.25rem;"></i>
-
-                                </button>
-
-                                <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal-@expense.Id" class="px-2">
-
-                                    <i class="bi bi-trash text-primary" role="img"
-                               style="font-size: 1.25rem;"></i>
-
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <div class="row my-1">
-                <div class="col-sm-6 col-lg-2 col-xl-2 m-auto">
-                    @if (@Model.ExpenseResponse.TotalCount > 0)
-                    {
-                        var currentCount = Model.ExpenseResponse.PageNumber * @Model.ExpenseResponse.PageSize;
-                        <span class="text-muted">@(Math.Min(currentCount, Model.ExpenseResponse.TotalCount)) of @Model.ExpenseResponse.TotalCount</span>
-                    }
+    @* Add Expense Modal *@
+    <div class="modal fade" id="addExpenseModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <div></div>
+                    <h5 class="modal-title w-100">Add an Expense</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                    </button>
                 </div>
-                <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
-                    @if (Model.Message != null)
-                    {
-                        <div class="alert alert-dismissible alert-success d-none d-xl-block text-center p-2">
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            <h4 class="p-0 text-white">@Model.Message</h4>
-                        </div>
-                    }
-                    @if (@Model.ExpenseResponse.TotalAmount > 0 && Model.Message == null)
-                    {
-                        <div class="text-center">
-                            <strong class="p-0 text-success">Total: $ @Model.ExpenseResponse.TotalAmount</strong>
-                        </div>
-                    }
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <form>
+                            <div class="col">
+                                @*start here*@
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
-                    @await Html.PartialAsync("_PaginationPartial",
-                new _PaginationPartialModel {
-                PathLink = "../Expenses/Index",
-                IsExpensePage = true,
-                PageNumber = Model.ExpenseResponse.PageNumber,
-                TotalPages = Model.ExpenseResponse.TotalPages,
-                Query = Model.query,
-                q = Model.q,
-                q2 = Model.q2
-                })
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+
                 </div>
             </div>
         </div>
     </div>
-}
-else
-{
-    <div class="alert alert-dismissible alert-info mt-5 offset-4 w-25 text-center">
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        <h3>No Expenses Found!</h3> Please try again.
-    </div>
-}
+
+    @if (Model.ExpenseResponse != null && Model.ExpenseResponse.TotalCount > 0)
+    {
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-sm mb-0">
+                    <thead>
+                        <tr class="text-center table-primary">
+                            <th width="10%">
+                                Date
+                            </th>
+                            <th width="10%">
+                                Amount
+                            </th>
+                            <th width="10%">
+                                Merchant
+                            </th>
+                            <th width="30%">
+                                Notes
+                            </th>
+                            <th width="10%">
+                                Category
+                            </th>
+                            <th width="10%">
+                                Main
+                            </th>
+                            <th width="10%">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var expense in Model.ExpenseResponse.ListItems)
+                        {
+                            <tr class="text-center">
+                                <td>
+                                    @expense.Date.Date.ToShortDateString()
+                                </td>
+                                <td>
+                                    @expense.Amount
+
+                                </td>
+                                <td>
+                                    @expense.Merchant
+
+                                </td>
+                                <td>
+                                    @expense.Notes
+                                </td>
+                                <td>
+                                    @expense.SubCategory
+
+                                </td>
+                                <td>
+                                    @expense.MainCategory
+
+                                </td>
+                                <td>
+                                    @*Delete Model*@
+                                    <div class="modal fade" id="deleteModal-@expense.Id">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header text-center">
+                                                    <h5 class="modal-title text-center">
+                                                        <strong>Are you sure you want to Delete this Expense?</strong>
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true"></span>
+                                                    </button>
+                                                </div>
+
+                                                <div class="modal-footer d-flex justify-content-evenly">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                        Cancel
+                                                    </button>
+                                                    <form method="post"
+                                                  asp-page="./Index"
+                                                  asp-page-handler="Delete"
+                                                  asp-route-expenseId="@expense.Id"
+                                                  asp-route-query="@Model.query"
+                                                  asp-route-q="@Model.q"
+                                                  asp-route-q2="@Model.q2"
+                                                  asp-route-pageNumber="@Model.pageNumber" id="logoutForm">
+                                                        <button type="submit" class="btn btn-danger">DELETE</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#detailModal-@expense.Id" class="px-2">
+
+                                        <i class="bi bi-zoom-in text-primary" role="img"
+                                   style="font-size: 1.25rem;"></i>
+
+                                    </button>
+
+                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#editModal-@expense.Id" class="px-2">
+
+                                        <i class="bi bi-pencil text-primary" role="img"
+                                   style="font-size: 1.25rem;"></i>
+
+                                    </button>
+
+                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal-@expense.Id" class="px-2">
+
+                                        <i class="bi bi-trash text-primary" role="img"
+                                   style="font-size: 1.25rem;"></i>
+
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="row my-1">
+                    <div class="col-sm-6 col-lg-2 col-xl-2 m-auto">
+                        @if (@Model.ExpenseResponse.TotalCount > 0)
+                        {
+                            var currentCount = Model.ExpenseResponse.PageNumber * @Model.ExpenseResponse.PageSize;
+                            <span class="text-muted">@(Math.Min(currentCount, Model.ExpenseResponse.TotalCount)) of @Model.ExpenseResponse.TotalCount</span>
+                        }
+                    </div>
+                    <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
+                        @if (Model.Message != null)
+                        {
+                            <div class="alert alert-dismissible alert-success d-none d-xl-block text-center p-2">
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                <h4 class="p-0 text-white">@Model.Message</h4>
+                            </div>
+                        }
+                        @if (@Model.ExpenseResponse.TotalAmount > 0 && Model.Message == null)
+                        {
+                            <div class="text-center">
+                                <strong class="p-0 text-success">Total: $ @Model.ExpenseResponse.TotalAmount</strong>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
+                        @await Html.PartialAsync("_PaginationPartial",
+                    new _PaginationPartialModel {
+                    PathLink = "../Expenses/Index",
+                    IsExpensePage = true,
+                    PageNumber = Model.ExpenseResponse.PageNumber,
+                    TotalPages = Model.ExpenseResponse.TotalPages,
+                    Query = Model.query,
+                    q = Model.q,
+                    q2 = Model.q2
+                    })
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-dismissible alert-info mt-5 offset-4 w-25 text-center">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <h3>No Expenses Found!</h3> Please try again.
+        </div>
+    }
+</div>
+
 @section Scripts {
 <partial name="_ValidationScriptsPartial" />
 <script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true"></script>
