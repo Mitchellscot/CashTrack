@@ -56,6 +56,15 @@ html, body {
     font-weight: 500;
 }
 
+.logo {
+    font-family: 'Bungee', cursive;
+    font-weight: 500;
+    font-size: calc(100% + .5vw + .7vh);
+    text-transform: uppercase;
+    text-decoration: none;
+    overflow: hidden;
+}
+
 .sidebar-heading {
     font-size: .2rem;
     text-transform: uppercase;
@@ -80,9 +89,9 @@ main {
 }
 
 body {
-    overflow-x: hidden;
     overflow-y: auto; /* Change to hidden to remove scroll bar */
 }
+
 td {
     overflow: hidden;
     text-overflow: ellipsis;
