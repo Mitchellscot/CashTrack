@@ -1,5 +1,6 @@
 ﻿@page
 @using CashTrack.Models.Common
+@using CashTrack.Pages.Shared
 @model CashTrack.Pages.Expenses.Index
 @{
     Layout = "_Layout";
@@ -92,8 +93,8 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody>
 
+                    <tbody>
                         @foreach (var expense in Model.ExpenseResponse.ListItems)
                         {
                             <tr class="text-center">
@@ -174,9 +175,6 @@
                                    style="font-size: 1.25rem;"></i>
 
                                     </button>
-
-
-
                                 </td>
                             </tr>
                         }
@@ -184,89 +182,23 @@
                 </table>
             </div>
         </div>
-
-
-
-        @*Pagination - move to a partial view if posible*@
-        <nav class="py-0">
-            <ul class="pagination justify-content-end">
-
-                @if (Model.pageNumber == 1)
-                {
-                    <li class="page-item disabled">
-                        <a class="page-link">&laquo;</a>
-                    </li>
-                    <li class="page-item active">
-                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
-                   asp-route-q2="@Model.q2"
-                   asp-route-pageNumber="1">1</a>
-                    </li>
-                }
-                else if (Model.pageNumber > 1)
-                {
-                    var previousPageNumber = Model.pageNumber - 1;
-                    <li class="page-item">
-                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
-                   asp-route-q2="@Model.q2" asp-route-pageNumber="1">&laquo;</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
-                   asp-route-q2="@Model.q2" asp-route-pageNumber="@previousPageNumber">&lsaquo;</a>
-                    </li>
-                    <li class="page-item active">
-                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
-                   asp-route-q2="@Model.q2" asp-route-pageNumber="@Model.pageNumber">@Model.pageNumber</a>
-                    </li>
-                }
-                @if ((Model.ExpenseResponse.TotalPages - 1) > Model.pageNumber)
-                {
-                    var calculatedPageNumber = Model.pageNumber + 1;
-                    <li class="page-item">
-                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
-                   asp-route-q2="@Model.q2"
-                   asp-route-pageNumber="@calculatedPageNumber">&rsaquo;</a>
-                    </li>
-                }
-                else if ((Model.ExpenseResponse.TotalPages - 1) == Model.pageNumber)
-                {
-                    var calculatedPageNumber = Model.pageNumber + 1;
-                    <li class="page-item">
-                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
-                   asp-route-q2="@Model.q2"
-                   asp-route-pageNumber="@calculatedPageNumber">&rsaquo;</a>
-                    </li>
-                }
-                @if (Model.ExpenseResponse.TotalPages != Model.pageNumber)
-                {
-                    <li class="page-item">
-                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
-                   asp-route-q2="@Model.q2"
-                   asp-route-pageNumber="@Model.ExpenseResponse.TotalPages">&raquo;</a>
-                    </li>
-                }
-                else if (Model.ExpenseResponse.TotalPages == Model.pageNumber)
-                {
-                    <li class="page-item disabled">
-                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
-                   asp-route-q2="@Model.q2"
-                   asp-route-pageNumber="@Model.ExpenseResponse.TotalPages">&raquo;</a>
-                    </li>
-                }
-                else if (Model.ExpenseResponse.TotalPages == 1)
-                {
-                    <li class="page-item disabled">
-                        <a class="page-link" asp-page="./Index" asp-route-query="@Model.query" asp-route-q="@Model.q"
-                   asp-route-q2="@Model.q2"
-                   asp-route-pageNumber="@Model.ExpenseResponse.TotalPages">&raquo;</a>
-                    </li>
-                }
-            </ul>
-        </nav>
+        @await Html.PartialAsync("_PaginationPartial",
+    new _PaginationPartialModel {
+    PathLink = "../Expenses/Index",
+    IsExpensePage = true,
+    PageNumber = Model.ExpenseResponse.PageNumber,
+    TotalPages = Model.ExpenseResponse.TotalPages,
+    Query = Model.query,
+    q = Model.q,
+    q2 = Model.q2
+    })
+    }
     }
 </div>
 @section Scripts {
 <partial name="_ValidationScriptsPartial" />
-    }
+<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
 <script type="text/javascript">
         const getQueries = () => {
         let queries = [], hash;
@@ -455,3 +387,4 @@
 
     });
 </script>
+    }
