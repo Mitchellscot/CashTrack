@@ -90,13 +90,12 @@ namespace CashTrack.Pages.Expenses
             }
             if (query == 7)
             {
-                //merchant
-                ModelState.AddModelError("", "Not Implemented Yet");
+                ExpenseResponse = await _service.GetExpensesByMerchantAsync(new ExpenseRequest() { Query= q, PageNumber = pageNumber });
                 return Page();
             }
             if (query == 8)
             {
-                ModelState.AddModelError("", "Not Implemented Yet");
+                ExpenseResponse = await _service.GetExpensesBySubCategoryIdAsync(new ExpenseRequest() { Query = q, PageNumber = pageNumber });
                 return Page();
             }
             if (query == 9)
