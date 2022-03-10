@@ -15,6 +15,7 @@ namespace CashTrack.Services.MainCategoriesService
     {
         Task<MainCategoryResponse> GetMainCategoriesAsync(MainCategoryRequest request);
         Task<MainCategoryDetail> GetMainCategoryDetailAsync(int id);
+        Task<string> GetMainCategoryNameBySubCategoryIdAsync(int id);
         Task<AddEditMainCategory> CreateMainCategoryAsync(AddEditMainCategory request);
         Task<bool> UpdateMainCategoryAsync(AddEditMainCategory request);
         Task<bool> DeleteMainCategoryAsync(int id);
@@ -37,8 +38,6 @@ namespace CashTrack.Services.MainCategoriesService
             var categories = await _mainCategoryRepo.Find(x => true);
             if (categories.Any(x => x.main_category_name == request.Name))
                 throw new DuplicateNameException(nameof(MainCategories), request.Name);
-
-            request.Id = await _mainCategoryRepo.GetCount(x => true) + 1;
 
             var category = _mapper.Map<MainCategories>(request);
 
@@ -86,6 +85,17 @@ namespace CashTrack.Services.MainCategoriesService
         {
             //think on this one
             throw new NotImplementedException();
+        }
+
+        public async Task<string> GetMainCategoryNameBySubCategoryIdAsync(int id)
+        {
+            var subCategory = await _subCategoryRepository.FindById(id);
+            if (subCategory == null)
+                throw new CategoryNotFoundException(id.ToString());
+            var mainCategory = await _mainCategoryRepo.FindById(subCategory.main_categoryid);
+            if (mainCategory == null)
+                throw new CategoryNotFoundException(id.ToString());
+            return mainCategory.main_category_name;
         }
 
         public async Task<bool> UpdateMainCategoryAsync(AddEditMainCategory request)

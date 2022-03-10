@@ -28,6 +28,19 @@ namespace CashTrack.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+        [HttpGet("sub-category/{id:int}")]
+        public async Task<ActionResult<string>> GetMainCategoryNameBySubCategoryId(int id)
+        {
+            try
+            {
+                var result = await _service.GetMainCategoryNameBySubCategoryIdAsync(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         [HttpPost]
         public async Task<ActionResult<AddEditMainCategory>> CreateMainCategory([FromBody] AddEditMainCategory request)
         {

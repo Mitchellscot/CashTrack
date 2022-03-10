@@ -8,7 +8,7 @@
 
 <div class="container-fluid">
 
-    <div class="row">
+    <div class="row mb-1">
         <div class="col-xl-6 col-12 mb-1 mr-auto">
             <form method="get">
                 <div class="input-group">
@@ -19,6 +19,7 @@
                     </select>
                     <select style="display: none;" data-width="100%" class="form-select text-center" id="categorySelect" asp-for="@Model.q">
                     </select>
+                    <span asp-validation-for="@Model.q"></span>
                     <input data-val="true" asp-for=@Model.q type="@Model.inputType" class="form-control w-50 text-center" id="qInput">
                     <input style="display: none;" data-val="true" asp-for=@Model.q2 type="date" class="form-control" id="q2Input">
                     <button class="btn btn-secondary" type="submit" asp-route-pageNumber="1">
@@ -42,19 +43,15 @@
             </div>
         </div>
         <div class="col-4 col-xl-1 d-xl-none d-flex justify-content-end">
-            @if (Model.Message != null)
-            {
-                <div class="col-xl-2 text-center border rounded my-0 py-0 alert alert-success align-self-center">@Model.Message</div>
-            }
-            <div asp-validation-summary="All"></div>
+            <!--just empty space here-->
         </div>
         <div class="col-xl-2 col-2 d-flex justify-content-end">
-            <button class="btn btn-primary text-wrap" style="height: 38px;" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Add Expense</button>
+            <button class="btn btn-primary text-wrap" style="height: 38px;" data-bs-toggle="modal" data-bs-target="#addExpenseModal" id="addExpenseButton">Add Expense</button>
         </div>
     </div>
     @* Add Expense Modal *@
     <div class="modal fade" id="addExpenseModal">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header text-center">
                     <div></div>
@@ -64,23 +61,107 @@
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
-                        <form>
-                            <div class="col">
-                                @*start here*@
+                        <form method="post"
+                              asp-page="./Index"
+                              asp-page-handler="Add"
+                              id="addExpenseForm">
+                            <div class="row mb-3">
+                                <div class="col-4">
+                                    <label class="visually-hidden" asp-for="@Model.AddExpense.Date">Date</label>
+                                    <div class="input-group">
+                                        <div class="input-group-text text-center">Date</div>
+                                        <input data-val="true" asp-for=@Model.AddExpense.Date type="date" class="form-control" id="addExpenseDate">
+                                        <span asp-validation-for="@Model.AddExpense.Date"></span>
+
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <label class="visually-hidden" asp-for="@Model.AddExpense.Amount">Amount</label>
+                                    <div class="input-group">
+                                        <div class="input-group-text">$</div>
+                                        <input data-val="true"
+                                               asp-for=@Model.AddExpense.Amount type="number" min="0.00" step="any" class="form-control" id="addExpenseAmount" placeholder="0.00">
+                                        <span asp-validation-for="@Model.AddExpense.Amount"></span>
+
+                                    </div>
+                                </div>
+                                <div class="col-4 align-self-center border rounded py-1">
+                                    <div class="form-check form-switch ">
+                                        <label class="form-check-label" asp-for="AddExpense.ExcludeFromStatistics">Exclude From Statistics</label>
+                                        <input class="form-check-input" type="checkbox" role="switch" id="addExpenseExcludeBool" data-val="true"
+                                               asp-for="AddExpense.ExcludeFromStatistics" />
+                                        <span asp-validation-for="@Model.AddExpense.ExcludeFromStatistics"></span>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-8">
+                                    <div class="input-group">
+                                        <div class="input-group-text">Category</div>
+                                        <label class="visually-hidden" asp-for="@Model.AddExpense.SubCategoryId">Category</label>
+                                        <select data-val="true"
+                                                asp-for=@Model.AddExpense.SubCategoryId
+                                                type="number" min="0.00" step="any" class="form-control text-center"
+                                                id="addExpenseSubCategory" placeholder="0.00"></select>
+                                        <span asp-validation-for="@Model.AddExpense.SubCategoryId"></span>
+                                        <input disabled type="text" class="form-control text-center" id="addExpenseMainCategory" />
+                                    </div>
+                                </div>
+                                <div class="col-4 d-flex justify-content-center">
+                                    <a class="btn btn-secondary" type="button" asp-page="/SubCategory/Add">Add New Category</a>
+                                </div>
+
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-8">
+                                    <div class="input-group">
+                                        <div class="input-group-text">Merchant</div>
+                                        <label class="visually-hidden" asp-for="MerchantName">Merchant</label>
+                                        <input class="form-control" data-val="true" type="text" asp-for="MerchantName" id="addExpenseMerchantName" />
+                                        <span asp-validation-for="@Model.MerchantName"></span>
+                                    </div>
+                                </div>
+                                <div class="col-4 align-self-center border rounded py-1">
+                                    <div class="form-check ">
+                                        <label class="form-check-label" asp-for="CreateNewMerchant">Create New Merchant</label>
+                                        <input class="form-check-input" type="checkbox" role="switch" id="addExpenseCreateNewMerchant"
+                                               asp-for="CreateNewMerchant" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3 px-1">
+                                <label class="visually-hidden" asp-for="@Model.AddExpense.Notes"></label>
+                                <textarea class="form-control" asp-for="@Model.AddExpense.Notes" id="addExpenseNotes" rows="3" placeholder="Notes"></textarea>
+                                <span asp-validation-for="@Model.AddExpense.Notes"></span>
                             </div>
                         </form>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer d-flex justify-content-evenly">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-
+                    <form>
+                        <button type="submit" class="btn btn-primary" form="addExpenseForm">Add New Expense</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-    @if (Model.ExpenseResponse != null && Model.ExpenseResponse.TotalCount > 0)
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-dismissible alert-danger offset-3 w-50 text-center mt-0" asp-validation-summary="All">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    else if (Model.Message != null)
+    {
+        <div class="alert alert-dismissible alert-success offset-3 w-50 text-center mt-0">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" id="messageDismiss"></button>
+            <h4 class="p-0 text-white">@Model.Message</h4>
+        </div>
+    }
+    else if (Model.ExpenseResponse != null && Model.ExpenseResponse.TotalCount > 0)
     {
         <div class="row">
             <div class="table-responsive">
@@ -132,6 +213,75 @@
 
                                 </td>
                                 <td>
+                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#detailModal-@expense.Id" class="px-2">
+                                        <i class="bi bi-zoom-in text-primary" role="img"
+                                   style="font-size: 1.25rem;"></i>
+                                    </button>
+                                    @*Begin Detail Modal*@
+                                    <div class="modal fade" id="detailModal-@expense.Id">
+                                        <div class="modal-dialog modal-xl">
+                                            <div class="modal-content">
+                                                <div class="modal-header text-center">
+                                                    <div></div>
+                                                    <h5 class="modal-title w-100">Expense</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="container-fluid">
+                                                        <form>
+                                                            <div class="col">
+                                                                @*start here*@
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*End Detail Modal*@
+                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#editModal-@expense.Id" class="px-2">
+                                        <i class="bi bi-pencil text-primary" role="img"
+                                   style="font-size: 1.25rem;"></i>
+                                    </button>
+                                    @*Begin Edit Modal*@
+                                    <div class="modal fade" id="editModal-@expense.Id">
+                                        <div class="modal-dialog modal-xl">
+                                            <div class="modal-content">
+                                                <div class="modal-header text-center">
+                                                    <div></div>
+                                                    <h5 class="modal-title w-100">Edit an Expense</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="container-fluid">
+                                                        <form>
+                                                            <div class="col">
+                                                                @*start here*@
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*End Edit Modal*@
+                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal-@expense.Id" class="px-2">
+                                        <i class="bi bi-trash text-primary" role="img"
+                                   style="font-size: 1.25rem;"></i>
+                                    </button>
                                     @*Delete Model*@
                                     <div class="modal fade" id="deleteModal-@expense.Id">
                                         <div class="modal-dialog" role="document">
@@ -156,37 +306,14 @@
                                                   asp-route-query="@Model.query"
                                                   asp-route-q="@Model.q"
                                                   asp-route-q2="@Model.q2"
-                                                  asp-route-pageNumber="@Model.pageNumber" id="logoutForm">
+                                                  asp-route-pageNumber="@Model.pageNumber">
                                                         <button type="submit" class="btn btn-danger">DELETE</button>
                                                     </form>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
-                                    data-bs-target="#detailModal-@expense.Id" class="px-2">
-
-                                        <i class="bi bi-zoom-in text-primary" role="img"
-                                   style="font-size: 1.25rem;"></i>
-
-                                    </button>
-
-                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
-                                    data-bs-target="#editModal-@expense.Id" class="px-2">
-
-                                        <i class="bi bi-pencil text-primary" role="img"
-                                   style="font-size: 1.25rem;"></i>
-
-                                    </button>
-
-                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal-@expense.Id" class="px-2">
-
-                                        <i class="bi bi-trash text-primary" role="img"
-                                   style="font-size: 1.25rem;"></i>
-
-                                    </button>
+                                    @*End Delete Modal*@
                                 </td>
                             </tr>
                         }
@@ -201,13 +328,6 @@
                         }
                     </div>
                     <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
-                        @if (Model.Message != null)
-                        {
-                            <div class="alert alert-dismissible alert-success d-none d-xl-block text-center p-2">
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                <h4 class="p-0 text-white">@Model.Message</h4>
-                            </div>
-                        }
                         @if (@Model.ExpenseResponse.TotalAmount > 0 && Model.Message == null)
                         {
                             <div class="text-center">
@@ -233,17 +353,18 @@
     }
     else
     {
-        <div class="alert alert-dismissible alert-info mt-5 offset-4 w-25 text-center">
+        <div class="alert alert-dismissible alert-info mt-0 offset-3 w-50 text-center">
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             <h3>No Expenses Found!</h3> Please try again.
         </div>
     }
+
 </div>
 
 @section Scripts {
-<partial name="_ValidationScriptsPartial" />
 <script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
+<partial name="_ValidationScriptsPartial" />
 <script type="text/javascript">
         const getQueries = () => {
         let queries = [], hash;
@@ -256,10 +377,10 @@
         return queries;
     }
     $(document).ready(() => {
-        let q = getQueries()["q"];
-        let q2 = getQueries()["q2"];
-        $("#qInput").val(q);
-        $("#q2Input").val(q2);
+        //TODO:
+        //Store subcategory and category values in state
+        //and then use C# to access those values to set the "selected" option for qInput
+        //see https://stackoverflow.com/questions/4599169/using-razor-within-javascript
 
         //When the query selection option changes
         $("#querySelect").change(() => {
@@ -347,7 +468,7 @@
                         for (let category of response) {
                             $("#categorySelect").append(`<option value=${category.id}>${category.name}</option>`);
                         }
-                    })
+                    }).catch((error) => alert(error));
                     break;
                 //main category
                 case "9":
@@ -410,24 +531,85 @@
             }
         });
 
+        //when adding a new expense amount, make it a nice loking decimal
+        $('#addExpenseAmount').change(() => {
+                let amount = $("#addExpenseAmount").val();
+                let rounded = Math.round(amount * 100) / 100;
+                let finalNumber = rounded.toFixed(2);
+                $("#addExpenseAmount").val(finalNumber);
+        });
+
         //if it's a query of the merchants, show a dropdown list of matching merchant names
         $("#qInput").on("input", () => {
             let selectListValue = $("#querySelect").val();
             if (selectListValue === "7") {
                 let searchTerm = $("#qInput").val();
-                let matchingResults;
                 $.ajax({
                     url: `/api/merchants/match?merchantName=${searchTerm}`,
                     method: 'GET'
                 }).then((response) => {
-                    console.log(response);
                     $("#qInput").empty();
                     $("#qInput").autocomplete({ source: response });
                 });
             }
         });
 
-        //if you want to grab values from query string
+         $("#addExpenseMerchantName").on("input", () => {
+             let merchantName = $("#addExpenseMerchantName").val();
+             $.ajax({
+                 url: `/api/merchants/match?merchantName=${merchantName}`,
+                 method: 'GET'
+             }).then((response) => {
+                 console.log(response);
+                 $("#addExpenseMerchantName").empty();
+                 $("#addExpenseMerchantName").autocomplete({ source: response });
+             });
+        });
+
+        const getQueries = () =>
+        {
+            let queries = [], hash;
+            let values = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for(let i = 0; i < values.length; i++)
+            {
+                hash = values[i].split('=');
+                queries.push(hash[0]);
+                queries[hash[0]] = hash[1];
+            }
+            return queries;
+        }
+
+        //on load
+        let selectListValue = $("#querySelect").val();
+        handleQuerySelectChange(selectListValue);
+
+        //loads sub category list when add expense modal opens
+        $("#addExpenseButton").click(() =>{
+            $.ajax({
+                url: `/api/subcategory/all`,
+                method: 'GET'
+            }).then((response) => {
+                $("#addExpenseSubCategory").empty();
+                for (let category of response) {
+                    $("#addExpenseSubCategory").append(`<option value=${category.id}>${category.name}</option>`);
+                }});
+        });
+        //loads the main category after sub category is chosen on add expense modal
+        $("#addExpenseSubCategory").change(()=>{
+            let categoryId = $("#addExpenseSubCategory").val();
+            $.ajax({
+                url: `/api/maincategory/sub-category/${categoryId}`,
+                method: 'GET'
+            }).then((response) => {
+                $("#addExpenseMainCategory").empty();
+                    $("#addExpenseMainCategory").prop(`value`, `${response}`);
+                }).catch((error) => console.log(error));
+        });
+
+        $("#messageDismiss").click(() => location.reload());
+
+        //addExpenseMerchantName
+
     });
 </script>
     }

@@ -60,7 +60,7 @@ public class ExpenseService : IExpenseService
     }
     public async Task<ExpenseResponse> GetExpensesBySubCategoryIdAsync(ExpenseRequest request)
     {
-        Expression<Func<Expenses, bool>> predicate = x => x.categoryid == int.Parse(request.Query);
+        Expression<Func<Expenses, bool>> predicate = x => x.category.Id == int.Parse(request.Query);
         var expenses = await _expenseRepo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _expenseRepo.GetCount(predicate);
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
@@ -90,8 +90,6 @@ public class ExpenseService : IExpenseService
             throw new ArgumentException("Request must not contain an id in order to create an expense.");
 
         var expense = _mapper.Map<Expenses>(request);
-        //I manually set the id here because when I use the test database it messes with the id autogeneration
-        expense.Id = ((int)await _expenseRepo.GetCount(x => true)) + 1;
         var success = await _expenseRepo.Create(expense);
         if (!success)
             throw new Exception("Couldn't save expense to the database.");
