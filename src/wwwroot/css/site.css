@@ -82,8 +82,17 @@ html, body {
     padding-left: 0;
     list-style: none;
     text-align: center;
+    font-size: calc(100% + .5vw + .5vh);
 }
-
+#addExpenseDate-error {
+    color: red;
+}
+#addExpenseAmount-error {
+    color: red;
+}
+#addExpenseSubCategory-error {
+    color: red;
+}
 main {
     height: 100%;
 }
@@ -96,4 +105,8 @@ td {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+ul.ui-autocomplete {
+    z-index: 1100;
 }

@@ -21,6 +21,7 @@ public interface IMerchantService
     Task<AddEditMerchant> CreateMerchantAsync(AddEditMerchant request);
     Task<bool> UpdateMerchantAsync(AddEditMerchant request);
     Task<bool> DeleteMerchantAsync(int id);
+    Task<Merchants> GetMerchantByNameAsync(string name);
 }
 public class MerchantService : IMerchantService
 {
@@ -152,9 +153,6 @@ public class MerchantService : IMerchantService
 
         var merchantEntity = _mapper.Map<Merchants>(request);
 
-        //I manually set the id here because when I use the test database it messes with the id autogeneration
-        merchantEntity.Id = await _merchantRepo.GetCount(x => true) + 1;
-
         if (!await _merchantRepo.Create(merchantEntity))
             throw new Exception("Couldn't save merchant to the database");
 
@@ -182,6 +180,15 @@ public class MerchantService : IMerchantService
     public async Task<string[]> GetMatchingMerchantsAsync(string match)
     {
         return (await _merchantRepo.Find(x => x.name.StartsWith(match))).Select(x => x.name).Take(10).ToArray();
+    }
+
+    public async Task<Merchants> GetMerchantByNameAsync(string name)
+    {
+        var merchant = (await _merchantRepo.Find(x => x.name == name)).FirstOrDefault();
+        if (merchant == null)
+            throw new MerchantNotFoundException(name);
+        return merchant;
+
     }
 }
 public class MerchantMapperProfile : Profile
