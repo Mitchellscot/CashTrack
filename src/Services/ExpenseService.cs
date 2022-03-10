@@ -18,6 +18,8 @@ public interface IExpenseService
     Task<ExpenseResponse> GetExpensesAsync(ExpenseRequest request);
     Task<ExpenseResponse> GetExpensesByNotesAsync(ExpenseRequest request);
     Task<ExpenseResponse> GetExpensesByAmountAsync(AmountSearchRequest request);
+    Task<ExpenseResponse> GetExpensesBySubCategoryIdAsync(ExpenseRequest request);
+    Task<ExpenseResponse> GetExpensesByMerchantAsync(ExpenseRequest request);
     Task<AddEditExpense> CreateExpenseAsync(AddEditExpense request);
     Task<bool> UpdateExpenseAsync(AddEditExpense request);
     Task<bool> DeleteExpenseAsync(int id);
@@ -50,6 +52,24 @@ public class ExpenseService : IExpenseService
     public async Task<ExpenseResponse> GetExpensesByNotesAsync(ExpenseRequest request)
     {
         Expression<Func<Expenses, bool>> predicate = x => x.notes.ToLower().Contains(request.Query.ToLower());
+        var expenses = await _expenseRepo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
+        var count = await _expenseRepo.GetCount(predicate);
+        var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
+
+        return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<ExpenseListItem[]>(expenses), amount);
+    }
+    public async Task<ExpenseResponse> GetExpensesBySubCategoryIdAsync(ExpenseRequest request)
+    {
+        Expression<Func<Expenses, bool>> predicate = x => x.categoryid == int.Parse(request.Query);
+        var expenses = await _expenseRepo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
+        var count = await _expenseRepo.GetCount(predicate);
+        var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
+
+        return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<ExpenseListItem[]>(expenses), amount);
+    }
+    public async Task<ExpenseResponse> GetExpensesByMerchantAsync(ExpenseRequest request)
+    {
+        Expression<Func<Expenses, bool>> predicate = x => x.merchant.name.ToLower() == request.Query.ToLower();
         var expenses = await _expenseRepo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _expenseRepo.GetCount(predicate);
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
