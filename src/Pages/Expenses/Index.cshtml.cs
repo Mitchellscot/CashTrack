@@ -44,7 +44,6 @@ namespace CashTrack.Pages.Expenses
         {
             PrepareForm(query);
 
-
             if (query == 0 && q != null)
             {
                 ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificDate, BeginDate = DateTime.Parse(q), PageNumber = pageNumber });

@@ -98,12 +98,11 @@
                                         <label class="visually-hidden" asp-for="@Model.AddExpense.SubCategoryId">Category</label>
                                         <select data-val="true"
                                                 asp-for=@Model.AddExpense.SubCategoryId
-                                                type="number" min="0.00" step="any" class="form-control text-center"
-                                                id="addExpenseSubCategory" placeholder="0.00">
-                                            <option value="" selected>Select</option>
+                                                class="form-control text-center"
+                                                id="addExpenseSubCategory">
                                         </select>
-                                        <span asp-validation-for="@Model.AddExpense.SubCategoryId"></span>
-                                        <input disabled type="text" class="form-control text-center" id="addExpenseMainCategory" required />
+                                        <div class="input-group-text">Main Category</div>
+                                        <input disabled type="text" class="form-control text-center bg-white" id="addExpenseMainCategory" required />
                                     </div>
                                 </div>
                                 <div class="col-4 d-flex justify-content-center">
@@ -144,6 +143,7 @@
             </div>
         </div>
     </div>
+    @*End Add Expense Modal*@
 
     @if (!ViewData.ModelState.IsValid)
     {
@@ -244,40 +244,14 @@
                                    style="font-size: 1.25rem; visibility: hidden;"></i>
                                         </button>
                                     }
-
-
                                     <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
                                     data-bs-target="#editModal-@expense.Id" class="px-2">
-                                        <i class="bi bi-pencil text-primary" role="img"
-                                   style="font-size: 1.25rem;"></i>
+                                        <a asp-page="./Edit" asp-route-id="@expense.Id" asp-route-split=0>
+                                            <i class="bi bi-pencil text-primary" role="img"
+                                       style="font-size: 1.25rem;"></i>
+                                        </a>
                                     </button>
-                                    @*Begin Edit Modal*@
-                                    <div class="modal fade" id="editModal-@expense.Id">
-                                        <div class="modal-dialog modal-xl">
-                                            <div class="modal-content">
-                                                <div class="modal-header text-center">
-                                                    <div></div>
-                                                    <h5 class="modal-title w-100">Edit an Expense</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="container-fluid">
-                                                        <form>
-                                                            <div class="col">
-                                                                @*start here*@
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="button" class="btn btn-primary">Save changes</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @*End Edit Modal*@
+
                                     <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-@expense.Id" class="ps-2 ps-0 me-0">
                                         <i class="bi bi-trash text-primary" role="img"
@@ -608,8 +582,6 @@
         });
 
         $("#messageDismiss").click(() => location.reload());
-
-        //addExpenseMerchantName
 
     });
 </script>
