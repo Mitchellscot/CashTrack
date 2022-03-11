@@ -43,6 +43,7 @@ public class ExpenseListItem : Transaction
     public ICollection<TagModel> Tags { get; set; }
     public string SubCategory { get; set; }
     public string MainCategory { get; set; }
+    public bool ExcludeFromStatistics { get; set; }
 }
 public class ExpenseQuickView : Transaction
 {
