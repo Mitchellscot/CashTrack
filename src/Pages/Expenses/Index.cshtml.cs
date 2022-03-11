@@ -4,12 +4,10 @@ using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.MerchantModels;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.MerchantService;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Expenses
