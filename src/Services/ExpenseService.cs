@@ -14,7 +14,7 @@ namespace CashTrack.Services.ExpenseService;
 
 public interface IExpenseService
 {
-    Task<ExpenseListItem> GetExpenseByIdAsync(int id);
+    Task<Expenses> GetExpenseByIdAsync(int id);
     Task<ExpenseResponse> GetExpensesAsync(ExpenseRequest request);
     Task<ExpenseResponse> GetExpensesByNotesAsync(ExpenseRequest request);
     Task<ExpenseResponse> GetExpensesByAmountAsync(AmountSearchRequest request);
@@ -34,11 +34,10 @@ public class ExpenseService : IExpenseService
         _expenseRepo = expenseRepository;
         _mapper = mapper;
     }
-    public async Task<ExpenseListItem> GetExpenseByIdAsync(int id)
+    public async Task<Expenses> GetExpenseByIdAsync(int id)
     {
-        //This would get displayed in a modal... doesn't need to be a lot of info, just enough to edit or whatever.
-        var singleExpense = await _expenseRepo.FindById(id);
-        return _mapper.Map<ExpenseListItem>(singleExpense);
+        var expense = await _expenseRepo.FindById(id);
+        return expense;
     }
     public async Task<ExpenseResponse> GetExpensesAsync(ExpenseRequest request)
     {
@@ -126,7 +125,7 @@ public class ExpenseMapperProfile : Profile
             .ForMember(e => e.Merchant, o => o.MapFrom(src => src.merchant.name))
             .ForMember(e => e.SubCategory, o => o.MapFrom(src => src.category.sub_category_name))
             .ForMember(e => e.MainCategory, o => o.MapFrom(src => src.category.main_category.main_category_name))
-            .ForMember(e => e.ExcludeFromStatistics, o=> o.MapFrom(src => src.exclude_from_statistics))
+            .ForMember(e => e.ExcludeFromStatistics, o => o.MapFrom(src => src.exclude_from_statistics))
             .ForMember(e => e.Tags, o => o.MapFrom(
                 src => src.expense_tags.Select(a => new TagModel() { Id = a.tag_id, TagName = a.tag.tag_name })));
 
