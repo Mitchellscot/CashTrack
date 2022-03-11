@@ -88,7 +88,6 @@
                                         <input class="form-check-input" type="checkbox" role="switch" id="addExpenseExcludeBool" data-val="true"
                                                asp-for="AddExpense.ExcludeFromStatistics" />
                                         <span asp-validation-for="@Model.AddExpense.ExcludeFromStatistics"></span>
-
                                     </div>
                                 </div>
                             </div>
@@ -104,13 +103,12 @@
                                             <option value="" selected>Select</option>
                                         </select>
                                         <span asp-validation-for="@Model.AddExpense.SubCategoryId"></span>
-                                        <input readonly type="text" class="form-control text-center" id="addExpenseMainCategory" />
+                                        <input disabled type="text" class="form-control text-center" id="addExpenseMainCategory" required />
                                     </div>
                                 </div>
                                 <div class="col-4 d-flex justify-content-center">
                                     <a class="btn btn-secondary" type="button" asp-page="/SubCategory/Add">Add New Category</a>
                                 </div>
-
                             </div>
                             <div class="row mb-3">
                                 <div class="col-8">
@@ -588,6 +586,7 @@
 
         //loads sub category list when add expense modal opens
         $("#addExpenseButton").click(() =>{
+            $("#addExpenseMainCategory").val('');
             $.ajax({
                 url: `/api/subcategory/all`,
                 method: 'GET'
