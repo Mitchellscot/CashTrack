@@ -126,6 +126,7 @@ public class ExpenseMapperProfile : Profile
             .ForMember(e => e.Merchant, o => o.MapFrom(src => src.merchant.name))
             .ForMember(e => e.SubCategory, o => o.MapFrom(src => src.category.sub_category_name))
             .ForMember(e => e.MainCategory, o => o.MapFrom(src => src.category.main_category.main_category_name))
+            .ForMember(e => e.ExcludeFromStatistics, o=> o.MapFrom(src => src.exclude_from_statistics))
             .ForMember(e => e.Tags, o => o.MapFrom(
                 src => src.expense_tags.Select(a => new TagModel() { Id = a.tag_id, TagName = a.tag.tag_name })));
 
