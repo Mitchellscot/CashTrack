@@ -1,5 +1,6 @@
 ﻿using CashTrack.Models.Common;
 using CashTrack.Models.TagModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 
@@ -27,6 +28,10 @@ public class AmountSearchRequest : PaginationRequest
 
 public class AddEditExpense : Transaction
 {
+    public AddEditExpense()
+    {
+
+    }
     new public int? Id { get; set; }
     public string Notes { get; set; }
     public int? MerchantId { get; set; }
@@ -34,10 +39,10 @@ public class AddEditExpense : Transaction
     //public ICollection<Tag> Tags { get; set; }
     public int SubCategoryId { get; set; }
     public bool ExcludeFromStatistics { get; set; }
+    public SelectListItem SelectList { get; set; }
 }
 public class ExpenseListItem : Transaction
 {
-    //I will probably remove Notes and add that to a detail view to be viewed in a modal
     public string Notes { get; set; }
     public string Merchant { get; set; }
     public ICollection<TagModel> Tags { get; set; }

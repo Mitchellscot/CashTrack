@@ -93,7 +93,7 @@
             <span asp-validation-for="@Model.ExpenseEdit.Notes"></span>
         </div>
     </form>
-        @if (Model.Split > 0)
+    @if (Model.Split > 0)
     {
         <hr />
         <div class="row row-cols-4 g-0">
@@ -108,7 +108,6 @@
                             <h6 class="card-title">@Model.MerchantName - @Model.ExpenseEdit.Date.Date.ToShortDateString()</h6>
                         </div>
                         <div class="card-body">
-
                             <input disabled asp-format="{0:yyyy-MM-dd}" data-val="true"
                            asp-for=@Model.BulkExpenses[@i].Date type="date" class="visually-hidden">
                             <input class="visually-hidden" asp-for="MerchantName" />
@@ -130,7 +129,7 @@
                                     asp-for=@Model.BulkExpenses[@i].SubCategoryId
                                     asp-items="@Model.SubCategories"
                                     class="form-control text-center"
-                                    id="editExpenseSubCategory-@i" placeholder="0.00">
+                                    id="editExpenseSubCategory-@i">
                                     </select>
                                 </div>
                             </div>
@@ -159,7 +158,6 @@
                     </div>
                 }
             </form>
-
         </div>
     }
     <div class="d-flex justify-content-around">
