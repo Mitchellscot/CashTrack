@@ -14,17 +14,19 @@
             </div>
         }
     </div>
-
     <hr />
     <form method="post"
           asp-page="./Edit"
-          id="editExpenseForm">
+          asp-page-handler="SingleExpense"
+          id="editSingleExpenseForm">
+        <input type="hidden" asp-for="@Model.ExpenseEdit.Id" />
         <div class="row mb-3">
             <div class="col-3">
                 <label class="visually-hidden" asp-for="@Model.ExpenseEdit.Date">Date</label>
                 <div class="input-group">
                     <div class="input-group-text text-center">Date</div>
-                    <input asp-format="{0:yyyy-MM-dd}" data-val="true" asp-for=@Model.ExpenseEdit.Date type="date" class="form-control" id="editExpenseDate">
+                    <input asp-format="{0:yyyy-MM-dd}" data-val="true"
+                           asp-for=@Model.ExpenseEdit.Date type="date" class="form-control" id="editExpenseDate">
                     <span asp-validation-for="@Model.ExpenseEdit.Date"></span>
                 </div>
             </div>
@@ -58,7 +60,7 @@
                             asp-for=@Model.ExpenseEdit.SubCategoryId
                             asp-items="@Model.SubCategories"
                             class="form-control text-center"
-                            id="editExpenseSubCategory" placeholder="0.00">
+                            id="editExpenseSubCategory">
                     </select>
                     <div class="input-group-text">Main</div>
                     <input value="@Model.InitialMainCategory" disabled type="text" class="form-control text-center bg-white" id="editExpenseMainCategory" required />
@@ -91,12 +93,90 @@
             <span asp-validation-for="@Model.ExpenseEdit.Notes"></span>
         </div>
     </form>
+        @if (Model.Split > 0)
+    {
+        <hr />
+        <div class="row row-cols-4 g-0">
+            <form method="post"
+              asp-page="./Edit"
+              asp-page-handler="MultipleExpenses"
+              id="editMultipleExpenseForm">
+                @for (int i = 1; i <= Model.Split; i++)
+                {
+                    <div class="card border-secondary px-0">
+                        <div class="card-header text-dark bg-light text-center">
+                            <h6 class="card-title">@Model.MerchantName - @Model.ExpenseEdit.Date.Date.ToShortDateString()</h6>
+                        </div>
+                        <div class="card-body">
+
+                            <input disabled asp-format="{0:yyyy-MM-dd}" data-val="true"
+                           asp-for=@Model.BulkExpenses[@i].Date type="date" class="visually-hidden">
+                            <input class="visually-hidden" asp-for="MerchantName" />
+                            <div class="row">
+                                <label class="visually-hidden" asp-for="@Model.ExpenseEdit.Amount">Amount</label>
+                                <div class="input-group">
+                                    <div class="input-group-text">$</div>
+                                    <input data-val="true"
+                                   asp-for=@Model.BulkExpenses[@i].Amount
+                                   type="number" min="0.00" step="any" class="form-control" id="editExpenseAmount-@i" placeholder="0.00">
+                                    <span asp-validation-for="@Model.ExpenseEdit.Amount"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-group">
+                                    <div class="input-group-text">Category</div>
+                                    <label class="visually-hidden" asp-for="@Model.ExpenseEdit.SubCategoryId">Category</label>
+                                    <select data-val="true"
+                                    asp-for=@Model.BulkExpenses[@i].SubCategoryId
+                                    asp-items="@Model.SubCategories"
+                                    class="form-control text-center"
+                                    id="editExpenseSubCategory-@i" placeholder="0.00">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-group">
+                                    <div class="input-group-text pe-4">Main &nbsp; &nbsp; &nbsp;</div>
+                                    <input value="@Model.InitialMainCategory"
+                                   disabled type="text" class="form-control text-center" id="editExpenseMainCategory-@i" required />
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label class="visually-hidden" asp-for="@Model.BulkExpenses[@i].Notes"></label>
+                                    <textarea class="form-control" asp-for="@Model.BulkExpenses[@i].Notes"
+                                      id="editExpenseNotes-@i" rows="3" placeholder="Notes"></textarea>
+                                    <span asp-validation-for="@Model.ExpenseEdit.Notes"></span>
+                                </div>
+                            </div>
+                            <div class=" card-footer d-flex justify-content-around">
+                                <form>
+                                    <a asp-page="./Edit" asp-route-split="@(Model.Split-1)" type="button" class="btn btn-outline-danger me-4">Remove</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </form>
+
+        </div>
+    }
     <div class="d-flex justify-content-around">
         <a asp-page="./index" class="btn btn-secondary">Cancel</a>
         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#editDeleteModal">DELETE</button>
-        <form>
-            <button type="submit" class="btn btn-primary" form="editExpenseForm">Submit Changes</button>
-        </form>
+        @if (Model.Split == 0)
+        {
+            <form>
+                <button type="submit" class="btn btn-primary" form="editSingleExpenseForm">Save Changes</button>
+            </form>
+        }
+        else
+        {
+            <form>
+                <button type="submit" class="btn btn-primary" form="editMultipleExpenseForm">Save All</button>
+            </form>
+        }
     </div>
 
     @*Delete Model*@
@@ -128,74 +208,15 @@
         </div>
     </div>
     @*End Delete Modal*@
-    @if (Model.Split > 0)
+
+    @if (!ViewData.ModelState.IsValid)
     {
-        <hr />
-        <div class="row row-cols-4 g-0">
-            @for (int i = 1; i <= Model.Split; i++)
-            {
-                <div class="card border-secondary px-0">
-                    <div class="card-header text-dark bg-light text-center">
-                        <h6 class="card-title">@Model.MerchantName - @Model.ExpenseEdit.Date.Date.ToShortDateString()</h6>
-                    </div>
-                    <div class="card-body">
-                        <form method="post"
-                      asp-page="./Edit"
-                      id="editExpenseForm-@i">
-                            <input disabled asp-format="{0:yyyy-MM-dd}" data-val="true"
-                           asp-for=@Model.ExpenseEdit.Date type="date" class="visually-hidden">
-                            <input class="visually-hidden" asp-for="MerchantName" />
-                            <div class="row">
-                                <label class="visually-hidden" asp-for="@Model.ExpenseEdit.Amount">Amount</label>
-                                <div class="input-group">
-                                    <div class="input-group-text">$</div>
-                                    <input data-val="true"
-                                   asp-for=@Model.ExpenseEdit.Amount
-                                   type="number" min="0.00" step="any" class="form-control" id="editExpenseAmount-@i" placeholder="0.00">
-                                    <span asp-validation-for="@Model.ExpenseEdit.Amount"></span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="input-group">
-                                    <div class="input-group-text">Category</div>
-                                    <label class="visually-hidden" asp-for="@Model.ExpenseEdit.SubCategoryId">Category</label>
-                                    <select data-val="true"
-                                    asp-for=@Model.ExpenseEdit.SubCategoryId
-                                    asp-items="@Model.SubCategories"
-                                    class="form-control text-center"
-                                    id="editExpenseSubCategory-@i" placeholder="0.00">
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="input-group">
-                                    <div class="input-group-text pe-4">Main &nbsp; &nbsp; &nbsp;</div>
-                                    <input value="@Model.InitialMainCategory"
-                                   disabled type="text" class="form-control text-center" id="editExpenseMainCategory-@i" required />
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <label class="visually-hidden" asp-for="@Model.ExpenseEdit.Notes"></label>
-                                    <textarea class="form-control" asp-for="@Model.ExpenseEdit.Notes"
-                                      id="editExpenseNotes-@i" rows="3" placeholder="Notes"></textarea>
-                                    <span asp-validation-for="@Model.ExpenseEdit.Notes"></span>
-                                </div>
-                            </div>
-                        </form>
-                        <div class=" card-footer d-flex justify-content-around">
-                            <form>
-                                <a asp-page="./Edit" asp-route-split="@(Model.Split-1)" type="button" class="btn btn-outline-danger me-4">Remove</a>
-                                <button type="submit" class="btn btn-outline-primary ms-4" form="editExpenseForm">Create</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-            }
+        <div class="alert alert-dismissible alert-danger offset-3 w-50 text-center mt-3" asp-validation-summary="All">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
+
+
 </div>
 
 @section Scripts {
