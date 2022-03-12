@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Expenses
@@ -176,7 +177,6 @@ namespace CashTrack.Pages.Expenses
                         ModelState.AddModelError("", "Check \"Create New Merchant\" and try again.");
                         return Page();
                     }
-
                     var merchantCreationSuccess = await _merchantService.CreateMerchantAsync(new AddEditMerchant() { Name = MerchantName });
                     if (merchantCreationSuccess == null)
                     {

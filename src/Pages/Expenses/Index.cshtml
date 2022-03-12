@@ -250,12 +250,135 @@
                                         </button>
                                     }
                                     <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
-                                    data-bs-target="#editModal-@expense.Id" class="px-2">
-                                        <a asp-page="./Edit" asp-route-id="@expense.Id" asp-route-split=0>
-                                            <i class="bi bi-pencil text-primary" role="img"
-                                       style="font-size: 1.25rem;"></i>
-                                        </a>
+                                    data-bs-target="#editExpenseModal-@expense.Id" id="editExpenseButton-@expense.Id" class="px-2">
+                                        <i class="bi bi-pencil text-primary" role="img"
+                                   style="font-size: 1.25rem;"></i>
                                     </button>
+                                    @* Add Expense Modal *@
+                                    <div class="modal fade" id="editExpenseModal-@expense.Id">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header text-center">
+                                                    <h5 class="modal-title w-100">Edit an Expense</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="container-fluid">
+                                                        <form method="post"
+                                                      asp-page="./Index"
+                                                      asp-page-handler="Edit"
+                                                      id="editExpenseForm-@expense.Id">
+                                                            <div class="row mb-3">
+                                                                <div class="col-4">
+                                                                    <label class="visually-hidden" asp-for="@expense.Date">
+                                                                        Date
+                                                                    </label>
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-text text-center">Date</div>
+                                                                        <input data-val="true" asp-for=@expense.Date
+                                                                       asp-format="{0:yyyy-MM-dd}"
+                                                                       type="date" class="form-control" id="editExpenseDate-@expense.Id">
+                                                                        <span asp-validation-for="@expense.Date"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-4">
+                                                                    <label class="visually-hidden"
+                                                                   asp-for="@expense.Amount">Amount</label>
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-text">$</div>
+                                                                        <input data-val="true"
+                                                                       asp-for=@expense.Amount
+                                                                       type="number" min="0.00" step="any"
+                                                                       class="form-control" id="editExpenseAmount-@expense.Id"
+                                                                       placeholder="0.00">
+                                                                        <span asp-validation-for="@expense.Amount"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-4 align-self-center border rounded py-1">
+                                                                    <div class="form-check form-switch ">
+                                                                        <label class="form-check-label"
+                                                                       asp-for="@expense.ExcludeFromStatistics">
+                                                                            Exclude From Statistics
+                                                                        </label>
+                                                                        <input class="form-check-input" type="checkbox"
+                                                                       role="switch" id="editExpenseExcludeBool-@expense.Id"
+                                                                       data-val="true"
+                                                                       asp-for="@expense.ExcludeFromStatistics" />
+                                                                        <span asp-validation-for="@expense.ExcludeFromStatistics"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <div class="col-8">
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-text">Category</div>
+                                                                        <label class="visually-hidden"
+                                                                       asp-for="@expense.SubCategory">Category</label>
+                                                                        <select data-val="true"
+                                                                        asp-for=@expense.SubCategory
+                                                                        class="form-control text-center"
+                                                                        id="editExpenseSubCategory-@expense.Id">
+                                                                        </select>
+                                                                        <div class="input-group-text">Main Category</div>
+                                                                        <input disabled type="text"
+                                                                       asp-for="@expense.MainCategory"
+                                                                       class="form-control text-center bg-white"
+                                                                       id="editExpenseMainCategory-@expense.Id" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-4 d-flex justify-content-center">
+                                                                    <a class="btn btn-secondary" type="button"
+                                                               asp-page="/SubCategory/Add">Add New Category</a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <div class="col-8">
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-text">Merchant</div>
+                                                                        <label class="visually-hidden"
+                                                                       asp-for="@expense.Merchant">Merchant</label>
+                                                                        <input class="form-control"
+                                                                       data-val="true" type="text"
+                                                                       asp-for="@expense.Merchant"
+                                                                       id="editExpenseMerchantName-@expense.Id" />
+                                                                        <span asp-validation-for="@expense.Merchant"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-4 align-self-center border rounded py-1">
+                                                                    <div class="form-check ">
+                                                                        <label class="form-check-label"
+                                                                       asp-for="CreateNewMerchant">Create New Merchant</label>
+                                                                        <input class="form-check-input"
+                                                                       type="checkbox" role="switch"
+                                                                       id="editExpenseCreateNewMerchant-@expense.Id"
+                                                                       asp-for="CreateNewMerchant" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3 px-1">
+                                                                <label class="visually-hidden"
+                                                               asp-for="@expense.Notes"></label>
+                                                                <textarea class="form-control" asp-for="@expense.Notes"
+                                                                  id="editExpenseNotes-@expense.Id" rows="3" placeholder="Notes"></textarea>
+                                                                <span asp-validation-for="@expense.Notes"></span>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer d-flex justify-content-evenly">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <form>
+                                                        <button type="submit" class="btn btn-primary"
+                                                        form="editExpenseForm-@expense.Id">
+                                                            Save Changes
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*End Add Expense Modal*@
 
                                     <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-@expense.Id" class="ps-2 ps-0 me-0">
@@ -336,12 +459,12 @@
         <div style="position: relative;">
             <div class="toast fade show mt-3 bg-info" role="alert" id="noExpensesToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
                 <div class="toast-body  d-flex justify-content-between align-items-center">
-                <i class="bi bi-exclamation-circle text-white mx-3" role="img"
+                    <i class="bi bi-exclamation-circle text-white mx-3" role="img"
                    style="font-size: 1.5rem;"></i>
-                <span style="font-size: 1.25rem;">No Expenses Found!</span><button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                    <span style="font-size: 1.25rem;">No Expenses Found!</span><button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                </div>
             </div>
         </div>
-    </div>
     }
 </div>
 
@@ -605,6 +728,60 @@
 
         $("#messageDismiss").click(() => location.reload());
 
+        @if(@Model.ExpenseResponse != null && @Model.ExpenseResponse.ListItems.Count() > 0)
+        {
+            var expenseIds = Model.ExpenseResponse.ListItems.ToDictionary(x => x.Id, x => x.SubCategory);
+            foreach(var id in expenseIds)
+            {
+                //changes main category when edit modal opens
+                <text>$("#editExpenseSubCategory-@id.Key").change(()=>{
+                    let categoryId = $("#editExpenseSubCategory-@id.Key").val();
+                    $.ajax({
+                        url: `/api/maincategory/sub-category/${categoryId}`,
+                        method: 'GET'
+                    }).then((response) => {
+                        $("#editExpenseMainCategory-@id.Key").prop(`value`, `${response}`);
+                    }).catch((error) => console.log(error));
+                });</text>
+                //Loads the sub category select list
+                <text>$("#editExpenseButton-@id.Key").click(() =>{
+                    let subCategory = $("#editExpenseSubCategory-@id.Key").val();
+                    $.ajax({
+                        url: `/api/subcategory/all`,
+                        method: 'GET'
+                    }).then((response) => {
+                        $("#editExpenseSubCategory-@id.Key").empty();
+                        for (let category of response) {
+                            if(category.name === "@id.Value")
+                            {
+                                $("#editExpenseSubCategory-@id.Key").append(`<option selected value=${category.id}>${category.name}</option>`);
+                            }
+                            else{
+                                $("#editExpenseSubCategory-@id.Key").append(`<option value=${category.id}>${category.name}</option>`);
+                            }
+                        }});
+                        });
+                </text>
+                <text>$("#editExpenseMerchantName-@id.Key").on("input", () => {
+                    let editSearchTerm = $("#editExpenseMerchantName-@id.Key").val();
+                    $.ajax({
+                        url: `/api/merchants/match?merchantName=${editSearchTerm}`,
+                        method: 'GET'
+                    }).then((response) => {
+                        $("#editExpenseMerchantName-@id.Key").empty();
+                        $("#editExpenseMerchantName-@id.Key").autocomplete({ source: response });
+                    });
+                })
+                </text>
+                <text>$('#editExpenseAmount-@id.Key').change(() => {
+                    let amount = $("#editExpenseAmount-@id.Key").val();
+                    let rounded = Math.round(amount * 100) / 100;
+                    let finalNumber = rounded.toFixed(2);
+                    $("#editExpenseAmount-@id.Key").val(finalNumber);
+                });
+                </text>
+            }
+        }
     });
 </script>
     }
