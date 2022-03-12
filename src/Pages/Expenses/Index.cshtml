@@ -7,7 +7,20 @@
 }
 
 <div class="container-fluid">
+    @if (Model.Message != null)
+    {
+        <div style="position: relative;">
+            <div class="toast fade show mt-3 bg-success" role="alert" id="toast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
 
+                <div class="toast-body d-flex justify-content-between align-items-center">
+                    <i class="bi bi-hand-thumbs-up text-white mx-3" role="img"
+                   style="font-size: 1.5rem;"></i>
+                    @Model.Message
+                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        </div>
+    }
     <div class="row mb-1">
         <div class="col-xl-6 col-12 mb-1 mr-auto">
             <form method="get">
@@ -144,18 +157,10 @@
         </div>
     </div>
     @*End Add Expense Modal*@
-
     @if (!ViewData.ModelState.IsValid)
     {
         <div class="alert alert-dismissible alert-danger offset-3 w-50 text-center mt-0" asp-validation-summary="All">
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-    else if (Model.Message != null)
-    {
-        <div class="alert alert-dismissible alert-success offset-3 w-50 text-center mt-0">
-            <button type="button" class="btn-close" data-bs-dismiss="alert" id="messageDismiss"></button>
-            <h4 class="p-0 text-white">@Model.Message</h4>
         </div>
     }
     else if (Model.ExpenseResponse != null && Model.ExpenseResponse.TotalCount > 0)
@@ -328,19 +333,25 @@
     }
     else
     {
-        <div class="alert alert-dismissible alert-info mt-0 offset-3 w-50 text-center">
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            <h3>No Expenses Found!</h3> Please try again.
+        <div style="position: relative;">
+            <div class="toast fade show mt-3 bg-info" role="alert" id="noExpensesToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
+                <div class="toast-body  d-flex justify-content-between align-items-center">
+                <i class="bi bi-exclamation-circle text-white mx-3" role="img"
+                   style="font-size: 1.5rem;"></i>
+                <span style="font-size: 1.25rem;">No Expenses Found!</span><button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
         </div>
+    </div>
     }
-
 </div>
 
 @section Scripts {
-<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true">
+</script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
 <partial name="_ValidationScriptsPartial" />
 <script type="text/javascript">
+
         const getQueries = () => {
         let queries = [], hash;
         let values = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
@@ -351,11 +362,22 @@
         }
         return queries;
     }
+
     $(document).ready(() => {
         //TODO:
         //Store subcategory and category values in state
         //and then use C# to access those values to set the "selected" option for qInput
         //see https://stackoverflow.com/questions/4599169/using-razor-within-javascript
+
+        //super easy toast notification
+        @if(Model.Message != null)
+        {
+            @:$("#toast").show().delay(2000).fadeOut();
+        }
+        @if(Model.ExpenseResponse == null || Model.ExpenseResponse.TotalCount == 0)
+        {
+            @:$("#noExpensesToast").show().delay(2000).fadeOut();
+        }
 
         //When the query selection option changes
         $("#querySelect").change(() => {
