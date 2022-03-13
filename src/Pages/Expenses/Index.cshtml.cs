@@ -4,6 +4,7 @@ using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.MerchantModels;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.MerchantService;
+using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,10 +17,10 @@ namespace CashTrack.Pages.Expenses
     public class Index : PageModel
     {
         private readonly IExpenseService _expenseService;
-        private readonly IMerchantService _merchantService;
+        private readonly ISubCategoryService _subCategoryService;
 
-        public Index(IExpenseService expenseService, IMerchantService merchantService) =>
-            (_expenseService, _merchantService) = (expenseService, merchantService);
+        public Index(IExpenseService expenseService, ISubCategoryService subCategoryService) =>
+            (_expenseService, _subCategoryService) = (expenseService, subCategoryService);
 
         [BindProperty(SupportsGet = true)]
         public string q { get; set; }
@@ -29,21 +30,20 @@ namespace CashTrack.Pages.Expenses
         public int query { get; set; }
         public ExpenseResponse ExpenseResponse { get; set; }
         public SelectList queryOptions { get; set; }
+        public SelectList SubCategories { get; set; }
         public string inputType { get; set; }
         [BindProperty(SupportsGet = true)]
         public int pageNumber { get; set; } = 1;
         [TempData]
         public string Message { get; set; }
         [BindProperty]
-        public AddEditExpense AddExpense { get; set; }
-        [BindProperty]
-        public string MerchantName { get; set; }
+        public Expense Expense { get; set; }
         [BindProperty]
         public bool CreateNewMerchant { get; set; }
 
         public async Task<ActionResult> OnGet(string q, int query, string q2, int pageNumber)
         {
-            PrepareForm(query);
+            await PrepareForm(query);
 
             if (query == 0 && q != null)
             {
@@ -155,44 +155,15 @@ namespace CashTrack.Pages.Expenses
             TempData["Message"] = "Sucessfully deleted expense!";
             return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
         }
-        public async Task<IActionResult> OnPostAdd(AddEditExpense AddExpense)
+        public async Task<IActionResult> OnPostAdd()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-            //when adding a new expense, we need to get a merchant id to associate with a merchant.
-            //a merchant isn't required, but if one is offered, it needs to be an existing one, if it doesn't exist
-            //we need to create one. This only works if "create new merchant" is checked on the form.
-            if (MerchantName != null)
-            {
-                try
-                {
-                    AddExpense.MerchantId = (await _merchantService.GetMerchantByNameAsync(MerchantName)).Id;
-                }
-                catch (Exception ex) when (ex is MerchantNotFoundException)
-                {
-                    if (!CreateNewMerchant)
-                    {
-                        ModelState.AddModelError("", "Check \"Create New Merchant\" and try again.");
-                        return Page();
-                    }
-                    var merchantCreationSuccess = await _merchantService.CreateMerchantAsync(new AddEditMerchant() { Name = MerchantName });
-                    if (merchantCreationSuccess == null)
-                    {
-                        ModelState.AddModelError("", "Unable to Add the expense - error involving merchant creation.");
-                        return Page();
-                    }
-                    AddExpense.MerchantId = merchantCreationSuccess.Id;
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", ex.Message);
-                    return Page();
-                }
-            }
-            var success = await _expenseService.CreateExpenseAsync(AddExpense);
-            if (success == null)
+
+            var success = await _expenseService.CreateExpenseAsync(Expense);
+            if (!success)
             {
                 ModelState.AddModelError("", "Unable to Add the expense");
                 return Page();
@@ -200,59 +171,31 @@ namespace CashTrack.Pages.Expenses
             TempData["Message"] = "Sucessfully added a new Expense!";
             return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
         }
-        public async Task<IActionResult> OnPostEdit(ExpenseListItem expense)
+        public async Task<IActionResult> OnPostEdit()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-            //when adding a new expense, we need to get a merchant id to associate with a merchant.
-            //a merchant isn't required, but if one is offered, it needs to be an existing one, if it doesn't exist
-            //we need to create one. This only works if "create new merchant" is checked on the form. 
-            if (expense.Merchant != null)
+
+            var success = await _expenseService.UpdateExpenseAsync(Expense);
+            if (!success)
             {
-                try
-                {
-                    AddExpense.MerchantId = (await _merchantService.GetMerchantByNameAsync(MerchantName)).Id;
-                }
-                catch (Exception ex) when (ex is MerchantNotFoundException)
-                {
-                    if (!CreateNewMerchant)
-                    {
-                        ModelState.AddModelError("", "Check \"Create New Merchant\" and try again.");
-                        return Page();
-                    }
-                    var merchantCreationSuccess = await _merchantService.CreateMerchantAsync(new AddEditMerchant() { Name = MerchantName });
-                    if (merchantCreationSuccess == null)
-                    {
-                        ModelState.AddModelError("", "Unable to Add the expense - error involving merchant creation.");
-                        return Page();
-                    }
-                    AddExpense.MerchantId = merchantCreationSuccess.Id;
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", ex.Message);
-                    return Page();
-                }
-            }
-            var success = await _expenseService.CreateExpenseAsync(AddExpense);
-            if (success == null)
-            {
-                ModelState.AddModelError("", "Unable to Add the expense");
+                ModelState.AddModelError("", "Unable to edit the expense");
                 return Page();
             }
-            TempData["Message"] = "Sucessfully added a new Expense!";
+            TempData["Message"] = "Sucessfully edited the expense!";
             return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
         }
-        private void PrepareForm(int query)
+        private async Task PrepareForm(int query)
         {
             if (ExpenseResponse != null)
             {
                 pageNumber = ExpenseResponse.PageNumber;
             }
             queryOptions = new SelectList(ExpenseQueryOptions.GetAll, "Key", "Value", query);
-
+            var subCategories = await _subCategoryService.GetAllSubCategoriesAsync();
+            SubCategories = new SelectList(subCategories, "Key", "Value");
             switch (query)
             {
                 case 0 or 1:

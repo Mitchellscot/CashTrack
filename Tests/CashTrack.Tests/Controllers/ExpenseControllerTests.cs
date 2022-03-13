@@ -22,7 +22,7 @@ namespace CashTrack.Tests.Controllers
         public async void GetById()
         {
             var result = await _sut.GetExpenseDetail(1);
-            var viewResult = Assert.IsType<ActionResult<ExpenseListItem>>(result);
+            var viewResult = Assert.IsType<ActionResult<Expense>>(result);
             _service.Verify(s => s.GetExpenseByIdAsync(It.IsAny<int>()), Times.AtLeastOnce());
         }
         [Fact]

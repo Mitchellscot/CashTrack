@@ -1,6 +1,5 @@
 ﻿using CashTrack.Models.Common;
 using CashTrack.Models.TagModels;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 
@@ -8,11 +7,10 @@ namespace CashTrack.Models.ExpenseModels;
 
 public class ExpenseRequest : TransactionRequest
 {
-
 }
-public class ExpenseResponse : TransactionResponse<ExpenseListItem>
+public class ExpenseResponse : TransactionResponse<Expense>
 {
-    public ExpenseResponse(int pageNumber, int pageSize, int count, IEnumerable<ExpenseListItem> listItems, decimal amount) : base(pageNumber, pageSize, count, listItems, amount)
+    public ExpenseResponse(int pageNumber, int pageSize, int count, IEnumerable<Expense> listItems, decimal amount) : base(pageNumber, pageSize, count, listItems, amount)
     {
     }
 }
@@ -26,23 +24,9 @@ public class AmountSearchRequest : PaginationRequest
     }
 }
 
-public class AddEditExpense : Transaction
+public class Expense : Transaction
 {
-    public AddEditExpense()
-    {
-
-    }
     new public int? Id { get; set; }
-    public string Notes { get; set; }
-    public int? MerchantId { get; set; }
-    //figure this out after you get Tags CRUD set up
-    //public ICollection<Tag> Tags { get; set; }
-    public int SubCategoryId { get; set; }
-    public bool ExcludeFromStatistics { get; set; }
-    public SelectListItem SelectList { get; set; }
-}
-public class ExpenseListItem : Transaction
-{
     public string Notes { get; set; }
     public string Merchant { get; set; }
     public ICollection<TagModel> Tags { get; set; }

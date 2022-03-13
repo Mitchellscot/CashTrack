@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace CashTrack.Services.SubCategoryService;
 
@@ -16,7 +17,7 @@ public interface ISubCategoryService
     Task<SubCategoryResponse> GetSubCategoriesAsync(SubCategoryRequest request);
     Task<SubCategoryDetail> GetSubCategoryDetailsAsync(int id);
     Task<AddEditSubCategory> CreateSubCategoryAsync(AddEditSubCategory request);
-    Task<SubCategoryListItem[]> GetAllSubCategoriesAsync();
+    Task<Dictionary<int, string>> GetAllSubCategoriesAsync();
     Task<bool> UpdateSubCategoryAsync(AddEditSubCategory request);
     Task<bool> DeleteSubCategoryAsync(int id);
 }
@@ -91,10 +92,9 @@ public class SubCategoryService : ISubCategoryService
         throw new NotImplementedException();
     }
 
-    public async Task<SubCategoryListItem[]> GetAllSubCategoriesAsync()
+    public async Task<Dictionary<int, string>> GetAllSubCategoriesAsync()
     {
-        var subCategories = await _subCategoryRepo.Find(x => x.in_use == true);
-        return _mapper.Map<SubCategoryListItem[]>(subCategories);
+        return (await _subCategoryRepo.Find(x => x.in_use == true)).ToDictionary(x => x.Id, x => x.sub_category_name);
     }
 }
 

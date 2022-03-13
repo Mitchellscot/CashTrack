@@ -20,8 +20,8 @@ public interface IExpenseService
     Task<ExpenseResponse> GetExpensesByAmountAsync(AmountSearchRequest request);
     Task<ExpenseResponse> GetExpensesBySubCategoryIdAsync(ExpenseRequest request);
     Task<ExpenseResponse> GetExpensesByMerchantAsync(ExpenseRequest request);
-    Task<AddEditExpense> CreateExpenseAsync(AddEditExpense request);
-    Task<bool> UpdateExpenseAsync(AddEditExpense request);
+    Task<bool> CreateExpenseAsync(Expense request);
+    Task<bool> UpdateExpenseAsync(Expense request);
     Task<bool> DeleteExpenseAsync(int id);
 }
 public class ExpenseService : IExpenseService
@@ -46,7 +46,7 @@ public class ExpenseService : IExpenseService
         var count = await _expenseRepo.GetCount(predicate);
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
 
-        return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<ExpenseListItem[]>(expenses), amount);
+        return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Expense[]>(expenses), amount);
     }
     public async Task<ExpenseResponse> GetExpensesByNotesAsync(ExpenseRequest request)
     {
@@ -55,7 +55,7 @@ public class ExpenseService : IExpenseService
         var count = await _expenseRepo.GetCount(predicate);
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
 
-        return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<ExpenseListItem[]>(expenses), amount);
+        return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Expense[]>(expenses), amount);
     }
     public async Task<ExpenseResponse> GetExpensesBySubCategoryIdAsync(ExpenseRequest request)
     {
@@ -64,7 +64,7 @@ public class ExpenseService : IExpenseService
         var count = await _expenseRepo.GetCount(predicate);
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
 
-        return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<ExpenseListItem[]>(expenses), amount);
+        return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Expense[]>(expenses), amount);
     }
     public async Task<ExpenseResponse> GetExpensesByMerchantAsync(ExpenseRequest request)
     {
@@ -73,7 +73,7 @@ public class ExpenseService : IExpenseService
         var count = await _expenseRepo.GetCount(predicate);
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
 
-        return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<ExpenseListItem[]>(expenses), amount);
+        return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Expense[]>(expenses), amount);
     }
     public async Task<ExpenseResponse> GetExpensesByAmountAsync(AmountSearchRequest request)
     {
@@ -81,28 +81,24 @@ public class ExpenseService : IExpenseService
         var expenses = await _expenseRepo.FindWithPagination(x => x.amount == request.Query, request.PageNumber, request.PageSize);
         var count = await _expenseRepo.GetCount(predicate);
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
-        return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<ExpenseListItem[]>(expenses), amount);
+        return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Expense[]>(expenses), amount);
     }
-    public async Task<AddEditExpense> CreateExpenseAsync(AddEditExpense request)
+    public async Task<bool> CreateExpenseAsync(Expense request)
     {
         if (request.Id != null)
             throw new ArgumentException("Request must not contain an id in order to create an expense.");
 
         var expense = _mapper.Map<Expenses>(request);
-        var success = await _expenseRepo.Create(expense);
-        if (!success)
-            throw new Exception("Couldn't save expense to the database.");
 
-        request.Id = expense.Id;
-
-        return request;
+        return await _expenseRepo.Create(expense);
     }
-    public async Task<bool> UpdateExpenseAsync(AddEditExpense request)
+    public async Task<bool> UpdateExpenseAsync(Expense request)
     {
         if (request.Id == null)
             throw new ArgumentException("Need an id to update an expense");
 
         var expense = _mapper.Map<Expenses>(request);
+
         return await _expenseRepo.Update(expense);
     }
     public async Task<bool> DeleteExpenseAsync(int id)
@@ -117,7 +113,7 @@ public class ExpenseMapperProfile : Profile
     public ExpenseMapperProfile()
     {
 
-        CreateMap<Expenses, ExpenseListItem>()
+        CreateMap<Expenses, Expense>()
             .ForMember(e => e.Id, o => o.MapFrom(src => src.Id))
             .ForMember(e => e.Date, o => o.MapFrom(src => src.date))
             .ForMember(e => e.Amount, o => o.MapFrom(src => src.amount))
@@ -128,15 +124,6 @@ public class ExpenseMapperProfile : Profile
             .ForMember(e => e.ExcludeFromStatistics, o => o.MapFrom(src => src.exclude_from_statistics))
             .ForMember(e => e.Tags, o => o.MapFrom(
                 src => src.expense_tags.Select(a => new TagModel() { Id = a.tag_id, TagName = a.tag.tag_name })));
-
-        CreateMap<AddEditExpense, Expenses>()
-            .ForMember(e => e.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(e => e.date, o => o.MapFrom(src => src.Date.ToUniversalTime()))
-            .ForMember(e => e.amount, o => o.MapFrom(src => src.Amount))
-            .ForMember(e => e.notes, o => o.MapFrom(src => src.Notes))
-            .ForMember(e => e.merchantid, o => o.MapFrom(src => src.MerchantId))
-            .ForMember(e => e.categoryid, o => o.MapFrom(src => src.SubCategoryId))
-            .ReverseMap();
 
         //goes it Tags Service when created
         CreateMap<Tags, TagModel>()
