@@ -28,26 +28,25 @@ public class AuthenticationValidator : AbstractValidator<AuthenticationModels.Re
 }
 
 /*  EXPENSES */
-public class AddEditExpenseValidators : AbstractValidator<AddEditExpense>
+public class ExpenseValidators : AbstractValidator<Expense>
 {
-    public AddEditExpenseValidators(ISubCategoryRepository _categoryRepo, IMerchantRepository _merchantRepo)
+    public ExpenseValidators(ISubCategoryRepository _categoryRepo, IMerchantRepository _merchantRepo)
     {
         RuleFor(x => x.Amount).NotEmpty().GreaterThan(0);
         RuleFor(x => x.Date).NotEmpty();
         RuleFor(x => x.Date).Must(x => x < DateTime.Today.AddDays(1)).WithMessage("The Purchase Date cannot be in the future.");
-        RuleFor(x => x.SubCategoryId).NotEmpty().GreaterThan(0).WithMessage("Must provide a category ID");
-        RuleFor(x => x.SubCategoryId).MustAsync(async (model, value, _) =>
+        RuleFor(x => x.SubCategory).MustAsync(async (model, value, _) =>
         {
-            return (await _categoryRepo.Find(x => true)).Any(x => x.Id == value);
-        }).WithMessage("Invalid Category Id");
+            return (await _categoryRepo.Find(x => true)).Any(x => x.sub_category_name == value);
+        }).WithMessage("Invalid Category Name");
 
-        When(x => x.MerchantId != null,
+        When(x => x.Merchant != null,
             () =>
             {
-                RuleFor(x => x.MerchantId).GreaterThan(0).MustAsync(async (model, value, _) =>
+                RuleFor(x => x.Merchant).MustAsync(async (model, value, _) =>
                 {
-                    return ((int)await _merchantRepo.GetCount(x => true)) > value;
-                }).WithMessage("Invalid Merchant Id");
+                    return (await _merchantRepo.Find(x => true)).Any(x => x.name == value);
+                }).WithMessage("Invalid Merchant Name");
             });
     }
 }

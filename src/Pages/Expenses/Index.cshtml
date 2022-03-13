@@ -77,30 +77,30 @@
                               id="addExpenseForm">
                             <div class="row mb-3">
                                 <div class="col-4">
-                                    <label class="visually-hidden" asp-for="@Model.AddExpense.Date">Date</label>
+                                    <label class="visually-hidden" asp-for="@Model.Expense.Date">Date</label>
                                     <div class="input-group">
                                         <div class="input-group-text text-center">Date</div>
-                                        <input data-val="true" asp-for=@Model.AddExpense.Date type="date" class="form-control" id="addExpenseDate">
-                                        <span asp-validation-for="@Model.AddExpense.Date"></span>
+                                        <input data-val="true" asp-for=@Model.Expense.Date type="date" class="form-control" id="addExpenseDate">
+                                        <span asp-validation-for="@Model.Expense.Date"></span>
 
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <label class="visually-hidden" asp-for="@Model.AddExpense.Amount">Amount</label>
+                                    <label class="visually-hidden" asp-for="@Model.Expense.Amount">Amount</label>
                                     <div class="input-group">
                                         <div class="input-group-text">$</div>
                                         <input data-val="true"
-                                               asp-for=@Model.AddExpense.Amount type="number" min="0.00" step="any" class="form-control" id="addExpenseAmount" placeholder="0.00">
-                                        <span asp-validation-for="@Model.AddExpense.Amount"></span>
+                                               asp-for=@Model.Expense.Amount type="number" min="0.00" step="any" class="form-control" id="addExpenseAmount" placeholder="0.00">
+                                        <span asp-validation-for="@Model.Expense.Amount"></span>
 
                                     </div>
                                 </div>
                                 <div class="col-4 align-self-center border rounded py-1">
                                     <div class="form-check form-switch ">
-                                        <label class="form-check-label" asp-for="AddExpense.ExcludeFromStatistics">Exclude From Statistics</label>
+                                        <label class="form-check-label" asp-for="Expense.ExcludeFromStatistics">Exclude From Statistics</label>
                                         <input class="form-check-input" type="checkbox" role="switch" id="addExpenseExcludeBool" data-val="true"
-                                               asp-for="AddExpense.ExcludeFromStatistics" />
-                                        <span asp-validation-for="@Model.AddExpense.ExcludeFromStatistics"></span>
+                                               asp-for="Expense.ExcludeFromStatistics" />
+                                        <span asp-validation-for="@Model.Expense.ExcludeFromStatistics"></span>
                                     </div>
                                 </div>
                             </div>
@@ -108,9 +108,9 @@
                                 <div class="col-8">
                                     <div class="input-group">
                                         <div class="input-group-text">Category</div>
-                                        <label class="visually-hidden" asp-for="@Model.AddExpense.SubCategoryId">Category</label>
+                                        <label class="visually-hidden" asp-for="@Model.Expense.SubCategory">Category</label>
                                         <select data-val="true"
-                                                asp-for=@Model.AddExpense.SubCategoryId
+                                                asp-for=@Model.Expense.SubCategory
                                                 class="form-control text-center"
                                                 id="addExpenseSubCategory">
                                         </select>
@@ -126,9 +126,9 @@
                                 <div class="col-8">
                                     <div class="input-group">
                                         <div class="input-group-text">Merchant</div>
-                                        <label class="visually-hidden" asp-for="MerchantName">Merchant</label>
-                                        <input class="form-control" data-val="true" type="text" asp-for="MerchantName" id="addExpenseMerchantName" />
-                                        <span asp-validation-for="@Model.MerchantName"></span>
+                                        <label class="visually-hidden" asp-for="Expense.Merchant">Merchant</label>
+                                        <input class="form-control" data-val="true" type="text" asp-for="Expense.Merchant" id="addExpenseMerchantName" />
+                                        <span asp-validation-for="Expense.Merchant"></span>
                                     </div>
                                 </div>
                                 <div class="col-4 align-self-center border rounded py-1">
@@ -140,9 +140,9 @@
                                 </div>
                             </div>
                             <div class="row mb-3 px-1">
-                                <label class="visually-hidden" asp-for="@Model.AddExpense.Notes"></label>
-                                <textarea class="form-control" asp-for="@Model.AddExpense.Notes" id="addExpenseNotes" rows="3" placeholder="Notes"></textarea>
-                                <span asp-validation-for="@Model.AddExpense.Notes"></span>
+                                <label class="visually-hidden" asp-for="@Model.Expense.Notes"></label>
+                                <textarea class="form-control" asp-for="@Model.Expense.Notes" id="addExpenseNotes" rows="3" placeholder="Notes"></textarea>
+                                <span asp-validation-for="@Model.Expense.Notes"></span>
                             </div>
                         </form>
                     </div>
@@ -254,7 +254,7 @@
                                         <i class="bi bi-pencil text-primary" role="img"
                                    style="font-size: 1.25rem;"></i>
                                     </button>
-                                    @* Add Expense Modal *@
+                                    @* Edit Expense Modal *@
                                     <div class="modal fade" id="editExpenseModal-@expense.Id">
                                         <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
@@ -269,6 +269,7 @@
                                                       asp-page="./Index"
                                                       asp-page-handler="Edit"
                                                       id="editExpenseForm-@expense.Id">
+                                                      <input type="hidden" asp-for="@expense.Id" />
                                                             <div class="row mb-3">
                                                                 <div class="col-4">
                                                                     <label class="visually-hidden" asp-for="@expense.Date">
@@ -581,12 +582,13 @@
                     $("#qInput").hide();
                     $("#categorySelect").show();
                     $.ajax({
-                        url: `/api/subcategory/all`,
+                        url: `/api/subcategory`,
                         method: 'GET'
                     }).then((response) => {
                         $("#categorySelect").empty();
-                        for (let category of response) {
-                            $("#categorySelect").append(`<option value=${category.id}>${category.name}</option>`);
+                        console.log(response);
+                        for (let category in response) {
+                            $("#categorySelect").append(`<option value=${category.Key}>${category.Value}</option>`);
                         }
                     }).catch((error) => alert(error));
                     break;
@@ -665,19 +667,19 @@
             if (selectListValue === "7") {
                 let searchTerm = $("#qInput").val();
                 $.ajax({
-                    url: `/api/merchants/match?merchantName=${searchTerm}`,
+                    url: `/api/merchants?merchantName=${searchTerm}`,
                     method: 'GET'
                 }).then((response) => {
                     $("#qInput").empty();
                     $("#qInput").autocomplete({ source: response });
-                });
+                }).catch((error) => console.log(error));
             }
         });
 
          $("#addExpenseMerchantName").on("input", () => {
              let merchantName = $("#addExpenseMerchantName").val();
              $.ajax({
-                 url: `/api/merchants/match?merchantName=${merchantName}`,
+                 url: `/api/merchants?merchantName=${merchantName}`,
                  method: 'GET'
              }).then((response) => {
                  console.log(response);
@@ -707,12 +709,12 @@
         $("#addExpenseButton").click(() =>{
             $("#addExpenseMainCategory").val('');
             $.ajax({
-                url: `/api/subcategory/all`,
+                url: `/api/subcategory`,
                 method: 'GET'
             }).then((response) => {
                 $("#addExpenseSubCategory").empty();
                 for (let category of response) {
-                    $("#addExpenseSubCategory").append(`<option value=${category.id}>${category.name}</option>`);
+                    $("#addExpenseSubCategory").append(`<option value=${category.Key}>${category.Value}</option>`);
                 }});
         });
         //loads the main category after sub category is chosen on add expense modal
@@ -747,7 +749,7 @@
                 <text>$("#editExpenseButton-@id.Key").click(() =>{
                     let subCategory = $("#editExpenseSubCategory-@id.Key").val();
                     $.ajax({
-                        url: `/api/subcategory/all`,
+                        url: `/api/subcategory`,
                         method: 'GET'
                     }).then((response) => {
                         $("#editExpenseSubCategory-@id.Key").empty();
@@ -765,7 +767,7 @@
                 <text>$("#editExpenseMerchantName-@id.Key").on("input", () => {
                     let editSearchTerm = $("#editExpenseMerchantName-@id.Key").val();
                     $.ajax({
-                        url: `/api/merchants/match?merchantName=${editSearchTerm}`,
+                        url: `/api/merchants?merchantName=${editSearchTerm}`,
                         method: 'GET'
                     }).then((response) => {
                         $("#editExpenseMerchantName-@id.Key").empty();

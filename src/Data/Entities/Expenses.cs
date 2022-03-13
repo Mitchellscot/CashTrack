@@ -1,4 +1,5 @@
-﻿using CashTrack.Data.Entities.Common;
+﻿#nullable enable
+using CashTrack.Data.Entities.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
