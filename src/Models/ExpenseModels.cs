@@ -33,6 +33,7 @@ public class Expense : Transaction
     public string SubCategory { get; set; }
     public string MainCategory { get; set; }
     public bool ExcludeFromStatistics { get; set; }
+    public bool CreateNewMerchant { get; set; }
 }
 public class ExpenseQuickView : Transaction
 {

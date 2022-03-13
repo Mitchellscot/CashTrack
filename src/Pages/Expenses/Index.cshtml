@@ -11,7 +11,6 @@
     {
         <div style="position: relative;">
             <div class="toast fade show mt-3 bg-success" role="alert" id="toast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
-
                 <div class="toast-body d-flex justify-content-between align-items-center">
                     <i class="bi bi-hand-thumbs-up text-white mx-3" role="img"
                    style="font-size: 1.5rem;"></i>
@@ -73,7 +72,7 @@
                     <div class="container-fluid">
                         <form method="post"
                               asp-page="./Index"
-                              asp-page-handler="Add"
+                              asp-page-handler="AddEdit"
                               id="addExpenseForm">
                             <div class="row mb-3">
                                 <div class="col-4">
@@ -82,7 +81,6 @@
                                         <div class="input-group-text text-center">Date</div>
                                         <input data-val="true" asp-for=@Model.Expense.Date type="date" class="form-control" id="addExpenseDate">
                                         <span asp-validation-for="@Model.Expense.Date"></span>
-
                                     </div>
                                 </div>
                                 <div class="col-4">
@@ -113,6 +111,7 @@
                                                 asp-for=@Model.Expense.SubCategory
                                                 class="form-control text-center"
                                                 id="addExpenseSubCategory">
+                                                <option value="" selected disabled hidden>Select</option>
                                         </select>
                                         <div class="input-group-text">Main Category</div>
                                         <input disabled type="text" class="form-control text-center bg-white" id="addExpenseMainCategory" required />
@@ -121,6 +120,7 @@
                                 <div class="col-4 d-flex justify-content-center">
                                     <a class="btn btn-secondary" type="button" asp-page="/SubCategory/Add">Add New Category</a>
                                 </div>
+                                <span style="color: red;"asp-validation-for="Expense.SubCategory"></span>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-8">
@@ -128,22 +128,22 @@
                                         <div class="input-group-text">Merchant</div>
                                         <label class="visually-hidden" asp-for="Expense.Merchant">Merchant</label>
                                         <input class="form-control" data-val="true" type="text" asp-for="Expense.Merchant" id="addExpenseMerchantName" />
-                                        <span asp-validation-for="Expense.Merchant"></span>
                                     </div>
                                 </div>
                                 <div class="col-4 align-self-center border rounded py-1">
                                     <div class="form-check ">
-                                        <label class="form-check-label" asp-for="CreateNewMerchant">Create New Merchant</label>
+                                        <label class="form-check-label" asp-for="@Model.Expense.CreateNewMerchant">Create New Merchant</label>
                                         <input class="form-check-input" type="checkbox" role="switch" id="addExpenseCreateNewMerchant"
-                                               asp-for="CreateNewMerchant" />
+                                               asp-for="@Model.Expense.CreateNewMerchant" />
                                     </div>
                                 </div>
+                                <span style="color: red;"asp-validation-for="Expense.Merchant"></span>
                             </div>
                             <div class="row mb-3 px-1">
                                 <label class="visually-hidden" asp-for="@Model.Expense.Notes"></label>
                                 <textarea class="form-control" asp-for="@Model.Expense.Notes" id="addExpenseNotes" rows="3" placeholder="Notes"></textarea>
-                                <span asp-validation-for="@Model.Expense.Notes"></span>
                             </div>
+                            <span style="color: red;" asp-validation-for="@Model.Expense.Notes"></span>
                         </form>
                     </div>
                 </div>
@@ -159,8 +159,13 @@
     @*End Add Expense Modal*@
     @if (!ViewData.ModelState.IsValid)
     {
-        <div class="alert alert-dismissible alert-danger offset-3 w-50 text-center mt-0" asp-validation-summary="All">
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <div style="position: relative;">
+            <div class="toast fade show mt-3 bg-danger" role="alert" id="modelStateToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
+                <div class="toast-body d-flex align-items-center"  asp-validation-summary="All">
+                    <i class="bi bi-x-circle text-white mx-3" role="img"
+                   style="font-size: 1.5rem;"></i>
+                </div>
+            </div>
         </div>
     }
     else if (Model.ExpenseResponse != null && Model.ExpenseResponse.TotalCount > 0)
@@ -267,7 +272,7 @@
                                                     <div class="container-fluid">
                                                         <form method="post"
                                                       asp-page="./Index"
-                                                      asp-page-handler="Edit"
+                                                      asp-page-handler="AddEdit"
                                                       id="editExpenseForm-@expense.Id">
                                                       <input type="hidden" asp-for="@expense.Id" />
                                                             <div class="row mb-3">
@@ -326,12 +331,14 @@
                                                                        asp-for="@expense.MainCategory"
                                                                        class="form-control text-center bg-white"
                                                                        id="editExpenseMainCategory-@expense.Id" required />
+                                                                       
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-4 d-flex justify-content-center">
                                                                     <a class="btn btn-secondary" type="button"
                                                                asp-page="/SubCategory/Add">Add New Category</a>
                                                                 </div>
+                                                                <span style="color: red;" asp-validation-for="@expense.SubCategory"></span>
                                                             </div>
                                                             <div class="row mb-3">
                                                                 <div class="col-8">
@@ -343,17 +350,16 @@
                                                                        data-val="true" type="text"
                                                                        asp-for="@expense.Merchant"
                                                                        id="editExpenseMerchantName-@expense.Id" />
-                                                                        <span asp-validation-for="@expense.Merchant"></span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-4 align-self-center border rounded py-1">
                                                                     <div class="form-check ">
                                                                         <label class="form-check-label"
-                                                                       asp-for="CreateNewMerchant">Create New Merchant</label>
+                                                                       asp-for="@Model.Expense.CreateNewMerchant">Create New Merchant</label>
                                                                         <input class="form-check-input"
                                                                        type="checkbox" role="switch"
                                                                        id="editExpenseCreateNewMerchant-@expense.Id"
-                                                                       asp-for="CreateNewMerchant" />
+                                                                       asp-for="@Model.Expense.CreateNewMerchant" />
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -362,8 +368,9 @@
                                                                asp-for="@expense.Notes"></label>
                                                                 <textarea class="form-control" asp-for="@expense.Notes"
                                                                   id="editExpenseNotes-@expense.Id" rows="3" placeholder="Notes"></textarea>
-                                                                <span asp-validation-for="@expense.Notes"></span>
                                                             </div>
+                                                            <span style="color: red;" asp-validation-for="@expense.Notes"></span>
+                                                            <span style="color: red;" asp-validation-for="@expense.Merchant"></span>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -502,6 +509,10 @@
         {
             @:$("#noExpensesToast").show().delay(2000).fadeOut();
         }
+        @if(!ModelState.IsValid)
+        {
+            @:$("#modelStateToast").show().delay(4000).fadeOut();
+        }
 
         //When the query selection option changes
         $("#querySelect").change(() => {
@@ -587,8 +598,9 @@
                     }).then((response) => {
                         $("#categorySelect").empty();
                         console.log(response);
-                        for (let category in response) {
-                            $("#categorySelect").append(`<option value=${category.Key}>${category.Value}</option>`);
+                        for (let category of response) {
+                            console.log(category);
+                            $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
                         }
                     }).catch((error) => alert(error));
                     break;
@@ -713,8 +725,9 @@
                 method: 'GET'
             }).then((response) => {
                 $("#addExpenseSubCategory").empty();
+                $("#addExpenseSubCategory").append(`<option value="" selected disabled hidden>Select</option>`);
                 for (let category of response) {
-                    $("#addExpenseSubCategory").append(`<option value=${category.Key}>${category.Value}</option>`);
+                    $("#addExpenseSubCategory").append(`<option value=${category.id}>${category.category}</option>`);
                 }});
         });
         //loads the main category after sub category is chosen on add expense modal
@@ -727,8 +740,6 @@
                     $("#addExpenseMainCategory").prop(`value`, `${response}`);
                 }).catch((error) => console.log(error));
         });
-
-        $("#messageDismiss").click(() => location.reload());
 
         @if(@Model.ExpenseResponse != null && @Model.ExpenseResponse.ListItems.Count() > 0)
         {
@@ -754,12 +765,12 @@
                     }).then((response) => {
                         $("#editExpenseSubCategory-@id.Key").empty();
                         for (let category of response) {
-                            if(category.name === "@id.Value")
+                            if(category.category === "@id.Value")
                             {
-                                $("#editExpenseSubCategory-@id.Key").append(`<option selected value=${category.id}>${category.name}</option>`);
+                                $("#editExpenseSubCategory-@id.Key").append(`<option selected value=${category.id}>${category.category}</option>`);
                             }
                             else{
-                                $("#editExpenseSubCategory-@id.Key").append(`<option value=${category.id}>${category.name}</option>`);
+                                $("#editExpenseSubCategory-@id.Key").append(`<option value=${category.id}>${category.category}</option>`);
                             }
                         }});
                         });

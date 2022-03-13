@@ -17,7 +17,7 @@ public interface ISubCategoryService
     Task<SubCategoryResponse> GetSubCategoriesAsync(SubCategoryRequest request);
     Task<SubCategoryDetail> GetSubCategoryDetailsAsync(int id);
     Task<AddEditSubCategory> CreateSubCategoryAsync(AddEditSubCategory request);
-    Task<Dictionary<int, string>> GetAllSubCategoriesAsync();
+    Task<SubCategoryDropdownSelection[]> GetSubCategoryDropdownListAsync();
     Task<bool> UpdateSubCategoryAsync(AddEditSubCategory request);
     Task<bool> DeleteSubCategoryAsync(int id);
 }
@@ -92,9 +92,13 @@ public class SubCategoryService : ISubCategoryService
         throw new NotImplementedException();
     }
 
-    public async Task<Dictionary<int, string>> GetAllSubCategoriesAsync()
+    public async Task<SubCategoryDropdownSelection[]> GetSubCategoryDropdownListAsync()
     {
-        return (await _subCategoryRepo.Find(x => x.in_use == true)).ToDictionary(x => x.Id, x => x.sub_category_name);
+        return (await _subCategoryRepo.Find(x => x.in_use == true)).Select(x => new SubCategoryDropdownSelection()
+        {
+            Id = x.Id,
+            Category = x.sub_category_name
+        }).ToArray();
     }
 }
 

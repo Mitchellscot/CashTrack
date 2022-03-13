@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
+using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.TagModels;
 using CashTrack.Repositories.ExpenseRepository;
+using CashTrack.Repositories.MerchantRepository;
+using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Services.Common;
 using System;
 using System.Linq;
@@ -26,11 +29,15 @@ public interface IExpenseService
 }
 public class ExpenseService : IExpenseService
 {
+    private readonly ISubCategoryRepository _subCategoryRepository;
+    private readonly IMerchantRepository _merchantRepository;
     private readonly IExpenseRepository _expenseRepo;
     private readonly IMapper _mapper;
 
-    public ExpenseService(IExpenseRepository expenseRepository, IMapper mapper)
+    public ExpenseService(IExpenseRepository expenseRepository, IMerchantRepository merchantRepository, ISubCategoryRepository subCategoryRepository, IMapper mapper)
     {
+        _subCategoryRepository = subCategoryRepository;
+        _merchantRepository = merchantRepository;
         _expenseRepo = expenseRepository;
         _mapper = mapper;
     }
@@ -85,21 +92,46 @@ public class ExpenseService : IExpenseService
     }
     public async Task<bool> CreateExpenseAsync(Expense request)
     {
-        if (request.Id != null)
-            throw new ArgumentException("Request must not contain an id in order to create an expense.");
+        if (string.IsNullOrEmpty(request.SubCategory))
+            throw new CategoryNotFoundException("null");
+        var expenseEntity = new Expenses()
+        {
+            amount = request.Amount,
+            date = request.Date,
+            categoryid = int.Parse(request.SubCategory),
+            exclude_from_statistics = request.ExcludeFromStatistics,
+            notes = request.Notes,
+            merchantid = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant)
+            //add expense_tags in the future
+        };
 
-        var expense = _mapper.Map<Expenses>(request);
-
-        return await _expenseRepo.Create(expense);
+        return await _expenseRepo.Create(expenseEntity);
     }
     public async Task<bool> UpdateExpenseAsync(Expense request)
     {
         if (request.Id == null)
             throw new ArgumentException("Need an id to update an expense");
 
-        var expense = _mapper.Map<Expenses>(request);
+        if (string.IsNullOrEmpty(request.SubCategory))
+            throw new CategoryNotFoundException("null");
 
-        return await _expenseRepo.Update(expense);
+        var currentExpense = await _expenseRepo.Find(x => x.Id == request.Id.Value);
+        if (currentExpense == null)
+            throw new ExpenseNotFoundException(request.Id.Value.ToString());
+
+        var expenseEntity = new Expenses()
+        {
+            Id = request.Id.Value,
+            amount = request.Amount,
+            date = request.Date,
+            categoryid = int.Parse(request.SubCategory),
+            exclude_from_statistics = request.ExcludeFromStatistics,
+            notes = request.Notes,
+            merchantid = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant)
+            //add expense_tags in the future
+        };
+
+        return await _expenseRepo.Update(expenseEntity);
     }
     public async Task<bool> DeleteExpenseAsync(int id)
     {

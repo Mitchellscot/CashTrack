@@ -38,3 +38,8 @@ public class SubCategoryDetail : Category
     //recent expenses in a give category with link to view all expenses by given category
 
 }
+public class SubCategoryDropdownSelection
+{
+    public int Id { get; set; }
+    public string Category { get; set; }
+}
