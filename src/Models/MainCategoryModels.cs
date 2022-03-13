@@ -25,4 +25,9 @@ public class MainCategoryDetail : Category
     public SubCategoryListItem[] SubCategories { get; set; }
     //Think of a stats object like merchant detail with every year and a bar graph of expenses by sub category for each year,
 }
+public class MainCategoryDropdownSelection
+{
+    public int Id { get; set; }
+    public string Category { get; set; }
+}
 

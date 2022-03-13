@@ -17,6 +17,7 @@ namespace CashTrack.Services.MainCategoriesService
         Task<MainCategoryDetail> GetMainCategoryDetailAsync(int id);
         Task<string> GetMainCategoryNameBySubCategoryIdAsync(int id);
         Task<AddEditMainCategory> CreateMainCategoryAsync(AddEditMainCategory request);
+        Task<MainCategoryDropdownSelection[]> GetMainCategoriesForDropdownListAsync();
         Task<bool> UpdateMainCategoryAsync(AddEditMainCategory request);
         Task<bool> DeleteMainCategoryAsync(int id);
     }
@@ -80,6 +81,14 @@ namespace CashTrack.Services.MainCategoriesService
             return response;
         }
 
+        public async Task<MainCategoryDropdownSelection[]> GetMainCategoriesForDropdownListAsync()
+        {
+            return (await _mainCategoryRepo.Find(x => true)).Select(x => new MainCategoryDropdownSelection()
+            {
+                Id = x.Id,
+                Category = x.main_category_name
+            }).ToArray();
+        }
 
         public Task<MainCategoryDetail> GetMainCategoryDetailAsync(int id)
         {

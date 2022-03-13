@@ -23,21 +23,18 @@ public interface IExpenseService
     Task<ExpenseResponse> GetExpensesByAmountAsync(AmountSearchRequest request);
     Task<ExpenseResponse> GetExpensesBySubCategoryIdAsync(ExpenseRequest request);
     Task<ExpenseResponse> GetExpensesByMerchantAsync(ExpenseRequest request);
+    Task<ExpenseResponse> GetExpensesByMainCategoryAsync(ExpenseRequest request);
     Task<bool> CreateExpenseAsync(Expense request);
     Task<bool> UpdateExpenseAsync(Expense request);
     Task<bool> DeleteExpenseAsync(int id);
 }
 public class ExpenseService : IExpenseService
 {
-    private readonly ISubCategoryRepository _subCategoryRepository;
-    private readonly IMerchantRepository _merchantRepository;
     private readonly IExpenseRepository _expenseRepo;
     private readonly IMapper _mapper;
 
-    public ExpenseService(IExpenseRepository expenseRepository, IMerchantRepository merchantRepository, ISubCategoryRepository subCategoryRepository, IMapper mapper)
+    public ExpenseService(IExpenseRepository expenseRepository, IMapper mapper)
     {
-        _subCategoryRepository = subCategoryRepository;
-        _merchantRepository = merchantRepository;
         _expenseRepo = expenseRepository;
         _mapper = mapper;
     }
@@ -138,6 +135,16 @@ public class ExpenseService : IExpenseService
         var expense = await _expenseRepo.FindById(id);
 
         return await _expenseRepo.Delete(expense);
+    }
+
+    public async Task<ExpenseResponse> GetExpensesByMainCategoryAsync(ExpenseRequest request)
+    {
+        Expression<Func<Expenses, bool>> predicate = x => x.category.main_categoryid == int.Parse(request.Query);
+        var expenses = await _expenseRepo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
+        var count = await _expenseRepo.GetCount(predicate);
+        var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
+
+        return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Expense[]>(expenses), amount);
     }
 }
 public class ExpenseMapperProfile : Profile
