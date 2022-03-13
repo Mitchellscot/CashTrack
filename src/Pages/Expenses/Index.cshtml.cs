@@ -5,6 +5,7 @@ using CashTrack.Models.MerchantModels;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,9 +19,10 @@ namespace CashTrack.Pages.Expenses
     {
         private readonly IExpenseService _expenseService;
         private readonly ISubCategoryService _subCategoryService;
+        private readonly IMerchantService _merchantService;
 
-        public Index(IExpenseService expenseService, ISubCategoryService subCategoryService) =>
-            (_expenseService, _subCategoryService) = (expenseService, subCategoryService);
+        public Index(IExpenseService expenseService, ISubCategoryService subCategoryService, IMerchantService merchantService) =>
+            (_expenseService, _subCategoryService, _merchantService) = (expenseService, subCategoryService, merchantService);
 
         [BindProperty(SupportsGet = true)]
         public string q { get; set; }
@@ -38,8 +40,6 @@ namespace CashTrack.Pages.Expenses
         public string Message { get; set; }
         [BindProperty]
         public Expense Expense { get; set; }
-        [BindProperty]
-        public bool CreateNewMerchant { get; set; }
 
         public async Task<ActionResult> OnGet(string q, int query, string q2, int pageNumber)
         {
@@ -155,37 +155,42 @@ namespace CashTrack.Pages.Expenses
             TempData["Message"] = "Sucessfully deleted expense!";
             return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
         }
-        public async Task<IActionResult> OnPostAdd()
+        public async Task<IActionResult> OnPostAddEdit()
         {
+            var IsEdit = Expense.Id.HasValue ? false : true;
             if (!ModelState.IsValid)
             {
                 return Page();
             }
+            try
+            {
+                if (Expense.CreateNewMerchant && !string.IsNullOrEmpty(Expense.Merchant))
+                {
+                    var merchantCreationSuccess = await _merchantService.CreateMerchantAsync(new AddEditMerchant() { Name = Expense.Merchant });
+                }
+                //converting the merchant name to a string ID
+                if (!string.IsNullOrEmpty(Expense.Merchant))
+                    Expense.Merchant = (await _merchantService.GetMerchantByNameAsync(Expense.Merchant)).Id.ToString();
 
-            var success = await _expenseService.CreateExpenseAsync(Expense);
-            if (!success)
+                var success = IsEdit ? await _expenseService.CreateExpenseAsync(Expense) : await _expenseService.CreateExpenseAsync(Expense);
+                if (!success)
+                {
+                    ModelState.AddModelError("", IsEdit ? "An error occured while adding the expense." : "An error occured while updating the expense.");
+                    return Page();
+                }
+                TempData["Message"] = IsEdit ? "Sucessfully added a new Expense!" : "Sucessfully updated the Expense!";
+                return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
+            }
+            catch (CategoryNotFoundException)
             {
-                ModelState.AddModelError("", "Unable to Add the expense");
+                ModelState.AddModelError("", "Please select a category and try again");
                 return Page();
             }
-            TempData["Message"] = "Sucessfully added a new Expense!";
-            return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
-        }
-        public async Task<IActionResult> OnPostEdit()
-        {
-            if (!ModelState.IsValid)
+            catch (Exception ex)
             {
+                ModelState.AddModelError("", ex.Message);
                 return Page();
             }
-
-            var success = await _expenseService.UpdateExpenseAsync(Expense);
-            if (!success)
-            {
-                ModelState.AddModelError("", "Unable to edit the expense");
-                return Page();
-            }
-            TempData["Message"] = "Sucessfully edited the expense!";
-            return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
         }
         private async Task PrepareForm(int query)
         {
@@ -194,7 +199,7 @@ namespace CashTrack.Pages.Expenses
                 pageNumber = ExpenseResponse.PageNumber;
             }
             queryOptions = new SelectList(ExpenseQueryOptions.GetAll, "Key", "Value", query);
-            var subCategories = await _subCategoryService.GetAllSubCategoriesAsync();
+            var subCategories = await _subCategoryService.GetSubCategoryDropdownListAsync();
             SubCategories = new SelectList(subCategories, "Key", "Value");
             switch (query)
             {

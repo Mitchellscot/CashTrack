@@ -17,11 +17,11 @@ namespace CashTrack.Controllers
         public SubCategoryController(ISubCategoryService subCategoryService) => _subCategoryService = subCategoryService;
 
         [HttpGet]
-        public async Task<ActionResult<Dictionary<int, string>>> GetAllSubCategoriesForDropDownList()
+        public async Task<ActionResult<SubCategoryDropdownSelection[]>> GetAllSubCategoriesForDropDownList()
         {
             try
             {
-                var categories = await _subCategoryService.GetAllSubCategoriesAsync();
+                var categories = await _subCategoryService.GetSubCategoryDropdownListAsync();
                 return Ok(categories);
             }
             catch (Exception ex)
@@ -31,3 +31,4 @@ namespace CashTrack.Controllers
         }
     }
 }
+

@@ -18,7 +18,7 @@ public interface IMerchantService
     Task<MerchantResponse> GetMerchantsAsync(MerchantRequest request);
     Task<string[]> GetMatchingMerchantsAsync(string match);
     Task<MerchantDetail> GetMerchantDetailAsync(int id);
-    Task<AddEditMerchant> CreateMerchantAsync(AddEditMerchant request);
+    Task<bool> CreateMerchantAsync(AddEditMerchant request);
     Task<bool> UpdateMerchantAsync(AddEditMerchant request);
     Task<bool> DeleteMerchantAsync(int id);
     Task<Merchants> GetMerchantByNameAsync(string name);
@@ -145,7 +145,7 @@ public class MerchantService : IMerchantService
         return merchantDetail;
     }
 
-    public async Task<AddEditMerchant> CreateMerchantAsync(AddEditMerchant request)
+    public async Task<bool> CreateMerchantAsync(AddEditMerchant request)
     {
         var merchants = await _merchantRepo.Find(x => x.name == request.Name);
         if (merchants.Any())
@@ -153,12 +153,7 @@ public class MerchantService : IMerchantService
 
         var merchantEntity = _mapper.Map<Merchants>(request);
 
-        if (!await _merchantRepo.Create(merchantEntity))
-            throw new Exception("Couldn't save merchant to the database");
-
-        request.Id = merchantEntity.Id;
-
-        return request;
+        return await _merchantRepo.Create(merchantEntity);
     }
     public async Task<bool> UpdateMerchantAsync(AddEditMerchant request)
     {

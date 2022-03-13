@@ -6,7 +6,6 @@
     display: none;
 }
 
-
 html, body {
     height: 100%;
 }
@@ -81,18 +80,20 @@ html, body {
 .validation-summary-errors ul {
     padding-left: 0;
     list-style: none;
-    text-align: center;
-    font-size: calc(100% + .5vw + .5vh);
 }
+
 #addExpenseDate-error {
     color: red;
 }
+
 #addExpenseAmount-error {
     color: red;
 }
+
 #addExpenseSubCategory-error {
     color: red;
 }
+
 main {
     height: 100%;
 }
