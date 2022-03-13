@@ -483,17 +483,6 @@
 <partial name="_ValidationScriptsPartial" />
 <script type="text/javascript">
 
-        const getQueries = () => {
-        let queries = [], hash;
-        let values = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-        for (let i = 0; i < values.length; i++) {
-            hash = values[i].split('=');
-            queries.push(hash[0]);
-            queries[hash[0]] = hash[1];
-        }
-        return queries;
-    }
-
     $(document).ready(() => {
         //TODO:
         //Store subcategory and category values in state
@@ -513,6 +502,40 @@
         {
             @:$("#modelStateToast").show().delay(4000).fadeOut();
         }
+        
+        const getQueryValue = () =>
+        {
+            let queries = [], hash;
+            let values = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for(let i = 0; i < values.length; i++)
+            {
+                hash = values[i].split('=');
+                if(hash[0] === "q")
+                {
+                    return hash[1];
+                }
+            }
+            return undefined;
+        }
+        const getQueryType = () =>
+        {
+            let queries = [], hash;
+            let values = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for(let i = 0; i < values.length; i++)
+            {
+                hash = values[i].split('=');
+                if(hash[0] === "query")
+                {
+                    return hash[1];
+                }
+            }
+            return undefined;
+        }
+
+        let q = getQueryValue();
+        let queryType = getQueryType();
+
+        console.log(q, queryType);
 
         //When the query selection option changes
         $("#querySelect").change(() => {
@@ -597,10 +620,21 @@
                         method: 'GET'
                     }).then((response) => {
                         $("#categorySelect").empty();
-                        console.log(response);
                         for (let category of response) {
-                            console.log(category);
-                            $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
+                            if(q !== undefined && queryType == "8")
+                            {
+                                if(Number(category.id) === Number(q))
+                                {
+                                    $("#categorySelect").append(`<option selected value=${category.id}>${category.category}</option>`);
+                                }
+                                else
+                                {
+                                    $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
+                                }
+                            }
+                            else{
+                                $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
+                            }
                         }
                     }).catch((error) => alert(error));
                     break;
@@ -615,8 +649,21 @@
                         method: 'GET'
                     }).then((response) => {
                         $("#categorySelect").empty();
-                        for (let category of response.mainCategories) {
-                            $("#categorySelect").append(`<option value=${category.id}>${category.name}</option>`);
+                        for (let category of response) {
+                            if(q !== undefined && queryType == "9")
+                            {
+                                if(Number(category.id) === Number(q))
+                                {
+                                    $("#categorySelect").append(`<option selected value=${category.id}>${category.category}</option>`);
+                                }
+                                else
+                                {
+                                    $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
+                                }
+                            }
+                            else{
+                                $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
+                            }
                         }
                     }).catch((error) => alert(error));
                     break;
@@ -700,18 +747,7 @@
              });
         });
 
-        const getQueries = () =>
-        {
-            let queries = [], hash;
-            let values = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-            for(let i = 0; i < values.length; i++)
-            {
-                hash = values[i].split('=');
-                queries.push(hash[0]);
-                queries[hash[0]] = hash[1];
-            }
-            return queries;
-        }
+
 
         //on load
         let selectListValue = $("#querySelect").val();

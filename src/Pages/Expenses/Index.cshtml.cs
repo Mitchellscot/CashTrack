@@ -5,12 +5,10 @@ using CashTrack.Models.MerchantModels;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
-using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Expenses
@@ -18,11 +16,10 @@ namespace CashTrack.Pages.Expenses
     public class Index : PageModel
     {
         private readonly IExpenseService _expenseService;
-        private readonly ISubCategoryService _subCategoryService;
         private readonly IMerchantService _merchantService;
 
-        public Index(IExpenseService expenseService, ISubCategoryService subCategoryService, IMerchantService merchantService) =>
-            (_expenseService, _subCategoryService, _merchantService) = (expenseService, subCategoryService, merchantService);
+        public Index(IExpenseService expenseService, IMerchantService merchantService) =>
+            (_expenseService, _merchantService) = (expenseService, merchantService);
 
         [BindProperty(SupportsGet = true)]
         public string q { get; set; }
@@ -32,7 +29,6 @@ namespace CashTrack.Pages.Expenses
         public int query { get; set; }
         public ExpenseResponse ExpenseResponse { get; set; }
         public SelectList queryOptions { get; set; }
-        public SelectList SubCategories { get; set; }
         public string inputType { get; set; }
         [BindProperty(SupportsGet = true)]
         public int pageNumber { get; set; } = 1;
@@ -43,7 +39,7 @@ namespace CashTrack.Pages.Expenses
 
         public async Task<ActionResult> OnGet(string q, int query, string q2, int pageNumber)
         {
-            await PrepareForm(query);
+            PrepareForm(query);
 
             if (query == 0 && q != null)
             {
@@ -111,7 +107,7 @@ namespace CashTrack.Pages.Expenses
             }
             if (query == 9)
             {
-                ModelState.AddModelError("", "Not Implemented Yet");
+                ExpenseResponse = await _expenseService.GetExpensesByMainCategoryAsync(new ExpenseRequest() { Query = q, PageNumber = pageNumber });
                 return Page();
             }
             if (query == 10)
@@ -192,15 +188,14 @@ namespace CashTrack.Pages.Expenses
                 return Page();
             }
         }
-        private async Task PrepareForm(int query)
+        private void PrepareForm(int query)
         {
             if (ExpenseResponse != null)
             {
                 pageNumber = ExpenseResponse.PageNumber;
             }
             queryOptions = new SelectList(ExpenseQueryOptions.GetAll, "Key", "Value", query);
-            var subCategories = await _subCategoryService.GetSubCategoryDropdownListAsync();
-            SubCategories = new SelectList(subCategories, "Key", "Value");
+
             switch (query)
             {
                 case 0 or 1:
