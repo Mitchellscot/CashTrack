@@ -1,5 +1,94 @@
-﻿@page "{int:id}"
+﻿@page "{id}"
 @model CashTrack.Pages.Expenses.SplitModel
 @{
     Layout = "_Layout";
 }
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+        <h3>Split an Expense</h3>
+        <div class="border rounded px-2 py-1 border-success">
+            <h3>Total: <span id="splitTotal">@Model.Total</span></h3>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-lg-6 col-12 order-lg-1 order-3">
+            <div class="input-group">
+                <span class="input-group-text d-none d-sm-block">Date</span>
+                <input type="date" class="form-control text-center bg-white" disabled readonly asp-for=@Model.Date />
+                <span class="input-group-text d-none d-sm-block">Merchant</span>
+                <input type="text" class="form-control text-center bg-white" disabled readonly asp-for=@Model.Merchant />
+            </div>
+        </div>
+        <div class="col-lg-3 col-6 order-lg-2 order-1">
+            <form method="get">
+                <div class="input-group">
+                    <span class="input-group-text d-none d-sm-block"># of Expenses</span>
+                    <select onchange="this.form.submit()" class="form-control text-center" id="splitOptionsSelect"
+                            asp-for="@Model.Split" asp-items="@Model.SplitOptions"></select>
+                </div>
+            </form>
+        </div>
+        <div class="col-lg-3 col-6 order-lg-3 order-2">
+            <form method="get">
+                <div class="input-group">
+                    <span class="input-group-text d-none d-sm-block">Tax</span>
+                    <input type="number" class="form-control text-center" min="0.00" step=".0001" asp-for="@Model.Tax" />
+                    <button type="submit" class="btn btn-secondary">Change</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            $ Amount
+                        </th>
+                        <th>
+                            Sub Category
+                        </th>
+                        <th>
+                            Main Category
+                        </th>
+                        <th>
+                            Notes
+                        </th>
+                        <th>
+                            Taxed
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                   @for(int i = 1; i <= Model.Split; i ++)
+                   {
+                       <tr class="text-center">
+                           <td>
+                               $0.00
+                           </td>
+                           <td>
+                               Groceries
+                           </td>
+                           <td>
+                               Food
+                           </td>
+                           <td>
+                               Here are some fake notes
+                           </td>
+                           <td>
+                               <div class="form-check">
+                                   <input class="form-check-input" type="checkbox" id="taxed-@i">
+                                   <label class="form-check-label" for="taxed-@i">
+                                       Taxed
+                                   </label>
+                               </div>
+                           </td>
+                       </tr>
+                   }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
