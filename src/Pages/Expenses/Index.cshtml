@@ -376,6 +376,7 @@
                                                 </div>
                                                 <div class="modal-footer d-flex justify-content-evenly">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <a asp-page="./Split" asp-route-id="@expense.Id" type="button" class="btn btn-info">Split Expense</a>
                                                     <form>
                                                         <button type="submit" class="btn btn-primary"
                                                         form="editExpenseForm-@expense.Id">
@@ -484,10 +485,6 @@
 <script type="text/javascript">
 
     $(document).ready(() => {
-        //TODO:
-        //Store subcategory and category values in state
-        //and then use C# to access those values to set the "selected" option for qInput
-        //see https://stackoverflow.com/questions/4599169/using-razor-within-javascript
 
         //super easy toast notification
         @if(Model.Message != null)
@@ -502,47 +499,20 @@
         {
             @:$("#modelStateToast").show().delay(4000).fadeOut();
         }
-        
-        const getQueryValue = () =>
-        {
-            let queries = [], hash;
-            let values = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-            for(let i = 0; i < values.length; i++)
-            {
-                hash = values[i].split('=');
-                if(hash[0] === "q")
-                {
-                    return hash[1];
-                }
-            }
-            return undefined;
-        }
-        const getQueryType = () =>
-        {
-            let queries = [], hash;
-            let values = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-            for(let i = 0; i < values.length; i++)
-            {
-                hash = values[i].split('=');
-                if(hash[0] === "query")
-                {
-                    return hash[1];
-                }
-            }
-            return undefined;
-        }
-
+        //get query values for dropdown lists
         let q = getQueryValue();
         let queryType = getQueryType();
+        //fires on load
+        let selectListValue = $("#querySelect").val();
+        handleQuerySelectChange(selectListValue);
 
-        console.log(q, queryType);
-
-        //When the query selection option changes
+        //GET REQUEST METHODS
+        //When the query selection option changes, change the input type box
         $("#querySelect").change(() => {
             let selectListValue = $("#querySelect").val();
             handleQuerySelectChange(selectListValue);
         });
-
+        //massive switch statement handling qet requests
         function handleQuerySelectChange(selectListValue) {
             switch (selectListValue) {
                 //date
@@ -584,7 +554,13 @@
                     $("#qInput").prop('min', "2012");
                     let currentYear = new Date().getFullYear();
                     $("#qInput").prop('max', currentYear);
-                    $("#qInput").val(parseInt(new Date().getFullYear()));
+                    if(q !== undefined && queryType === "4"){
+                        console.log(q)
+                        $("#qInput").val(q);
+                    }
+                    else{
+                        $("#qInput").val(parseInt(new Date().getFullYear()));
+                    }
                     break;
                 //amount
                 case "5":
@@ -594,6 +570,9 @@
                     $("#qInput").prop("type", "number");
                     $("#qInput").prop('step', "any");
                     $("#qInput").prop('min', "0.00");
+                    if(q !== undefined && queryType === "5"){
+                        $("#qInput").val(q);
+                    }
                     break;
                 //notes
                 case "6":
@@ -601,6 +580,9 @@
                     resetNumbersForm();
                     resetSecondInputForm();
                     $("#qInput").prop("type", "text");
+                    if(q !== undefined && queryType === "6"){
+                        $("#qInput").val(q);
+                    }
                     break;
                 //merchant
                 case "7":
@@ -682,25 +664,6 @@
                     break;
             }
         }
-
-        const resetSecondInputForm = () => {
-            $("#qInput").addClass("w-50");
-            $("#q2Input").val("");
-            $("#q2Input").removeClass("w-25");
-            $("#q2Input").hide();
-        }
-        const resetNumbersForm = () => {
-            $("#qInput").removeAttr('min');
-            $("#qInput").removeAttr('step');
-            $("#qInput").removeAttr('min');
-            $("#qInput").val('');
-        }
-        const resetCategorySelect = () => {
-            $("#qInput").show();
-            $("#categorySelect").empty();
-            $("#categorySelect").hide();
-        }
-
         //if it's a query of the amount, make it a nice loking decimal
         $('#qInput').change(() => {
             let selectListValue = $("#querySelect").val();
@@ -711,15 +674,6 @@
                 $("#qInput").val(finalNumber);
             }
         });
-
-        //when adding a new expense amount, make it a nice loking decimal
-        $('#addExpenseAmount').change(() => {
-                let amount = $("#addExpenseAmount").val();
-                let rounded = Math.round(amount * 100) / 100;
-                let finalNumber = rounded.toFixed(2);
-                $("#addExpenseAmount").val(finalNumber);
-        });
-
         //if it's a query of the merchants, show a dropdown list of matching merchant names
         $("#qInput").on("input", () => {
             let selectListValue = $("#querySelect").val();
@@ -735,24 +689,15 @@
             }
         });
 
-         $("#addExpenseMerchantName").on("input", () => {
-             let merchantName = $("#addExpenseMerchantName").val();
-             $.ajax({
-                 url: `/api/merchants?merchantName=${merchantName}`,
-                 method: 'GET'
-             }).then((response) => {
-                 console.log(response);
-                 $("#addExpenseMerchantName").empty();
-                 $("#addExpenseMerchantName").autocomplete({ source: response });
-             });
+
+        //ADD EXPENSE MODAl
+        //when adding a new expense amount, make it a nice loking decimal
+        $('#addExpenseAmount').change(() => {
+                let amount = $("#addExpenseAmount").val();
+                let rounded = Math.round(amount * 100) / 100;
+                let finalNumber = rounded.toFixed(2);
+                $("#addExpenseAmount").val(finalNumber);
         });
-
-
-
-        //on load
-        let selectListValue = $("#querySelect").val();
-        handleQuerySelectChange(selectListValue);
-
         //loads sub category list when add expense modal opens
         $("#addExpenseButton").click(() =>{
             $("#addExpenseMainCategory").val('');
@@ -776,7 +721,21 @@
                     $("#addExpenseMainCategory").prop(`value`, `${response}`);
                 }).catch((error) => console.log(error));
         });
+        //Autocomplete for merchant names on add expense modal
+         $("#addExpenseMerchantName").on("input", () => {
+             let merchantName = $("#addExpenseMerchantName").val();
+             $.ajax({
+                 url: `/api/merchants?merchantName=${merchantName}`,
+                 method: 'GET'
+             }).then((response) => {
+                 console.log(response);
+                 $("#addExpenseMerchantName").empty();
+                 $("#addExpenseMerchantName").autocomplete({ source: response });
+             });
+        });
 
+        //EDIT EXPENSE MODALS
+        //dynamically loaded code for each edit modal
         @if(@Model.ExpenseResponse != null && @Model.ExpenseResponse.ListItems.Count() > 0)
         {
             var expenseIds = Model.ExpenseResponse.ListItems.ToDictionary(x => x.Id, x => x.SubCategory);
@@ -811,6 +770,7 @@
                         }});
                         });
                 </text>
+                //Autocomplete for merchant names
                 <text>$("#editExpenseMerchantName-@id.Key").on("input", () => {
                     let editSearchTerm = $("#editExpenseMerchantName-@id.Key").val();
                     $.ajax({
@@ -822,6 +782,7 @@
                     });
                 })
                 </text>
+                //When updating the expense amount, make it a nice looking decimal
                 <text>$('#editExpenseAmount-@id.Key').change(() => {
                     let amount = $("#editExpenseAmount-@id.Key").val();
                     let rounded = Math.round(amount * 100) / 100;
@@ -830,6 +791,53 @@
                 });
                 </text>
             }
+        }
+
+        //general helper methods
+        function getQueryValue()
+        {
+            let queries = [], hash;
+            let values = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for(let i = 0; i < values.length; i++)
+            {
+                hash = values[i].split('=');
+                if(hash[0] === "q")
+                {
+                    return hash[1];
+                }
+            }
+            return undefined;
+        }
+        function getQueryType()
+        {
+            let queries = [], hash;
+            let values = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for(let i = 0; i < values.length; i++)
+            {
+                hash = values[i].split('=');
+                if(hash[0] === "query")
+                {
+                    return hash[1];
+                }
+            }
+            return undefined;
+        }
+        function resetSecondInputForm(){
+            $("#qInput").addClass("w-50");
+            $("#q2Input").val("");
+            $("#q2Input").removeClass("w-25");
+            $("#q2Input").hide();
+        }
+        function resetNumbersForm(){
+            $("#qInput").removeAttr('min');
+            $("#qInput").removeAttr('step');
+            $("#qInput").removeAttr('min');
+            $("#qInput").val('');
+        }
+        function resetCategorySelect(){
+            $("#qInput").show();
+            $("#categorySelect").empty();
+            $("#categorySelect").hide();
         }
     });
 </script>

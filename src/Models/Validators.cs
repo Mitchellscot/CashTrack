@@ -69,7 +69,7 @@ public class ExpenseRequestValidators : AbstractValidator<ExpenseRequest>
         var earliestExpense = expenseRepository.Find(x => true).Result.OrderBy(x => x.date).Select(x => x.date).FirstOrDefault();
         When(x => x.DateOptions != 0, () =>
         {
-            RuleFor(x => x.DateOptions).IsInEnum().NotEmpty().WithMessage("Date Options must be specificied in query string. Valid options are 1 through 12.");
+            RuleFor(x => x.DateOptions).IsInEnum().NotEmpty().WithMessage("Date Options must be specificied. Valid options are 1 through 12.");
         });
         RuleFor(x => x.PageNumber).GreaterThan(0);
         RuleFor(x => x.PageSize).InclusiveBetween(5, 100);
@@ -155,7 +155,7 @@ public class IncomeRequestValidators : AbstractValidator<IncomeRequest>
         var earliestIncome = incomeRepository.Find(x => true).Result.OrderBy(x => x.date).Select(x => x.date).FirstOrDefault();
         When(x => x.DateOptions != 0, () =>
         {
-            RuleFor(x => x.DateOptions).IsInEnum().NotEmpty().WithMessage("Date Options must be specificied in query string. Valid options are 1 through 12.");
+            RuleFor(x => x.DateOptions).IsInEnum().NotEmpty().WithMessage("Date Options must be specificied. Valid options are 1 through 12.");
         });
         RuleFor(x => x.PageNumber).GreaterThan(0);
         RuleFor(x => x.PageSize).InclusiveBetween(5, 100);
