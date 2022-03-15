@@ -7,88 +7,195 @@
     <div class="d-flex justify-content-between align-items-center">
         <h3>Split an Expense</h3>
         <div class="border rounded px-2 py-1 border-success">
-            <h3>Total: <span id="splitTotal">@Model.Total</span></h3>
+            <h3>Total: <span id="total">@Model.Total</span></h3>
         </div>
     </div>
     <hr />
-    <div class="row">
-        <div class="col-lg-6 col-12 order-lg-1 order-3">
-            <div class="input-group">
-                <span class="input-group-text d-none d-sm-block">Date</span>
-                <input type="date" class="form-control text-center bg-white" disabled readonly asp-for=@Model.Date />
-                <span class="input-group-text d-none d-sm-block">Merchant</span>
-                <input type="text" class="form-control text-center bg-white" disabled readonly asp-for=@Model.Merchant />
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div style="position: relative;">
+            <div class="toast fade show mt-3 bg-danger" role="alert" id="modelStateToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
+                <div class="toast-body d-flex align-items-center" asp-validation-summary="All">
+                    <i class="bi bi-x-circle text-white mx-3" role="img"
+                   style="font-size: 1.5rem;"></i>
+                </div>
             </div>
         </div>
-        <div class="col-lg-3 col-6 order-lg-2 order-1">
-            <form method="get">
+    }
+    <form method="get">
+        <div class="row">
+            <div class="col-lg-6 col-12 order-lg-1 order-3">
+                <div class="input-group">
+                    <span class="input-group-text d-none d-sm-block">Date</span>
+                    <input type="date" class="form-control text-center bg-white" disabled readonly asp-for=@Model.Date />
+                    <span class="input-group-text d-none d-sm-block">Merchant</span>
+                    <input type="text" class="form-control text-center bg-white" disabled readonly asp-for=@Model.Merchant />
+                </div>
+            </div>
+            <div class="col-lg-3 col-6 order-lg-2 order-1">
                 <div class="input-group">
                     <span class="input-group-text d-none d-sm-block"># of Expenses</span>
                     <select onchange="this.form.submit()" class="form-control text-center" id="splitOptionsSelect"
                             asp-for="@Model.Split" asp-items="@Model.SplitOptions"></select>
                 </div>
-            </form>
-        </div>
-        <div class="col-lg-3 col-6 order-lg-3 order-2">
-            <form method="get">
+            </div>
+            <div class="col-lg-3 col-6 order-lg-3 order-2">
                 <div class="input-group">
                     <span class="input-group-text d-none d-sm-block">Tax</span>
                     <input type="number" class="form-control text-center" min="0.00" step=".0001" asp-for="@Model.Tax" />
                     <button type="submit" class="btn btn-secondary">Change</button>
                 </div>
-            </form>
+            </div>
         </div>
-    </div>
+    </form>
     <div class="row mt-3">
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>
-                            $ Amount
-                        </th>
-                        <th>
-                            Sub Category
-                        </th>
-                        <th>
-                            Main Category
-                        </th>
-                        <th>
-                            Notes
-                        </th>
-                        <th>
-                            Taxed
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                   @for(int i = 1; i <= Model.Split; i ++)
-                   {
-                       <tr class="text-center">
-                           <td>
-                               $0.00
-                           </td>
-                           <td>
-                               Groceries
-                           </td>
-                           <td>
-                               Food
-                           </td>
-                           <td>
-                               Here are some fake notes
-                           </td>
-                           <td>
-                               <div class="form-check">
-                                   <input class="form-check-input" type="checkbox" id="taxed-@i">
-                                   <label class="form-check-label" for="taxed-@i">
-                                       Taxed
-                                   </label>
-                               </div>
-                           </td>
-                       </tr>
-                   }
-                </tbody>
-            </table>
+        <form class="form-horizontal" method="post" id="splitExpenseForm">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr class="text-center">
+                            <th width="10%">
+                                Amount
+                            </th>
+                            <th width="5%">
+                                Taxed
+                            </th>
+                            <th width="10%">
+                                Total
+                            </th>
+                            <th width="15%">
+                                Category
+                            </th>
+                            <th width="10%">
+                                Main Category
+                            </th>
+                            <th width="40%">
+                                Notes
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 1; i <= Model.Split; i++)
+                        {
+                            <tr class="text-center">
+                                <input type="hidden" asp-for="Expenses[i].Tax" value="@Model.Tax">
+                                <td>
+                                    <input id="amount-@i" style="width: 100px;" type="number" min="0.00" step="any" asp-for="Expenses[i].Amount" />
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check d-flex justify-content-center">
+                                        <input asp-for="Expenses[i].Taxed" class="form-check-input" type="checkbox" id="taxed-@i">
+                                    </div>
+                                </td>
+                                <td class="text-center" id="totalAmount-@i">
+                                    0.00
+                                </td>
+                                <td>
+                                    <select id="subCategory-@i" class="form-control text-center" data-width="100%"
+                                        asp-for="Expenses[i].SubCategoryId" asp-items="Model.SubCategories"></select>
+                                </td>
+                                <td id="mainCategory-@i" class="text-center">
+                                </td>
+                                <td>
+                                    <input id="notes-@i" style="width: 400px;" class="mx-auto p-0" type="text"
+                                       asp-for="Expenses[i].Notes" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <form>
+        <div class="col float-end">
+            <a type="button" asp-page="./Index" class="btn btn-secondary mx-5">Cancel</a>
+            <button type="submit" form="splitExpenseForm" class="btn btn-primary">Save Changes</button>
         </div>
+        </form>
     </div>
 </div>
+@section Scripts {
+<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true">
+</script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
+<partial name="_ValidationScriptsPartial" />
+<script type="text/javascript">
+    $(document).ready(() => {
+
+        @if(!ModelState.IsValid)
+        {
+            @:$("#modelStateToast").show().delay(4000).fadeOut();
+        }
+        
+
+
+        @for(int i = 1; i <= Model.Split; i++)
+        {
+            //load the main category on page load
+            <text>let category_@i = $("#subCategory-@i").val();
+                $.ajax({
+                    url: `/api/maincategory/sub-category/${category_@i}`,
+                    method: 'GET'
+                }).then((response) => {
+                    $("#mainCategory-@i").text(`${response}`);
+                }).catch((error) => console.log(error));
+                </text>
+            //load the main category when select list changes
+            <text>$("#subCategory-@i").change(()=>{
+                let categoryId_@i = $("#subCategory-@i").val();
+                $.ajax({
+                    url: `/api/maincategory/sub-category/${categoryId_@i}`,
+                    method: 'GET'
+                }).then((response) => {
+                    console.log(response);
+                    $("#mainCategory-@i").text(`${response}`);
+                }).catch((error) => console.log(error));
+            });</text>
+
+            //When updating the expense amount, make it a nice looking decimal
+            <text>$('#amount-@i').change(() => {
+                checkForNegative($("#amount-@i").val());
+                $("#amount-@i").val(formatNumber($("#amount-@i").val()));
+                $("#totalAmount-@i").text(formatNumber($("#amount-@i").val()));
+
+                $("#total").text(checkForNegative(findTotal()))
+                //TODO: Update the css class of the Total box to different colors based on the value
+                //TODO: Make the save changes button disabled until the total box is 0.00
+                //TODO: Add tax to the calculated total amount if the tax box is checked
+                //TODO Add a OnPost method that adds up all the numbers and checks to see if it's equal to the original amount
+                //and then deletes the original expense and adds all the others!
+            });
+            </text>
+        }
+        function checkForNegative(num)
+        {
+            if(num < 0)
+            {
+                console.log('bingo')
+                alert("The value you entered is below zero - please enter a new value");
+                return false
+            }
+            else return num;
+        }
+        function findTotal()
+        {
+            let expenseTotal = @Model.Total;
+            let amounts = $('input[id^=amount]').map((i, el) => { return Number($(el).val()); }).get();
+            let sumOfAmounts = amounts.reduce((a, b) => a + b);
+            let formattedSum = formatNumber((expenseTotal - sumOfAmounts));
+            return formattedSum;
+
+        }
+        function formatNumber(num)
+        {
+            Number(num);
+            let rounded = Math.round(num * 100) / 100;
+            let finalNumber = rounded.toFixed(2);
+            return finalNumber
+        }
+
+    });
+</script>
+    }
