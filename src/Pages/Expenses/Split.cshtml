@@ -6,7 +6,7 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center">
         <h3>Split an Expense</h3>
-        <div class="border rounded px-2 py-1 border-success">
+        <div class="border rounded px-2 py-1" id="totalBox">
             <h3>Total: <span id="total">@Model.Total</span></h3>
         </div>
     </div>
@@ -80,7 +80,7 @@
                             <tr class="text-center">
                                 <input type="hidden" asp-for="Expenses[i].Tax" value="@Model.Tax">
                                 <td>
-                                    <input id="amount-@i" style="width: 100px;" type="number" min="0.00" step="any" asp-for="Expenses[i].Amount" />
+                                    <input placeholder="0.00" class="form-control" id="amount-@i" style="width: 100px;" type="number" min="0.00" step="any" asp-for="Expenses[i].Amount" />
                                 </td>
                                 <td class="text-center">
                                     <div class="form-check d-flex justify-content-center">
@@ -97,7 +97,7 @@
                                 <td id="mainCategory-@i" class="text-center">
                                 </td>
                                 <td>
-                                    <input id="notes-@i" style="width: 400px;" class="mx-auto p-0" type="text"
+                                    <input class="form-control mx-auto p-0" id="notes-@i" type="text"
                                        asp-for="Expenses[i].Notes" />
                                 </td>
                             </tr>
@@ -109,10 +109,10 @@
     </div>
     <div class="row">
         <form>
-        <div class="col float-end">
-            <a type="button" asp-page="./Index" class="btn btn-secondary mx-5">Cancel</a>
-            <button type="submit" form="splitExpenseForm" class="btn btn-primary">Save Changes</button>
-        </div>
+            <div class="col float-end">
+                <a type="button" asp-page="./Index" class="btn btn-secondary mx-5">Cancel</a>
+                <button id="submitButton" disabled type="submit" form="splitExpenseForm" class="btn btn-primary">Save Changes</button>
+            </div>
         </form>
     </div>
 </div>
@@ -128,8 +128,6 @@
         {
             @:$("#modelStateToast").show().delay(4000).fadeOut();
         }
-        
-
 
         @for(int i = 1; i <= Model.Split; i++)
         {
@@ -156,46 +154,54 @@
 
             //When updating the expense amount, make it a nice looking decimal
             <text>$('#amount-@i').change(() => {
-                checkForNegative($("#amount-@i").val());
                 $("#amount-@i").val(formatNumber($("#amount-@i").val()));
                 $("#totalAmount-@i").text(formatNumber($("#amount-@i").val()));
 
-                $("#total").text(checkForNegative(findTotal()))
-                //TODO: Update the css class of the Total box to different colors based on the value
-                //TODO: Make the save changes button disabled until the total box is 0.00
+                $("#total").text(adjustFormBasedOnTotal(findTotal()));
                 //TODO: Add tax to the calculated total amount if the tax box is checked
                 //TODO Add a OnPost method that adds up all the numbers and checks to see if it's equal to the original amount
                 //and then deletes the original expense and adds all the others!
             });
             </text>
         }
-        function checkForNegative(num)
+        function adjustFormBasedOnTotal(num)
         {
-            if(num < 0)
-            {
-                console.log('bingo')
-                alert("The value you entered is below zero - please enter a new value");
-                return false
+            let originalTotal = @Model.Total;
+            if(Number(num) !== Number(0.00)){
+                $("#submitButton").prop('disabled', true);
+                $("#totalBox").removeClass("border-success");
             }
-            else return num;
+            if(Number(num) > Number(0.00) && num <= originalTotal){
+                $("#totalBox").removeClass("border-danger");
+            }
+            if(Number(num) < Number(0.00)){
+                $("#totalBox").addClass("border-danger")
+                return num
+            }
+            if(Number(num) > Number(originalTotal)){
+                $("#totalBox").addClass("border-danger")
+                return num
+            }
+            if(Number(num) === Number(0.00))
+            {
+                $("#submitButton").removeAttr('disabled');
+                $("#totalBox").removeClass("border-danger");
+                $("#totalBox").addClass("border-success")
+            }
+            return num
         }
         function findTotal()
         {
-            let expenseTotal = @Model.Total;
+            let originalAmount = @Model.Total;
             let amounts = $('input[id^=amount]').map((i, el) => { return Number($(el).val()); }).get();
             let sumOfAmounts = amounts.reduce((a, b) => a + b);
-            let formattedSum = formatNumber((expenseTotal - sumOfAmounts));
-            return formattedSum;
-
+            return formatNumber((originalAmount - sumOfAmounts));
         }
         function formatNumber(num)
         {
-            Number(num);
-            let rounded = Math.round(num * 100) / 100;
-            let finalNumber = rounded.toFixed(2);
-            return finalNumber
+            let rounded = Math.round(Number(num) * 100) / 100;
+            return rounded.toFixed(2);
         }
-
     });
 </script>
     }
