@@ -1,11 +1,14 @@
 using CashTrack.Models.ExpenseModels;
+using CashTrack.Models.SubCategoryModels;
 using CashTrack.Services.ExpenseService;
+using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,7 +17,9 @@ namespace CashTrack.Pages.Expenses
     public class SplitModel : PageModel
     {
         private readonly IExpenseService _expenseService;
-        public SplitModel(IExpenseService expenseService) => _expenseService = expenseService;
+        private readonly ISubCategoryService _subCategoryService;
+
+        public SplitModel(IExpenseService expenseService, ISubCategoryService subCategoryService) => (_expenseService, _subCategoryService) = (expenseService, subCategoryService);
         [BindProperty]
         public List<ExpenseSplit> Expenses { get; set; }
         public decimal Total { get; set; }
@@ -24,8 +29,9 @@ namespace CashTrack.Pages.Expenses
         public int Split { get; set; }
         [BindProperty]
         public decimal Tax { get; set; }
-        //public SelectList SubCategoryList { get; set; }
+        public int Id { get; set; }
         public SelectList SplitOptions { get; set; }
+        public SelectList SubCategories { get; set; }
         public async Task<IActionResult> OnGet(int id, int? Split, decimal? Tax)
         {
             var originalExpense = await _expenseService.GetExpenseByIdAsync(id);
@@ -35,6 +41,10 @@ namespace CashTrack.Pages.Expenses
                 return LocalRedirect("./Index");
             }
 
+            var categories = await _subCategoryService.GetSubCategoryDropdownListAsync();
+            SubCategories = new SelectList(categories, nameof(SubCategoryDropdownSelection.Id), nameof(SubCategoryDropdownSelection.Category), originalExpense.categoryid);
+
+            Id = id;
             Total = originalExpense.amount;
             Date = originalExpense.date;
             Merchant = originalExpense.merchant.name;
@@ -54,9 +64,13 @@ namespace CashTrack.Pages.Expenses
     }
     public class ExpenseSplit
     {
+        [Required]
+        [Range(0, 10000000, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
         public decimal Amount { get; set; }
+        [Required]
         public int SubCategoryId { get; set; }
         public string Notes { get; set; }
         public bool Taxed { get; set; }
+        public decimal Tax { get; set; }
     }
 }
