@@ -20,8 +20,9 @@ namespace CashTrack.Pages.Expenses
         private readonly ISubCategoryService _subCategoryService;
 
         public SplitModel(IExpenseService expenseService, ISubCategoryService subCategoryService) => (_expenseService, _subCategoryService) = (expenseService, subCategoryService);
+
         [BindProperty]
-        public List<ExpenseSplit> Expenses { get; set; }
+        public List<ExpenseSplit> ExpenseSplits { get; set; }
         public decimal Total { get; set; }
         public DateTimeOffset Date { get; set; }
         public string Merchant { get; set; }
@@ -54,12 +55,47 @@ namespace CashTrack.Pages.Expenses
             //SubCategoryList = DO THIS NEXT
             return Page();
         }
-        public void OnPost()
+        public async Task<IActionResult> OnPost(List<ExpenseSplit> expenseSplits)
         {
-            //Take in the list of ExpenseSplits
-            //Run calculations to make sure it all adds up to the original total, if not return page
-            //Create new Expense for each one, assigning the merchant and date and all other properties
-            //if new expenses are created, delete the original expense and return to /Expenses
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+            try
+            {
+                foreach (var expenseSplit in expenseSplits)
+                {
+                    var amountAfterTax = expenseSplit.Taxed ? (expenseSplit.Amount + (expenseSplit.Amount * expenseSplit.Tax)) : expenseSplit.Amount;
+                    var newExpense = new Expense()
+                    {
+                        Date = this.Date,
+                        Merchant = this.Merchant,
+                        Amount = amountAfterTax,
+                        Notes = expenseSplit.Notes,
+                        //this is kind of stupid
+                        SubCategory = (await _subCategoryService.GetSubCategoryDropdownListAsync()).Where(x => x.Id == expenseSplit.SubCategoryId).Select(x => x.Category).FirstOrDefault(),
+                        //TODO: add a way to add and delete tags here
+                    };
+                    var success = await _expenseService.CreateExpenseAsync(newExpense);
+                    if (!success)
+                    {
+                        ModelState.AddModelError("", "Unable to split the expenses - please try again");
+                        return Page();
+                    }
+                }
+                var deleteSuccess = await _expenseService.DeleteExpenseAsync(int.Parse(RouteData.Values["id"].ToString()));
+                if (!deleteSuccess)
+                {
+                    ModelState.AddModelError("", "Unable to delete the original expenses - please try again");
+                    return Page();
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return Page();
+            }
+            return LocalRedirect("~/Expense/Index");
         }
     }
     public class ExpenseSplit
@@ -71,6 +107,12 @@ namespace CashTrack.Pages.Expenses
         public int SubCategoryId { get; set; }
         public string Notes { get; set; }
         public bool Taxed { get; set; }
+        [Range(0, 1, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+        [Required]
         public decimal Tax { get; set; }
+        [Required]
+        public DateTimeOffset Date { get; set; }
+        [Required]
+        public string Merchant { get; set; }
     }
 }
