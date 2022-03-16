@@ -1,6 +1,7 @@
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Services.ExpenseService;
+using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -18,8 +19,9 @@ namespace CashTrack.Pages.Expenses
     {
         private readonly IExpenseService _expenseService;
         private readonly ISubCategoryService _subCategoryService;
+        private readonly IMerchantService _merchantService;
 
-        public SplitModel(IExpenseService expenseService, ISubCategoryService subCategoryService) => (_expenseService, _subCategoryService) = (expenseService, subCategoryService);
+        public SplitModel(IExpenseService expenseService, ISubCategoryService subCategoryService, IMerchantService merchantService) => (_expenseService, _subCategoryService, _merchantService) = (expenseService, subCategoryService, merchantService);
 
         [BindProperty]
         public List<ExpenseSplit> ExpenseSplits { get; set; }
@@ -65,18 +67,9 @@ namespace CashTrack.Pages.Expenses
             {
                 foreach (var expenseSplit in expenseSplits)
                 {
-                    var amountAfterTax = expenseSplit.Taxed ? (expenseSplit.Amount + (expenseSplit.Amount * expenseSplit.Tax)) : expenseSplit.Amount;
-                    var newExpense = new Expense()
-                    {
-                        Date = this.Date,
-                        Merchant = this.Merchant,
-                        Amount = amountAfterTax,
-                        Notes = expenseSplit.Notes,
-                        //this is kind of stupid
-                        SubCategory = (await _subCategoryService.GetSubCategoryDropdownListAsync()).Where(x => x.Id == expenseSplit.SubCategoryId).Select(x => x.Category).FirstOrDefault(),
-                        //TODO: add a way to add and delete tags here
-                    };
-                    var success = await _expenseService.CreateExpenseAsync(newExpense);
+                    //converting merchant name to a string id... kind of dumb but whatever.
+                    expenseSplit.Merchant = (await _merchantService.GetMerchantByNameAsync(expenseSplit.Merchant)).Id.ToString();
+                    var success = await _expenseService.CreateExpenseFromSplitAsync(expenseSplit);
                     if (!success)
                     {
                         ModelState.AddModelError("", "Unable to split the expenses - please try again");
@@ -95,24 +88,8 @@ namespace CashTrack.Pages.Expenses
                 ModelState.AddModelError("", ex.Message);
                 return Page();
             }
-            return LocalRedirect("~/Expense/Index");
+            TempData["Message"] = "Sucessfully Split the Expense!";
+            return LocalRedirect("~/Expenses/Index");
         }
-    }
-    public class ExpenseSplit
-    {
-        [Required]
-        [Range(0, 10000000, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
-        public decimal Amount { get; set; }
-        [Required]
-        public int SubCategoryId { get; set; }
-        public string Notes { get; set; }
-        public bool Taxed { get; set; }
-        [Range(0, 1, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
-        [Required]
-        public decimal Tax { get; set; }
-        [Required]
-        public DateTimeOffset Date { get; set; }
-        [Required]
-        public string Merchant { get; set; }
     }
 }

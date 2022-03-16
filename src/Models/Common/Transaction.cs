@@ -6,9 +6,14 @@ namespace CashTrack.Models.Common
 {
     public abstract class Transaction
     {
+        private decimal _amount;
         public int Id { get; set; }
         public DateTimeOffset Date { get; set; }
-        public decimal Amount { get; set; }
+        public decimal Amount
+        {
+            get => _amount;
+            set => _amount = Decimal.Round(value, 2);
+        }
     }
     public abstract class TransactionRequest : PaginationRequest
     {

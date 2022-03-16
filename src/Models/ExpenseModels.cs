@@ -2,6 +2,7 @@
 using CashTrack.Models.TagModels;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace CashTrack.Models.ExpenseModels;
 
@@ -40,4 +41,25 @@ public class ExpenseQuickView : Transaction
     new public string Date { get; set; }
     public string SubCategory { get; set; }
 }
-
+public class ExpenseSplit
+{
+    private decimal _amount;
+    [Required]
+    [Range(0, 10000000, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+    public decimal Amount
+    {
+        get => _amount;
+        set => _amount = this.Taxed ? Decimal.Round(value + (value * this.Tax), 2) : Decimal.Round(value, 2);
+    }
+    [Required]
+    public int SubCategoryId { get; set; }
+    public string Notes { get; set; }
+    public bool Taxed { get; set; }
+    [Range(0, 1, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+    [Required]
+    public decimal Tax { get; set; }
+    [Required]
+    public DateTimeOffset Date { get; set; }
+    [Required]
+    public string Merchant { get; set; }
+}
