@@ -8,6 +8,7 @@ using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.MerchantRepository;
 using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Services.Common;
+using CashTrack.Services.MerchantService;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -25,6 +26,7 @@ public interface IExpenseService
     Task<ExpenseResponse> GetExpensesByMerchantAsync(ExpenseRequest request);
     Task<ExpenseResponse> GetExpensesByMainCategoryAsync(ExpenseRequest request);
     Task<bool> CreateExpenseAsync(Expense request);
+    Task<bool> CreateExpenseFromSplitAsync(ExpenseSplit request);
     Task<bool> UpdateExpenseAsync(Expense request);
     Task<bool> DeleteExpenseAsync(int id);
 }
@@ -104,6 +106,23 @@ public class ExpenseService : IExpenseService
 
         return await _expenseRepo.Create(expenseEntity);
     }
+    public async Task<bool> CreateExpenseFromSplitAsync(ExpenseSplit request)
+    {
+        var expenseEntity = new Expenses()
+        {
+            date = request.Date,
+            merchantid = int.Parse(request.Merchant),
+            amount = request.Amount,
+            notes = request.Notes,
+            categoryid = request.SubCategoryId,
+            //when spliting an expense, default is to not exclude from statistics
+            //since that is only used in massive purchases (cars, mortgage down payments, etc.)
+            exclude_from_statistics = false
+            //TODO: add a way to add and delete tags here
+        };
+        return await _expenseRepo.Create(expenseEntity);
+    }
+
     public async Task<bool> UpdateExpenseAsync(Expense request)
     {
         if (request.Id == null)
@@ -146,11 +165,16 @@ public class ExpenseService : IExpenseService
 
         return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Expense[]>(expenses), amount);
     }
+
+
 }
 public class ExpenseMapperProfile : Profile
 {
     public ExpenseMapperProfile()
     {
+        //from stack overflow
+        //For the 1 millionth time: AutoMapper isn't meant for ViewModel -> Persistence/Domain Model conversions.
+        //It's for the other way (Domain/Persistance -> Dto/ViewModel).
 
         CreateMap<Expenses, Expense>()
             .ForMember(e => e.Id, o => o.MapFrom(src => src.Id))
