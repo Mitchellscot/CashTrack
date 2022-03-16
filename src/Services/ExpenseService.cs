@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
 using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
-using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.TagModels;
 using CashTrack.Repositories.ExpenseRepository;
-using CashTrack.Repositories.MerchantRepository;
-using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Services.Common;
-using CashTrack.Services.MerchantService;
 using System;
 using System.Linq;
 using System.Linq.Expressions;

@@ -54,7 +54,6 @@ namespace CashTrack.Pages.Expenses
             this.Tax = Tax ?? 0.0875M;
             this.Split = Split ?? 2;
             SplitOptions = new SelectList(Enumerable.Range(2, 7));
-            //SubCategoryList = DO THIS NEXT
             return Page();
         }
         public async Task<IActionResult> OnPost(List<ExpenseSplit> expenseSplits)

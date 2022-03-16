@@ -24,7 +24,6 @@ public class AmountSearchRequest : PaginationRequest
         set => _query = Decimal.Round(value, 2);
     }
 }
-
 public class Expense : Transaction
 {
     new public int? Id { get; set; }
