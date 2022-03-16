@@ -1,5 +1,4 @@
-﻿using CashTrack.Data.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace CashTrack.Models.Common
