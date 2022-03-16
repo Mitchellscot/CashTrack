@@ -75,16 +75,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @for (int i = 1; i <= Model.Split; i++)
+                        @for (int i = 0; i <= Model.Split - 1; i++)
                         {
                             <tr class="text-center">
-                                <input type="hidden" asp-for="Expenses[i].Tax" value="@Model.Tax">
+                                <input type="hidden" asp-for="ExpenseSplits[i].Tax" value="@Model.Tax" id="taxAmount-@i">
+                                <input type="hidden" asp-for="ExpenseSplits[i].Date" value="@Model.Date" id="date-@i">
+                                <input type="hidden" asp-for="ExpenseSplits[i].Merchant" value="@Model.Merchant" id="merchant-@i">
                                 <td>
-                                    <input placeholder="0.00" class="form-control" id="amount-@i" style="width: 100px;" type="number" min="0.00" step="any" asp-for="Expenses[i].Amount" />
+                                    <input placeholder="0.00" class="form-control" id="amount-@i" style="width: 100px;" type="number" min="0.00" step="0.01" asp-for="ExpenseSplits[i].Amount" />
+                                    <span style="color: red; white-space: normal;" asp-validation-for="ExpenseSplits[i].Amount"></span>
                                 </td>
                                 <td class="text-center">
                                     <div class="form-check d-flex justify-content-center">
-                                        <input asp-for="Expenses[i].Taxed" class="form-check-input" type="checkbox" id="taxed-@i">
+                                        <input asp-for="ExpenseSplits[i].Taxed" class="form-check-input" type="checkbox" id="isTaxed-@i">
                                     </div>
                                 </td>
                                 <td class="text-center" id="totalAmount-@i">
@@ -92,13 +95,13 @@
                                 </td>
                                 <td>
                                     <select id="subCategory-@i" class="form-control text-center" data-width="100%"
-                                        asp-for="Expenses[i].SubCategoryId" asp-items="Model.SubCategories"></select>
+                                        asp-for="ExpenseSplits[i].SubCategoryId" asp-items="Model.SubCategories"></select>
                                 </td>
                                 <td id="mainCategory-@i" class="text-center">
                                 </td>
                                 <td>
                                     <input class="form-control mx-auto p-0" id="notes-@i" type="text"
-                                       asp-for="Expenses[i].Notes" />
+                                       asp-for="ExpenseSplits[i].Notes" />
                                 </td>
                             </tr>
                         }
@@ -129,7 +132,7 @@
             @:$("#modelStateToast").show().delay(4000).fadeOut();
         }
 
-        @for(int i = 1; i <= Model.Split; i++)
+        @for(int i = 0; i <= Model.Split; i++)
         {
             //load the main category on page load
             <text>let category_@i = $("#subCategory-@i").val();
@@ -154,15 +157,33 @@
 
             //When updating the expense amount, make it a nice looking decimal
             <text>$('#amount-@i').change(() => {
+                //format the number in the input box to 2 decimals
                 $("#amount-@i").val(formatNumber($("#amount-@i").val()));
-                $("#totalAmount-@i").text(formatNumber($("#amount-@i").val()));
-
+                //apply tax if tax is checked and then update the Total Table Cell
+                let totalAmountAfterTax = applyTax($("#amount-@i").val(), $("#isTaxed-@i").is(":checked"));
+                $("#totalAmount-@i").text(totalAmountAfterTax);
+                //Update the form, if all totals equal the original amount, save changes button is displayed.
                 $("#total").text(adjustFormBasedOnTotal(findTotal()));
-                //TODO: Add tax to the calculated total amount if the tax box is checked
-                //TODO Add a OnPost method that adds up all the numbers and checks to see if it's equal to the original amount
-                //and then deletes the original expense and adds all the others!
             });
             </text>
+            <text>$("#isTaxed-@i").change(() => {
+                let taxedOrNot = applyTax($("#amount-@i").val(), $("#isTaxed-@i").is(":checked"));
+                $("#totalAmount-@i").text(taxedOrNot);
+                $("#total").text(adjustFormBasedOnTotal(findTotal()));
+            });
+
+            </text>
+        }
+        function applyTax(num, isTaxed)
+        {
+            let amount = Number(num);
+            let taxAmount = Number(@Model.Tax);
+            if(isTaxed){
+                return formatNumber(amount + (amount * taxAmount));
+            }
+            else{
+                return num;
+            }
         }
         function adjustFormBasedOnTotal(num)
         {
@@ -182,8 +203,7 @@
                 $("#totalBox").addClass("border-danger")
                 return num
             }
-            if(Number(num) === Number(0.00))
-            {
+            if(Number(num) === Number(0.00)){
                 $("#submitButton").removeAttr('disabled');
                 $("#totalBox").removeClass("border-danger");
                 $("#totalBox").addClass("border-success")
@@ -192,10 +212,10 @@
         }
         function findTotal()
         {
-            let originalAmount = @Model.Total;
-            let amounts = $('input[id^=amount]').map((i, el) => { return Number($(el).val()); }).get();
-            let sumOfAmounts = amounts.reduce((a, b) => a + b);
-            return formatNumber((originalAmount - sumOfAmounts));
+            let originalTotal = @Model.Total;
+            let totals = $('[id^=totalAmount]').map((i, el) => { return Number($(el).text()); }).get();
+            let sumOfTotals = totals.reduce((a, b) => a + b);
+            return formatNumber((originalTotal - sumOfTotals));
         }
         function formatNumber(num)
         {
