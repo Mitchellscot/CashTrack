@@ -16,6 +16,7 @@ public interface IIncomeSourceService
     Task<AddEditIncomeSource> CreateIncomeSourceAsync(AddEditIncomeSource request);
     Task<bool> UpdateIncomeSourceAsync(AddEditIncomeSource request);
     Task<bool> DeleteIncomeSourceAsync(int id);
+    Task<string[]> GetMatchingIncomeSourcesAsync(string name);
 }
 public class IncomeSourceService : IIncomeSourceService
 {
@@ -62,6 +63,11 @@ public class IncomeSourceService : IIncomeSourceService
         var response = new IncomeSourceResponse(request.PageNumber, request.PageSize, count, _mapper.Map<IncomeSourceListItem[]>(sources));
 
         return response;
+    }
+
+    public async Task<string[]> GetMatchingIncomeSourcesAsync(string name)
+    {
+        return (await _repo.Find(x => x.source.StartsWith(name))).Select(x => x.source).Take(10).ToArray();
     }
 
     public async Task<bool> UpdateIncomeSourceAsync(AddEditIncomeSource request)

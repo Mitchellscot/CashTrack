@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace CashTrack.Models.Common
 {
@@ -8,14 +7,13 @@ namespace CashTrack.Models.Common
         public static readonly Dictionary<int, string> GetAll = new Dictionary<int, string>()
         {
             { 0, "Date" },
-            { 1, "Date Range" },
-            { 2, "Month" },
-            { 3, "Quarter" },
-            { 4, "Year" },
-            { 5, "Amount" },
-            { 6, "Notes" },
-            { 7, "Source" },
-            { 8, "Income Category" },
+            { 1, "Month" },
+            { 2, "Quarter" },
+            { 3, "Year" },
+            { 4, "Amount" },
+            { 5, "Notes" },
+            { 6, "Source" },
+            { 7, "Income Category" },
         };
     }
 }
