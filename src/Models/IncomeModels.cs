@@ -26,6 +26,13 @@ public class IncomeListItem : Transaction
 {
     public string Source { get; set; }
     public string Category { get; set; }
+    public string Notes { get; set; }
+    public bool CreateNewSource { get; set; }
+    //TODO: Add IsRefundOrReimbursement Boolean to manage refunds better and not count as income in reports.
+    //might need to find a way to link to the expense that is refunded and deduct that amount?
+    //Either way, I need to have a better way of managing refunds
+    //and to think through what kind of data I want to produce. Counting refunds and reimbursements as income
+    //is not wise and doesn't produce accurate end of year reports.
 }
 
 public class IncomeQuickView : Transaction

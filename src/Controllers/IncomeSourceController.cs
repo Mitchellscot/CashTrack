@@ -1,6 +1,4 @@
-﻿using CashTrack.Common.Exceptions;
-using CashTrack.Models.IncomeSourceModels;
-using CashTrack.Services.IncomeSourceService;
+﻿using CashTrack.Services.IncomeSourceService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,12 +15,11 @@ namespace CashTrack.Controllers
         public IncomeSourceController(IIncomeSourceService service) => _service = service;
 
         [HttpGet]
-        public async Task<ActionResult<IncomeSourceResponse>> GetIncomeSources([FromQuery] IncomeSourceRequest request)
+        public async Task<ActionResult<string[]>> GetIncomeSources([FromQuery] string sourceName)
         {
-            //this will return a list of strings when I get to it
             try
             {
-                var result = await _service.GetIncomeSourcesAsync(request);
+                var result = await _service.GetMatchingIncomeSourcesAsync(sourceName);
                 return Ok(result);
             }
             catch (Exception ex)

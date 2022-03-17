@@ -26,3 +26,9 @@ public class IncomeCategoryDetail : Category
     //Get all expenses by income category and compare with income sources. How many gifts came from my parents, etc.
 }
 
+public class IncomeCategoryDropdownSelection
+{
+    public int Id { get; set; }
+    public string Category { get; set; }
+}
+
