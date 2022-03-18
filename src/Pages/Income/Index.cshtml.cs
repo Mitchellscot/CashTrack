@@ -124,7 +124,7 @@ namespace CashTrack.Pages.Incomes
         }
         public async Task<IActionResult> OnPostAddEdit()
         {
-            var IsEdit = Income.Id.HasValue ? false : true;
+            var IsEdit = Income.Id.HasValue ? true : false;
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -139,14 +139,14 @@ namespace CashTrack.Pages.Incomes
                 if (!string.IsNullOrEmpty(Income.Source))
                     Income.Source = (await _sourceService.GetIncomeSourceByName(Income.Source)).Id.ToString();
 
-                var success = IsEdit ? await _incomeService.CreateIncomeAsync(Income) : await _incomeService.UpdateIncomeAsync(Income);
+                var success = IsEdit ? await _incomeService.UpdateIncomeAsync(Income) : await _incomeService.CreateIncomeAsync(Income);
                 if (!success)
                 {
                     ModelState.AddModelError("", IsEdit ? "An error occured while adding the Income." : "An error occured while updating the Income.");
                     return Page();
                 }
-                TempData["Message"] = IsEdit ? "Sucessfully added new Income!" : "Sucessfully updated the Income!";
-                return RedirectToPage("./Index", new { query = Query, Q = Q, PageNumber = PageNumber });
+                TempData["Message"] = IsEdit ? "Sucessfully updated the Income!" : "Sucessfully added new Income!";
+                return RedirectToPage("./Index", new { Query = Query, Q = Q, PageNumber = PageNumber == 0 ? 1 : PageNumber});
             }
             catch (CategoryNotFoundException)
             {

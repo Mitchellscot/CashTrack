@@ -13,6 +13,6 @@ namespace CashTrack.Data.Entities
         public IncomeCategories? category { get; set; }
         public int? sourceid { get; set; }
         public IncomeSources? source { get; set; }
-        public bool IsRefundOrReimbursement { get; set; }
+        public bool is_refund { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace CashTrack.Services.IncomeSourceService;
 public interface IIncomeSourceService
 {
     Task<IncomeSourceResponse> GetIncomeSourcesAsync(IncomeSourceRequest request);
-    Task<AddEditIncomeSource> CreateIncomeSourceAsync(AddEditIncomeSource request);
+    Task<bool> CreateIncomeSourceAsync(AddEditIncomeSource request);
     Task<IncomeSources> GetIncomeSourceByName(string name);
     Task<bool> UpdateIncomeSourceAsync(AddEditIncomeSource request);
     Task<bool> DeleteIncomeSourceAsync(int id);
@@ -26,20 +26,15 @@ public class IncomeSourceService : IIncomeSourceService
 
     public IncomeSourceService(IIncomeSourceRepository repo, IMapper mapper) => (_repo, _mapper) = (repo, mapper);
 
-    public async Task<AddEditIncomeSource> CreateIncomeSourceAsync(AddEditIncomeSource request)
+    public async Task<bool> CreateIncomeSourceAsync(AddEditIncomeSource request)
     {
         var categories = await _repo.Find(x => true);
         if (categories.Any(x => x.source == request.Name))
             throw new DuplicateNameException(nameof(IncomeSources), request.Name);
 
         var sourceEntity = _mapper.Map<IncomeSources>(request);
-        sourceEntity.Id = await _repo.GetCount(x => true) + 1;
 
-        if (!await _repo.Create(sourceEntity))
-            throw new Exception("Couldn't save income category to the database.");
-
-        request.Id = sourceEntity.Id;
-        return request;
+        return await _repo.Create(sourceEntity);
     }
 
     public async Task<bool> DeleteIncomeSourceAsync(int id)

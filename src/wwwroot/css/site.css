@@ -116,7 +116,7 @@ ul.ui-autocomplete {
 }
 
 /* all of this is from layout.cshtml.css and I think it was boilerplate ASP.NET stuff so it might be safe to delete later. */
-a.navbar-brand {
+/*a.navbar-brand {
     white-space: normal;
     text-align: center;
     word-break: break-all;
@@ -161,5 +161,5 @@ button.accept-policy {
     width: 100%;
     white-space: nowrap;
     line-height: 60px;
-}
+}*/
 /* end boilerplate css */

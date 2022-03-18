@@ -109,7 +109,8 @@ namespace CashTrack.Data.CsvFiles
                     amount = Math.Round(Convert.ToDecimal(columns[2]), 2),
                     categoryid = Convert.ToInt32(columns[3]),
                     sourceid = Convert.ToInt32(columns[4]),
-                    notes = columns[4] == "" ? null : columns[5]
+                    notes = columns[4] == "" ? null : columns[5],
+                    is_refund = ParseBoolean(columns[6])
                 };
             }
         }

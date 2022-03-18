@@ -46,7 +46,7 @@ public class IncomeService : IIncomeService
             //gets converted to string id in controller
             sourceid = string.IsNullOrEmpty(request.Source) ? null : int.Parse(request.Source),
             categoryid = int.Parse(request.Category), //comes in as a string integer (dropdwn list)
-            IsRefundOrReimbursement = request.IsRefund
+            is_refund = request.IsRefund
         };
 
         return await _incomeRespository.Create(incomeEntity);
@@ -64,7 +64,8 @@ public class IncomeService : IIncomeService
         Expression<Func<Incomes, bool>> predicate = x => x.amount == request.Query;
         var income = await _incomeRespository.FindWithPagination(x => x.amount == request.Query, request.PageNumber, request.PageSize);
         var count = await _incomeRespository.GetCount(predicate);
-        var amount = await _incomeRespository.GetAmountOfIncome(predicate);
+        //not including refunds in the total amount because that's cheating...
+        var amount = await _incomeRespository.GetAmountOfIncomeNoRefunds(predicate);
         return new IncomeResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Income[]>(income), amount);
     }
     public async Task<IncomeResponse> GetIncomeByNotesAsync(IncomeRequest request)
@@ -72,7 +73,7 @@ public class IncomeService : IIncomeService
         Expression<Func<Incomes, bool>> predicate = x => x.notes.ToLower().Contains(request.Query.ToLower());
         var income = await _incomeRespository.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _incomeRespository.GetCount(predicate);
-        var amount = await _incomeRespository.GetAmountOfIncome(predicate);
+        var amount = await _incomeRespository.GetAmountOfIncomeNoRefunds(predicate);
         return new IncomeResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Income[]>(income), amount);
     }
     public async Task<IncomeResponse> GetIncomeByIncomeCategoryIdAsync(IncomeRequest request)
@@ -80,7 +81,7 @@ public class IncomeService : IIncomeService
         Expression<Func<Incomes, bool>> predicate = x => x.category.Id == int.Parse(request.Query);
         var income = await _incomeRespository.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _incomeRespository.GetCount(predicate);
-        var amount = await _incomeRespository.GetAmountOfIncome(predicate);
+        var amount = await _incomeRespository.GetAmountOfIncomeNoRefunds(predicate);
 
         return new IncomeResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Income[]>(income), amount);
     }
@@ -89,7 +90,7 @@ public class IncomeService : IIncomeService
         Expression<Func<Incomes, bool>> predicate = x => x.source.source.ToLower() == request.Query.ToLower();
         var income = await _incomeRespository.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _incomeRespository.GetCount(predicate);
-        var amount = await _incomeRespository.GetAmountOfIncome(predicate);
+        var amount = await _incomeRespository.GetAmountOfIncomeNoRefunds(predicate);
 
         return new IncomeResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Income[]>(income), amount);
     }
@@ -98,7 +99,8 @@ public class IncomeService : IIncomeService
         var predicate = DateOption<Incomes, IncomeRequest>.Parse(request);
         var expenses = await _incomeRespository.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _incomeRespository.GetCount(predicate);
-        var amount = await _incomeRespository.GetAmountOfIncome(predicate);
+
+        var amount = await _incomeRespository.GetAmountOfIncomeNoRefunds(predicate);
 
         return new IncomeResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Income[]>(expenses), amount);
     }
@@ -130,7 +132,7 @@ public class IncomeService : IIncomeService
             notes = request.Notes,
             sourceid = string.IsNullOrEmpty(request.Source) ? null : int.Parse(request.Source), //converted to a string id in page modal
             categoryid = int.Parse(request.Category), //comes in as a string integer (dropdwn list)
-            IsRefundOrReimbursement = request.IsRefund
+            is_refund = request.IsRefund
         };
         return await _incomeRespository.Update(incomeEntity);
     }
