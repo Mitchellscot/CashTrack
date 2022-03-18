@@ -12,6 +12,7 @@ namespace CashTrack.Repositories.IncomeRepository;
 public interface IIncomeRepository : IRepository<Incomes>
 {
     Task<decimal> GetAmountOfIncome(Expression<Func<Incomes, bool>> predicate);
+    Task<decimal> GetAmountOfIncomeNoRefunds(Expression<Func<Incomes, bool>> predicate);
 }
 public class IncomeRepository : IIncomeRepository
 {
@@ -100,6 +101,21 @@ public class IncomeRepository : IIncomeRepository
         try
         {
             return (decimal)await _ctx.Incomes
+            .Where(predicate)
+            .SumAsync(x => x.amount);
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<decimal> GetAmountOfIncomeNoRefunds(Expression<Func<Incomes, bool>> predicate)
+    {
+        try
+        {
+            return (decimal)await _ctx.Incomes
+            .Where(x => !x.is_refund)
             .Where(predicate)
             .SumAsync(x => x.amount);
         }

@@ -80,6 +80,7 @@ namespace CashTrack.Data.CsvFiles
             public int categoryid { get; set; }
             public int sourceid { get; set; }
             public string? notes { get; set; }
+            public bool is_refund { get; set; }
         }
         public class CsvUser
         {
