@@ -1,21 +1,26 @@
+using CashTrack.Common.Exceptions;
 using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.IncomeModels;
+using CashTrack.Models.IncomeSourceModels;
 using CashTrack.Services.IncomeService;
+using CashTrack.Services.IncomeSourceService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
 
-namespace CashTrack.Pages.Income
+namespace CashTrack.Pages.Incomes
 {
     public class IndexModel : PageModel
     {
+        private readonly IIncomeSourceService _sourceService;
         private readonly IIncomeService _incomeService;
 
-        public IndexModel(IIncomeService incomeService)
+        public IndexModel(IIncomeService incomeService, IIncomeSourceService sourceService)
         {
+            _sourceService = sourceService;
             _incomeService = incomeService;
         }
         [TempData]
@@ -29,6 +34,8 @@ namespace CashTrack.Pages.Income
         public string InputType { get; set; }
         public IncomeResponse IncomeResponse { get; set; }
         public SelectList QueryOptions { get; set; }
+        [BindProperty]
+        public CashTrack.Models.IncomeModels.Income Income { get; set; }
 
         public async Task<IActionResult> OnGet(string Q, int Query, int PageNumber)
         {
@@ -114,6 +121,43 @@ namespace CashTrack.Pages.Income
 
             IncomeResponse = await _incomeService.GetIncomeAsync(new IncomeRequest() { DateOptions = DateOptions.All, PageNumber = this.PageNumber });
             return Page();
+        }
+        public async Task<IActionResult> OnPostAddEdit()
+        {
+            var IsEdit = Income.Id.HasValue ? false : true;
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+            try
+            {
+                if (Income.CreateNewSource && !string.IsNullOrEmpty(Income.Source))
+                {
+                    var incomeSourceCreationSuccess = await _sourceService.CreateIncomeSourceAsync(new AddEditIncomeSource() { Name = Income.Source });
+                }
+                //converting the source name to a string ID
+                if (!string.IsNullOrEmpty(Income.Source))
+                    Income.Source = (await _sourceService.GetIncomeSourceByName(Income.Source)).Id.ToString();
+
+                var success = IsEdit ? await _incomeService.CreateIncomeAsync(Income) : await _incomeService.UpdateIncomeAsync(Income);
+                if (!success)
+                {
+                    ModelState.AddModelError("", IsEdit ? "An error occured while adding the Income." : "An error occured while updating the Income.");
+                    return Page();
+                }
+                TempData["Message"] = IsEdit ? "Sucessfully added new Income!" : "Sucessfully updated the Income!";
+                return RedirectToPage("./Index", new { query = Query, Q = Q, PageNumber = PageNumber });
+            }
+            catch (CategoryNotFoundException)
+            {
+                ModelState.AddModelError("", "Please select a category and try again");
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return Page();
+            }
         }
         private void PrepareForm(int query)
         {
