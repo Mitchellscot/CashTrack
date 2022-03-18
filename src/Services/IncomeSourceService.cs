@@ -13,9 +13,11 @@ namespace CashTrack.Services.IncomeSourceService;
 public interface IIncomeSourceService
 {
     Task<IncomeSourceResponse> GetIncomeSourcesAsync(IncomeSourceRequest request);
-    Task<AddEditIncomeSource> CreateIncomeSourceAsync(AddEditIncomeSource request);
+    Task<bool> CreateIncomeSourceAsync(AddEditIncomeSource request);
+    Task<IncomeSources> GetIncomeSourceByName(string name);
     Task<bool> UpdateIncomeSourceAsync(AddEditIncomeSource request);
     Task<bool> DeleteIncomeSourceAsync(int id);
+    Task<string[]> GetMatchingIncomeSourcesAsync(string name);
 }
 public class IncomeSourceService : IIncomeSourceService
 {
@@ -24,20 +26,15 @@ public class IncomeSourceService : IIncomeSourceService
 
     public IncomeSourceService(IIncomeSourceRepository repo, IMapper mapper) => (_repo, _mapper) = (repo, mapper);
 
-    public async Task<AddEditIncomeSource> CreateIncomeSourceAsync(AddEditIncomeSource request)
+    public async Task<bool> CreateIncomeSourceAsync(AddEditIncomeSource request)
     {
         var categories = await _repo.Find(x => true);
         if (categories.Any(x => x.source == request.Name))
             throw new DuplicateNameException(nameof(IncomeSources), request.Name);
 
         var sourceEntity = _mapper.Map<IncomeSources>(request);
-        sourceEntity.Id = await _repo.GetCount(x => true) + 1;
 
-        if (!await _repo.Create(sourceEntity))
-            throw new Exception("Couldn't save income category to the database.");
-
-        request.Id = sourceEntity.Id;
-        return request;
+        return await _repo.Create(sourceEntity);
     }
 
     public async Task<bool> DeleteIncomeSourceAsync(int id)
@@ -47,6 +44,14 @@ public class IncomeSourceService : IIncomeSourceService
             throw new IncomeSourceNotFoundException(id.ToString());
 
         return await _repo.Delete(source);
+    }
+
+    public async Task<IncomeSources> GetIncomeSourceByName(string name)
+    {
+        var source = (await _repo.Find(x => x.source == name)).FirstOrDefault();
+        if (source == null)
+            throw new IncomeSourceNotFoundException(name);
+        return source;
     }
 
     public async Task<IncomeSourceResponse> GetIncomeSourcesAsync(IncomeSourceRequest request)
@@ -62,6 +67,11 @@ public class IncomeSourceService : IIncomeSourceService
         var response = new IncomeSourceResponse(request.PageNumber, request.PageSize, count, _mapper.Map<IncomeSourceListItem[]>(sources));
 
         return response;
+    }
+
+    public async Task<string[]> GetMatchingIncomeSourcesAsync(string name)
+    {
+        return (await _repo.Find(x => x.source.StartsWith(name))).Select(x => x.source).Take(10).ToArray();
     }
 
     public async Task<bool> UpdateIncomeSourceAsync(AddEditIncomeSource request)
@@ -96,6 +106,5 @@ public class IncomeSourcesProfile : Profile
             .ForMember(x => x.description, o => o.MapFrom(src => src.Description))
             .ForMember(x => x.in_use, o => o.MapFrom(src => src.InUse))
             .ReverseMap();
-
     }
 }
