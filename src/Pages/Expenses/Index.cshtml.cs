@@ -43,22 +43,22 @@ namespace CashTrack.Pages.Expenses
 
             if (query == 0 && q != null)
             {
-                ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificDate, BeginDate = DateTime.Parse(q), PageNumber = pageNumber });
+                ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificDate, BeginDate = DateTimeOffset.Parse(q), PageNumber = pageNumber });
                 return Page();
             }
             if (query == 1 && q != null && q2 != null)
             {
-                ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.DateRange, BeginDate = DateTime.Parse(q), EndDate = DateTime.Parse(q2), PageNumber = pageNumber });
+                ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.DateRange, BeginDate = DateTimeOffset.Parse(q), EndDate = DateTimeOffset.Parse(q2), PageNumber = pageNumber });
                 return Page();
             }
             if (query == 2 && q != null)
             {
-                ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificMonthAndYear, BeginDate = DateTime.Parse(q), PageNumber = pageNumber });
+                ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificMonthAndYear, BeginDate = DateTimeOffset.Parse(q), PageNumber = pageNumber });
                 return Page();
             }
             if (query == 3 && q != null)
             {
-                ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificQuarter, BeginDate = DateTime.Parse(q), PageNumber = pageNumber });
+                ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificQuarter, BeginDate = DateTimeOffset.Parse(q), PageNumber = pageNumber });
                 return Page();
             }
             if (query == 4 && q != null)
@@ -75,7 +75,7 @@ namespace CashTrack.Pages.Expenses
                     return Page();
                 }
             }
-            if (query == 5)
+            if (query == 5 && q != null)
             {
                 decimal amount;
                 if (Decimal.TryParse(q, out amount))
@@ -90,32 +90,31 @@ namespace CashTrack.Pages.Expenses
                 }
             }
 
-            if (query == 6)
+            if (query == 6 && q != null)
             {
                 ExpenseResponse = await _expenseService.GetExpensesByNotesAsync(new ExpenseRequest() { Query = q, PageNumber = pageNumber });
                 return Page();
             }
-            if (query == 7)
+            if (query == 7 && q != null)
             {
                 ExpenseResponse = await _expenseService.GetExpensesByMerchantAsync(new ExpenseRequest() { Query = q, PageNumber = pageNumber });
                 return Page();
             }
-            if (query == 8)
+            if (query == 8 && q != null)
             {
                 ExpenseResponse = await _expenseService.GetExpensesBySubCategoryIdAsync(new ExpenseRequest() { Query = q, PageNumber = pageNumber });
                 return Page();
             }
-            if (query == 9)
+            if (query == 9 && q != null)
             {
                 ExpenseResponse = await _expenseService.GetExpensesByMainCategoryAsync(new ExpenseRequest() { Query = q, PageNumber = pageNumber });
                 return Page();
             }
-            if (query == 10)
+            if (query == 10 && q != null)
             {
                 ModelState.AddModelError("", "Not Implemented Yet");
                 return Page();
             }
-
             if (query == 11)
             {
                 ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.CurrentMonth, PageNumber = pageNumber });

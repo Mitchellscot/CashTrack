@@ -9,6 +9,7 @@ using CashTrack.Models.MerchantModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.IncomeRepository;
+using CashTrack.Repositories.IncomeSourceRepository;
 using CashTrack.Repositories.MerchantRepository;
 using CashTrack.Repositories.SubCategoriesRepository;
 using FluentValidation;
@@ -165,43 +166,55 @@ public class IncomeRequestValidators : AbstractValidator<IncomeRequest>
         RuleFor(x => x.EndDate).Must(endDate => endDate > earliestIncome).WithMessage($"The end date cannot be before {earliestIncome.DateTime.ToShortDateString()}.");
     }
 }
-public class AddEditIncomeValidators : AbstractValidator<AddEditIncome>
+public class AddEditIncomeValidators : AbstractValidator<Income>
 {
-    public AddEditIncomeValidators(ISubCategoryRepository _categoryRepo, IMerchantRepository _merchantRepo)
+    public AddEditIncomeValidators(ISubCategoryRepository _categoryRepo, IIncomeSourceRepository _sourceRepo)
     {
         RuleFor(x => x.Amount).NotEmpty().GreaterThan(0);
         RuleFor(x => x.Date).NotEmpty();
         RuleFor(x => x.Date).Must(x => x < DateTime.Today.AddDays(1)).WithMessage("The Income Date cannot be in the future.");
-        RuleFor(x => x.CategoryId).NotEmpty().GreaterThan(0).WithMessage("Must provide a category ID");
-        RuleFor(x => x.CategoryId).MustAsync(async (model, value, _) =>
-        {
-            return (await _categoryRepo.Find(x => true)).Any(x => x.Id == value);
-        }).WithMessage("Invalid Category Id");
-
-        When(x => x.SourceId != null,
+        When(x => x.Category != null,
             () =>
             {
-                RuleFor(x => x.SourceId).GreaterThan(0).MustAsync(async (model, value, _) =>
+                RuleFor(x => x.Category).MustAsync(async (model, value, _) =>
                 {
-                    return ((int)await _merchantRepo.GetCount(x => true)) > value;
-                }).WithMessage("Invalid Income Source Id");
+                    return (await _categoryRepo.Find(x => true)).Count() >= int.Parse(value);
+                }).WithMessage("Invalid Category");
+            });
+        When(x => !string.IsNullOrEmpty(x.Source) && !x.CreateNewSource,
+            () =>
+            {
+                RuleFor(x => x.Source).MustAsync(async (model, value, _) =>
+                        {
+                            return (await _sourceRepo.Find(x => true)).Any(x => x.source == value);
+                        }).WithMessage("Please Select an income source from the list or check \"Create New Source\"");
+            });
+        When(x => !string.IsNullOrEmpty(x.Source) && x.CreateNewSource,
+            () =>
+            {
+                RuleFor(x => x.Source).MustAsync(async (model, value, _) =>
+                        {
+                            return !(await _sourceRepo.Find(x => true)).Any(x => x.source == value);
+                        }).WithMessage("An Income Source already exists with that name");
+
             });
     }
-}
-/* Transactions To Review */
-public class ExpenseReviewValidator : AbstractValidator<ExpenseReviewRequest>
-{
-    public ExpenseReviewValidator()
+
+    /* Transactions To Review */
+    public class ExpenseReviewValidator : AbstractValidator<ExpenseReviewRequest>
     {
-        RuleFor(x => x.PageNumber).GreaterThan(0);
-        RuleFor(x => x.PageSize).InclusiveBetween(5, 100);
+        public ExpenseReviewValidator()
+        {
+            RuleFor(x => x.PageNumber).GreaterThan(0);
+            RuleFor(x => x.PageSize).InclusiveBetween(5, 100);
+        }
     }
-}
-public class IncomeReviewValidator : AbstractValidator<IncomeReviewRequest>
-{
-    public IncomeReviewValidator()
+    public class IncomeReviewValidator : AbstractValidator<IncomeReviewRequest>
     {
-        RuleFor(x => x.PageNumber).GreaterThan(0);
-        RuleFor(x => x.PageSize).InclusiveBetween(5, 100);
+        public IncomeReviewValidator()
+        {
+            RuleFor(x => x.PageNumber).GreaterThan(0);
+            RuleFor(x => x.PageSize).InclusiveBetween(5, 100);
+        }
     }
 }
