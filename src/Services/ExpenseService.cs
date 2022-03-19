@@ -6,6 +6,7 @@ using CashTrack.Models.TagModels;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Services.Common;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -14,13 +15,14 @@ namespace CashTrack.Services.ExpenseService;
 
 public interface IExpenseService
 {
-    Task<Expenses> GetExpenseByIdAsync(int id);
+    Task<Expense> GetExpenseByIdAsync(int id);
     Task<ExpenseResponse> GetExpensesAsync(ExpenseRequest request);
     Task<ExpenseResponse> GetExpensesByNotesAsync(ExpenseRequest request);
     Task<ExpenseResponse> GetExpensesByAmountAsync(AmountSearchRequest request);
     Task<ExpenseResponse> GetExpensesBySubCategoryIdAsync(ExpenseRequest request);
     Task<ExpenseResponse> GetExpensesByMerchantAsync(ExpenseRequest request);
     Task<ExpenseResponse> GetExpensesByMainCategoryAsync(ExpenseRequest request);
+    Task<Expense[]> GetExpensesByDateWithoutPaginationAsync(DateTime request);
     Task<bool> CreateExpenseAsync(Expense request);
     Task<bool> CreateExpenseFromSplitAsync(ExpenseSplit request);
     Task<bool> UpdateExpenseAsync(Expense request);
@@ -36,10 +38,10 @@ public class ExpenseService : IExpenseService
         _expenseRepo = expenseRepository;
         _mapper = mapper;
     }
-    public async Task<Expenses> GetExpenseByIdAsync(int id)
+    public async Task<Expense> GetExpenseByIdAsync(int id)
     {
         var expense = await _expenseRepo.FindById(id);
-        return expense;
+        return _mapper.Map<Expense>(expense);
     }
     public async Task<ExpenseResponse> GetExpensesAsync(ExpenseRequest request)
     {
@@ -87,13 +89,11 @@ public class ExpenseService : IExpenseService
     }
     public async Task<bool> CreateExpenseAsync(Expense request)
     {
-        if (string.IsNullOrEmpty(request.SubCategory))
-            throw new CategoryNotFoundException("null");
         var expenseEntity = new Expenses()
         {
             amount = request.Amount,
             date = request.Date,
-            categoryid = int.Parse(request.SubCategory),
+            categoryid = request.SubCategoryId,
             exclude_from_statistics = request.ExcludeFromStatistics,
             notes = request.Notes,
             merchantid = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant)
@@ -107,7 +107,7 @@ public class ExpenseService : IExpenseService
         var expenseEntity = new Expenses()
         {
             date = request.Date,
-            merchantid = int.Parse(request.Merchant),
+            merchantid = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant),
             amount = request.Amount,
             notes = request.Notes,
             categoryid = request.SubCategoryId,
@@ -124,9 +124,6 @@ public class ExpenseService : IExpenseService
         if (request.Id == null)
             throw new ArgumentException("Need an id to update an expense");
 
-        if (string.IsNullOrEmpty(request.SubCategory))
-            throw new CategoryNotFoundException("null");
-
         var currentExpense = await _expenseRepo.Find(x => x.Id == request.Id.Value);
         if (currentExpense == null)
             throw new ExpenseNotFoundException(request.Id.Value.ToString());
@@ -136,7 +133,7 @@ public class ExpenseService : IExpenseService
             Id = request.Id.Value,
             amount = request.Amount,
             date = request.Date,
-            categoryid = int.Parse(request.SubCategory),
+            categoryid = request.SubCategoryId,
             exclude_from_statistics = request.ExcludeFromStatistics,
             notes = request.Notes,
             merchantid = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant)
@@ -161,8 +158,11 @@ public class ExpenseService : IExpenseService
 
         return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Expense[]>(expenses), amount);
     }
-
-
+    public async Task<Expense[]> GetExpensesByDateWithoutPaginationAsync(DateTime request)
+    {
+        var expenses = await _expenseRepo.Find(x => x.date == request);
+        return _mapper.Map<Expense[]>(expenses);
+    }
 }
 public class ExpenseMapperProfile : Profile
 {
@@ -179,6 +179,7 @@ public class ExpenseMapperProfile : Profile
             .ForMember(e => e.Notes, o => o.MapFrom(src => src.notes))
             .ForMember(e => e.Merchant, o => o.MapFrom(src => src.merchant.name))
             .ForMember(e => e.SubCategory, o => o.MapFrom(src => src.category.sub_category_name))
+            .ForMember(e => e.SubCategoryId, o => o.MapFrom(src => src.category.Id))
             .ForMember(e => e.MainCategory, o => o.MapFrom(src => src.category.main_category.main_category_name))
             .ForMember(e => e.ExcludeFromStatistics, o => o.MapFrom(src => src.exclude_from_statistics))
             .ForMember(e => e.Tags, o => o.MapFrom(

@@ -27,7 +27,13 @@ public class ExpenseRepository : IExpenseRepository
     {
         try
         {
-            return await _ctx.Expenses.Where(predicate).ToArrayAsync();
+            return await _ctx.Expenses
+                .Include(x => x.expense_tags)
+                .ThenInclude(x => x.tag)
+                .Include(x => x.merchant)
+                .Include(x => x.category)
+                .ThenInclude(x => x.main_category)
+                .Where(predicate).ToArrayAsync();
         }
         catch (Exception)
         {

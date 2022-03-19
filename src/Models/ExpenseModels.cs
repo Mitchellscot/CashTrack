@@ -31,6 +31,7 @@ public class Expense : Transaction
     public string Merchant { get; set; }
     public ICollection<TagModel> Tags { get; set; }
     public string SubCategory { get; set; }
+    public int SubCategoryId { get; set; }
     public string MainCategory { get; set; }
     public bool ExcludeFromStatistics { get; set; }
     public bool CreateNewMerchant { get; set; }
