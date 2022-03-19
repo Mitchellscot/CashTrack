@@ -95,7 +95,7 @@
                                     <div class="form-check form-switch ">
                                         <label class="form-check-label" asp-for="@Model.Income.IsRefund">This is a Refund</label>
                                         <input class="form-check-input" type="checkbox" role="switch" id="addIncomeRefundBool" data-val="true"
-                                               asp-for="Income.IsRefund" />
+                                               asp-for="@Model.Income.IsRefund" />
                                         <span asp-validation-for="@Model.Income.IsRefund"></span>
                                     </div>
                                 </div>
@@ -293,16 +293,17 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-4 align-self-center border rounded py-1 d-flex justify-content-center">
-                                                                    <div class="form-check form-switch ">
+                                                                    <div class="form-check form-switch">
                                                                         <label class="form-check-label"
                                                                        asp-for="@income.IsRefund">
                                                                             This is a Refund
                                                                         </label>
-                                                                        <input class="form-check-input" type="checkbox"
-                                                                       role="switch" id="editIncomeRefundBool-@income.Id"
+                                                                        <input class="form-check-input"
+                                                                       type="checkbox"
+                                                                       role="switch"
                                                                        data-val="true"
+                                                                       id="editIncomeRefundBool-@income.Id"
                                                                        asp-for="@income.IsRefund" />
-                                                                        <span asp-validation-for="@income.IsRefund"></span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -361,6 +362,8 @@
                                                 </div>
                                                 <div class="modal-footer d-flex justify-content-evenly">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <a style="display: none;" asp-page="./Refund" asp-route-id="@income.Id" 
+                                                    type="button" class="btn btn-info" id="refundButton-@income.Id">Refund Expenses</a>
                                                     <form>
                                                         <button id="editIncomeSubmitButton-@income.Id" type="submit" class="btn btn-primary"
                                                         form="editIncomeForm-@income.Id">
@@ -723,14 +726,13 @@
                 <text>
                 $("#editIncomeRefundBool-@id.Key").click(() => {
                     if($("#editIncomeRefundBool-@id.Key").is(":checked")){
+                        $("#refundButton-@id.Key").show();
                         $("#editIncomeCategory-@id.Key").empty();
                         $("#editIncomeCategory-@id.Key").append(`<option value="9" selected>Refund</option>`);
                         $("#editIncomeSubmitButton-@id.Key").text("Apply Refund");
                     }
                     else{
-                                            console.log('bango')
-
-                        $("#editIncomeSubmitButton-@id.Key").text("Save Changes");
+                        $("#refundButton-@id.Key").hide();
                         $.ajax({
                             url: `/api/incomecategory`,
                             method: 'GET'

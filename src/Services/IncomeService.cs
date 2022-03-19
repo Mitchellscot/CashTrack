@@ -7,7 +7,6 @@ using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.IncomeSourceRepository;
 using CashTrack.Services.Common;
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -64,7 +63,6 @@ public class IncomeService : IIncomeService
         Expression<Func<Incomes, bool>> predicate = x => x.amount == request.Query;
         var income = await _incomeRespository.FindWithPagination(x => x.amount == request.Query, request.PageNumber, request.PageSize);
         var count = await _incomeRespository.GetCount(predicate);
-        //not including refunds in the total amount because that's cheating...
         var amount = await _incomeRespository.GetAmountOfIncomeNoRefunds(predicate);
         return new IncomeResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Income[]>(income), amount);
     }
@@ -99,9 +97,8 @@ public class IncomeService : IIncomeService
         var predicate = DateOption<Incomes, IncomeRequest>.Parse(request);
         var expenses = await _incomeRespository.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _incomeRespository.GetCount(predicate);
-
+        //not including refunds in the total amount because that's cheating...
         var amount = await _incomeRespository.GetAmountOfIncomeNoRefunds(predicate);
-
         return new IncomeResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Income[]>(expenses), amount);
     }
 
@@ -148,6 +145,7 @@ public class IncomeMapperProfile : Profile
             .ForMember(x => x.Amount, o => o.MapFrom(x => x.amount))
             .ForMember(x => x.Category, o => o.MapFrom(x => x.category.category))
             .ForMember(x => x.Source, o => o.MapFrom(x => x.source.source))
-            .ForMember(x => x.Notes, o => o.MapFrom(x => x.notes));
+            .ForMember(x => x.Notes, o => o.MapFrom(x => x.notes))
+            .ForMember(x => x.IsRefund, o => o.MapFrom(x => x.is_refund));
     }
 }
