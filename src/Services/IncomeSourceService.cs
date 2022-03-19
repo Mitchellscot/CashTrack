@@ -71,7 +71,7 @@ public class IncomeSourceService : IIncomeSourceService
 
     public async Task<string[]> GetMatchingIncomeSourcesAsync(string name)
     {
-        return (await _repo.Find(x => x.source.StartsWith(name))).Select(x => x.source).Take(10).ToArray();
+        return (await _repo.Find(x => x.source.StartsWith(name) && x.in_use == true)).Select(x => x.source).Take(10).ToArray();
     }
 
     public async Task<bool> UpdateIncomeSourceAsync(AddEditIncomeSource request)

@@ -146,7 +146,7 @@ namespace CashTrack.Pages.Incomes
                     return Page();
                 }
                 TempData["Message"] = IsEdit ? "Sucessfully updated the Income!" : "Sucessfully added new Income!";
-                return RedirectToPage("./Index", new { Query = Query, Q = Q, PageNumber = PageNumber == 0 ? 1 : PageNumber});
+                return RedirectToPage("./Index", new { Query = Query, Q = Q, PageNumber = PageNumber == 0 ? 1 : PageNumber });
             }
             catch (CategoryNotFoundException)
             {
@@ -158,6 +158,17 @@ namespace CashTrack.Pages.Incomes
                 ModelState.AddModelError("", ex.Message);
                 return Page();
             }
+        }
+        public async Task<IActionResult> OnPostDelete(int incomeId, int query, string q, int pageNumber)
+        {
+            var success = await _incomeService.DeleteIncomeAsync(incomeId);
+            if (!success)
+            {
+                ModelState.AddModelError("", "Unable to delete the Income");
+                return Page();
+            }
+            TempData["Message"] = "Sucessfully deleted Income!";
+            return RedirectToPage("./Index", new { Query = query, Q = q, PageNumber = pageNumber });
         }
         private void PrepareForm(int query)
         {

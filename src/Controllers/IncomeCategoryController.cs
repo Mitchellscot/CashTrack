@@ -16,7 +16,7 @@ namespace CashTrack.Controllers
         public IncomeCategoryController(IIncomeCategoryService service) => _service = service;
 
         [HttpGet]
-        public async Task<ActionResult<IncomeCategoryDropdownSelection[]>> GetIncomeCategories()
+        public async Task<ActionResult<IncomeCategoryDropdownSelection[]>> GetIncomeCategoriesForDropdownList()
         {
             try
             {
