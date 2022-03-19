@@ -21,7 +21,7 @@
                         </div>
                     </div>
                 </div>
-    }<form method="get">
+    }<form method="Post" asp-page-handler="Query">
         <div class="row">
             <div class="col-6">
                 <div class="input-group">
@@ -42,9 +42,9 @@
     @if (Model.ExpenseSearch != null)
     {
         <div class="row mt-3">
-            <form class="form-horizontal" method="post" id="expenseSearchForm">
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover">
+                        
                         <thead>
                             <tr class="text-center">
                                 <th>
@@ -71,6 +71,66 @@
                             @foreach(var expense in Model.ExpenseSearch)
                             {
                                 <tr class="text-center">
+                                    <form class="form-horizontal" method="post" id="expenseSearchForm">
+                                    <input type="hidden" asp-for="@Model.ExpenseSearchChosenIds" value="@expense.Id" />
+                                    <td>
+                                        @expense.Date.Date.ToShortDateString()
+                                    </td>
+                                    <td>
+                                        @expense.Amount
+                                    </td>
+                                    <td>
+                                        @expense.Merchant
+                                    </td>
+                                    <td>
+                                        @expense.SubCategory
+                                    </td>
+                                    <td>
+                                        @expense.Notes
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" type="submit">Select</button>
+                                    </td>
+                                    </form>
+                                </tr>
+                                
+                            }
+                        </tbody>
+                        
+                    </table>
+                </div>
+            
+            </div>
+    }
+    @if (Model.SelectedExpenses.Count() > 0)
+    {
+                <div class="row mt-3">
+            <form class="form-horizontal" method="post" id="selectedExpenseForm">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr class="text-center">
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    Original Amount
+                                </th>
+                                <th>
+                                    Amount To Apply
+                                </th>
+                                <th>
+                                    Apply Full Amount
+                                </th>
+                                <th>
+                                    Remove
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var expense in Model.SelectedExpenses)
+                            {
+                                <tr class="text-center">
                                     <input type="hidden" asp-for="@expense.Id" />
                                     <td>
                                         @expense.Date.Date.ToShortDateString()
@@ -78,17 +138,15 @@
                                                                         <td>
                                         @expense.Amount
                                     </td>
-                                                                        <td>
-                                        @expense.Merchant
-                                    </td>
-                                                                        <td>
-                                        @expense.SubCategory
-                                    </td>
-                                                                        <td>
-                                        @expense.Notes
+                                    <td>
+                                                                            @*this is a posted list so might need a for loop or indexer*@
+                                        <input type="number" class="form-control" id="selectedExpense-@expense.Id" />
                                     </td>
                                     <td>
-                                        <button class="btn btn-primary" type="submit">Select</button>
+                                       <button class="btn btn-primary" type="submit">Apply Full</button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" type="submit">Remove</button>
                                     </td>
                                 </tr>
                             }

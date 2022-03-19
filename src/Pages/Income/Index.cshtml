@@ -686,6 +686,10 @@
             {
                 //Loads the category select list
                 <text>$("#editIncomeButton-@id.Key").click(() =>{
+                    if($("#editIncomeRefundBool-@id.Key").is(":checked")){
+                        $("#refundButton-@id.Key").show();
+                    }
+
                     $.ajax({
                         url: `/api/incomecategory`,
                         method: 'GET'
