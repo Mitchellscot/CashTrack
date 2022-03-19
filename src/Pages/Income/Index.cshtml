@@ -9,16 +9,16 @@
 <div class="container-fluid">
     @if (Model.Message != null)
     {
-        <div style="position: relative;">
-            <div class="toast fade show mt-3 bg-success" role="alert" id="toast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
-                <div class="toast-body d-flex justify-content-between align-items-center">
-                    <i class="bi bi-hand-thumbs-up text-white mx-3" role="img"
+            <div style="position: relative;">
+                <div class="toast fade show mt-3 bg-success" role="alert" id="toast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
+                    <div class="toast-body d-flex justify-content-between align-items-center">
+                        <i class="bi bi-hand-thumbs-up text-white mx-3" role="img"
                    style="font-size: 1.5rem;"></i>
                     @Model.Message
-                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                    </div>
                 </div>
             </div>
-        </div>
     }
     <div class="row mb-1">
         <div class="col-xl-6 col-12 mb-1 mr-auto">
@@ -155,285 +155,285 @@
     @*End Add Income Modal*@
     @if (!ViewData.ModelState.IsValid)
     {
-        <div style="position: relative;">
-            <div class="toast fade show mt-3 bg-danger" role="alert" id="modelStateToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
-                <div class="toast-body d-flex align-items-center" asp-validation-summary="All">
-                    <i class="bi bi-x-circle text-white mx-3" role="img"
+            <div style="position: relative;">
+                <div class="toast fade show mt-3 bg-danger" role="alert" id="modelStateToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
+                    <div class="toast-body d-flex align-items-center" asp-validation-summary="All">
+                        <i class="bi bi-x-circle text-white mx-3" role="img"
                    style="font-size: 1.5rem;"></i>
+                    </div>
                 </div>
             </div>
-        </div>
     }
     else if (Model.IncomeResponse != null && Model.IncomeResponse.TotalCount > 0)
     {
-        <div class="row">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover table-sm mb-0">
-                    <thead>
-                        <tr class="text-center table-primary">
-                            <th width="10%">
-                                Date
-                            </th>
-                            <th width="10%">
-                                Amount
-                            </th>
-                            <th width="10%">
-                                Source
-                            </th>
-                            <th width="10%">
-                                Category
-                            </th>
-                            <th width="10%">
-                                Actions
-                            </th>
-                        </tr>
-                    </thead>
+            <div class="row">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-sm mb-0">
+                        <thead>
+                            <tr class="text-center table-primary">
+                                <th width="10%">
+                                    Date
+                                </th>
+                                <th width="10%">
+                                    Amount
+                                </th>
+                                <th width="10%">
+                                    Source
+                                </th>
+                                <th width="10%">
+                                    Category
+                                </th>
+                                <th width="10%">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
 
-                    <tbody>
+                        <tbody>
                         @foreach (var income in Model.IncomeResponse.ListItems)
                         {
-                            <tr class="text-center">
-                                <td>
+                                    <tr class="text-center">
+                                        <td>
                                     @income.Date.Date.ToShortDateString()
-                                </td>
-                                <td>
+                                        </td>
+                                        <td>
                                     @income.Amount
 
-                                </td>
-                                <td>
+                                        </td>
+                                        <td>
                                     @income.Source
 
-                                </td>
-                                <td>
+                                        </td>
+                                        <td>
                                     @income.Category
-                                </td>
-                                <td>
+                                        </td>
+                                        <td>
                                     @if (!string.IsNullOrEmpty(income.Notes))
                                     {
-                                        <button style="background: none; padding: 0px; border: none;"
+                                                    <button style="background: none; padding: 0px; border: none;"
                                     type="button" data-bs-toggle="modal"
                                     data-bs-target="#detailModal-@income.Id" class="pe-2 ps-0 ms-0">
-                                            <i class="bi bi-file-earmark-check text-primary" role="img"
+                                                        <i class="bi bi-file-earmark-check text-primary" role="img"
                                    style="font-size: 1.25rem;"></i>
-                                        </button>
+                                                    </button>
                                         @*Begin Detail Modal*@
-                                        <div class="modal fade" id="detailModal-@income.Id">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content">
-                                                    <div class="modal-header text-center">
-                                                        <h5 class="modal-title w-100">Notes</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body text-wrap">
+                                                    <div class="modal fade" id="detailModal-@income.Id">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header text-center">
+                                                                    <h5 class="modal-title w-100">Notes</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body text-wrap">
                                                         @income.Notes
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                         @*End Detail Modal*@
                                     }
                                     else
                                     {
-                                        <button style="background: none; padding: 0px; border: none;"
+                                                    <button style="background: none; padding: 0px; border: none;"
                                     type="button" data-bs-toggle="modal" disabled
                                     data-bs-target="#detailModal-@income.Id" class="pe-2 ps-0 ms-0">
-                                            <i class="bi bi-file-earmark-check text-white" role="img"
+                                                        <i class="bi bi-file-earmark-check text-white" role="img"
                                    style="font-size: 1.25rem; visibility: hidden;"></i>
-                                        </button>
-                                    }
-                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
-                                    data-bs-target="#editIncomeModal-@income.Id" id="editIncomeButton-@income.Id" class="px-2">
-                                        <i class="bi bi-pencil text-primary" role="img"
-                                   style="font-size: 1.25rem;"></i>
-                                    </button>
-                                    @* Edit Income Modal *@
-                                    <div class="modal fade" id="editIncomeModal-@income.Id">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header text-center">
-                                                    <h5 class="modal-title w-100">Edit Income</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal">
                                                     </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="container-fluid">
-                                                        <form method="post"
+                                    }
+                                            <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#editIncomeModal-@income.Id" id="editIncomeButton-@income.Id" class="px-2">
+                                                <i class="bi bi-pencil text-primary" role="img"
+                                   style="font-size: 1.25rem;"></i>
+                                            </button>
+                                    @* Edit Income Modal *@
+                                            <div class="modal fade" id="editIncomeModal-@income.Id">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header text-center">
+                                                            <h5 class="modal-title w-100">Edit Income</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="container-fluid">
+                                                                <form method="post"
                                                       asp-page="./Index"
                                                       asp-page-handler="AddEdit"
                                                       id="editIncomeForm-@income.Id">
-                                                            <input type="hidden" asp-for="@income.Id" />
-                                                            <input type="hidden" asp-for="@Model.PageNumber" />
-                                                            <input type="hidden" asp-for="@Model.Q" />
-                                                            <input type="hidden" asp-for="@Model.Query" />
-                                                            <div class="row mb-3">
-                                                                <div class="col-4">
-                                                                    <label class="visually-hidden" asp-for="@income.Date">
-                                                                        Date
-                                                                    </label>
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-text text-center">Date</div>
-                                                                        <input data-val="true" asp-for=@income.Date
+                                                                    <input type="hidden" asp-for="@income.Id" />
+                                                                    <input type="hidden" asp-for="@Model.PageNumber" />
+                                                                    <input type="hidden" asp-for="@Model.Q" />
+                                                                    <input type="hidden" asp-for="@Model.Query" />
+                                                                    <div class="row mb-3">
+                                                                        <div class="col-4">
+                                                                            <label class="visually-hidden" asp-for="@income.Date">
+                                                                                Date
+                                                                            </label>
+                                                                            <div class="input-group">
+                                                                                <div class="input-group-text text-center">Date</div>
+                                                                                <input data-val="true" asp-for=@income.Date
                                                                        asp-format="{0:yyyy-MM-dd}"
                                                                        type="date" class="form-control" id="editIncomeDate-@income.Id">
-                                                                        <span asp-validation-for="@income.Date"></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-4">
-                                                                    <label class="visually-hidden"
+                                                                                <span asp-validation-for="@income.Date"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-4">
+                                                                            <label class="visually-hidden"
                                                                    asp-for="@income.Amount">Amount</label>
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-text">$</div>
-                                                                        <input data-val="true"
+                                                                            <div class="input-group">
+                                                                                <div class="input-group-text">$</div>
+                                                                                <input data-val="true"
                                                                        asp-for=@income.Amount
                                                                        type="number" min="0.00" step="any"
                                                                        class="form-control" id="editIncomeAmount-@income.Id"
                                                                        placeholder="0.00">
-                                                                        <span asp-validation-for="@income.Amount"></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-4 align-self-center border rounded py-1 d-flex justify-content-center">
-                                                                    <div class="form-check form-switch">
-                                                                        <label class="form-check-label"
+                                                                                <span asp-validation-for="@income.Amount"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-4 align-self-center border rounded py-1 d-flex justify-content-center">
+                                                                            <div class="form-check form-switch">
+                                                                                <label class="form-check-label"
                                                                        asp-for="@income.IsRefund">
-                                                                            This is a Refund
-                                                                        </label>
-                                                                        <input class="form-check-input"
+                                                                                    This is a Refund
+                                                                                </label>
+                                                                                <input class="form-check-input"
                                                                        type="checkbox"
                                                                        role="switch"
                                                                        data-val="true"
                                                                        id="editIncomeRefundBool-@income.Id"
                                                                        asp-for="@income.IsRefund" />
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <div class="col-8">
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-text">Category</div>
-                                                                        <label class="visually-hidden"
+                                                                    <div class="row mb-3">
+                                                                        <div class="col-8">
+                                                                            <div class="input-group">
+                                                                                <div class="input-group-text">Category</div>
+                                                                                <label class="visually-hidden"
                                                                        asp-for="@income.Category">Category</label>
-                                                                        <select data-val="true"
+                                                                                <select data-val="true"
                                                                         asp-for=@income.Category
                                                                         class="form-control text-center"
                                                                         id="editIncomeCategory-@income.Id">
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-4 d-flex justify-content-center">
-                                                                    <a class="btn btn-secondary" type="button"
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-4 d-flex justify-content-center">
+                                                                            <a class="btn btn-secondary" type="button"
                                                                asp-page="/IncomeCategory/Add">Add New Category</a>
-                                                                </div>
-                                                                <span style="color: red;" asp-validation-for="@income.Category"></span>
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <div class="col-8">
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-text">Source</div>
-                                                                        <label class="visually-hidden"
+                                                                        </div>
+                                                                        <span style="color: red;" asp-validation-for="@income.Category"></span>
+                                                                    </div>
+                                                                    <div class="row mb-3">
+                                                                        <div class="col-8">
+                                                                            <div class="input-group">
+                                                                                <div class="input-group-text">Source</div>
+                                                                                <label class="visually-hidden"
                                                                        asp-for="@income.Source">Source</label>
-                                                                        <input class="form-control"
+                                                                                <input class="form-control"
                                                                        data-val="true" type="text"
                                                                        asp-for="@income.Source"
                                                                        id="editIncomeSource-@income.Id" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-4 align-self-center border rounded py-1">
-                                                                    <div class="form-check ">
-                                                                        <label class="form-check-label"
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-4 align-self-center border rounded py-1">
+                                                                            <div class="form-check ">
+                                                                                <label class="form-check-label"
                                                                        asp-for="@income.CreateNewSource">Create New Income Source</label>
-                                                                        <input class="form-check-input"
+                                                                                <input class="form-check-input"
                                                                        type="checkbox" role="switch"
                                                                        id="editIncomeCreateNewSource-@income.Id"
                                                                        asp-for="@income.CreateNewSource" />
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row mb-3 px-1">
-                                                                <label class="visually-hidden"
+                                                                    <div class="row mb-3 px-1">
+                                                                        <label class="visually-hidden"
                                                                asp-for="@income.Notes"></label>
-                                                                <textarea class="form-control" asp-for="@income.Notes"
+                                                                        <textarea class="form-control" asp-for="@income.Notes"
                                                                   id="editIncomeNotes-@income.Id" rows="3" placeholder="Notes"></textarea>
+                                                                    </div>
+                                                                    <span style="color: red;" asp-validation-for="@income.Notes"></span>
+                                                                    <span style="color: red;" asp-validation-for="@income.Source"></span>
+                                                                </form>
                                                             </div>
-                                                            <span style="color: red;" asp-validation-for="@income.Notes"></span>
-                                                            <span style="color: red;" asp-validation-for="@income.Source"></span>
-                                                        </form>
+                                                        </div>
+                                                        <div class="modal-footer d-flex justify-content-evenly">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <a style="display: none;" asp-page="./Refund" asp-route-id="@income.Id"
+                                               type="button" class="btn btn-info" id="refundButton-@income.Id">Refund Expenses</a>
+                                                            <form>
+                                                                <button id="editIncomeSubmitButton-@income.Id" type="submit" class="btn btn-primary"
+                                                        form="editIncomeForm-@income.Id">
+                                                                    Save Changes
+                                                                </button>
+                                                            </form>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer d-flex justify-content-evenly">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <a style="display: none;" asp-page="./Refund" asp-route-id="@income.Id" 
-                                                    type="button" class="btn btn-info" id="refundButton-@income.Id">Refund Expenses</a>
-                                                    <form>
-                                                        <button id="editIncomeSubmitButton-@income.Id" type="submit" class="btn btn-primary"
-                                                        form="editIncomeForm-@income.Id">
-                                                            Save Changes
-                                                        </button>
-                                                    </form>
-                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
                                     @*End Edit Income Modal*@
 
-                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
+                                            <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-@income.Id" class="ps-2 ps-0 me-0">
-                                        <i class="bi bi-trash text-primary" role="img"
+                                                <i class="bi bi-trash text-primary" role="img"
                                    style="font-size: 1.25rem;"></i>
-                                    </button>
+                                            </button>
                                     @*Delete Model*@
-                                    <div class="modal fade" id="deleteModal-@income.Id">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header text-center">
-                                                    <h5 class="modal-title text-center">
-                                                        <strong>Are you sure you want to Delete this Income?</strong>
-                                                    </h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true"></span>
-                                                    </button>
-                                                </div>
+                                            <div class="modal fade" id="deleteModal-@income.Id">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header text-center">
+                                                            <h5 class="modal-title text-center">
+                                                                <strong>Are you sure you want to Delete this Income?</strong>
+                                                            </h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true"></span>
+                                                            </button>
+                                                        </div>
 
-                                                <div class="modal-footer d-flex justify-content-evenly">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                        Cancel
-                                                    </button>
-                                                    <form method="post"
+                                                        <div class="modal-footer d-flex justify-content-evenly">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                                Cancel
+                                                            </button>
+                                                            <form method="post"
                                                   asp-page="./Index"
                                                   asp-page-handler="Delete"
                                                   asp-route-incomeId="@income.Id"
                                                   asp-route-query="@Model.Query"
                                                   asp-route-q="@Model.Q"
                                                   asp-route-pageNumber="@Model.PageNumber">
-                                                        <button type="submit" class="btn btn-danger">DELETE</button>
-                                                    </form>
+                                                                <button type="submit" class="btn btn-danger">DELETE</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
                                     @*End Delete Modal*@
-                                </td>
-                            </tr>
+                                        </td>
+                                    </tr>
                         }
-                    </tbody>
-                </table>
-                <div class="row my-1">
-                    <div class="col-sm-6 col-lg-2 col-xl-2 m-auto">
+                        </tbody>
+                    </table>
+                    <div class="row my-1">
+                        <div class="col-sm-6 col-lg-2 col-xl-2 m-auto">
                         @if (@Model.IncomeResponse.TotalCount > 0)
                         {
                             var currentCount = Model.IncomeResponse.PageNumber * @Model.IncomeResponse.PageSize;
-                            <span class="text-muted">@(Math.Min(currentCount, Model.IncomeResponse.TotalCount)) of @Model.IncomeResponse.TotalCount</span>
+                                    <span class="text-muted">@(Math.Min(currentCount, Model.IncomeResponse.TotalCount)) of @Model.IncomeResponse.TotalCount</span>
                         }
-                    </div>
-                    <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
+                        </div>
+                        <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
                         @if (@Model.IncomeResponse.TotalAmount > 0 && Model.Message == null)
                         {
-                            <div class="text-center">
-                                <strong class="p-0 text-success">Total: $ @Model.IncomeResponse.TotalAmount</strong>
-                            </div>
+                                    <div class="text-center">
+                                        <strong class="p-0 text-success">Total: $ @Model.IncomeResponse.TotalAmount</strong>
+                                    </div>
                         }
-                    </div>
-                    <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
+                        </div>
+                        <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
                         @await Html.PartialAsync("_PaginationPartial",
                     new _PaginationPartialModel {
                     PathLink = "../Income/Index",
@@ -444,22 +444,22 @@
                     q = Model.Q,
                     q2 = null
                     })
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
     }
     else
     {
-        <div style="position: relative;">
-            <div class="toast fade show mt-3 bg-info" role="alert" id="noIncomeToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
-                <div class="toast-body d-flex justify-content-between align-items-center">
-                    <i class="bi bi-exclamation-circle text-white mx-3" role="img"
+            <div style="position: relative;">
+                <div class="toast fade show mt-3 bg-info" role="alert" id="noIncomeToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
+                    <div class="toast-body d-flex justify-content-between align-items-center">
+                        <i class="bi bi-exclamation-circle text-white mx-3" role="img"
                    style="font-size: 1.5rem;"></i>
-                    <span style="font-size: 1.25rem;">No Income Found!</span><button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                        <span style="font-size: 1.25rem;">No Income Found!</span><button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                    </div>
                 </div>
             </div>
-        </div>
     }
 </div>
 

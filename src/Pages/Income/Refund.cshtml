@@ -1,0 +1,116 @@
+﻿@page "{id}"
+@model CashTrack.Pages.Incomes.RefundModel
+@{
+    Layout = "_Layout";
+}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+        <h3>Refund an Expense</h3>
+        <div class="border rounded px-2 py-1" id="totalBox">
+            <h3>Total: <span id="total">@Model.Total</span></h3>
+        </div>
+    </div>
+    <hr />
+    @if (!ViewData.ModelState.IsValid)
+    {
+                <div style="position: relative;">
+                    <div class="toast fade show mt-3 bg-danger" role="alert" id="modelStateToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
+                        <div class="toast-body d-flex align-items-center" asp-validation-summary="All">
+                            <i class="bi bi-x-circle text-white mx-3" role="img"
+                   style="font-size: 1.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+    }<form method="get">
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group">
+                    <div class="input-group-prepend d-none d-sm-block">
+                        <div class="input-group-text">Search</div>
+                    </div>
+                    <input id="queryInput" data-interval="true" asp-for="@Model.Query" type="date" class="form-control text-center" />
+                    <button class="btn btn-secondary" type="submit">
+                        <i class="bi bi-search text-white mx-3" role="img"
+                           style="font-size: 1rem;"></i></button>
+                </div>
+            </div>
+            <div class="col-6">
+
+            </div>
+        </div>
+    </form>
+    @if (Model.ExpenseSearch != null)
+    {
+        <div class="row mt-3">
+            <form class="form-horizontal" method="post" id="expenseSearchForm">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr class="text-center">
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    Amount
+                                </th>
+                                <th>
+                                    Merchant
+                                </th>
+                                <th>
+                                    Category
+                                </th>
+                                <th>
+                                    Notes
+                                </th>
+                                <th>
+                                    Select
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var expense in Model.ExpenseSearch)
+                            {
+                                <tr class="text-center">
+                                    <input type="hidden" asp-for="@expense.Id" />
+                                    <td>
+                                        @expense.Date.Date.ToShortDateString()
+                                    </td>
+                                                                        <td>
+                                        @expense.Amount
+                                    </td>
+                                                                        <td>
+                                        @expense.Merchant
+                                    </td>
+                                                                        <td>
+                                        @expense.SubCategory
+                                    </td>
+                                                                        <td>
+                                        @expense.Notes
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" type="submit">Select</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+            </div>
+    }
+</div>
+
+@section Scripts {
+<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true">
+</script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
+<partial name="_ValidationScriptsPartial" />
+<script type="text/javascript">
+    $(document).ready(() => {
+        @if(!ModelState.IsValid)
+        {
+            @:$("#modelStateToast").show().delay(4000).fadeOut();
+        }
+    }
+</Script>
+}

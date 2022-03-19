@@ -106,9 +106,9 @@
                                 <div class="col-8">
                                     <div class="input-group">
                                         <div class="input-group-text">Category</div>
-                                        <label class="visually-hidden" asp-for="@Model.Expense.SubCategory">Category</label>
+                                        <label class="visually-hidden" asp-for="@Model.Expense.SubCategoryId">Category</label>
                                         <select data-val="true"
-                                                asp-for=@Model.Expense.SubCategory
+                                                asp-for=@Model.Expense.SubCategoryId
                                                 class="form-control text-center"
                                                 id="addExpenseSubCategory">
                                             <option value="" selected disabled hidden>Select</option>
@@ -120,7 +120,7 @@
                                 <div class="col-4 d-flex justify-content-center">
                                     <a class="btn btn-secondary" type="button" asp-page="/SubCategory/Add">Add New Category</a>
                                 </div>
-                                <span style="color: red;" asp-validation-for="Expense.SubCategory"></span>
+                                <span style="color: red;" asp-validation-for="Expense.SubCategoryId"></span>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-8">
@@ -320,9 +320,9 @@
                                                                     <div class="input-group">
                                                                         <div class="input-group-text">Category</div>
                                                                         <label class="visually-hidden"
-                                                                       asp-for="@expense.SubCategory">Category</label>
+                                                                       asp-for="@expense.SubCategoryId">Category</label>
                                                                         <select data-val="true"
-                                                                        asp-for=@expense.SubCategory
+                                                                        asp-for=@expense.SubCategoryId
                                                                         class="form-control text-center"
                                                                         id="editExpenseSubCategory-@expense.Id">
                                                                         </select>
@@ -338,7 +338,7 @@
                                                                     <a class="btn btn-secondary" type="button"
                                                                asp-page="/SubCategory/Add">Add New Category</a>
                                                                 </div>
-                                                                <span style="color: red;" asp-validation-for="@expense.SubCategory"></span>
+                                                                <span style="color: red;" asp-validation-for="@expense.SubCategoryId"></span>
                                                             </div>
                                                             <div class="row mb-3">
                                                                 <div class="col-8">
