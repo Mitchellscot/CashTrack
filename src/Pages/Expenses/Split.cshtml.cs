@@ -45,12 +45,12 @@ namespace CashTrack.Pages.Expenses
             }
 
             var categories = await _subCategoryService.GetSubCategoryDropdownListAsync();
-            SubCategories = new SelectList(categories, nameof(SubCategoryDropdownSelection.Id), nameof(SubCategoryDropdownSelection.Category), originalExpense.CategoryId);
+            SubCategories = new SelectList(categories, nameof(SubCategoryDropdownSelection.Id), nameof(SubCategoryDropdownSelection.Category), originalExpense.SubCategoryId);
 
             Id = id;
             Total = originalExpense.Amount;
             Date = originalExpense.Date;
-            Merchant = originalExpense.Merchant.Name;
+            Merchant = originalExpense.Merchant;
             this.Tax = Tax ?? 0.0875M;
             this.Split = Split ?? 2;
             SplitOptions = new SelectList(Enumerable.Range(2, 7));

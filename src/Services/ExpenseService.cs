@@ -15,7 +15,7 @@ namespace CashTrack.Services.ExpenseService;
 
 public interface IExpenseService
 {
-    Task<ExpenseEntity> GetExpenseByIdAsync(int id);
+    Task<Expenses> GetExpenseByIdAsync(int id);
     Task<ExpenseResponse> GetExpensesAsync(ExpenseRequest request);
     Task<ExpenseResponse> GetExpensesByNotesAsync(ExpenseRequest request);
     Task<ExpenseResponse> GetExpensesByAmountAsync(AmountSearchRequest request);
@@ -38,7 +38,7 @@ public class ExpenseService : IExpenseService
         _expenseRepo = expenseRepository;
         _mapper = mapper;
     }
-    public async Task<ExpenseEntity> GetExpenseByIdAsync(int id)
+    public async Task<Expense> GetExpenseByIdAsync(int id)
     {
         var expense = await _expenseRepo.FindById(id);
         return _mapper.Map<Expense>(expense);
@@ -89,16 +89,14 @@ public class ExpenseService : IExpenseService
     }
     public async Task<bool> CreateExpenseAsync(Expense request)
     {
-        if (string.IsNullOrEmpty(request.SubCategory))
-            throw new CategoryNotFoundException("null");
-        var expenseEntity = new ExpenseEntity()
+        var expenseEntity = new Expenses()
         {
-            Amount = request.Amount,
-            Date = request.Date,
-            CategoryId = int.Parse(request.SubCategory),
-            ExcludeFromStatistics = request.ExcludeFromStatistics,
-            Notes = request.Notes,
-            MerchantId = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant)
+            amount = request.Amount,
+            date = request.Date,
+            categoryid = request.SubCategoryId,
+            exclude_from_statistics = request.ExcludeFromStatistics,
+            notes = request.Notes,
+            merchantid = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant)
             //add expense_tags in the future
         };
 
@@ -108,11 +106,11 @@ public class ExpenseService : IExpenseService
     {
         var expenseEntity = new ExpenseEntity()
         {
-            Date = request.Date,
-            MerchantId = int.Parse(request.Merchant),
-            Amount = request.Amount,
-            Notes = request.Notes,
-            CategoryId = request.SubCategoryId,
+            date = request.Date,
+            merchantid = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant),
+            amount = request.Amount,
+            notes = request.Notes,
+            categoryid = request.SubCategoryId,
             //when spliting an expense, default is to not exclude from statistics
             //since that is only used in massive purchases (cars, mortgage down payments, etc.)
             ExcludeFromStatistics = false
@@ -133,12 +131,12 @@ public class ExpenseService : IExpenseService
         var expenseEntity = new ExpenseEntity()
         {
             Id = request.Id.Value,
-            Amount = request.Amount,
-            Date = request.Date,
-            CategoryId = int.Parse(request.SubCategory),
-            ExcludeFromStatistics = request.ExcludeFromStatistics,
-            Notes = request.Notes,
-            MerchantId = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant)
+            amount = request.Amount,
+            date = request.Date,
+            categoryid = request.SubCategoryId,
+            exclude_from_statistics = request.ExcludeFromStatistics,
+            notes = request.Notes,
+            merchantid = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant)
             //add expense_tags in the future
         };
 
@@ -176,13 +174,14 @@ public class ExpenseMapperProfile : Profile
 
         CreateMap<ExpenseEntity, Expense>()
             .ForMember(e => e.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(e => e.Date, o => o.MapFrom(src => src.Date))
-            .ForMember(e => e.Amount, o => o.MapFrom(src => src.Amount))
-            .ForMember(e => e.Notes, o => o.MapFrom(src => src.Notes))
-            .ForMember(e => e.Merchant, o => o.MapFrom(src => src.Merchant.Name))
-            .ForMember(e => e.SubCategory, o => o.MapFrom(src => src.Category.Name))
-            .ForMember(e => e.MainCategory, o => o.MapFrom(src => src.Category.MainCategory.Name))
-            .ForMember(e => e.ExcludeFromStatistics, o => o.MapFrom(src => src.ExcludeFromStatistics))
+            .ForMember(e => e.Date, o => o.MapFrom(src => src.date))
+            .ForMember(e => e.Amount, o => o.MapFrom(src => src.amount))
+            .ForMember(e => e.Notes, o => o.MapFrom(src => src.notes))
+            .ForMember(e => e.Merchant, o => o.MapFrom(src => src.merchant.name))
+            .ForMember(e => e.SubCategory, o => o.MapFrom(src => src.category.sub_category_name))
+            .ForMember(e => e.SubCategoryId, o => o.MapFrom(src => src.category.Id))
+            .ForMember(e => e.MainCategory, o => o.MapFrom(src => src.category.main_category.main_category_name))
+            .ForMember(e => e.ExcludeFromStatistics, o => o.MapFrom(src => src.exclude_from_statistics))
             .ForMember(e => e.Tags, o => o.MapFrom(
                 src => src.ExpenseTags.Select(a => new TagModel() { Id = a.TagId, TagName = a.Tag.Name })));
 
