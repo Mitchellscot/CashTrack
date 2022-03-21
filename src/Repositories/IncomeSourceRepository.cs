@@ -82,7 +82,7 @@ public class IncomeSourceRepository : IIncomeSourceRepository
                 .Where(predicate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .OrderBy(x => x.Source)
+                .OrderBy(x => x.Name)
                 .ToArrayAsync();
             return sources;
         }

@@ -12,5 +12,6 @@ namespace CashTrack.Data.Entities
         public int? SouceId { get; set; }
         public IncomeSourceEntity? Source { get; set; }
         public bool IsRefund { get; set; }
+        public string? RefundNotes { get; set; }
     }
 }
