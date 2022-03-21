@@ -20,14 +20,14 @@ public class UserService : IUserService
 {
     private readonly IUserRepository _userRepo;
     private readonly IMapper _mapper;
-    private readonly UserManager<Users> _userManager;
-    private readonly SignInManager<Users> _signInManager;
+    private readonly UserManager<UserEntity> _userManager;
+    private readonly SignInManager<UserEntity> _signInManager;
 
-    public UserService(IUserRepository userRepo, IMapper mapper, UserManager<Users> userManager, SignInManager<Users> signInManager) => (_userRepo, _mapper, _userManager, _signInManager) = (userRepo, mapper, userManager, signInManager);
+    public UserService(IUserRepository userRepo, IMapper mapper, UserManager<UserEntity> userManager, SignInManager<UserEntity> signInManager) => (_userRepo, _mapper, _userManager, _signInManager) = (userRepo, mapper, userManager, signInManager);
 
     public async Task<UserModels.Response> CreateUserAsync(UserModels.AddEditUser request)
     {
-        var newUser = new Users()
+        var newUser = new UserEntity()
         {
             Email = request.Email,
             UserName = request.FirstName,
@@ -62,7 +62,7 @@ public class UserMapperProfile : Profile
 {
     public UserMapperProfile()
     {
-        CreateMap<Users, UserModels.Response>()
+        CreateMap<UserEntity, UserModels.Response>()
             .ForMember(u => u.id, o => o.MapFrom(src => src.Id))
             .ForMember(u => u.FirstName, o => o.MapFrom(src => src.FirstName))
             .ForMember(u => u.LastName, o => o.MapFrom(src => src.LastName))

@@ -10,7 +10,7 @@ using CashTrack.Repositories.Common;
 
 namespace CashTrack.Repositories.IncomeCategoryRepository;
 
-public interface IIncomeCategoryRepository : IRepository<IncomeCategories>
+public interface IIncomeCategoryRepository : IRepository<IncomeCategoryEntity>
 {
 }
 
@@ -20,7 +20,7 @@ public class IncomeCategoryRepository : IIncomeCategoryRepository
 
     public IncomeCategoryRepository(AppDbContext context) => _ctx = context;
 
-    public async Task<bool> Create(IncomeCategories entity)
+    public async Task<bool> Create(IncomeCategoryEntity entity)
     {
         try
         {
@@ -33,7 +33,7 @@ public class IncomeCategoryRepository : IIncomeCategoryRepository
         }
     }
 
-    public async Task<bool> Delete(IncomeCategories entity)
+    public async Task<bool> Delete(IncomeCategoryEntity entity)
     {
         try
         {
@@ -46,7 +46,7 @@ public class IncomeCategoryRepository : IIncomeCategoryRepository
         }
     }
 
-    public async Task<IncomeCategories[]> Find(Expression<Func<IncomeCategories, bool>> predicate)
+    public async Task<IncomeCategoryEntity[]> Find(Expression<Func<IncomeCategoryEntity, bool>> predicate)
     {
         try
         {
@@ -58,7 +58,7 @@ public class IncomeCategoryRepository : IIncomeCategoryRepository
         }
     }
 
-    public async Task<IncomeCategories> FindById(int id)
+    public async Task<IncomeCategoryEntity> FindById(int id)
     {
         try
         {
@@ -75,7 +75,7 @@ public class IncomeCategoryRepository : IIncomeCategoryRepository
         }
     }
 
-    public async Task<IncomeCategories[]> FindWithPagination(Expression<Func<IncomeCategories, bool>> predicate, int pageNumber, int pageSize)
+    public async Task<IncomeCategoryEntity[]> FindWithPagination(Expression<Func<IncomeCategoryEntity, bool>> predicate, int pageNumber, int pageSize)
     {
         try
         {
@@ -83,7 +83,7 @@ public class IncomeCategoryRepository : IIncomeCategoryRepository
                 .Where(predicate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .OrderBy(x => x.category)
+                .OrderBy(x => x.Category)
                 .ToArrayAsync();
             return categories;
         }
@@ -93,7 +93,7 @@ public class IncomeCategoryRepository : IIncomeCategoryRepository
         }
     }
 
-    public async Task<int> GetCount(Expression<Func<IncomeCategories, bool>> predicate)
+    public async Task<int> GetCount(Expression<Func<IncomeCategoryEntity, bool>> predicate)
     {
         try
         {
@@ -105,7 +105,7 @@ public class IncomeCategoryRepository : IIncomeCategoryRepository
         }
     }
 
-    public async Task<bool> Update(IncomeCategories entity)
+    public async Task<bool> Update(IncomeCategoryEntity entity)
     {
         try
         {

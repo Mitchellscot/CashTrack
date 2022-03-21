@@ -21,7 +21,7 @@ public interface IMerchantService
     Task<bool> CreateMerchantAsync(AddEditMerchant request);
     Task<bool> UpdateMerchantAsync(AddEditMerchant request);
     Task<bool> DeleteMerchantAsync(int id);
-    Task<Merchants> GetMerchantByNameAsync(string name);
+    Task<MerchantEntity> GetMerchantByNameAsync(string name);
 }
 public class MerchantService : IMerchantService
 {
@@ -40,8 +40,8 @@ public class MerchantService : IMerchantService
 
     public async Task<MerchantResponse> GetMerchantsAsync(MerchantRequest request)
     {
-        Expression<Func<Merchants, bool>> allMerchants = (Merchants m) => true;
-        Expression<Func<Merchants, bool>> merchantSearch = (Merchants m) => m.name.ToLower().Contains(request.Query.ToLower());
+        Expression<Func<MerchantEntity, bool>> allMerchants = (MerchantEntity m) => true;
+        Expression<Func<MerchantEntity, bool>> merchantSearch = (MerchantEntity m) => m.Name.ToLower().Contains(request.Query.ToLower());
 
         var predicate = request.Query == null ? allMerchants : merchantSearch;
 
@@ -52,10 +52,10 @@ public class MerchantService : IMerchantService
         var merchantViewModels = merchantEntities.Select(m => new MerchantListItem
         {
             Id = m.Id,
-            Name = m.name,
-            City = m.city,
-            IsOnline = m.is_online,
-            NumberOfExpenses = _expenseRepo.GetCount(x => x.merchantid == m.Id).Result
+            Name = m.Name,
+            City = m.City,
+            IsOnline = m.IsOnline,
+            NumberOfExpenses = _expenseRepo.GetCount(x => x.MerchantId == m.Id).Result
         }).ToArray();
 
         return new MerchantResponse(request.PageNumber, request.PageSize, count, merchantViewModels);
@@ -65,23 +65,23 @@ public class MerchantService : IMerchantService
     {
         var merchantEntity = await _merchantRepo.FindById(id);
 
-        var merchantExpenses = await _expenseRepo.GetExpensesAndCategories(x => x.merchantid == id);
+        var merchantExpenses = await _expenseRepo.GetExpensesAndCategories(x => x.MerchantId == id);
 
-        var recentExpenses = merchantExpenses.OrderByDescending(e => e.date)
+        var recentExpenses = merchantExpenses.OrderByDescending(e => e.Date)
             .Take(10)
             .Select(x => new ExpenseQuickView()
             {
                 Id = x.Id,
-                Date = x.date.Date.ToShortDateString(),
-                Amount = x.amount,
-                SubCategory = x.category == null ? "none" : x.category.sub_category_name
+                Date = x.Date.Date.ToShortDateString(),
+                Amount = x.Amount,
+                SubCategory = x.Category == null ? "none" : x.Category.Name
             }).ToList();
 
         var expenseTotals = merchantExpenses.Aggregate(new ExpenseTotalsAggregator(),
                 (acc, e) => acc.Accumulate(e),
                 acc => acc.Compute());
 
-        var expenseStatistics = merchantExpenses.GroupBy(e => e.date.Year)
+        var expenseStatistics = merchantExpenses.GroupBy(e => e.Date.Year)
                 .Select(g =>
                 {
                     var results = g.Aggregate(new ExpenseStatisticsAggregator(),
@@ -102,9 +102,9 @@ public class MerchantService : IMerchantService
         var subCategories = await _subCategoryRepo.Find(x => true);
 
         var merchantExpenseCategories = subCategories.GroupJoin(merchantExpenses,
-            c => c.Id, e => e.category.Id, (c, g) => new
+            c => c.Id, e => e.Category.Id, (c, g) => new
             {
-                Category = c.sub_category_name,
+                Category = c.Name,
                 Expenses = g
             }).Select(x => new
             {
@@ -113,14 +113,14 @@ public class MerchantService : IMerchantService
             }).Where(x => x.Count > 0).OrderByDescending(x => x.Count).ToDictionary(k => k.Category, v => v.Count);
 
         var merchantExpenseAmounts = subCategories.GroupJoin(merchantExpenses,
-            c => c.Id, e => e.category.Id, (c, g) => new
+            c => c.Id, e => e.Category.Id, (c, g) => new
             {
-                Category = c.sub_category_name,
+                Category = c.Name,
                 Expenses = g
             }).Select(x => new
             {
                 Category = x.Category,
-                Sum = x.Expenses.Sum(e => e.amount)
+                Sum = x.Expenses.Sum(e => e.Amount)
             }).Where(x => x.Sum > 0).OrderByDescending(x => x.Sum).ToDictionary(k => k.Category, v => v.Sum);
 
         var mostUsedCategory = merchantExpenseCategories.FirstOrDefault().Key;
@@ -128,12 +128,12 @@ public class MerchantService : IMerchantService
         var merchantDetail = new MerchantDetail()
         {
             Id = merchantEntity.Id,
-            Name = merchantEntity.name,
-            SuggestOnLookup = merchantEntity.suggest_on_lookup,
-            City = merchantEntity.city,
-            State = merchantEntity.state,
-            Notes = merchantEntity.notes,
-            IsOnline = merchantEntity.is_online,
+            Name = merchantEntity.Name,
+            SuggestOnLookup = merchantEntity.SuggestOnLookup,
+            City = merchantEntity.City,
+            State = merchantEntity.State,
+            Notes = merchantEntity.Notes,
+            IsOnline = merchantEntity.IsOnline,
             ExpenseTotals = expenseTotals,
             MostUsedCategory = mostUsedCategory,
             AnnualExpenseStatistics = expenseStatistics,
@@ -147,21 +147,21 @@ public class MerchantService : IMerchantService
 
     public async Task<bool> CreateMerchantAsync(AddEditMerchant request)
     {
-        var merchants = await _merchantRepo.Find(x => x.name == request.Name);
+        var merchants = await _merchantRepo.Find(x => x.Name == request.Name);
         if (merchants.Any())
-            throw new DuplicateNameException(nameof(Merchants), request.Name);
+            throw new DuplicateNameException(nameof(MerchantEntity), request.Name);
 
-        var merchantEntity = _mapper.Map<Merchants>(request);
+        var merchantEntity = _mapper.Map<MerchantEntity>(request);
 
         return await _merchantRepo.Create(merchantEntity);
     }
     public async Task<bool> UpdateMerchantAsync(AddEditMerchant request)
     {
-        var merchants = await _merchantRepo.Find(x => x.name == request.Name);
+        var merchants = await _merchantRepo.Find(x => x.Name == request.Name);
         if (merchants.Any())
-            throw new DuplicateNameException(nameof(Merchants), request.Name);
+            throw new DuplicateNameException(nameof(MerchantEntity), request.Name);
 
-        var merchant = _mapper.Map<Merchants>(request);
+        var merchant = _mapper.Map<MerchantEntity>(request);
         return await _merchantRepo.Update(merchant);
     }
 
@@ -174,12 +174,12 @@ public class MerchantService : IMerchantService
 
     public async Task<string[]> GetMatchingMerchantsAsync(string match)
     {
-        return (await _merchantRepo.Find(x => x.name.StartsWith(match) && x.suggest_on_lookup == true)).Select(x => x.name).Take(10).ToArray();
+        return (await _merchantRepo.Find(x => x.Name.StartsWith(match) && x.SuggestOnLookup == true)).Select(x => x.Name).Take(10).ToArray();
     }
 
-    public async Task<Merchants> GetMerchantByNameAsync(string name)
+    public async Task<MerchantEntity> GetMerchantByNameAsync(string name)
     {
-        var merchant = (await _merchantRepo.Find(x => x.name == name)).FirstOrDefault();
+        var merchant = (await _merchantRepo.Find(x => x.Name == name)).FirstOrDefault();
         if (merchant == null)
             throw new MerchantNotFoundException(name);
         return merchant;
@@ -190,20 +190,20 @@ public class MerchantMapperProfile : Profile
 {
     public MerchantMapperProfile()
     {
-        CreateMap<Merchants, MerchantListItem>()
+        CreateMap<MerchantEntity, MerchantListItem>()
             .ForMember(m => m.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(m => m.Name, o => o.MapFrom(src => src.name))
-            .ForMember(m => m.City, o => o.MapFrom(src => src.city))
-            .ForMember(m => m.IsOnline, o => o.MapFrom(src => src.is_online))
+            .ForMember(m => m.Name, o => o.MapFrom(src => src.Name))
+            .ForMember(m => m.City, o => o.MapFrom(src => src.City))
+            .ForMember(m => m.IsOnline, o => o.MapFrom(src => src.IsOnline))
             .ReverseMap();
 
-        CreateMap<AddEditMerchant, Merchants>()
+        CreateMap<AddEditMerchant, MerchantEntity>()
             .ForMember(m => m.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(m => m.name, o => o.MapFrom(src => src.Name))
-            .ForMember(m => m.is_online, o => o.MapFrom(src => src.IsOnline))
-            .ForMember(m => m.city, o => o.MapFrom(src => src.City))
-            .ForMember(m => m.state, o => o.MapFrom(src => src.State))
-            .ForMember(m => m.notes, o => o.MapFrom(src => src.Notes))
+            .ForMember(m => m.Name, o => o.MapFrom(src => src.Name))
+            .ForMember(m => m.IsOnline, o => o.MapFrom(src => src.IsOnline))
+            .ForMember(m => m.City, o => o.MapFrom(src => src.City))
+            .ForMember(m => m.State, o => o.MapFrom(src => src.State))
+            .ForMember(m => m.Notes, o => o.MapFrom(src => src.Notes))
             .ReverseMap();
 
     }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CashTrack.Repositories.TagRepository;
 
-public interface ITagRepository : IRepository<Tags>
+public interface ITagRepository : IRepository<TagEntity>
 {
 }
 public class TagRepository : ITagRepository
@@ -21,17 +21,17 @@ public class TagRepository : ITagRepository
         _context = context;
     }
 
-    public Task<bool> Create(Tags entity)
+    public Task<bool> Create(TagEntity entity)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> Delete(Tags entity)
+    public Task<bool> Delete(TagEntity entity)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<Tags[]> Find(Expression<Func<Tags, bool>> predicate)
+    public async Task<TagEntity[]> Find(Expression<Func<TagEntity, bool>> predicate)
     {
         try
         {
@@ -45,22 +45,22 @@ public class TagRepository : ITagRepository
         }
     }
 
-    public Task<Tags> FindById(int id)
+    public Task<TagEntity> FindById(int id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Tags[]> FindWithPagination(Expression<Func<Tags, bool>> predicate, int pageNumber, int pageSize)
+    public Task<TagEntity[]> FindWithPagination(Expression<Func<TagEntity, bool>> predicate, int pageNumber, int pageSize)
     {
         throw new NotImplementedException();
     }
 
-    public Task<int> GetCount(Expression<Func<Tags, bool>> predicate)
+    public Task<int> GetCount(Expression<Func<TagEntity, bool>> predicate)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> Update(Tags entity)
+    public Task<bool> Update(TagEntity entity)
     {
         throw new NotImplementedException();
     }
