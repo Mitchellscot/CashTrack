@@ -14,17 +14,17 @@ namespace CashTrack.Services.Common
             this.TotalSpentThisYear = 0;
             this.TotalSpentAllTime = 0;
         }
-        public ExpenseTotalsAggregator Accumulate(Expenses e)
+        public ExpenseTotalsAggregator Accumulate(ExpenseEntity e)
         {
-            if (e.date.Month == DateTimeOffset.UtcNow.Month && e.date.Year == DateTimeOffset.UtcNow.Year)
+            if (e.Date.Month == DateTimeOffset.UtcNow.Month && e.Date.Year == DateTimeOffset.UtcNow.Year)
             {
-                TotalSpentThisMonth += e.amount;
+                TotalSpentThisMonth += e.Amount;
             }
-            if (e.date.Year == DateTimeOffset.UtcNow.Year)
+            if (e.Date.Year == DateTimeOffset.UtcNow.Year)
             {
-                TotalSpentThisYear += e.amount;
+                TotalSpentThisYear += e.Amount;
             }
-            TotalSpentAllTime += e.amount;
+            TotalSpentAllTime += e.Amount;
             return this;
         }
         public ExpenseTotals Compute()

@@ -31,8 +31,8 @@ public class SubCategoryService : ISubCategoryService
 
     public async Task<SubCategoryResponse> GetSubCategoriesAsync(SubCategoryRequest request)
     {
-        Expression<Func<SubCategories, bool>> returnAll = (SubCategories s) => true;
-        Expression<Func<SubCategories, bool>> searchCategories = (SubCategories s) => s.sub_category_name.ToLower().Contains(request.Query.ToLower());
+        Expression<Func<SubCategoryEntity, bool>> returnAll = (SubCategoryEntity s) => true;
+        Expression<Func<SubCategoryEntity, bool>> searchCategories = (SubCategoryEntity s) => s.Name.ToLower().Contains(request.Query.ToLower());
 
         var predicate = request.Query == null ? returnAll : searchCategories;
 
@@ -42,9 +42,9 @@ public class SubCategoryService : ISubCategoryService
         var categoryViewModels = categories.Select(c => new SubCategoryListItem
         {
             Id = c.Id,
-            Name = c.sub_category_name,
-            MainCategoryName = c.main_category.main_category_name,
-            NumberOfExpenses = (int)_expenseRepo.GetCount(x => x.categoryid == c.Id).Result
+            Name = c.Name,
+            MainCategoryName = c.MainCategory.Name,
+            NumberOfExpenses = (int)_expenseRepo.GetCount(x => x.CategoryId == c.Id).Result
         }).ToArray();
 
         return new SubCategoryResponse(request.PageNumber, request.PageSize, count, categoryViewModels);
@@ -52,10 +52,10 @@ public class SubCategoryService : ISubCategoryService
     public async Task<AddEditSubCategory> CreateSubCategoryAsync(AddEditSubCategory request)
     {
         var categories = await _subCategoryRepo.Find(x => true);
-        if (categories.Any(x => x.sub_category_name == request.Name))
-            throw new DuplicateNameException(nameof(SubCategories), request.Name);
+        if (categories.Any(x => x.Name == request.Name))
+            throw new DuplicateNameException(nameof(SubCategoryEntity), request.Name);
 
-        var subCategoryEntity = _mapper.Map<SubCategories>(request);
+        var subCategoryEntity = _mapper.Map<SubCategoryEntity>(request);
 
         if (!await _subCategoryRepo.Create(subCategoryEntity))
             throw new Exception("Couldn't save category to the database");
@@ -71,11 +71,11 @@ public class SubCategoryService : ISubCategoryService
         if (checkId == null)
             throw new CategoryNotFoundException(request.Id.Value.ToString());
 
-        var nameCheck = await _subCategoryRepo.Find(x => x.sub_category_name == request.Name);
+        var nameCheck = await _subCategoryRepo.Find(x => x.Name == request.Name);
         if (nameCheck.Any())
-            throw new DuplicateNameException(nameof(SubCategories), request.Name);
+            throw new DuplicateNameException(nameof(SubCategoryEntity), request.Name);
 
-        var category = _mapper.Map<SubCategories>(request);
+        var category = _mapper.Map<SubCategoryEntity>(request);
         return await _subCategoryRepo.Update(category);
     }
     public async Task<bool> DeleteSubCategoryAsync(int id)
@@ -94,10 +94,10 @@ public class SubCategoryService : ISubCategoryService
 
     public async Task<SubCategoryDropdownSelection[]> GetSubCategoryDropdownListAsync()
     {
-        return (await _subCategoryRepo.Find(x => x.in_use == true)).Select(x => new SubCategoryDropdownSelection()
+        return (await _subCategoryRepo.Find(x => x.InUse == true)).Select(x => new SubCategoryDropdownSelection()
         {
             Id = x.Id,
-            Category = x.sub_category_name
+            Category = x.Name
         }).ToArray();
     }
 }
@@ -106,19 +106,19 @@ public class SubCategoryMapperProfile : Profile
 {
     public SubCategoryMapperProfile()
     {
-        CreateMap<SubCategories, SubCategoryListItem>()
+        CreateMap<SubCategoryEntity, SubCategoryListItem>()
             .ForMember(c => c.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(c => c.Name, o => o.MapFrom(src => src.sub_category_name))
-            .ForMember(c => c.MainCategoryName, o => o.MapFrom(src => src.main_category.main_category_name))
+            .ForMember(c => c.Name, o => o.MapFrom(src => src.Name))
+            .ForMember(c => c.MainCategoryName, o => o.MapFrom(src => src.MainCategory.Name))
             .ForMember(c => c.Id, o => o.MapFrom(src => src.Id))
             .ReverseMap();
 
-        CreateMap<AddEditSubCategory, SubCategories>()
+        CreateMap<AddEditSubCategory, SubCategoryEntity>()
             .ForMember(c => c.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(c => c.sub_category_name, o => o.MapFrom(src => src.Name))
-            .ForMember(c => c.main_categoryid, o => o.MapFrom(src => src.MainCategoryId))
-            .ForMember(c => c.notes, o => o.MapFrom(src => src.Notes))
-            .ForMember(c => c.in_use, o => o.MapFrom(src => src.InUse))
+            .ForMember(c => c.Name, o => o.MapFrom(src => src.Name))
+            .ForMember(c => c.MainCategoryId, o => o.MapFrom(src => src.MainCategoryId))
+            .ForMember(c => c.Notes, o => o.MapFrom(src => src.Notes))
+            .ForMember(c => c.InUse, o => o.MapFrom(src => src.InUse))
             .ReverseMap();
     }
 }

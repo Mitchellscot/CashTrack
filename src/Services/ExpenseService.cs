@@ -14,7 +14,7 @@ namespace CashTrack.Services.ExpenseService;
 
 public interface IExpenseService
 {
-    Task<Expenses> GetExpenseByIdAsync(int id);
+    Task<ExpenseEntity> GetExpenseByIdAsync(int id);
     Task<ExpenseResponse> GetExpensesAsync(ExpenseRequest request);
     Task<ExpenseResponse> GetExpensesByNotesAsync(ExpenseRequest request);
     Task<ExpenseResponse> GetExpensesByAmountAsync(AmountSearchRequest request);
@@ -36,14 +36,14 @@ public class ExpenseService : IExpenseService
         _expenseRepo = expenseRepository;
         _mapper = mapper;
     }
-    public async Task<Expenses> GetExpenseByIdAsync(int id)
+    public async Task<ExpenseEntity> GetExpenseByIdAsync(int id)
     {
         var expense = await _expenseRepo.FindById(id);
         return expense;
     }
     public async Task<ExpenseResponse> GetExpensesAsync(ExpenseRequest request)
     {
-        var predicate = DateOption<Expenses, ExpenseRequest>.Parse(request);
+        var predicate = DateOption<ExpenseEntity, ExpenseRequest>.Parse(request);
         var expenses = await _expenseRepo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _expenseRepo.GetCount(predicate);
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
@@ -52,7 +52,7 @@ public class ExpenseService : IExpenseService
     }
     public async Task<ExpenseResponse> GetExpensesByNotesAsync(ExpenseRequest request)
     {
-        Expression<Func<Expenses, bool>> predicate = x => x.notes.ToLower().Contains(request.Query.ToLower());
+        Expression<Func<ExpenseEntity, bool>> predicate = x => x.Notes.ToLower().Contains(request.Query.ToLower());
         var expenses = await _expenseRepo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _expenseRepo.GetCount(predicate);
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
@@ -61,7 +61,7 @@ public class ExpenseService : IExpenseService
     }
     public async Task<ExpenseResponse> GetExpensesBySubCategoryIdAsync(ExpenseRequest request)
     {
-        Expression<Func<Expenses, bool>> predicate = x => x.category.Id == int.Parse(request.Query);
+        Expression<Func<ExpenseEntity, bool>> predicate = x => x.Category.Id == int.Parse(request.Query);
         var expenses = await _expenseRepo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _expenseRepo.GetCount(predicate);
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
@@ -70,7 +70,7 @@ public class ExpenseService : IExpenseService
     }
     public async Task<ExpenseResponse> GetExpensesByMerchantAsync(ExpenseRequest request)
     {
-        Expression<Func<Expenses, bool>> predicate = x => x.merchant.name.ToLower() == request.Query.ToLower();
+        Expression<Func<ExpenseEntity, bool>> predicate = x => x.Merchant.Name.ToLower() == request.Query.ToLower();
         var expenses = await _expenseRepo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _expenseRepo.GetCount(predicate);
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
@@ -79,8 +79,8 @@ public class ExpenseService : IExpenseService
     }
     public async Task<ExpenseResponse> GetExpensesByAmountAsync(AmountSearchRequest request)
     {
-        Expression<Func<Expenses, bool>> predicate = x => x.amount == request.Query;
-        var expenses = await _expenseRepo.FindWithPagination(x => x.amount == request.Query, request.PageNumber, request.PageSize);
+        Expression<Func<ExpenseEntity, bool>> predicate = x => x.Amount == request.Query;
+        var expenses = await _expenseRepo.FindWithPagination(x => x.Amount == request.Query, request.PageNumber, request.PageSize);
         var count = await _expenseRepo.GetCount(predicate);
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
         return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Expense[]>(expenses), amount);
@@ -89,14 +89,14 @@ public class ExpenseService : IExpenseService
     {
         if (string.IsNullOrEmpty(request.SubCategory))
             throw new CategoryNotFoundException("null");
-        var expenseEntity = new Expenses()
+        var expenseEntity = new ExpenseEntity()
         {
-            amount = request.Amount,
-            date = request.Date,
-            categoryid = int.Parse(request.SubCategory),
-            exclude_from_statistics = request.ExcludeFromStatistics,
-            notes = request.Notes,
-            merchantid = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant)
+            Amount = request.Amount,
+            Date = request.Date,
+            CategoryId = int.Parse(request.SubCategory),
+            ExcludeFromStatistics = request.ExcludeFromStatistics,
+            Notes = request.Notes,
+            MerchantId = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant)
             //add expense_tags in the future
         };
 
@@ -104,16 +104,16 @@ public class ExpenseService : IExpenseService
     }
     public async Task<bool> CreateExpenseFromSplitAsync(ExpenseSplit request)
     {
-        var expenseEntity = new Expenses()
+        var expenseEntity = new ExpenseEntity()
         {
-            date = request.Date,
-            merchantid = int.Parse(request.Merchant),
-            amount = request.Amount,
-            notes = request.Notes,
-            categoryid = request.SubCategoryId,
+            Date = request.Date,
+            MerchantId = int.Parse(request.Merchant),
+            Amount = request.Amount,
+            Notes = request.Notes,
+            CategoryId = request.SubCategoryId,
             //when spliting an expense, default is to not exclude from statistics
             //since that is only used in massive purchases (cars, mortgage down payments, etc.)
-            exclude_from_statistics = false
+            ExcludeFromStatistics = false
             //TODO: add a way to add and delete tags here
         };
         return await _expenseRepo.Create(expenseEntity);
@@ -131,15 +131,15 @@ public class ExpenseService : IExpenseService
         if (currentExpense == null)
             throw new ExpenseNotFoundException(request.Id.Value.ToString());
 
-        var expenseEntity = new Expenses()
+        var expenseEntity = new ExpenseEntity()
         {
             Id = request.Id.Value,
-            amount = request.Amount,
-            date = request.Date,
-            categoryid = int.Parse(request.SubCategory),
-            exclude_from_statistics = request.ExcludeFromStatistics,
-            notes = request.Notes,
-            merchantid = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant)
+            Amount = request.Amount,
+            Date = request.Date,
+            CategoryId = int.Parse(request.SubCategory),
+            ExcludeFromStatistics = request.ExcludeFromStatistics,
+            Notes = request.Notes,
+            MerchantId = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant)
             //add expense_tags in the future
         };
 
@@ -154,7 +154,7 @@ public class ExpenseService : IExpenseService
 
     public async Task<ExpenseResponse> GetExpensesByMainCategoryAsync(ExpenseRequest request)
     {
-        Expression<Func<Expenses, bool>> predicate = x => x.category.main_categoryid == int.Parse(request.Query);
+        Expression<Func<ExpenseEntity, bool>> predicate = x => x.Category.MainCategoryId == int.Parse(request.Query);
         var expenses = await _expenseRepo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _expenseRepo.GetCount(predicate);
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
@@ -172,22 +172,22 @@ public class ExpenseMapperProfile : Profile
         //For the 1 millionth time: AutoMapper isn't meant for ViewModel -> Persistence/Domain Model conversions.
         //It's for the other way (Domain/Persistance -> Dto/ViewModel).
 
-        CreateMap<Expenses, Expense>()
+        CreateMap<ExpenseEntity, Expense>()
             .ForMember(e => e.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(e => e.Date, o => o.MapFrom(src => src.date))
-            .ForMember(e => e.Amount, o => o.MapFrom(src => src.amount))
-            .ForMember(e => e.Notes, o => o.MapFrom(src => src.notes))
-            .ForMember(e => e.Merchant, o => o.MapFrom(src => src.merchant.name))
-            .ForMember(e => e.SubCategory, o => o.MapFrom(src => src.category.sub_category_name))
-            .ForMember(e => e.MainCategory, o => o.MapFrom(src => src.category.main_category.main_category_name))
-            .ForMember(e => e.ExcludeFromStatistics, o => o.MapFrom(src => src.exclude_from_statistics))
+            .ForMember(e => e.Date, o => o.MapFrom(src => src.Date))
+            .ForMember(e => e.Amount, o => o.MapFrom(src => src.Amount))
+            .ForMember(e => e.Notes, o => o.MapFrom(src => src.Notes))
+            .ForMember(e => e.Merchant, o => o.MapFrom(src => src.Merchant.Name))
+            .ForMember(e => e.SubCategory, o => o.MapFrom(src => src.Category.Name))
+            .ForMember(e => e.MainCategory, o => o.MapFrom(src => src.Category.MainCategory.Name))
+            .ForMember(e => e.ExcludeFromStatistics, o => o.MapFrom(src => src.ExcludeFromStatistics))
             .ForMember(e => e.Tags, o => o.MapFrom(
-                src => src.expense_tags.Select(a => new TagModel() { Id = a.tag_id, TagName = a.tag.tag_name })));
+                src => src.ExpenseTags.Select(a => new TagModel() { Id = a.TagId, TagName = a.Tag.Name })));
 
         //goes it Tags Service when created
-        CreateMap<Tags, TagModel>()
+        CreateMap<TagEntity, TagModel>()
             .ForMember(t => t.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(t => t.TagName, o => o.MapFrom(src => src.tag_name))
+            .ForMember(t => t.TagName, o => o.MapFrom(src => src.Name))
             .ReverseMap();
     }
 }

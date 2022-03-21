@@ -37,15 +37,15 @@ public class IncomeService : IIncomeService
         if (request.Id != null)
             throw new ArgumentException("Request must not contain an id in order to create an income.");
 
-        var incomeEntity = new Incomes()
+        var incomeEntity = new IncomeEntity()
         {
-            amount = request.Amount,
-            date = request.Date,
-            notes = request.Notes,
+            Amount = request.Amount,
+            Date = request.Date,
+            Notes = request.Notes,
             //gets converted to string id in controller
-            sourceid = string.IsNullOrEmpty(request.Source) ? null : int.Parse(request.Source),
-            categoryid = int.Parse(request.Category), //comes in as a string integer (dropdwn list)
-            is_refund = request.IsRefund
+            SouceId = string.IsNullOrEmpty(request.Source) ? null : int.Parse(request.Source),
+            CategoryId = int.Parse(request.Category), //comes in as a string integer (dropdwn list)
+            IsRefund = request.IsRefund
         };
 
         return await _incomeRespository.Create(incomeEntity);
@@ -60,15 +60,15 @@ public class IncomeService : IIncomeService
 
     public async Task<IncomeResponse> GetIncomeByAmountAsync(AmountSearchRequest request)
     {
-        Expression<Func<Incomes, bool>> predicate = x => x.amount == request.Query;
-        var income = await _incomeRespository.FindWithPagination(x => x.amount == request.Query, request.PageNumber, request.PageSize);
+        Expression<Func<IncomeEntity, bool>> predicate = x => x.Amount == request.Query;
+        var income = await _incomeRespository.FindWithPagination(x => x.Amount == request.Query, request.PageNumber, request.PageSize);
         var count = await _incomeRespository.GetCount(predicate);
         var amount = await _incomeRespository.GetAmountOfIncomeNoRefunds(predicate);
         return new IncomeResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Income[]>(income), amount);
     }
     public async Task<IncomeResponse> GetIncomeByNotesAsync(IncomeRequest request)
     {
-        Expression<Func<Incomes, bool>> predicate = x => x.notes.ToLower().Contains(request.Query.ToLower());
+        Expression<Func<IncomeEntity, bool>> predicate = x => x.Notes.ToLower().Contains(request.Query.ToLower());
         var income = await _incomeRespository.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _incomeRespository.GetCount(predicate);
         var amount = await _incomeRespository.GetAmountOfIncomeNoRefunds(predicate);
@@ -76,7 +76,7 @@ public class IncomeService : IIncomeService
     }
     public async Task<IncomeResponse> GetIncomeByIncomeCategoryIdAsync(IncomeRequest request)
     {
-        Expression<Func<Incomes, bool>> predicate = x => x.category.Id == int.Parse(request.Query);
+        Expression<Func<IncomeEntity, bool>> predicate = x => x.Category.Id == int.Parse(request.Query);
         var income = await _incomeRespository.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _incomeRespository.GetCount(predicate);
         var amount = await _incomeRespository.GetAmountOfIncomeNoRefunds(predicate);
@@ -85,7 +85,7 @@ public class IncomeService : IIncomeService
     }
     public async Task<IncomeResponse> GetIncomeBySourceAsync(IncomeRequest request)
     {
-        Expression<Func<Incomes, bool>> predicate = x => x.source.source.ToLower() == request.Query.ToLower();
+        Expression<Func<IncomeEntity, bool>> predicate = x => x.Source.Name.ToLower() == request.Query.ToLower();
         var income = await _incomeRespository.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _incomeRespository.GetCount(predicate);
         var amount = await _incomeRespository.GetAmountOfIncomeNoRefunds(predicate);
@@ -94,7 +94,7 @@ public class IncomeService : IIncomeService
     }
     public async Task<IncomeResponse> GetIncomeAsync(IncomeRequest request)
     {
-        var predicate = DateOption<Incomes, IncomeRequest>.Parse(request);
+        var predicate = DateOption<IncomeEntity, IncomeRequest>.Parse(request);
         var expenses = await _incomeRespository.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _incomeRespository.GetCount(predicate);
         //not including refunds in the total amount because that's cheating...
@@ -121,15 +121,15 @@ public class IncomeService : IIncomeService
         if (currentIncome == null)
             throw new IncomeNotFoundException(request.Id.Value.ToString());
 
-        var incomeEntity = new Incomes()
+        var incomeEntity = new IncomeEntity()
         {
             Id = request.Id.Value,
-            amount = request.Amount,
-            date = request.Date,
-            notes = request.Notes,
-            sourceid = string.IsNullOrEmpty(request.Source) ? null : int.Parse(request.Source), //converted to a string id in page modal
-            categoryid = int.Parse(request.Category), //comes in as a string integer (dropdwn list)
-            is_refund = request.IsRefund
+            Amount = request.Amount,
+            Date = request.Date,
+            Notes = request.Notes,
+            SouceId = string.IsNullOrEmpty(request.Source) ? null : int.Parse(request.Source), //converted to a string id in page modal
+            CategoryId = int.Parse(request.Category), //comes in as a string integer (dropdwn list)
+            IsRefund = request.IsRefund
         };
         return await _incomeRespository.Update(incomeEntity);
     }
@@ -139,13 +139,13 @@ public class IncomeMapperProfile : Profile
 {
     public IncomeMapperProfile()
     {
-        CreateMap<Incomes, Income>()
+        CreateMap<IncomeEntity, Income>()
             .ForMember(x => x.Id, o => o.MapFrom(x => x.Id))
-            .ForMember(x => x.Date, o => o.MapFrom(x => x.date))
-            .ForMember(x => x.Amount, o => o.MapFrom(x => x.amount))
-            .ForMember(x => x.Category, o => o.MapFrom(x => x.category.category))
-            .ForMember(x => x.Source, o => o.MapFrom(x => x.source.source))
-            .ForMember(x => x.Notes, o => o.MapFrom(x => x.notes))
-            .ForMember(x => x.IsRefund, o => o.MapFrom(x => x.is_refund));
+            .ForMember(x => x.Date, o => o.MapFrom(x => x.Date))
+            .ForMember(x => x.Amount, o => o.MapFrom(x => x.Amount))
+            .ForMember(x => x.Category, o => o.MapFrom(x => x.Category.Name))
+            .ForMember(x => x.Source, o => o.MapFrom(x => x.Source.Name))
+            .ForMember(x => x.Notes, o => o.MapFrom(x => x.Notes))
+            .ForMember(x => x.IsRefund, o => o.MapFrom(x => x.IsRefund));
     }
 }
