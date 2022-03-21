@@ -76,7 +76,7 @@ namespace CashTrack.Data.CsvFiles
                 yield return new CsvModels.CsvIncomeCategory()
                 {
                     Id = Convert.ToInt32(columns[0]),
-                    Category = columns[1],
+                    Name = columns[1],
                     Description = columns[2],
                     InUse = true
                 };
@@ -90,7 +90,7 @@ namespace CashTrack.Data.CsvFiles
                 yield return new CsvModels.CsvIncomeSource()
                 {
                     Id = Convert.ToInt32(columns[0]),
-                    Source = columns[1],
+                    Name = columns[1],
                     Description = columns[2],
                     InUse = true
                 };

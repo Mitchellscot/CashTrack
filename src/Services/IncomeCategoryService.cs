@@ -29,7 +29,7 @@ public class IncomeCategoryService : IIncomeCategoryService
     public async Task<AddEditIncomeCategory> CreateIncomeCategoryAsync(AddEditIncomeCategory request)
     {
         var categories = await _repo.Find(x => true);
-        if (categories.Any(x => x.Category == request.Name))
+        if (categories.Any(x => x.Name == request.Name))
             throw new DuplicateNameException(nameof(IncomeCategoryEntity), request.Name);
 
         var incomeCategoryEntity = _mapper.Map<IncomeCategoryEntity>(request);
@@ -54,7 +54,7 @@ public class IncomeCategoryService : IIncomeCategoryService
     public async Task<IncomeCategoryResponse> GetIncomeCategoriesAsync(IncomeCategoryRequest request)
     {
         Expression<Func<IncomeCategoryEntity, bool>> returnAll = (IncomeCategoryEntity x) => true;
-        Expression<Func<IncomeCategoryEntity, bool>> searchCategories = (IncomeCategoryEntity x) => x.Category.ToLower().Contains(request.Query.ToLower());
+        Expression<Func<IncomeCategoryEntity, bool>> searchCategories = (IncomeCategoryEntity x) => x.Name.ToLower().Contains(request.Query.ToLower());
 
         var predicate = request.Query == null ? returnAll : searchCategories;
 
@@ -71,7 +71,7 @@ public class IncomeCategoryService : IIncomeCategoryService
         return (await _repo.Find(x => x.InUse == true)).Select(x => new IncomeCategoryDropdownSelection()
         {
             Id = x.Id,
-            Category = x.Category
+            Category = x.Name
         }).ToArray();
     }
 
@@ -81,7 +81,7 @@ public class IncomeCategoryService : IIncomeCategoryService
         if (checkId == null)
             throw new CategoryNotFoundException(request.Id.Value.ToString());
 
-        var nameCheck = await _repo.Find(x => x.Category == request.Name);
+        var nameCheck = await _repo.Find(x => x.Name == request.Name);
         if (nameCheck.Any())
             throw new DuplicateNameException(nameof(IncomeCategoryEntity), request.Name);
 
@@ -98,12 +98,12 @@ public class IncomeCategoryProfile : Profile
         //You would have to get rid of this map then.
         CreateMap<IncomeCategoryEntity, IncomeCategoryListItem>()
             .ForMember(x => x.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(x => x.Name, o => o.MapFrom(src => src.Category))
+            .ForMember(x => x.Name, o => o.MapFrom(src => src.Name))
             .ReverseMap();
 
         CreateMap<AddEditIncomeCategory, IncomeCategoryEntity>()
             .ForMember(dest => dest.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(dest => dest.Category, o => o.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Name, o => o.MapFrom(src => src.Name))
             .ForMember(dest => dest.Description, o => o.MapFrom(src => src.Description))
             .ForMember(dest => dest.InUse, o => o.MapFrom(src => src.InUse))
             .ReverseMap();

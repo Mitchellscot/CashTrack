@@ -181,7 +181,7 @@ public class AddEditIncomeValidators : AbstractValidator<Income>
             {
                 RuleFor(x => x.Source).MustAsync(async (model, value, _) =>
                         {
-                            return (await _sourceRepo.Find(x => true)).Any(x => x.Source == value);
+                            return (await _sourceRepo.Find(x => true)).Any(x => x.Name == value);
                         }).WithMessage("Please Select an income source from the list or check \"Create New Source\"");
             });
         When(x => !string.IsNullOrEmpty(x.Source) && x.CreateNewSource,
@@ -189,7 +189,7 @@ public class AddEditIncomeValidators : AbstractValidator<Income>
             {
                 RuleFor(x => x.Source).MustAsync(async (model, value, _) =>
                         {
-                            return !(await _sourceRepo.Find(x => true)).Any(x => x.Source == value);
+                            return !(await _sourceRepo.Find(x => true)).Any(x => x.Name == value);
                         }).WithMessage("An Income Source already exists with that name");
 
             });

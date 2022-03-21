@@ -85,7 +85,7 @@ public class IncomeService : IIncomeService
     }
     public async Task<IncomeResponse> GetIncomeBySourceAsync(IncomeRequest request)
     {
-        Expression<Func<IncomeEntity, bool>> predicate = x => x.Source.Source.ToLower() == request.Query.ToLower();
+        Expression<Func<IncomeEntity, bool>> predicate = x => x.Source.Name.ToLower() == request.Query.ToLower();
         var income = await _incomeRespository.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _incomeRespository.GetCount(predicate);
         var amount = await _incomeRespository.GetAmountOfIncomeNoRefunds(predicate);
@@ -143,8 +143,8 @@ public class IncomeMapperProfile : Profile
             .ForMember(x => x.Id, o => o.MapFrom(x => x.Id))
             .ForMember(x => x.Date, o => o.MapFrom(x => x.Date))
             .ForMember(x => x.Amount, o => o.MapFrom(x => x.Amount))
-            .ForMember(x => x.Category, o => o.MapFrom(x => x.Category.Category))
-            .ForMember(x => x.Source, o => o.MapFrom(x => x.Source.Source))
+            .ForMember(x => x.Category, o => o.MapFrom(x => x.Category.Name))
+            .ForMember(x => x.Source, o => o.MapFrom(x => x.Source.Name))
             .ForMember(x => x.Notes, o => o.MapFrom(x => x.Notes))
             .ForMember(x => x.IsRefund, o => o.MapFrom(x => x.IsRefund));
     }
