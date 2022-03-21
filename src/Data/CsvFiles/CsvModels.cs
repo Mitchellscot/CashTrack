@@ -11,7 +11,7 @@ namespace CashTrack.Data.CsvFiles
         {
             private DateTimeOffset? _date;
             public int Id { get; set; }
-            public DateTimeOffset? date
+            public DateTimeOffset? Date
             {
                 get => _date;
                 set
@@ -20,54 +20,54 @@ namespace CashTrack.Data.CsvFiles
                         _date = value.Value.ToUniversalTime();
                 }
             }
-            public decimal amount { get; set; }
-            public int? categoryid { get; set; }
-            public int? merchantid { get; set; }
-            public bool? exclude_from_statistics { get; set; }
-            public string? notes { get; set; }
+            public decimal Amount { get; set; }
+            public int? CategoryId { get; set; }
+            public int? MerchantId { get; set; }
+            public bool? ExcludeFromStatistics { get; set; }
+            public string? Notes { get; set; }
         }
         public class CsvExpenseMainCategory
         {
             public int Id { get; set; }
-            public string? main_category_name { get; set; }
+            public string? Name { get; set; }
         }
         public class CsvExpenseSubCategory
         {
             public int Id { get; set; }
-            public string? sub_category_name { get; set; }
-            public int main_categoryid { get; set; }
-            public bool in_use { get; set; }
+            public string? Name { get; set; }
+            public int MainCategoryId { get; set; }
+            public bool InUse { get; set; }
         }
         public class CsvMerchant
         {
             public int Id { get; set; }
-            public string? name { get; set; }
-            public bool suggest_on_lookup { get; set; }
-            public string? city { get; set; }
-            public string? state { get; set; }
-            public string? notes { get; set; }
-            public bool is_online { get; set; }
+            public string? Name { get; set; }
+            public bool SuggestOnLookup { get; set; }
+            public string? City { get; set; }
+            public string? State { get; set; }
+            public string? Notes { get; set; }
+            public bool IsOnline { get; set; }
 
         }
         public class CsvIncomeCategory
         {
             public int Id { get; set; }
-            public string? category { get; set; }
-            public string? description { get; set; }
-            public bool in_use { get; set; }
+            public string? Category { get; set; }
+            public string? Description { get; set; }
+            public bool InUse { get; set; }
         }
         public class CsvIncomeSource
         {
             public int Id { get; set; }
-            public string? source { get; set; }
-            public string? description { get; set; }
-            public bool in_use { get; set; }
+            public string? Source { get; set; }
+            public string? Description { get; set; }
+            public bool InUse { get; set; }
         }
         public class CsvIncome
         {
             private DateTimeOffset? _date;
             public int Id { get; set; }
-            public DateTimeOffset? date
+            public DateTimeOffset? Date
             {
                 get => _date;
                 set
@@ -76,11 +76,11 @@ namespace CashTrack.Data.CsvFiles
                         _date = value.Value.ToUniversalTime();
                 }
             }
-            public decimal amount { get; set; }
-            public int categoryid { get; set; }
-            public int sourceid { get; set; }
-            public string? notes { get; set; }
-            public bool is_refund { get; set; }
+            public decimal Amount { get; set; }
+            public int CategoryId { get; set; }
+            public int SourceId { get; set; }
+            public string? Notes { get; set; }
+            public bool IsRefund { get; set; }
         }
         public class CsvUser
         {

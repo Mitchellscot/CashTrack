@@ -14,7 +14,7 @@ public interface IIncomeSourceService
 {
     Task<IncomeSourceResponse> GetIncomeSourcesAsync(IncomeSourceRequest request);
     Task<bool> CreateIncomeSourceAsync(AddEditIncomeSource request);
-    Task<IncomeSources> GetIncomeSourceByName(string name);
+    Task<IncomeSourceEntity> GetIncomeSourceByName(string name);
     Task<bool> UpdateIncomeSourceAsync(AddEditIncomeSource request);
     Task<bool> DeleteIncomeSourceAsync(int id);
     Task<string[]> GetMatchingIncomeSourcesAsync(string name);
@@ -29,10 +29,10 @@ public class IncomeSourceService : IIncomeSourceService
     public async Task<bool> CreateIncomeSourceAsync(AddEditIncomeSource request)
     {
         var categories = await _repo.Find(x => true);
-        if (categories.Any(x => x.source == request.Name))
-            throw new DuplicateNameException(nameof(IncomeSources), request.Name);
+        if (categories.Any(x => x.Source == request.Name))
+            throw new DuplicateNameException(nameof(IncomeSourceEntity), request.Name);
 
-        var sourceEntity = _mapper.Map<IncomeSources>(request);
+        var sourceEntity = _mapper.Map<IncomeSourceEntity>(request);
 
         return await _repo.Create(sourceEntity);
     }
@@ -46,9 +46,9 @@ public class IncomeSourceService : IIncomeSourceService
         return await _repo.Delete(source);
     }
 
-    public async Task<IncomeSources> GetIncomeSourceByName(string name)
+    public async Task<IncomeSourceEntity> GetIncomeSourceByName(string name)
     {
-        var source = (await _repo.Find(x => x.source == name)).FirstOrDefault();
+        var source = (await _repo.Find(x => x.Source == name)).FirstOrDefault();
         if (source == null)
             throw new IncomeSourceNotFoundException(name);
         return source;
@@ -56,8 +56,8 @@ public class IncomeSourceService : IIncomeSourceService
 
     public async Task<IncomeSourceResponse> GetIncomeSourcesAsync(IncomeSourceRequest request)
     {
-        Expression<Func<IncomeSources, bool>> returnAll = (IncomeSources x) => true;
-        Expression<Func<IncomeSources, bool>> searchSources = (IncomeSources x) => x.source.ToLower().Contains(request.Query.ToLower());
+        Expression<Func<IncomeSourceEntity, bool>> returnAll = (IncomeSourceEntity x) => true;
+        Expression<Func<IncomeSourceEntity, bool>> searchSources = (IncomeSourceEntity x) => x.Source.ToLower().Contains(request.Query.ToLower());
 
         var predicate = request.Query == null ? returnAll : searchSources;
 
@@ -71,7 +71,7 @@ public class IncomeSourceService : IIncomeSourceService
 
     public async Task<string[]> GetMatchingIncomeSourcesAsync(string name)
     {
-        return (await _repo.Find(x => x.source.StartsWith(name) && x.in_use == true)).Select(x => x.source).Take(10).ToArray();
+        return (await _repo.Find(x => x.Source.StartsWith(name) && x.InUse == true)).Select(x => x.Source).Take(10).ToArray();
     }
 
     public async Task<bool> UpdateIncomeSourceAsync(AddEditIncomeSource request)
@@ -80,11 +80,11 @@ public class IncomeSourceService : IIncomeSourceService
         if (checkId == null)
             throw new IncomeSourceNotFoundException(request.Id.Value.ToString());
 
-        var nameCheck = await _repo.Find(x => x.source == request.Name);
+        var nameCheck = await _repo.Find(x => x.Source == request.Name);
         if (nameCheck.Any())
-            throw new DuplicateNameException(nameof(IncomeSources), request.Name);
+            throw new DuplicateNameException(nameof(IncomeSourceEntity), request.Name);
 
-        var source = _mapper.Map<IncomeSources>(request);
+        var source = _mapper.Map<IncomeSourceEntity>(request);
         return await _repo.Update(source);
     }
 }
@@ -95,16 +95,16 @@ public class IncomeSourcesProfile : Profile
     {
         //todo: make this more interesting by putting some more data on it.
         //What would be cool to see when looking at a table of income soures?
-        CreateMap<IncomeSources, IncomeSourceListItem>()
+        CreateMap<IncomeSourceEntity, IncomeSourceListItem>()
             .ForMember(x => x.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(x => x.Name, o => o.MapFrom(src => src.source))
+            .ForMember(x => x.Name, o => o.MapFrom(src => src.Source))
             .ReverseMap();
 
-        CreateMap<AddEditIncomeSource, IncomeSources>()
+        CreateMap<AddEditIncomeSource, IncomeSourceEntity>()
             .ForMember(x => x.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(x => x.source, o => o.MapFrom(src => src.Name))
-            .ForMember(x => x.description, o => o.MapFrom(src => src.Description))
-            .ForMember(x => x.in_use, o => o.MapFrom(src => src.InUse))
+            .ForMember(x => x.Source, o => o.MapFrom(src => src.Name))
+            .ForMember(x => x.Description, o => o.MapFrom(src => src.Description))
+            .ForMember(x => x.InUse, o => o.MapFrom(src => src.InUse))
             .ReverseMap();
     }
 }

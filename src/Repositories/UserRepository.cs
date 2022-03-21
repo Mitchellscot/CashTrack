@@ -10,7 +10,7 @@ using CashTrack.Repositories.Common;
 
 namespace CashTrack.Repositories.UserRepository;
 
-public interface IUserRepository : IRepository<Users>
+public interface IUserRepository : IRepository<UserEntity>
 {
 
 }
@@ -22,7 +22,7 @@ public class UserRepository : IUserRepository
     {
         _context = context;
     }
-    public async Task<Users[]> Find(Expression<Func<Users, bool>> predicate)
+    public async Task<UserEntity[]> Find(Expression<Func<UserEntity, bool>> predicate)
     {
         try
         {
@@ -34,7 +34,7 @@ public class UserRepository : IUserRepository
             throw;
         }
     }
-    public async Task<Users> FindById(int id)
+    public async Task<UserEntity> FindById(int id)
     {
         try
         {
@@ -53,28 +53,28 @@ public class UserRepository : IUserRepository
         }
         throw new NotImplementedException();
     }
-    public Task<bool> Create(Users entity)
+    public Task<bool> Create(UserEntity entity)
     {
         //using userManager to create
         throw new NotImplementedException();
     }
-    public Task<bool> Delete(Users entity)
+    public Task<bool> Delete(UserEntity entity)
     {
         //using userManager to delete
         throw new NotImplementedException();
     }
-    public Task<Users[]> FindWithPagination(Expression<Func<Users, bool>> predicate, int pageNumber, int pageSize)
+    public Task<UserEntity[]> FindWithPagination(Expression<Func<UserEntity, bool>> predicate, int pageNumber, int pageSize)
     {
         //not paginating users
         throw new NotImplementedException();
     }
-    public Task<bool> Update(Users entity)
+    public Task<bool> Update(UserEntity entity)
     {
         //using userManager to update
         throw new NotImplementedException();
     }
 
-    public async Task<int> GetCount(Expression<Func<Users, bool>> predicate)
+    public async Task<int> GetCount(Expression<Func<UserEntity, bool>> predicate)
     {
         try
         {

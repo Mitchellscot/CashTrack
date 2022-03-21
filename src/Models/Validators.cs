@@ -50,7 +50,7 @@ public class ExpenseValidators : AbstractValidator<Expense>
             {
                 RuleFor(x => x.Merchant).MustAsync(async (model, value, _) =>
                 {
-                    return (await _merchantRepo.Find(x => true)).Any(x => x.name == value);
+                    return (await _merchantRepo.Find(x => true)).Any(x => x.Name == value);
                 }).WithMessage("Please Select a merchant from the list or check \"Create New Merchant\"");
             });
         When(x => !string.IsNullOrEmpty(x.Merchant) && x.CreateNewMerchant,
@@ -58,7 +58,7 @@ public class ExpenseValidators : AbstractValidator<Expense>
             {
                 RuleFor(x => x.Merchant).MustAsync(async (model, value, _) =>
                 {
-                    return !(await _merchantRepo.Find(x => true)).Any(x => x.name == value);
+                    return !(await _merchantRepo.Find(x => true)).Any(x => x.Name == value);
                 }).WithMessage("A merchant already exists with that name");
             });
     }
@@ -67,7 +67,7 @@ public class ExpenseRequestValidators : AbstractValidator<ExpenseRequest>
 {
     public ExpenseRequestValidators(IExpenseRepository expenseRepository)
     {
-        var earliestExpense = expenseRepository.Find(x => true).Result.OrderBy(x => x.date).Select(x => x.date).FirstOrDefault();
+        var earliestExpense = expenseRepository.Find(x => true).Result.OrderBy(x => x.Date).Select(x => x.Date).FirstOrDefault();
         When(x => x.DateOptions != 0, () =>
         {
             RuleFor(x => x.DateOptions).IsInEnum().NotEmpty().WithMessage("Date Options must be specificied. Valid options are 1 through 12.");
@@ -153,7 +153,7 @@ public class IncomeRequestValidators : AbstractValidator<IncomeRequest>
 {
     public IncomeRequestValidators(IIncomeRepository incomeRepository)
     {
-        var earliestIncome = incomeRepository.Find(x => true).Result.OrderBy(x => x.date).Select(x => x.date).FirstOrDefault();
+        var earliestIncome = incomeRepository.Find(x => true).Result.OrderBy(x => x.Date).Select(x => x.Date).FirstOrDefault();
         When(x => x.DateOptions != 0, () =>
         {
             RuleFor(x => x.DateOptions).IsInEnum().NotEmpty().WithMessage("Date Options must be specificied. Valid options are 1 through 12.");
@@ -186,7 +186,7 @@ public class AddEditIncomeValidators : AbstractValidator<Income>
             {
                 RuleFor(x => x.Source).MustAsync(async (model, value, _) =>
                         {
-                            return (await _sourceRepo.Find(x => true)).Any(x => x.source == value);
+                            return (await _sourceRepo.Find(x => true)).Any(x => x.Source == value);
                         }).WithMessage("Please Select an income source from the list or check \"Create New Source\"");
             });
         When(x => !string.IsNullOrEmpty(x.Source) && x.CreateNewSource,
@@ -194,7 +194,7 @@ public class AddEditIncomeValidators : AbstractValidator<Income>
             {
                 RuleFor(x => x.Source).MustAsync(async (model, value, _) =>
                         {
-                            return !(await _sourceRepo.Find(x => true)).Any(x => x.source == value);
+                            return !(await _sourceRepo.Find(x => true)).Any(x => x.Source == value);
                         }).WithMessage("An Income Source already exists with that name");
 
             });

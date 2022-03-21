@@ -11,10 +11,10 @@ using CashTrack.Repositories.Common;
 
 namespace CashTrack.Repositories.ExpenseRepository;
 
-public interface IExpenseRepository : IRepository<Expenses>
+public interface IExpenseRepository : IRepository<ExpenseEntity>
 {
-    Task<decimal> GetAmountOfExpenses(Expression<Func<Expenses, bool>> predicate);
-    Task<Expenses[]> GetExpensesAndCategories(Expression<Func<Expenses, bool>> predicate);
+    Task<decimal> GetAmountOfExpenses(Expression<Func<ExpenseEntity, bool>> predicate);
+    Task<ExpenseEntity[]> GetExpensesAndCategories(Expression<Func<ExpenseEntity, bool>> predicate);
 }
 public class ExpenseRepository : IExpenseRepository
 {
@@ -23,7 +23,7 @@ public class ExpenseRepository : IExpenseRepository
     {
         _ctx = context;
     }
-    public async Task<Expenses[]> Find(Expression<Func<Expenses, bool>> predicate)
+    public async Task<ExpenseEntity[]> Find(Expression<Func<ExpenseEntity, bool>> predicate)
     {
         try
         {
@@ -35,16 +35,16 @@ public class ExpenseRepository : IExpenseRepository
             throw;
         }
     }
-    public async Task<Expenses> FindById(int id)
+    public async Task<ExpenseEntity> FindById(int id)
     {
         try
         {
             var expense = await _ctx.Expenses
-                .Include(x => x.expense_tags)
-                .ThenInclude(x => x.tag)
-                .Include(x => x.merchant)
-                .Include(x => x.category)
-                .ThenInclude(x => x.main_category)
+                .Include(x => x.ExpenseTags)
+                .ThenInclude(x => x.Tag)
+                .Include(x => x.Merchant)
+                .Include(x => x.Category)
+                .ThenInclude(x => x.MainCategory)
                 .SingleOrDefaultAsync(x => x.Id == id);
             if (expense == null)
                 throw new ExpenseNotFoundException(id.ToString());
@@ -56,18 +56,18 @@ public class ExpenseRepository : IExpenseRepository
             throw;
         }
     }
-    public async Task<Expenses[]> FindWithPagination(Expression<Func<Expenses, bool>> predicate, int pageNumber, int pageSize)
+    public async Task<ExpenseEntity[]> FindWithPagination(Expression<Func<ExpenseEntity, bool>> predicate, int pageNumber, int pageSize)
     {
         try
         {
             var expenses = await _ctx.Expenses
                     .Where(predicate)
-                    .Include(x => x.expense_tags)
-                    .ThenInclude(x => x.tag)
-                    .Include(x => x.merchant)
-                    .Include(x => x.category)
-                    .ThenInclude(x => x.main_category)
-                    .OrderByDescending(x => x.date)
+                    .Include(x => x.ExpenseTags)
+                    .ThenInclude(x => x.Tag)
+                    .Include(x => x.Merchant)
+                    .Include(x => x.Category)
+                    .ThenInclude(x => x.MainCategory)
+                    .OrderByDescending(x => x.Date)
                     .ThenByDescending(x => x.Id)
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
@@ -79,7 +79,7 @@ public class ExpenseRepository : IExpenseRepository
             throw;
         }
     }
-    public async Task<bool> Create(Expenses entity)
+    public async Task<bool> Create(ExpenseEntity entity)
     {
         try
         {
@@ -91,7 +91,7 @@ public class ExpenseRepository : IExpenseRepository
             throw;
         }
     }
-    public async Task<bool> Update(Expenses entity)
+    public async Task<bool> Update(ExpenseEntity entity)
     {
         try
         {
@@ -105,7 +105,7 @@ public class ExpenseRepository : IExpenseRepository
             throw;
         }
     }
-    public async Task<bool> Delete(Expenses entity)
+    public async Task<bool> Delete(ExpenseEntity entity)
     {
         try
         {
@@ -117,26 +117,26 @@ public class ExpenseRepository : IExpenseRepository
             throw;
         }
     }
-    public async Task<decimal> GetAmountOfExpenses(Expression<Func<Expenses, bool>> predicate)
+    public async Task<decimal> GetAmountOfExpenses(Expression<Func<ExpenseEntity, bool>> predicate)
     {
         try
         {
             return (decimal)await _ctx.Expenses
             .Where(predicate)
-            .SumAsync(x => x.amount);
+            .SumAsync(x => x.Amount);
         }
         catch (Exception)
         {
             throw;
         }
     }
-    public async Task<Expenses[]> GetExpensesAndCategories(Expression<Func<Expenses, bool>> predicate)
+    public async Task<ExpenseEntity[]> GetExpensesAndCategories(Expression<Func<ExpenseEntity, bool>> predicate)
     {
         try
         {
             var expenses = await _ctx.Expenses
                 .Where(predicate)
-                .Include(x => x.category)
+                .Include(x => x.Category)
                 .ToArrayAsync();
             return expenses;
         }
@@ -146,7 +146,7 @@ public class ExpenseRepository : IExpenseRepository
         }
     }
 
-    public async Task<int> GetCount(Expression<Func<Expenses, bool>> predicate)
+    public async Task<int> GetCount(Expression<Func<ExpenseEntity, bool>> predicate)
     {
         try
         {

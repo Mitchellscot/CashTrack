@@ -77,7 +77,7 @@ namespace CashTrack
             services.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
             services.ConfigureApplicationCookie(o => o.LoginPath = "/login");
 
-            services.AddIdentityCore<Users>(options =>
+            services.AddIdentityCore<UserEntity>(options =>
             {
                 options.Stores.MaxLengthForKeys = 36;
                 options.SignIn.RequireConfirmedAccount = false;
@@ -92,7 +92,7 @@ namespace CashTrack
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
             }).AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders()
-            .AddSignInManager<SignInManager<Users>>();
+            .AddSignInManager<SignInManager<UserEntity>>();
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -118,10 +118,10 @@ namespace CashTrack
             services.AddScoped<IIncomeSourceService, IncomeSourceService>();
             services.AddScoped<IIncomeRepository, IncomeRepository>();
             services.AddScoped<IIncomeService, IncomeService>();
-            services.AddScoped<IRepository<ExpenseReview>, ExpenseReviewRepository>();
+            services.AddScoped<IRepository<ExpenseReviewEntity>, ExpenseReviewRepository>();
             services.AddScoped<IExpenseReviewService, ExpenseReviewService>();
             services.AddScoped<IIncomeReviewService, IncomeReviewService>();
-            services.AddScoped<IRepository<IncomeReview>, IncomeReviewRepository>();
+            services.AddScoped<IRepository<IncomeReviewEntity>, IncomeReviewRepository>();
         }
 
         public void Configure(IApplicationBuilder app)
