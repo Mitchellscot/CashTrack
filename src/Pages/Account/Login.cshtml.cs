@@ -16,14 +16,14 @@ namespace CashTrack.Pages
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<Users> _signInManager;
-        private readonly UserManager<Users> _userManager;
+        private readonly SignInManager<UserEntity> _signInManager;
+        private readonly UserManager<UserEntity> _userManager;
         public string ReturnUrl { get; set; }
         [BindProperty, Display(Name = "User Name")]
         public string UserName { get; set; }
         [BindProperty, Display(Name = "Password")]
         public string Password { get; set; }
-        public LoginModel(SignInManager<Users> signInManager, UserManager<Users> userManager) => (_signInManager, _userManager) = (signInManager, userManager);
+        public LoginModel(SignInManager<UserEntity> signInManager, UserManager<UserEntity> userManager) => (_signInManager, _userManager) = (signInManager, userManager);
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -43,14 +43,6 @@ namespace CashTrack.Pages
             {
                 return LocalRedirect(ReturnUrl);
             }
-
-            //var claims = new List<Claim>
-            //{
-            //    new Claim(ClaimTypes.Name, UserName),
-            //};
-            //var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            //var principal = new ClaimsPrincipal(identity);
-            //await HttpContext.SignInAsync(principal);
 
             return Page();
         }

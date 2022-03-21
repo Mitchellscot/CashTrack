@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using CashTrack.Repositories.Common;
 
 namespace CashTrack.Repositories.MerchantRepository;
-public interface IMerchantRepository : IRepository<Merchants>
+public interface IMerchantRepository : IRepository<MerchantEntity>
 {
 }
 public class MerchantRepository : IMerchantRepository
@@ -19,7 +19,7 @@ public class MerchantRepository : IMerchantRepository
     {
         _context = context;
     }
-    public async Task<Merchants> FindById(int id)
+    public async Task<MerchantEntity> FindById(int id)
     {
         try
         {
@@ -34,11 +34,11 @@ public class MerchantRepository : IMerchantRepository
             throw;
         }
     }
-    public async Task<Merchants[]> Find(Expression<Func<Merchants, bool>> predicate)
+    public async Task<MerchantEntity[]> Find(Expression<Func<MerchantEntity, bool>> predicate)
     {
         try
         {
-            var merchant = await _context.Merchants.Where(predicate).OrderBy(x => x.name).ToArrayAsync();
+            var merchant = await _context.Merchants.Where(predicate).OrderBy(x => x.Name).ToArrayAsync();
 
             return merchant;
         }
@@ -47,7 +47,7 @@ public class MerchantRepository : IMerchantRepository
             throw;
         }
     }
-    public async Task<Merchants[]> FindWithPagination(Expression<Func<Merchants, bool>> predicate, int pageNumber, int pageSize)
+    public async Task<MerchantEntity[]> FindWithPagination(Expression<Func<MerchantEntity, bool>> predicate, int pageNumber, int pageSize)
     {
         try
         {
@@ -55,7 +55,7 @@ public class MerchantRepository : IMerchantRepository
                 .Where(predicate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .OrderBy(x => x.name)
+                .OrderBy(x => x.Name)
                 .ToArrayAsync();
             return merchants;
         }
@@ -64,7 +64,7 @@ public class MerchantRepository : IMerchantRepository
             throw;
         }
     }
-    public async Task<bool> Create(Merchants entity)
+    public async Task<bool> Create(MerchantEntity entity)
     {
         try
         {
@@ -76,7 +76,7 @@ public class MerchantRepository : IMerchantRepository
             throw;
         }
     }
-    public async Task<bool> Update(Merchants entity)
+    public async Task<bool> Update(MerchantEntity entity)
     {
         try
         {
@@ -90,7 +90,7 @@ public class MerchantRepository : IMerchantRepository
             throw;
         }
     }
-    public async Task<bool> Delete(Merchants entity)
+    public async Task<bool> Delete(MerchantEntity entity)
     {
         try
         {
@@ -103,7 +103,7 @@ public class MerchantRepository : IMerchantRepository
         }
     }
 
-    public async Task<int> GetCount(Expression<Func<Merchants, bool>> predicate)
+    public async Task<int> GetCount(Expression<Func<MerchantEntity, bool>> predicate)
     {
         try
         {
