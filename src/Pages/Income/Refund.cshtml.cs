@@ -66,6 +66,8 @@ namespace CashTrack.Pages.Incomes
             if (expenseIds != null)
                 ExpenseSearchChosenIds.AddRange(expenseIds);
 
+            Income = await _incomeService.GetIncomeByIdAsync(id);
+            Total = Income.Amount;
             return Page();
         }
         public async Task<IActionResult> OnPost(int ExpenseSearchId, string Query)

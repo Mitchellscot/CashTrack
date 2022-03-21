@@ -42,6 +42,7 @@
     @if (Model.ExpenseSearch != null)
     {
         <div class="row mt-3">
+            <form class="form-horizontal" method="post" id="expenseSearchForm">
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover">
                         
@@ -76,16 +77,16 @@
                                     <td>
                                         @expense.Date.Date.ToShortDateString()
                                     </td>
-                                    <td>
+                                                                        <td>
                                         @expense.Amount
                                     </td>
-                                    <td>
+                                                                        <td>
                                         @expense.Merchant
                                     </td>
-                                    <td>
+                                                                        <td>
                                         @expense.SubCategory
                                     </td>
-                                    <td>
+                                                                        <td>
                                         @expense.Notes
                                     </td>
                                     <td>
