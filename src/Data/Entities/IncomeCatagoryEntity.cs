@@ -9,7 +9,7 @@ namespace CashTrack.Data.Entities
         public int Id { get; set; }
         [StringLength(50)]
         [Required]
-        public string Category { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; }
         public bool InUse { get; set; }
 

@@ -25,6 +25,7 @@ namespace CashTrack.Data.CsvFiles
             public int? MerchantId { get; set; }
             public bool? ExcludeFromStatistics { get; set; }
             public string? Notes { get; set; }
+            public string? RefundNotes { get; set; }
         }
         public class CsvExpenseMainCategory
         {
@@ -52,14 +53,14 @@ namespace CashTrack.Data.CsvFiles
         public class CsvIncomeCategory
         {
             public int Id { get; set; }
-            public string? Category { get; set; }
+            public string? Name { get; set; }
             public string? Description { get; set; }
             public bool InUse { get; set; }
         }
         public class CsvIncomeSource
         {
             public int Id { get; set; }
-            public string? Source { get; set; }
+            public string? Name { get; set; }
             public string? Description { get; set; }
             public bool InUse { get; set; }
         }
@@ -81,6 +82,7 @@ namespace CashTrack.Data.CsvFiles
             public int SourceId { get; set; }
             public string? Notes { get; set; }
             public bool IsRefund { get; set; }
+            public string? RefundNotes { get; set; }
         }
         public class CsvUser
         {
