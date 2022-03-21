@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CashTrack.Data.Entities
 {
-    [Table("income_sources")]
-    public class IncomeSources : IEntity
+    [Table("IncomeSources")]
+    public class IncomeSourceEntity : IEntity
     {
         public int Id { get; set; }
         [StringLength(100)]
         [Required]
-        public string source { get; set; }
-        public string description { get; set; }
-        public bool in_use { get; set; }
+        public string Source { get; set; }
+        public string Description { get; set; }
+        public bool InUse { get; set; }
     }
 }

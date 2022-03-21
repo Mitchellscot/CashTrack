@@ -8,33 +8,33 @@ using System.Threading.Tasks;
 
 namespace CashTrack.Repositories.ExpenseReviewRepository
 {
-    public class ExpenseReviewRepository : TransactionRepository<ExpenseReview>
+    public class ExpenseReviewRepository : TransactionRepository<ExpenseReviewEntity>
     {
         private readonly AppDbContext _ctx;
         public ExpenseReviewRepository(AppDbContext ctx) : base(ctx)
         {
             _ctx = ctx;
         }
-        public async override Task<ExpenseReview[]> FindWithPagination(Expression<Func<ExpenseReview, bool>> predicate, int pageNumber, int pageSize)
+        public async override Task<ExpenseReviewEntity[]> FindWithPagination(Expression<Func<ExpenseReviewEntity, bool>> predicate, int pageNumber, int pageSize)
         {
             return await _ctx
-                        .Set<ExpenseReview>()
+                        .Set<ExpenseReviewEntity>()
                         .AsQueryable()
-                        .Where(x => x.is_reviewed == false)
+                        .Where(x => x.IsReviewed == false)
                         .Where(predicate)
                         .Skip((pageNumber - 1) * pageSize)
                         .Take(pageSize)
-                        .Include(x => x.suggested_category)
-                        .Include(x => x.suggested_merchant)
+                        .Include(x => x.SuggestedCategory)
+                        .Include(x => x.SuggestedMerchant)
                         .ToArrayAsync();
         }
-        public async override Task<ExpenseReview> FindById(int id)
+        public async override Task<ExpenseReviewEntity> FindById(int id)
         {
-            return await _ctx.Set<ExpenseReview>()
+            return await _ctx.Set<ExpenseReviewEntity>()
                         .AsQueryable()
-                        .Where(x => x.is_reviewed == false)
-                        .Include(x => x.suggested_category)
-                        .Include(x => x.suggested_merchant)
+                        .Where(x => x.IsReviewed == false)
+                        .Include(x => x.SuggestedCategory)
+                        .Include(x => x.SuggestedMerchant)
                         .SingleOrDefaultAsync(x => x.Id == id);
         }
     }
