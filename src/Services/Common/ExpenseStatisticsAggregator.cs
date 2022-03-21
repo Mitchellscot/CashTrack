@@ -15,12 +15,12 @@ namespace CashTrack.Services.Common
             Max = decimal.MinValue;
             Min = decimal.MaxValue;
         }
-        public ExpenseStatisticsAggregator Accumulate(Expenses e)
+        public ExpenseStatisticsAggregator Accumulate(ExpenseEntity e)
         {
-            Total += e.amount;
+            Total += e.Amount;
             Count++;
-            Max = Math.Max(Max, e.amount);
-            Min = Math.Min(Min, e.amount);
+            Max = Math.Max(Max, e.Amount);
+            Min = Math.Min(Min, e.Amount);
             return this;
         }
         public ExpenseStatisticsAggregator Compute()

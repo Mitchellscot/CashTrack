@@ -4,13 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CashTrack.Data.Entities
 {
-    [Table("tags")]
-    public class Tags : IEntity
+    [Table("Tags")]
+    public class TagEntity : IEntity
     {
         public int Id { get; set; }
         [Required]
         [StringLength(50)]
-        public string tag_name { get; set; }
-        public ICollection<ExpenseTags> expense_tags { get; set; }
+        public string Name { get; set; }
+        public ICollection<ExpenseTags> ExpenseTags { get; set; }
     }
 }

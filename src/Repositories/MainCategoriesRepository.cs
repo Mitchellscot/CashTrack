@@ -10,7 +10,7 @@ using CashTrack.Repositories.Common;
 
 namespace CashTrack.Repositories.MainCategoriesRepository
 {
-    public interface IMainCategoriesRepository : IRepository<MainCategories>
+    public interface IMainCategoriesRepository : IRepository<MainCategoryEntity>
     {
     }
     public class MainCategoriesRepository : IMainCategoriesRepository
@@ -18,7 +18,7 @@ namespace CashTrack.Repositories.MainCategoriesRepository
         private readonly AppDbContext _context;
         public MainCategoriesRepository(AppDbContext dbContext) => (_context) = (dbContext);
 
-        public async Task<bool> Create(MainCategories entity)
+        public async Task<bool> Create(MainCategoryEntity entity)
         {
             var count = await GetCount(x => true);
             if (count >= 25)
@@ -35,7 +35,7 @@ namespace CashTrack.Repositories.MainCategoriesRepository
             }
         }
 
-        public async Task<bool> Delete(MainCategories entity)
+        public async Task<bool> Delete(MainCategoryEntity entity)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace CashTrack.Repositories.MainCategoriesRepository
             }
         }
 
-        public async Task<MainCategories[]> Find(Expression<Func<MainCategories, bool>> predicate)
+        public async Task<MainCategoryEntity[]> Find(Expression<Func<MainCategoryEntity, bool>> predicate)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace CashTrack.Repositories.MainCategoriesRepository
             }
         }
 
-        public async Task<MainCategories> FindById(int id)
+        public async Task<MainCategoryEntity> FindById(int id)
         {
             try
             {
@@ -76,13 +76,13 @@ namespace CashTrack.Repositories.MainCategoriesRepository
             }
         }
 
-        public Task<MainCategories[]> FindWithPagination(Expression<Func<MainCategories, bool>> predicate, int pageNumber, int pageSize)
+        public Task<MainCategoryEntity[]> FindWithPagination(Expression<Func<MainCategoryEntity, bool>> predicate, int pageNumber, int pageSize)
         {
             //25 categories max, so not implementing
             throw new NotImplementedException();
         }
 
-        public async Task<int> GetCount(Expression<Func<MainCategories, bool>> predicate)
+        public async Task<int> GetCount(Expression<Func<MainCategoryEntity, bool>> predicate)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace CashTrack.Repositories.MainCategoriesRepository
             }
         }
 
-        public async Task<bool> Update(MainCategories entity)
+        public async Task<bool> Update(MainCategoryEntity entity)
         {
             try
             {

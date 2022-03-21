@@ -6,23 +6,21 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace CashTrack.Data
 {
-    public class AppDbContext : IdentityDbContext<Users, IdentityRole<int>, int>
+    public class AppDbContext : IdentityDbContext<UserEntity, IdentityRole<int>, int>
     {
-
-        public DbSet<Expenses> Expenses { get; set; }
-        public DbSet<Incomes> Incomes { get; set; }
-        public DbSet<MainCategories> MainCategories { get; set; }
-        public DbSet<SubCategories> SubCategories { get; set; }
-        public DbSet<Merchants> Merchants { get; set; }
-        public DbSet<Tags> Tags { get; set; }
-        public DbSet<IncomeSources> IncomeSources { get; set; }
-        public DbSet<IncomeCategories> IncomeCategories { get; set; }
-        public DbSet<ExpenseReview> ExpensesToReview { get; set; }
-        public DbSet<IncomeReview> IncomeToReview { get; set; }
+        public DbSet<ExpenseEntity> Expenses { get; set; }
+        public DbSet<IncomeEntity> Incomes { get; set; }
+        public DbSet<MainCategoryEntity> MainCategories { get; set; }
+        public DbSet<SubCategoryEntity> SubCategories { get; set; }
+        public DbSet<MerchantEntity> Merchants { get; set; }
+        public DbSet<TagEntity> Tags { get; set; }
+        public DbSet<IncomeSourceEntity> IncomeSources { get; set; }
+        public DbSet<IncomeCategoryEntity> IncomeCategories { get; set; }
+        public DbSet<ExpenseReviewEntity> ExpensesToReview { get; set; }
+        public DbSet<IncomeReviewEntity> IncomeToReview { get; set; }
 
         private IConfiguration _config;
 
@@ -34,18 +32,18 @@ namespace CashTrack.Data
         protected override void OnModelCreating(ModelBuilder mb)
         {
             base.OnModelCreating(mb);
-            mb.Initialize(_config.GetSection("Users").Get<Users[]>(), _config["CsvFileDirectory"]);
+            mb.Initialize(_config.GetSection("Users").Get<UserEntity[]>(), _config["CsvFileDirectory"]);
         }
     }
     //model builder extension to seed DB data
     public static class SeedData
     {
-        public static void Initialize(this ModelBuilder mb, Users[] users, string csvFileDirectory)
+        public static void Initialize(this ModelBuilder mb, UserEntity[] users, string csvFileDirectory)
         {
             foreach (var user in users)
             {
-                var password = new PasswordHasher<Users>();
-                var seededUser = new Users()
+                var password = new PasswordHasher<UserEntity>();
+                var seededUser = new UserEntity()
                 {
                     Id = user.Id,
                     UserName = user.UserName,
@@ -59,7 +57,7 @@ namespace CashTrack.Data
                 };
                 var hashed = password.HashPassword(seededUser, user.PasswordHash);
                 seededUser.PasswordHash = hashed;
-                mb.Entity<Users>().HasData(seededUser);
+                mb.Entity<UserEntity>().HasData(seededUser);
                 var claim = new IdentityUserClaim<int>()
                 {
                     Id = user.Id,
@@ -70,32 +68,32 @@ namespace CashTrack.Data
                 mb.Entity<IdentityUserClaim<int>>().HasData(claim);
             }
 
-            mb.Entity<ExpenseTags>().HasKey(et => new { et.expense_id, et.tag_id });
+            mb.Entity<ExpenseTags>().HasKey(et => new { et.ExpenseId, et.TagId });
 
             mb.Entity<ExpenseTags>()
-                .HasOne(et => et.expense)
-                .WithMany(e => e.expense_tags)
-                .HasForeignKey(et => et.expense_id);
+                .HasOne(et => et.Expense)
+                .WithMany(e => e.ExpenseTags)
+                .HasForeignKey(et => et.ExpenseId);
             mb.Entity<ExpenseTags>()
-                .HasOne(et => et.tag)
-                .WithMany(e => e.expense_tags)
-                .HasForeignKey(et => et.tag_id);
+                .HasOne(et => et.Tag)
+                .WithMany(e => e.ExpenseTags)
+                .HasForeignKey(et => et.TagId);
 
-            mb.Entity<Users>().ToTable("users");
-            mb.Entity<IdentityUserClaim<int>>().ToTable("users_claims");
-            mb.Entity<IdentityUserToken<int>>().ToTable("users_tokens");
-            mb.Entity<IdentityUserLogin<int>>().ToTable("users_logins");
+            mb.Entity<UserEntity>().ToTable("Users");
+            mb.Entity<IdentityUserClaim<int>>().ToTable("UsersClaims");
+            mb.Entity<IdentityUserToken<int>>().ToTable("UsersTokens");
+            mb.Entity<IdentityUserLogin<int>>().ToTable("UsersLogins");
             mb.Ignore<IdentityRole<int>>();
             mb.Ignore<IdentityRoleClaim<int>>();
             mb.Ignore<IdentityUserRole<int>>();
 
-            mb.Entity<MainCategories>().HasData(CsvParser.ProcessMainCategoryFile(csvFileDirectory + "main-categories.csv"));
-            mb.Entity<SubCategories>().HasData(CsvParser.ProcessSubCategoryFile(csvFileDirectory + "sub-categories.csv"));
-            mb.Entity<Merchants>().HasData(CsvParser.ProcessMerchantFile(csvFileDirectory + "merchants.csv"));
-            mb.Entity<Expenses>().HasData(CsvParser.ProcessExpenseFile(csvFileDirectory + "expenses.csv"));
-            mb.Entity<IncomeCategories>().HasData(CsvParser.ProcessIncomeCategoryFile(csvFileDirectory + "income-categories.csv"));
-            mb.Entity<IncomeSources>().HasData(CsvParser.ProcessIncomeSourceFile(csvFileDirectory + "income-sources.csv"));
-            mb.Entity<Incomes>().HasData(CsvParser.ProcessIncomeFile(csvFileDirectory + "incomes.csv"));
+            mb.Entity<MainCategoryEntity>().HasData(CsvParser.ProcessMainCategoryFile(csvFileDirectory + "MainCategories.csv"));
+            mb.Entity<SubCategoryEntity>().HasData(CsvParser.ProcessSubCategoryFile(csvFileDirectory + "SubCategories.csv"));
+            mb.Entity<MerchantEntity>().HasData(CsvParser.ProcessMerchantFile(csvFileDirectory + "Merchants.csv"));
+            mb.Entity<ExpenseEntity>().HasData(CsvParser.ProcessExpenseFile(csvFileDirectory + "Expenses.csv"));
+            mb.Entity<IncomeCategoryEntity>().HasData(CsvParser.ProcessIncomeCategoryFile(csvFileDirectory + "IncomeCategories.csv"));
+            mb.Entity<IncomeSourceEntity>().HasData(CsvParser.ProcessIncomeSourceFile(csvFileDirectory + "IncomeSources.csv"));
+            mb.Entity<IncomeEntity>().HasData(CsvParser.ProcessIncomeFile(csvFileDirectory + "Income.csv"));
         }
     }
 }

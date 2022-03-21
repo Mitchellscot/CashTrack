@@ -9,17 +9,17 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace CashTrack.Repositories.IncomeRepository;
-public interface IIncomeRepository : IRepository<Incomes>
+public interface IIncomeRepository : IRepository<IncomeEntity>
 {
-    Task<decimal> GetAmountOfIncome(Expression<Func<Incomes, bool>> predicate);
-    Task<decimal> GetAmountOfIncomeNoRefunds(Expression<Func<Incomes, bool>> predicate);
+    Task<decimal> GetAmountOfIncome(Expression<Func<IncomeEntity, bool>> predicate);
+    Task<decimal> GetAmountOfIncomeNoRefunds(Expression<Func<IncomeEntity, bool>> predicate);
 }
 public class IncomeRepository : IIncomeRepository
 {
     private readonly AppDbContext _ctx;
     public IncomeRepository(AppDbContext ctx) => _ctx = ctx;
 
-    public async Task<bool> Create(Incomes entity)
+    public async Task<bool> Create(IncomeEntity entity)
     {
         try
         {
@@ -32,7 +32,7 @@ public class IncomeRepository : IIncomeRepository
         }
     }
 
-    public async Task<bool> Delete(Incomes entity)
+    public async Task<bool> Delete(IncomeEntity entity)
     {
         try
         {
@@ -45,7 +45,7 @@ public class IncomeRepository : IIncomeRepository
         }
     }
 
-    public async Task<Incomes[]> Find(Expression<Func<Incomes, bool>> predicate)
+    public async Task<IncomeEntity[]> Find(Expression<Func<IncomeEntity, bool>> predicate)
     {
         try
         {
@@ -58,13 +58,13 @@ public class IncomeRepository : IIncomeRepository
         }
     }
 
-    public async Task<Incomes> FindById(int id)
+    public async Task<IncomeEntity> FindById(int id)
     {
         try
         {
             var income = await _ctx.Incomes
-                .Include(x => x.source)
-                .Include(x => x.category)
+                .Include(x => x.Source)
+                .Include(x => x.Category)
                 .SingleOrDefaultAsync(x => x.Id == id);
             if (income == null)
                 throw new IncomeNotFoundException(id.ToString());
@@ -76,17 +76,17 @@ public class IncomeRepository : IIncomeRepository
         }
     }
 
-    public async Task<Incomes[]> FindWithPagination(Expression<Func<Incomes, bool>> predicate, int pageNumber, int pageSize)
+    public async Task<IncomeEntity[]> FindWithPagination(Expression<Func<IncomeEntity, bool>> predicate, int pageNumber, int pageSize)
     {
         try
         {
             var income = await _ctx.Incomes
                     .Where(predicate)
-                    .OrderByDescending(x => x.date)
+                    .OrderByDescending(x => x.Date)
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
-                    .Include(x => x.source)
-                    .Include(x => x.category)
+                    .Include(x => x.Source)
+                    .Include(x => x.Category)
                     .ToArrayAsync();
             return income;
         }
@@ -96,13 +96,13 @@ public class IncomeRepository : IIncomeRepository
         }
     }
 
-    public async Task<decimal> GetAmountOfIncome(Expression<Func<Incomes, bool>> predicate)
+    public async Task<decimal> GetAmountOfIncome(Expression<Func<IncomeEntity, bool>> predicate)
     {
         try
         {
             return (decimal)await _ctx.Incomes
             .Where(predicate)
-            .SumAsync(x => x.amount);
+            .SumAsync(x => x.Amount);
         }
         catch (Exception)
         {
@@ -110,14 +110,14 @@ public class IncomeRepository : IIncomeRepository
         }
     }
 
-    public async Task<decimal> GetAmountOfIncomeNoRefunds(Expression<Func<Incomes, bool>> predicate)
+    public async Task<decimal> GetAmountOfIncomeNoRefunds(Expression<Func<IncomeEntity, bool>> predicate)
     {
         try
         {
             return (decimal)await _ctx.Incomes
-            .Where(x => !x.is_refund)
+            .Where(x => !x.IsRefund)
             .Where(predicate)
-            .SumAsync(x => x.amount);
+            .SumAsync(x => x.Amount);
         }
         catch (Exception)
         {
@@ -125,7 +125,7 @@ public class IncomeRepository : IIncomeRepository
         }
     }
 
-    public async Task<int> GetCount(Expression<Func<Incomes, bool>> predicate)
+    public async Task<int> GetCount(Expression<Func<IncomeEntity, bool>> predicate)
     {
         try
         {
@@ -139,7 +139,7 @@ public class IncomeRepository : IIncomeRepository
         }
     }
 
-    public async Task<bool> Update(Incomes entity)
+    public async Task<bool> Update(IncomeEntity entity)
     {
         try
         {

@@ -14,14 +14,14 @@ namespace CashTrack.Data.CsvFiles
                 yield return new CsvModels.CsvExpense()
                 {
                     Id = Convert.ToInt32(columns[0]),
-                    date = DateTimeOffset.Parse(columns[1],
+                    Date = DateTimeOffset.Parse(columns[1],
                     null
                     , DateTimeStyles.AdjustToUniversal),
-                    amount = Math.Round(Decimal.Parse(columns[2]), 2),
-                    categoryid = columns[2] == "" ? null : Convert.ToInt32(columns[3]),
-                    merchantid = columns[4] == "" ? null : Convert.ToInt32(columns[4]),
-                    notes = columns[3] == "" ? null : columns[5],
-                    exclude_from_statistics = ParseBoolean(columns[6])
+                    Amount = Math.Round(Decimal.Parse(columns[2]), 2),
+                    CategoryId = columns[2] == "" ? null : Convert.ToInt32(columns[3]),
+                    MerchantId = columns[4] == "" ? null : Convert.ToInt32(columns[4]),
+                    Notes = columns[3] == "" ? null : columns[5],
+                    ExcludeFromStatistics = ParseBoolean(columns[6])
                 };
             }
         }
@@ -33,7 +33,7 @@ namespace CashTrack.Data.CsvFiles
                 yield return new CsvModels.CsvExpenseMainCategory()
                 {
                     Id = Convert.ToInt32(columns[0]),
-                    main_category_name = columns[1],
+                    Name = columns[1],
                 };
             }
         }
@@ -45,9 +45,9 @@ namespace CashTrack.Data.CsvFiles
                 yield return new CsvModels.CsvExpenseSubCategory()
                 {
                     Id = Convert.ToInt32(columns[0]),
-                    sub_category_name = columns[1],
-                    main_categoryid = Convert.ToInt32(columns[2]),
-                    in_use = ParseBoolean(columns[3])
+                    Name = columns[1],
+                    MainCategoryId = Convert.ToInt32(columns[2]),
+                    InUse = ParseBoolean(columns[3])
                 };
             }
         }
@@ -59,12 +59,12 @@ namespace CashTrack.Data.CsvFiles
                 yield return new CsvModels.CsvMerchant()
                 {
                     Id = Convert.ToInt32(columns[0]),
-                    name = columns[1],
-                    suggest_on_lookup = ParseBoolean(columns[2]),
-                    city = null,
-                    state = null,
-                    is_online = ParseBoolean(columns[5]),
-                    notes = null
+                    Name = columns[1],
+                    SuggestOnLookup = ParseBoolean(columns[2]),
+                    City = null,
+                    State = null,
+                    IsOnline = ParseBoolean(columns[5]),
+                    Notes = null
                 };
             }
         }
@@ -76,9 +76,9 @@ namespace CashTrack.Data.CsvFiles
                 yield return new CsvModels.CsvIncomeCategory()
                 {
                     Id = Convert.ToInt32(columns[0]),
-                    category = columns[1],
-                    description = columns[2],
-                    in_use = true
+                    Name = columns[1],
+                    Description = columns[2],
+                    InUse = true
                 };
             }
         }
@@ -90,9 +90,9 @@ namespace CashTrack.Data.CsvFiles
                 yield return new CsvModels.CsvIncomeSource()
                 {
                     Id = Convert.ToInt32(columns[0]),
-                    source = columns[1],
-                    description = columns[2],
-                    in_use = true
+                    Name = columns[1],
+                    Description = columns[2],
+                    InUse = true
                 };
             }
         }
@@ -104,13 +104,13 @@ namespace CashTrack.Data.CsvFiles
                 yield return new CsvModels.CsvIncome()
                 {
                     Id = Convert.ToInt32(columns[0]),
-                    date = DateTimeOffset.Parse(columns[1], null
+                    Date = DateTimeOffset.Parse(columns[1], null
                     , DateTimeStyles.AdjustToUniversal),
-                    amount = Math.Round(Convert.ToDecimal(columns[2]), 2),
-                    categoryid = Convert.ToInt32(columns[3]),
-                    sourceid = Convert.ToInt32(columns[4]),
-                    notes = columns[4] == "" ? null : columns[5],
-                    is_refund = ParseBoolean(columns[6])
+                    Amount = Math.Round(Convert.ToDecimal(columns[2]), 2),
+                    CategoryId = Convert.ToInt32(columns[3]),
+                    SourceId = Convert.ToInt32(columns[4]),
+                    Notes = columns[4] == "" ? null : columns[5],
+                    IsRefund = ParseBoolean(columns[6])
                 };
             }
         }

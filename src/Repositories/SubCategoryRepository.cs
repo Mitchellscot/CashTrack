@@ -10,7 +10,7 @@ using CashTrack.Repositories.Common;
 
 namespace CashTrack.Repositories.SubCategoriesRepository;
 
-public interface ISubCategoryRepository : IRepository<SubCategories>
+public interface ISubCategoryRepository : IRepository<SubCategoryEntity>
 {
 }
 public class SubCategoryRepository : ISubCategoryRepository
@@ -21,11 +21,11 @@ public class SubCategoryRepository : ISubCategoryRepository
         _context = context;
     }
 
-    public async Task<SubCategories[]> Find(Expression<Func<SubCategories, bool>> predicate)
+    public async Task<SubCategoryEntity[]> Find(Expression<Func<SubCategoryEntity, bool>> predicate)
     {
         try
         {
-            return await _context.SubCategories.Where(predicate).Include(x => x.main_category).ToArrayAsync();
+            return await _context.SubCategories.Where(predicate).Include(x => x.MainCategory).ToArrayAsync();
         }
         catch (Exception)
         {
@@ -33,13 +33,13 @@ public class SubCategoryRepository : ISubCategoryRepository
         }
     }
 
-    public async Task<SubCategories> FindById(int id)
+    public async Task<SubCategoryEntity> FindById(int id)
     {
         try
         {
             var category = await _context.SubCategories
                 .Where(x => x.Id == id)
-                .Include(x => x.main_category)
+                .Include(x => x.MainCategory)
                 .SingleOrDefaultAsync();
             if (category == null)
                 throw new CategoryNotFoundException(id.ToString());
@@ -51,7 +51,7 @@ public class SubCategoryRepository : ISubCategoryRepository
         }
     }
 
-    public async Task<SubCategories[]> FindWithPagination(Expression<Func<SubCategories, bool>> predicate, int pageNumber, int pageSize)
+    public async Task<SubCategoryEntity[]> FindWithPagination(Expression<Func<SubCategoryEntity, bool>> predicate, int pageNumber, int pageSize)
     {
         try
         {
@@ -59,8 +59,8 @@ public class SubCategoryRepository : ISubCategoryRepository
                 .Where(predicate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .OrderBy(x => x.sub_category_name)
-                .Include(x => x.main_category)
+                .OrderBy(x => x.Name)
+                .Include(x => x.MainCategory)
                 .ToArrayAsync();
             return categories;
         }
@@ -70,7 +70,7 @@ public class SubCategoryRepository : ISubCategoryRepository
         }
     }
 
-    public async Task<bool> Create(SubCategories entity)
+    public async Task<bool> Create(SubCategoryEntity entity)
     {
         try
         {
@@ -82,7 +82,7 @@ public class SubCategoryRepository : ISubCategoryRepository
             throw;
         }
     }
-    public async Task<bool> Update(SubCategories entity)
+    public async Task<bool> Update(SubCategoryEntity entity)
     {
         try
         {
@@ -96,7 +96,7 @@ public class SubCategoryRepository : ISubCategoryRepository
             throw;
         }
     }
-    public async Task<bool> Delete(SubCategories entity)
+    public async Task<bool> Delete(SubCategoryEntity entity)
     {
         try
         {
@@ -109,7 +109,7 @@ public class SubCategoryRepository : ISubCategoryRepository
         }
     }
 
-    public async Task<int> GetCount(Expression<Func<SubCategories, bool>> predicate)
+    public async Task<int> GetCount(Expression<Func<SubCategoryEntity, bool>> predicate)
     {
         try
         {

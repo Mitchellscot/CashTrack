@@ -9,9 +9,9 @@ namespace CashTrack.Pages.Account
 {
     public class Logout : PageModel
     {
-        private readonly SignInManager<Users> _signInManager;
+        private readonly SignInManager<UserEntity> _signInManager;
 
-        public Logout(SignInManager<Users> signInManager) => _signInManager = signInManager;
+        public Logout(SignInManager<UserEntity> signInManager) => _signInManager = signInManager;
 
         public async Task<IActionResult> OnPostAsync()
         {
