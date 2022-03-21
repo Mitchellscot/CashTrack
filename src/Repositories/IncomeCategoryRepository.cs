@@ -83,7 +83,7 @@ public class IncomeCategoryRepository : IIncomeCategoryRepository
                 .Where(predicate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .OrderBy(x => x.Category)
+                .OrderBy(x => x.Name)
                 .ToArrayAsync();
             return categories;
         }
