@@ -23,6 +23,7 @@ public interface IExpenseService
     Task<ExpenseResponse> GetExpensesByMerchantAsync(ExpenseRequest request);
     Task<ExpenseResponse> GetExpensesByMainCategoryAsync(ExpenseRequest request);
     Task<Expense[]> GetExpensesByDateWithoutPaginationAsync(DateTime request);
+    Task<ExpenseRefund> GetExpenseRefundByIdAsync(int id);
     Task<bool> CreateExpenseAsync(Expense request);
     Task<bool> CreateExpenseFromSplitAsync(ExpenseSplit request);
     Task<bool> UpdateExpenseAsync(Expense request);
@@ -42,6 +43,11 @@ public class ExpenseService : IExpenseService
     {
         var expense = await _expenseRepo.FindById(id);
         return _mapper.Map<Expense>(expense);
+    }
+    public async Task<ExpenseRefund> GetExpenseRefundByIdAsync(int id)
+    {
+        var expense = await _expenseRepo.FindById(id);
+        return _mapper.Map<ExpenseRefund>(expense);
     }
     public async Task<ExpenseResponse> GetExpensesAsync(ExpenseRequest request)
     {
@@ -171,6 +177,14 @@ public class ExpenseMapperProfile : Profile
         //from stack overflow
         //For the 1 millionth time: AutoMapper isn't meant for ViewModel -> Persistence/Domain Model conversions.
         //It's for the other way (Domain/Persistance -> Dto/ViewModel).
+
+        CreateMap<ExpenseEntity, ExpenseRefund>()
+            .ForMember(e => e.Id, o => o.MapFrom(src => src.Id))
+            .ForMember(e => e.Date, o => o.MapFrom(src => src.Date))
+            .ForMember(e => e.OriginalAmount, o => o.MapFrom(src => src.Amount))
+            .ForMember(e => e.Category, o => o.MapFrom(src => src.Category.Name))
+            .ForMember(e => e.Merchant, o => o.MapFrom(src => src.Merchant.Name));
+
 
         CreateMap<ExpenseEntity, Expense>()
             .ForMember(e => e.Id, o => o.MapFrom(src => src.Id))
