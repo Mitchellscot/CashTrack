@@ -32,36 +32,36 @@ namespace CashTrack.Pages.Incomes
         public List<int> ExpenseSearchChosenIds { get; set; } = new();
         public int SelectedId { get; set; }
 
-        public async Task<IActionResult> OnGet(int id, string Query)
+        public async Task<IActionResult> OnGet(int id)
         {
-            Income = await _incomeService.GetIncomeByIdAsync(id);
-            Total = Income.Amount;
+            await SetTotal(id);
             return Page();
         }
-        public async Task<IActionResult> OnPostQuery(string Query)
+        public async Task<IActionResult> OnPostQuery(int id, string Query)
         {
             await GetExpensesFromQuery(Query);
             await GetExpenseRefundsFromSelectedIds();
+            await SetTotal(id);
             return Page();
         }
 
-        public async Task<IActionResult> OnPostSelectExpense(string Query, int SelectedId)
+        public async Task<IActionResult> OnPostSelectExpense(int id, string Query, int SelectedId)
         {
             ExpenseSearchChosenIds.Add(SelectedId);
             ExpenseSearchChosenIds = ExpenseSearchChosenIds.Distinct().ToList(); //ensures we don't have any duplicates
             await GetExpenseRefundsFromSelectedIds();
             await GetExpensesFromQuery(Query);
-
+            await SetTotal(id);
             return Page();
         }
-        public async Task<IActionResult> OnPostRemoveExpense(string Query, int SelectedId)
+        public async Task<IActionResult> OnPostRemoveExpense(int id, string Query, int SelectedId)
         {
 
             ExpenseSearchChosenIds = ExpenseSearchChosenIds.Distinct().ToList(); //ensures we don't have any duplicates
             ExpenseSearchChosenIds.Remove(SelectedId);
             await GetExpenseRefundsFromSelectedIds();
             await GetExpensesFromQuery(Query);
-
+            await SetTotal(id);
             return Page();
         }
         public async Task<IActionResult> OnPostApplyRefunds()
@@ -122,6 +122,11 @@ namespace CashTrack.Pages.Incomes
                     ExpenseSearch = await _expenseService.GetExpensesByDateWithoutPaginationAsync(q);
                 }
             }
+        }
+        private async Task SetTotal(int id)
+        {
+            Income = await _incomeService.GetIncomeByIdAsync(id);
+            Total = Income.Amount;
         }
     }
 }
