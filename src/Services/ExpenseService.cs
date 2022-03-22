@@ -2,8 +2,10 @@
 using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.ExpenseModels;
+using CashTrack.Models.IncomeModels;
 using CashTrack.Models.TagModels;
 using CashTrack.Repositories.ExpenseRepository;
+using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Services.Common;
 using System;
 using System.Collections.Generic;
@@ -28,14 +30,17 @@ public interface IExpenseService
     Task<bool> CreateExpenseFromSplitAsync(ExpenseSplit request);
     Task<bool> UpdateExpenseAsync(Expense request);
     Task<bool> DeleteExpenseAsync(int id);
+    Task<bool> RefundExpensesAsync(List<ExpenseRefund> refunds, int incomeId);
 }
 public class ExpenseService : IExpenseService
 {
+    private readonly IIncomeRepository _incomeRepo;
     private readonly IExpenseRepository _expenseRepo;
     private readonly IMapper _mapper;
 
-    public ExpenseService(IExpenseRepository expenseRepository, IMapper mapper)
+    public ExpenseService(IExpenseRepository expenseRepository, IIncomeRepository incomeRepository, IMapper mapper)
     {
+        _incomeRepo = incomeRepository;
         _expenseRepo = expenseRepository;
         _mapper = mapper;
     }
@@ -168,6 +173,24 @@ public class ExpenseService : IExpenseService
     {
         var expenses = await _expenseRepo.Find(x => x.Date == request);
         return _mapper.Map<Expense[]>(expenses);
+    }
+    public async Task<bool> RefundExpensesAsync(List<ExpenseRefund> refunds, int incomeId)
+    {
+        var income = await _incomeRepo.FindById(incomeId);
+        var expenseUpdates = new List<ExpenseEntity>();
+        foreach (var refund in refunds)
+        {
+            if (refund.ModifiedAmount != default(decimal))
+            {
+                var expense = await _expenseRepo.FindById(refund.Id);
+                expense.RefundNotes = $"Original Amount: {expense.Amount} - Refunded Amount: {refund.RefundAmount} - Date Refunded: {income.Date.Date.ToShortDateString()}";
+                expense.Amount = refund.ModifiedAmount;
+                income.RefundNotes += $"Applied refund for the amount of {refund.RefundAmount} to an expense on {expense.Date.Date.ToShortDateString()}. ";
+                expenseUpdates.Add(expense);
+            }
+        }
+        var updateIncome = await _incomeRepo.Update(income);
+        return await _expenseRepo.UpdateMany(expenseUpdates);
     }
 }
 public class ExpenseMapperProfile : Profile

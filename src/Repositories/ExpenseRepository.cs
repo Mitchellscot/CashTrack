@@ -8,6 +8,7 @@ using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using System.Linq.Expressions;
 using CashTrack.Repositories.Common;
+using System.Collections.Generic;
 
 namespace CashTrack.Repositories.ExpenseRepository;
 
@@ -15,6 +16,7 @@ public interface IExpenseRepository : IRepository<ExpenseEntity>
 {
     Task<decimal> GetAmountOfExpenses(Expression<Func<ExpenseEntity, bool>> predicate);
     Task<ExpenseEntity[]> GetExpensesAndCategories(Expression<Func<ExpenseEntity, bool>> predicate);
+    Task<bool> UpdateMany(List<ExpenseEntity> entities);
 }
 public class ExpenseRepository : IExpenseRepository
 {
@@ -104,6 +106,19 @@ public class ExpenseRepository : IExpenseRepository
             _ctx.ChangeTracker.Clear();
             var Entity = _ctx.Expenses.Attach(entity);
             Entity.State = EntityState.Modified;
+            return await (_ctx.SaveChangesAsync()) > 0;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+    public async Task<bool> UpdateMany(List<ExpenseEntity> entities)
+    {
+        try
+        {
+            //_ctx.ChangeTracker.Clear();
+            _ctx.Expenses.UpdateRange(entities);
             return await (_ctx.SaveChangesAsync()) > 0;
         }
         catch (Exception)
