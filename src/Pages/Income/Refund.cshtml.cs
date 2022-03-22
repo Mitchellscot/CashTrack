@@ -77,7 +77,7 @@ namespace CashTrack.Pages.Incomes
                     ModelState.AddModelError("", "You must refund the entire income amount.");
                     return Page();
                 }
-                var updateSuccess = await _expenseService.RefundExpensesAsync(SelectedExpenses, Income);
+                var updateSuccess = await _expenseService.RefundExpensesAsync(SelectedExpenses, Income.Id.Value);
                 //post some expense refund objects
                 //get the expenses from the IDS on the ExpenseRefunds
                 //Update all the expenses: If (ModifiedAmount > 0) { expense.Amount = expenseRefund.ModifiedAmount }
