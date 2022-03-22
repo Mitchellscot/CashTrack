@@ -133,7 +133,7 @@ namespace CashTrack.Pages.Incomes
             {
                 if (Income.CreateNewSource && !string.IsNullOrEmpty(Income.Source))
                 {
-                    var incomeSourceCreationSuccess = await _sourceService.CreateIncomeSourceAsync(new AddEditIncomeSource() { Name = Income.Source });
+                    var incomeSourceCreationSuccess = await _sourceService.CreateIncomeSourceAsync(new AddEditIncomeSource() { Name = Income.Source, InUse = true });
                 }
                 //converting the source name to a string ID
                 if (!string.IsNullOrEmpty(Income.Source))

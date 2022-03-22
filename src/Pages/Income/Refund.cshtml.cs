@@ -37,8 +37,9 @@ namespace CashTrack.Pages.Incomes
             Total = Income.Amount;
             return Page();
         }
-        public async Task<IActionResult> OnPostQuery(List<int> expenseIds, string Query, int incomeId)
+        public async Task<IActionResult> OnPostQuery(string Query, int incomeId)
         {
+
             //when a search is made,
             //Post the query so we can get the expense search results
             //Each row in the expense search table is a small form that posts the individual id
@@ -62,24 +63,42 @@ namespace CashTrack.Pages.Incomes
                 }
                 ExpenseSearch = await _expenseService.GetExpensesByDateWithoutPaginationAsync(q);
             }
-
-            if (expenseIds != null)
-                ExpenseSearchChosenIds.AddRange(expenseIds);
-
-            Income = await _incomeService.GetIncomeByIdAsync(id);
-            Total = Income.Amount;
-            return Page();
-        }
-        public async Task<IActionResult> OnPost(int ExpenseSearchId, string Query)
-        {
-            if (ExpenseSearchId > 0)
+            if (ExpenseSearchChosenIds.Any())
+            {
                 SelectedExpenses = new();
 
-            foreach (var id in ExpenseSearchChosenIds)
-            {
-                var selectedExpense = await _expenseService.GetExpenseByIdAsync(id);
-                SelectedExpenses.Add(selectedExpense);
+                foreach (var id in ExpenseSearchChosenIds)
+                {
+                    var selectedExpense = await _expenseService.GetExpenseByIdAsync(id);
+                    SelectedExpenses.Add(selectedExpense);
+                }
             }
+            return Page();
+        }
+        public async Task<IActionResult> OnPostSelectExpense(string Query)
+        {
+            ExpenseSearchChosenIds = ExpenseSearchChosenIds.Distinct().ToList(); //ensures we don't have any duplicates
+            if (ExpenseSearchChosenIds.Count() > 0)
+            {
+                SelectedExpenses = new();
+
+                foreach (var id in ExpenseSearchChosenIds)
+                {
+                    var selectedExpense = await _expenseService.GetExpenseByIdAsync(id);
+                    SelectedExpenses.Add(selectedExpense);
+                }
+            }
+            if (Query != null)
+            {
+                DateTime q;
+                if (!DateTime.TryParse(Query, out q))
+                {
+                    ModelState.AddModelError(string.Empty, "Date is not in desired format, please try again");
+                    return Page();
+                }
+                ExpenseSearch = await _expenseService.GetExpensesByDateWithoutPaginationAsync(q);
+            }
+
             return Page();
         }
     }

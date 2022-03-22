@@ -28,11 +28,11 @@ public class ExpenseRepository : IExpenseRepository
         try
         {
             return await _ctx.Expenses
-                .Include(x => x.expense_tags)
-                .ThenInclude(x => x.tag)
-                .Include(x => x.merchant)
-                .Include(x => x.category)
-                .ThenInclude(x => x.main_category)
+                .Include(x => x.ExpenseTags)
+                .ThenInclude(x => x.Tag)
+                .Include(x => x.Merchant)
+                .Include(x => x.Category)
+                .ThenInclude(x => x.MainCategory)
                 .Where(predicate).ToArrayAsync();
         }
         catch (Exception)

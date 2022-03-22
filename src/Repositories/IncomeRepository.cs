@@ -49,7 +49,11 @@ public class IncomeRepository : IIncomeRepository
     {
         try
         {
-            return await _ctx.Incomes.Where(predicate).ToArrayAsync();
+            return await _ctx.Incomes
+                .Where(predicate)
+                .Include(x => x.Source)
+                .Include(x => x.Category)
+                .ToArrayAsync();
         }
         catch (Exception)
         {
@@ -82,11 +86,11 @@ public class IncomeRepository : IIncomeRepository
         {
             var income = await _ctx.Incomes
                     .Where(predicate)
+                    .Include(x => x.Source)
+                    .Include(x => x.Category)
                     .OrderByDescending(x => x.Date)
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
-                    .Include(x => x.Source)
-                    .Include(x => x.Category)
                     .ToArrayAsync();
             return income;
         }
