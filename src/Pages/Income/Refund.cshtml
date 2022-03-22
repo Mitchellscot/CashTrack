@@ -164,24 +164,31 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <form method="post" id="applyRefund" asp-page-handler="ApplyRefunds">
                             @foreach (var expense in Model.SelectedExpenses)
                             {
                                         <tr class="text-center">
-                                            
+                                            <input name="SelectedExpenses.Index" value="@expense.Id" type="hidden" />
+                                            <input name="SelectedExpenses[@expense.Id].Id" value="@expense.Id" type="hidden" />
                                             <td>
+                                                <input name="SelectedExpenses[@expense.Id].Date" value="@expense.Date" type="hidden" />
                                                 @expense.Date.Date.ToShortDateString()
                                             </td>
                                             <td>
+                                                <input name="SelectedExpenses[@expense.Id].Merchant" value="@expense.Merchant" type="hidden" />
                                                 @expense.Merchant
                                             </td>
                                             <td>
+                                                <input name="SelectedExpenses[@expense.Id].Category" value="@expense.Category" type="hidden" />
                                                 @expense.Category
                                             </td>
                                             <td id="originalAmount-@expense.Id">
+                                                <input name="SelectedExpenses[@expense.Id].OriginalAmount"  value="@expense.OriginalAmount" type="hidden" />
                                                 @expense.OriginalAmount
                                             </td>
                                             <td class="d-flex justify-content-center px-0">
-                                                <input style="width: 100px;" asp-for="@expense.RefundAmount" 
+                                                <input style="width: 100px;" 
+                                                name="SelectedExpenses[@expense.Id].RefundAmount" value="@expense.RefundAmount"
                                                 type="number" class="form-control text-center" 
                                                 id="refundAmount-@expense.Id" min="0.00" max="@expense.OriginalAmount" step="any" />
                                             </td>
@@ -190,12 +197,11 @@
                                             </td>
                                             <td class="px-0 d-flex align-content-center justify-content-center">
                                                <div class="form-check-inline form-switch">
-                                                   <input asp-for="@expense.ApplyFullAmount" 
-                                                   class="form-check-input" type="checkbox" role="switch" id="applyFull-@expense.Id">
+                                                   <input name="SelectedExpenses[@expense.Id].ApplyFullRefund" value="@expense.ApplyFullAmount"
+                                                   class="form-check-input" type="checkbox" id="applyFull-@expense.Id">
                                                </div>
                                             </td>
                                             <td>
-                                                <form method="post" asp-page-handler="RemoveExpense">
                                                 <input type="hidden" asp-for="@Model.Query" />
                                                 @if (Model.ExpenseSearchChosenIds.Any())
                                                 {
@@ -207,17 +213,20 @@
                                                 @{
                                                     <input type="hidden" asp-for="@Model.SelectedId" value="@expense.Id" />
                                                 }
-                                                <button class="btn btn-outline-primary" type="submit">Remove</button>
-                                                </form>
+                                                <button name="SelectedId" value="@expense.Id" type="submit" class="btn btn-outline-primary"
+                                                asp-page-handler="RemoveExpense">Remove</button>
                                             </td>
                                         </tr>
                             }
+                            </form>
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <div class="row float-end mx-3">
-                    <button id="submitButton" class="btn btn-primary" type="submit" disabled form="applyRefund">Apply Refund</button>
+                    <form method="post">
+                        <button id="submitButton" class="btn btn-primary" type="submit" disabled form="applyRefund">Apply Refund</button>
+                    </form>
                     </div>
     }
 </div>
@@ -246,12 +255,12 @@
                 if($("#applyFull-@id").is(":checked")){
                     $("#modifiedAmount-@id").text(formatNumber($("#originalAmount-@id").text()) - formatNumber($("#originalAmount-@id").text()));
                     $("#refundAmount-@id").val(Number($("#originalAmount-@id").text()));
-                    $("#refundAmount-@id").prop("disabled", true);
+                    $("#refundAmount-@id").prop("readonly", true);
                     //update the total
                     $("#total").text(adjustFormBasedOnTotal(findTotal()));
                 }
                 if(!$("#applyFull-@id").is(":checked")){
-                    $("#refundAmount-@id").prop("disabled", false);
+                    $("#refundAmount-@id").prop("readonly", false);
                     $("#refundAmount-@id").val(0.00);
                     $("#modifiedAmount-@id").text($("#originalAmount-@id").text());
                     //update the total
@@ -265,7 +274,7 @@
                     //format the number in the input box to 2 decimals
                     $("#refundAmount-@id").val(formatNumber($("#refundAmount-@id").val()));
                     //update the modified amount
-                    $("#modifiedAmount-@id").text(formatNumber($("#originalAmount-@id").text()) - formatNumber($("#refundAmount-@id").val()));
+                    $("#modifiedAmount-@id").text(formatNumber($("#originalAmount-@id").text() - $("#refundAmount-@id").val()));
                     //update the total
                     $("#total").text(adjustFormBasedOnTotal(findTotal()));
                 }
