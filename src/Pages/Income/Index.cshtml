@@ -202,7 +202,6 @@
                                         </td>
                                         <td>
                                     @income.Source
-
                                         </td>
                                         <td>
                                     @income.Category
@@ -656,12 +655,11 @@
              });
         });
 
-        //changes form if it's a refund (forces refund category, changes button text)
+        //changes form if it's a refund (forces refund category)
         $("#addIncomeRefundBool").click(() => {
             if($("#addIncomeRefundBool").is(":checked")){
                 $("#addIncomeCategory").empty();
                 $("#addIncomeCategory").append(`<option value="9" selected>Refund</option>`);
-                $("#addIncomeSubmitButton").text("Apply Refund");
             }
             else{
                 $("#addIncomeSubmitButton").text("Save Changes");
@@ -726,14 +724,13 @@
                     $("#editIncomeAmount-@id.Key").val(finalNumber);
                 });
                 </text>
-                //changes form if it's a refund (forces refund category, changes button text)
+                //changes form if it's a refund (forces refund category)
                 <text>
                 $("#editIncomeRefundBool-@id.Key").click(() => {
                     if($("#editIncomeRefundBool-@id.Key").is(":checked")){
                         $("#refundButton-@id.Key").show();
                         $("#editIncomeCategory-@id.Key").empty();
                         $("#editIncomeCategory-@id.Key").append(`<option value="9" selected>Refund</option>`);
-                        $("#editIncomeSubmitButton-@id.Key").text("Apply Refund");
                     }
                     else{
                         $("#refundButton-@id.Key").hide();

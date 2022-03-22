@@ -21,7 +21,15 @@
                         </div>
                     </div>
                 </div>
-    }<form method="Post" asp-page-handler="Query">
+    }
+    <form method="Post" asp-page-handler="Query">
+        @if (Model.ExpenseSearchChosenIds.Any())
+        {
+            for (var i = 0; i < Model.ExpenseSearchChosenIds.Count(); i++)
+            {   
+                <input type="hidden" asp-for="@Model.ExpenseSearchChosenIds[@i]" />
+            }
+        }
         <div class="row">
             <div class="col-6">
                 <div class="input-group">
@@ -39,7 +47,7 @@
             </div>
         </div>
     </form>
-    @if (Model.ExpenseSearch != null)
+    @if (Model.ExpenseSearch != null && Model.ExpenseSearch.Count() > 0)
     {
         <div class="row mt-3">
             <form class="form-horizontal" method="post" id="expenseSearchForm">
@@ -71,9 +79,30 @@
                         <tbody>
                             @foreach(var expense in Model.ExpenseSearch)
                             {
-                                <tr class="text-center">
-                                    <form class="form-horizontal" method="post" id="expenseSearchForm">
-                                    <input type="hidden" asp-for="@Model.ExpenseSearchChosenIds" value="@expense.Id" />
+                            <tr class="text-center">
+                                <form class="form-horizontal" method="post" id="expenseSearchForm-@expense.Id" asp-page-handler="SelectExpense">
+                                    <input type="hidden" asp-for="@Model.Query" />
+                                            @if (Model.ExpenseSearchChosenIds.Any())
+                                            {
+                                        var total = Model.ExpenseSearchChosenIds.Distinct().Count();
+                                        for (var i = 0; i <= total; i++)
+                                                {
+                                                    if (i == total)
+                                                    {
+                                                Model.ExpenseSearchChosenIds.Add(expense.Id.Value);
+                                                <input type="hidden" 
+                                                        asp-for="@Model.ExpenseSearchChosenIds[@i]" />
+                                                Model.ExpenseSearchChosenIds.RemoveAll(x => x == expense.Id.Value);
+                                                continue;
+                                            }
+                                            <input type="hidden" asp-for="@Model.ExpenseSearchChosenIds[@i]" />
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <input type="hidden"
+                                        asp-for="@Model.ExpenseSearchChosenIds" value="@expense.Id" />
+                                    }
                                     <td>
                                         @expense.Date.Date.ToShortDateString()
                                     </td>
@@ -103,7 +132,19 @@
             
             </div>
     }
-    @if (Model.SelectedExpenses.Count() > 0)
+    else if(Model.ExpenseSearch != null && Model.ExpenseSearch.Count() == 0)
+    {
+        <div style="position: relative;">
+            <div class="toast fade show mt-3 bg-info" role="alert" id="noExpensesToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
+                <div class="toast-body  d-flex justify-content-between align-items-center">
+                    <i class="bi bi-exclamation-circle text-white mx-3" role="img"
+                   style="font-size: 1.5rem;"></i>
+                    <span style="font-size: 1.25rem;">No Expenses Found!</span><button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model.SelectedExpenses != null)
     {
                 <div class="row mt-3">
             <form class="form-horizontal" method="post" id="selectedExpenseForm">
@@ -169,6 +210,10 @@
         @if(!ModelState.IsValid)
         {
             @:$("#modelStateToast").show().delay(4000).fadeOut();
+        }
+        @if(Model.ExpenseSearch != null && Model.ExpenseSearch.Count() == 0)
+        {
+            @:$("#noExpensesToast").show().delay(2000).fadeOut();
         }
     }
 </Script>
