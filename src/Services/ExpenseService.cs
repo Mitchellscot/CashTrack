@@ -189,8 +189,13 @@ public class ExpenseService : IExpenseService
                 expenseUpdates.Add(expense);
             }
         }
-        var updateIncome = await _incomeRepo.Update(income);
-        return await _expenseRepo.UpdateMany(expenseUpdates);
+        if (expenseUpdates.Any())
+        {
+            income.IsRefund = true;
+            var updateIncome = await _incomeRepo.Update(income);
+            return await _expenseRepo.UpdateMany(expenseUpdates);
+        }
+        else return false;
     }
 }
 public class ExpenseMapperProfile : Profile
