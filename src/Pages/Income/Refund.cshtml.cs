@@ -38,32 +38,65 @@ namespace CashTrack.Pages.Incomes
             Total = Income.Amount;
             return Page();
         }
-        public async Task<IActionResult> OnPostQuery(string Query, int incomeId)
+        public async Task<IActionResult> OnPostQuery(string Query)
+        {
+            await GetExpensesFromQuery(Query);
+            await GetExpenseRefundsFromSelectedIds();
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostSelectExpense(string Query, int SelectedId)
+        {
+            ExpenseSearchChosenIds.Add(SelectedId);
+            ExpenseSearchChosenIds = ExpenseSearchChosenIds.Distinct().ToList(); //ensures we don't have any duplicates
+            await GetExpenseRefundsFromSelectedIds();
+            await GetExpensesFromQuery(Query);
+
+            return Page();
+        }
+        public async Task<IActionResult> OnPostRemoveExpense(string Query, int SelectedId)
         {
 
-            //when a search is made,
-            //Post the query so we can get the expense search results
-            //Each row in the expense search table is a small form that posts the individual id
-            //and when that posts, it sends the ID to the other POST method
-            //which adds the id to a list, which then rewrites the form to include that id
-            //so a list of ids builds up in the expense query table
-            //and the selected query table at the same time
-            //that way you can do a search, add an expense, do a search, add an expense, and so on until the
-            //selected expense table is full of the amount of expenses you need
-            //after that you post to another handler method that
-            //processes all the refunds
-            //
-            //kind of complicated, but it's just managing state across two different forms
-            if (Query != null)
+            ExpenseSearchChosenIds = ExpenseSearchChosenIds.Distinct().ToList(); //ensures we don't have any duplicates
+            ExpenseSearchChosenIds.Remove(SelectedId);
+            await GetExpenseRefundsFromSelectedIds();
+            await GetExpensesFromQuery(Query);
+
+            return Page();
+        }
+        public async Task<IActionResult> OnPostApplyRefunds()
+        {
+            if (!ModelState.IsValid)
             {
-                DateTime q;
-                if (!DateTime.TryParse(Query, out q))
+                return Page();
+            }
+            try
+            {
+                if (Income.Amount != SelectedExpenses.Sum(x => x.RefundAmount))
                 {
-                    ModelState.AddModelError(string.Empty, "Date is not in desired format, please try again");
+                    ModelState.AddModelError("", "You must refund the entire income amount.");
                     return Page();
                 }
-                ExpenseSearch = await _expenseService.GetExpensesByDateWithoutPaginationAsync(q);
+                var updateSuccess = await _expenseService.RefundExpensesAsync(SelectedExpenses, Income);
+                //post some expense refund objects
+                //get the expenses from the IDS on the ExpenseRefunds
+                //Update all the expenses: If (ModifiedAmount > 0) { expense.Amount = expenseRefund.ModifiedAmount }
+                //Add a refund note - OriginalAmount: expense.Amount - Amount Refunded: expenseRefund.RefundAmount
+                //- Date Refunded: incomeRefund.Date
+                //add a note to the income
+                //for each expense incomeis applied to
+                //Applied refund to an expense on expense.Date for the amount of expense.RefundAmount
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return Page();
+            }
+            TempData["Message"] = "Sucessfully Applied the Refund!";
+            return LocalRedirect("~/Income/Index");
+        }
+        private async Task GetExpenseRefundsFromSelectedIds()
+        {
             if (ExpenseSearchChosenIds.Any())
             {
                 SelectedExpenses = new();
@@ -74,62 +107,21 @@ namespace CashTrack.Pages.Incomes
                     SelectedExpenses.Add(selectedExpense);
                 }
             }
-            return Page();
         }
-        public async Task<IActionResult> OnPostSelectExpense(string Query, int SelectedId)
+        private async Task GetExpensesFromQuery(string Query)
         {
-            ExpenseSearchChosenIds.Add(SelectedId);
-            ExpenseSearchChosenIds = ExpenseSearchChosenIds.Distinct().ToList(); //ensures we don't have any duplicates
-            if (ExpenseSearchChosenIds.Count() > 0)
-            {
-                SelectedExpenses = new();
-
-                foreach (var id in ExpenseSearchChosenIds)
-                {
-                    var selectedExpense = await _expenseService.GetExpenseRefundByIdAsync(id);
-                    SelectedExpenses.Add(selectedExpense);
-                }
-            }
             if (Query != null)
             {
                 DateTime q;
                 if (!DateTime.TryParse(Query, out q))
                 {
                     ModelState.AddModelError(string.Empty, "Date is not in desired format, please try again");
-                    return Page();
                 }
-                ExpenseSearch = await _expenseService.GetExpensesByDateWithoutPaginationAsync(q);
-            }
-
-            return Page();
-        }
-        public async Task<IActionResult> OnPostRemoveExpense(string Query, int SelectedId)
-        {
-
-            ExpenseSearchChosenIds = ExpenseSearchChosenIds.Distinct().ToList(); //ensures we don't have any duplicates
-            ExpenseSearchChosenIds.Remove(SelectedId);
-            if (ExpenseSearchChosenIds.Count() > 0)
-            {
-                SelectedExpenses = new();
-
-                foreach (var id in ExpenseSearchChosenIds)
+                else
                 {
-                    var selectedExpense = await _expenseService.GetExpenseRefundByIdAsync(id);
-                    SelectedExpenses.Add(selectedExpense);
+                    ExpenseSearch = await _expenseService.GetExpensesByDateWithoutPaginationAsync(q);
                 }
             }
-            if (Query != null)
-            {
-                DateTime q;
-                if (!DateTime.TryParse(Query, out q))
-                {
-                    ModelState.AddModelError(string.Empty, "Date is not in desired format, please try again");
-                    return Page();
-                }
-                ExpenseSearch = await _expenseService.GetExpensesByDateWithoutPaginationAsync(q);
-            }
-
-            return Page();
         }
     }
 }
