@@ -153,7 +153,7 @@
                                         Refund Amount
                                     </th>
                                     <th class="px-0">
-                                        Modified Amount
+                                        Modified Total
                                     </th>
                                     <th class="px-0">
                                         Apply Full Amount
@@ -177,15 +177,16 @@
                                             <td>
                                                 @expense.Category
                                             </td>
-                                            <td>
+                                            <td id="originalAmount-@expense.Id">
                                                 @expense.OriginalAmount
                                             </td>
                                             <td class="d-flex justify-content-center px-0">
                                                 <input style="width: 100px;" asp-for="@expense.RefundAmount" 
-                                                type="number" class="form-control text-center" id="amountToApply-@expense.Id" min="0.00" step="any" />
+                                                type="number" class="form-control text-center" 
+                                                id="refundAmount-@expense.Id" min="0.00" max="@expense.OriginalAmount" step="any" />
                                             </td>
-                                            <td class="px-0">
-                                                0.00
+                                            <td class="px-0" id="modifiedAmount-@expense.Id">
+                                                @expense.OriginalAmount
                                             </td>
                                             <td class="px-0 d-flex align-content-center justify-content-center">
                                                <div class="form-check-inline form-switch">
@@ -209,13 +210,15 @@
                                                 <button class="btn btn-outline-primary" type="submit">Remove</button>
                                                 </form>
                                             </td>
-                                            
                                         </tr>
                             }
                             </tbody>
                         </table>
                     </div>
                 </div>
+                <div class="row float-end mx-3">
+                    <button id="submitButton" class="btn btn-primary" type="submit" disabled form="applyRefund">Apply Refund</button>
+                    </div>
     }
 </div>
 
@@ -225,16 +228,94 @@
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
 <partial name="_ValidationScriptsPartial" />
 <script type="text/javascript">
-    @if(!ModelState.IsValid)
-    {
-        @:$("#modelStateToast").show().delay(4000).fadeOut();
-    }
-    @if(Model.ExpenseSearch != null && !Model.ExpenseSearch.Any())
-    {
-        @:$("#noExpensesToast").show().delay(2000).fadeOut();
-    }
+
     $(document).ready(() => {
 
-    }
+        @if(!ModelState.IsValid)
+        {
+            @:$("#modelStateToast").show().delay(4000).fadeOut();
+        }
+        @if(Model.ExpenseSearch != null && !Model.ExpenseSearch.Any())
+        {
+            @:$("#noExpensesToast").show().delay(2000).fadeOut();
+        }
+        @foreach(var id in Model.ExpenseSearchChosenIds)
+        {
+            //Refunds the entire expense
+            <text>$('#applyFull-@id').change(() =>{
+                if($("#applyFull-@id").is(":checked")){
+                    $("#modifiedAmount-@id").text(formatNumber($("#originalAmount-@id").text()) - formatNumber($("#originalAmount-@id").text()));
+                    $("#refundAmount-@id").val(Number($("#originalAmount-@id").text()));
+                    $("#refundAmount-@id").prop("disabled", true);
+                    //update the total
+                    $("#total").text(adjustFormBasedOnTotal(findTotal()));
+                }
+                if(!$("#applyFull-@id").is(":checked")){
+                    $("#refundAmount-@id").prop("disabled", false);
+                    $("#refundAmount-@id").val(0.00);
+                    $("#modifiedAmount-@id").text($("#originalAmount-@id").text());
+                    //update the total
+                    $("#total").text(adjustFormBasedOnTotal(findTotal()));
+                }
+            });</text>
+
+            //changes the page based on Refund Amount Input
+            <text>$('#refundAmount-@id').change(() => {
+                if(!$("#applyFull-@id").is(":checked")){
+                    //format the number in the input box to 2 decimals
+                    $("#refundAmount-@id").val(formatNumber($("#refundAmount-@id").val()));
+                    //update the modified amount
+                    $("#modifiedAmount-@id").text(formatNumber($("#originalAmount-@id").text()) - formatNumber($("#refundAmount-@id").val()));
+                    //update the total
+                    $("#total").text(adjustFormBasedOnTotal(findTotal()));
+                }
+            });</text>
+
+            
+
+        }
+        function adjustFormBasedOnTotal(num)
+        {
+            let originalTotal = @Model.Total;
+            if(Number(num) !== Number(0.00)){
+                $("#submitButton").prop('disabled', true);
+                $("#totalBox").removeClass("border-success");
+            }
+            if(Number(num) > Number(0.00) && Number(num) <= originalTotal){
+                $("#totalBox").removeClass("border-danger");
+            }
+            if(Number(num) < Number(0.00)){
+                $("#totalBox").addClass("border-danger")
+                return num
+            }
+            if(Number(num) > Number(originalTotal)){
+                $("#totalBox").addClass("border-danger")
+                return num
+            }
+            if(Number(num) === Number(0.00)){
+                $("#submitButton").removeAttr('disabled');
+                $("#totalBox").removeClass("border-danger");
+                $("#totalBox").addClass("border-success")
+            }
+            return num
+        }
+        function findTotal()
+        {
+            let originalTotal = @Model.Total;
+            let totals = $('[id^=refundAmount]').map((i, el) => { return Number($(el).val()); }).get();
+            let sumOfTotals = totals.reduce((a, b) => a + b);
+            return formatNumber((originalTotal - sumOfTotals));
+        }
+        function getModifiedAmount(refund, originalTotal)
+        {
+            let refundAmount = Number(refund);
+
+        }
+        function formatNumber(num)
+        {
+            let rounded = Math.round(Number(num) * 100) / 100;
+            return rounded.toFixed(2);
+        }
+    });
 </Script>
 }
