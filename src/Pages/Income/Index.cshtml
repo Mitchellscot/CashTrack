@@ -207,9 +207,41 @@
                                     @income.Category
                                         </td>
                                         <td>
-                                    @if (!string.IsNullOrEmpty(income.Notes))
+                                            @if (!string.IsNullOrEmpty(income.RefundNotes) && !string.IsNullOrEmpty(income.Notes))
+                                            {
+                                                <button style="background: none; padding: 0px; border: none;"
+                                                type="button" data-bs-toggle="modal"
+                                                data-bs-target="#refundNotes-@income.Id" class="pe-2 ps-0 ms-0">
+                                                <i class="bi bi-bootstrap-reboot text-primary" role="img"
+                                                style="font-size: 1.25rem;"></i>
+                                            </button>
+                                        @*Begin Refund Notes Modal*@
+                                        <div class="modal fade" id="refundNotes-@income.Id">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header text-center">
+                                                        <h5 class="modal-title w-100">Refund Notes</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body text-wrap">
+                                                        @income.RefundNotes
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*End Refund Notes Modal*@
+                                    }
+                                    else if (string.IsNullOrEmpty(income.RefundNotes))
                                     {
-                                                    <button style="background: none; padding: 0px; border: none;"
+                                        <button style="background: none; padding: 0px; border: none;"
+                                    type="button" data-bs-toggle="modal" disabled class="pe-2 ps-0 ms-0">
+                                            <i class="bi bi-file-earmark-check text-white" role="img"
+                                   style="font-size: 1.25rem; visibility: hidden;"></i>
+                                        </button>
+                                    }
+                                    @if (!string.IsNullOrEmpty(income.Notes))
+                                    {<button style="background: none; padding: 0px; border: none;"
                                     type="button" data-bs-toggle="modal"
                                     data-bs-target="#detailModal-@income.Id" class="pe-2 ps-0 ms-0">
                                                         <i class="bi bi-file-earmark-check text-primary" role="img"
@@ -231,6 +263,36 @@
                                                         </div>
                                                     </div>
                                         @*End Detail Modal*@
+                                    }
+                                    else if(string.IsNullOrEmpty(income.Notes) && !string.IsNullOrEmpty(income.RefundNotes))
+                                    {
+                                        <button style="background: none; padding: 0px; border: none;"
+                                    type="button" data-bs-toggle="modal" disabled class="pe-2 ps-0 ms-0">
+                                            <i class="bi bi-file-earmark-check text-white" role="img"
+                                   style="font-size: 1.25rem; visibility: hidden;"></i>
+                                        </button>
+                                        <button style="background: none; padding: 0px; border: none;"
+                                    type="button" data-bs-toggle="modal"
+                                    data-bs-target="#refundNotes-@income.Id" class="pe-2 ps-0 ms-0">
+                                            <i class="bi bi-bootstrap-reboot text-primary" role="img"
+                                   style="font-size: 1.25rem;"></i>
+                                        </button>
+                                        @*Begin Refund Notes Modal*@
+                                        <div class="modal fade" id="refundNotes-@income.Id">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header text-center">
+                                                        <h5 class="modal-title w-100">Refund Notes</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body text-wrap">
+                                                        @income.RefundNotes
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*End Refund Notes Modal*@
                                     }
                                     else
                                     {

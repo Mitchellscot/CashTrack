@@ -35,6 +35,7 @@ public class Expense : Transaction
     public string MainCategory { get; set; }
     public bool ExcludeFromStatistics { get; set; }
     public bool CreateNewMerchant { get; set; }
+    public string RefundNotes { get; set; }
 }
 public class ExpenseQuickView : Transaction
 {
@@ -67,7 +68,6 @@ public class ExpenseRefund
 {
     private decimal _originalAmount;
     private decimal _refundAmount;
-    private decimal _modifiedAmount;
     public int Id { get; set; }
     public DateTimeOffset Date { get; set; }
     public decimal OriginalAmount
@@ -84,9 +84,4 @@ public class ExpenseRefund
         set => _refundAmount = Decimal.Round(value, 2);
     }
     public bool ApplyFullAmount { get; set; }
-    public decimal ModifiedAmount
-    {
-        get => _modifiedAmount;
-        set => _modifiedAmount = this._refundAmount != default ? Decimal.Round((this._originalAmount - this._refundAmount), 2) : default;
-    }
 }

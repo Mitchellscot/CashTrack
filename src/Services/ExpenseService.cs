@@ -180,11 +180,11 @@ public class ExpenseService : IExpenseService
         var expenseUpdates = new List<ExpenseEntity>();
         foreach (var refund in refunds)
         {
-            if (refund.ModifiedAmount != default(decimal))
+            if (refund.RefundAmount != default(decimal))
             {
                 var expense = await _expenseRepo.FindById(refund.Id);
-                expense.RefundNotes = $"Original Amount: {expense.Amount} - Refunded Amount: {refund.RefundAmount} - Date Refunded: {income.Date.Date.ToShortDateString()}";
-                expense.Amount = refund.ModifiedAmount;
+                expense.RefundNotes = $"Original Amount: {refund.OriginalAmount} - Refunded Amount: {refund.RefundAmount} - Date Refunded: {income.Date.Date.ToShortDateString()}";
+                expense.Amount = Decimal.Round((refund.OriginalAmount - refund.RefundAmount), 2);
                 income.RefundNotes += $"Applied refund for the amount of {refund.RefundAmount} to an expense on {expense.Date.Date.ToShortDateString()}. ";
                 expenseUpdates.Add(expense);
             }
@@ -224,10 +224,11 @@ public class ExpenseMapperProfile : Profile
             .ForMember(e => e.SubCategoryId, o => o.MapFrom(src => src.Category.Id))
             .ForMember(e => e.MainCategory, o => o.MapFrom(src => src.Category.MainCategory.Name))
             .ForMember(e => e.ExcludeFromStatistics, o => o.MapFrom(src => src.ExcludeFromStatistics))
+            .ForMember(e => e.RefundNotes, o => o.MapFrom(src => src.RefundNotes))
             .ForMember(e => e.Tags, o => o.MapFrom(
                 src => src.ExpenseTags.Select(a => new TagModel() { Id = a.TagId, TagName = a.Tag.Name })));
 
-        //goes it Tags Service when created
+        //goes to Tags Service when created
         CreateMap<TagEntity, TagModel>()
             .ForMember(t => t.Id, o => o.MapFrom(src => src.Id))
             .ForMember(t => t.TagName, o => o.MapFrom(src => src.Name))

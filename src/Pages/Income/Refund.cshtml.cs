@@ -27,7 +27,10 @@ namespace CashTrack.Pages.Incomes
         public CashTrack.Models.IncomeModels.Income Income { get; set; }
         [BindProperty]
         public Expense[] ExpenseSearch { get; set; }
+        [BindProperty]
         public List<ExpenseRefund> SelectedExpenses { get; set; }
+        [BindProperty]
+        public List<ExpenseRefund> ExpenseRefunds { get; set; }
         [BindProperty]
         public List<int> ExpenseSearchChosenIds { get; set; } = new();
         public int SelectedId { get; set; }
@@ -64,28 +67,26 @@ namespace CashTrack.Pages.Incomes
             await SetTotal(id);
             return Page();
         }
-        public async Task<IActionResult> OnPostApplyRefunds()
+        public async Task<IActionResult> OnPostApplyRefunds(int id)
         {
+            await SetTotal(id);
             if (!ModelState.IsValid)
             {
                 return Page();
             }
             try
             {
-                if (Income.Amount != SelectedExpenses.Sum(x => x.RefundAmount))
+                if (Income.Amount != SelectedExpenses.Select(x => x.RefundAmount).Sum())
                 {
                     ModelState.AddModelError("", "You must refund the entire income amount.");
                     return Page();
                 }
                 var updateSuccess = await _expenseService.RefundExpensesAsync(SelectedExpenses, Income.Id.Value);
-                //post some expense refund objects
-                //get the expenses from the IDS on the ExpenseRefunds
-                //Update all the expenses: If (ModifiedAmount > 0) { expense.Amount = expenseRefund.ModifiedAmount }
-                //Add a refund note - OriginalAmount: expense.Amount - Amount Refunded: expenseRefund.RefundAmount
-                //- Date Refunded: incomeRefund.Date
-                //add a note to the income
-                //for each expense incomeis applied to
-                //Applied refund to an expense on expense.Date for the amount of expense.RefundAmount
+                if (!updateSuccess)
+                {
+                    ModelState.AddModelError("", "There was a problem applying your refunds. Please try again.");
+                    return Page();
+                }
             }
             catch (Exception ex)
             {

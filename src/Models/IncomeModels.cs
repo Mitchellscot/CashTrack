@@ -22,6 +22,7 @@ public class Income : Transaction
     public string Notes { get; set; }
     public bool CreateNewSource { get; set; }
     public bool IsRefund { get; set; }
+    public string RefundNotes { get; set; }
 }
 
 public class IncomeQuickView : Transaction
