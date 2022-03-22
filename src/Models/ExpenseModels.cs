@@ -45,7 +45,7 @@ public class ExpenseSplit
 {
     private decimal _amount;
     [Required]
-    [Range(0, 10000000, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+    [Range(0, int.MaxValue, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
     public decimal Amount
     {
         get => _amount;
@@ -62,4 +62,31 @@ public class ExpenseSplit
     public DateTimeOffset Date { get; set; }
     [Required]
     public string Merchant { get; set; }
+}
+public class ExpenseRefund
+{
+    private decimal _originalAmount;
+    private decimal _amountToApply;
+    private decimal _modifiedAmount;
+    public int Id { get; set; }
+    public DateTimeOffset Date { get; set; }
+    public decimal OriginalAmount
+    {
+        get => _originalAmount;
+        set => _originalAmount = Decimal.Round(value, 2);
+    }
+    public string Merchant { get; set; }
+    public string Category { get; set; }
+    [Range(0, int.MaxValue, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+    public decimal AmountToApply
+    {
+        get => _amountToApply;
+        set => _amountToApply = Decimal.Round(value, 2);
+    }
+    public bool ApplyFullAmount { get; set; }
+    public decimal ModifiedAmount
+    {
+        get => _modifiedAmount;
+        set => _modifiedAmount = this._amountToApply != default ? Decimal.Round((this._originalAmount - this._amountToApply), 2) : default;
+    }
 }

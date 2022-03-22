@@ -27,7 +27,7 @@ namespace CashTrack.Pages.Incomes
         public CashTrack.Models.IncomeModels.Income Income { get; set; }
         [BindProperty]
         public Expense[] ExpenseSearch { get; set; }
-        public List<Expense> SelectedExpenses { get; set; }
+        public List<ExpenseRefund> SelectedExpenses { get; set; }
         [BindProperty]
         public List<int> ExpenseSearchChosenIds { get; set; } = new();
         public int SelectedId { get; set; }
@@ -70,7 +70,7 @@ namespace CashTrack.Pages.Incomes
 
                 foreach (var id in ExpenseSearchChosenIds)
                 {
-                    var selectedExpense = await _expenseService.GetExpenseByIdAsync(id);
+                    var selectedExpense = await _expenseService.GetExpenseRefundByIdAsync(id);
                     SelectedExpenses.Add(selectedExpense);
                 }
             }
@@ -86,7 +86,7 @@ namespace CashTrack.Pages.Incomes
 
                 foreach (var id in ExpenseSearchChosenIds)
                 {
-                    var selectedExpense = await _expenseService.GetExpenseByIdAsync(id);
+                    var selectedExpense = await _expenseService.GetExpenseRefundByIdAsync(id);
                     SelectedExpenses.Add(selectedExpense);
                 }
             }
@@ -105,7 +105,7 @@ namespace CashTrack.Pages.Incomes
         }
         public async Task<IActionResult> OnPostRemoveExpense(string Query, int SelectedId)
         {
-            
+
             ExpenseSearchChosenIds = ExpenseSearchChosenIds.Distinct().ToList(); //ensures we don't have any duplicates
             ExpenseSearchChosenIds.Remove(SelectedId);
             if (ExpenseSearchChosenIds.Count() > 0)
@@ -114,7 +114,7 @@ namespace CashTrack.Pages.Incomes
 
                 foreach (var id in ExpenseSearchChosenIds)
                 {
-                    var selectedExpense = await _expenseService.GetExpenseByIdAsync(id);
+                    var selectedExpense = await _expenseService.GetExpenseRefundByIdAsync(id);
                     SelectedExpenses.Add(selectedExpense);
                 }
             }

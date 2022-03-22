@@ -70,13 +70,13 @@
                                         Date
                                     </th>
                                     <th>
-                                        Amount
-                                    </th>
-                                    <th>
                                         Merchant
                                     </th>
                                     <th>
                                         Category
+                                    </th>
+                                    <th>
+                                        Amount
                                     </th>
                                     <th>
                                         Notes
@@ -106,19 +106,19 @@
                                         @expense.Date.Date.ToShortDateString()
                                             </td>
                                             <td>
-                                        @expense.Amount
-                                            </td>
-                                            <td>
                                         @expense.Merchant
                                             </td>
                                             <td>
                                         @expense.SubCategory
                                             </td>
                                             <td>
+                                        @expense.Amount
+                                            </td>
+                                            <td>
                                         @expense.Notes
                                             </td>
                                             <td>
-                                                <button class="btn btn-primary" type="submit">Select</button>
+                                                <button class="btn btn-outline-primary" type="submit">Select</button>
                                             </td>
                                             </form>
                                         </tr>
@@ -137,25 +137,28 @@
                         <table class="table table-bordered table-hover">
                             <thead>
                                 <tr class="text-center">
-                                    <th>
+                                    <th class="px-0">
                                         Date
                                     </th>
-                                    <th>
-                                        Original Amount
-                                    </th>
-                                    <th>
+                                    <th class="px-0">
                                         Merchant
                                     </th>
-                                    <th>
+                                    <th class="px-0">
                                         Category
                                     </th>
-                                    <th>
-                                        Amount To Apply
+                                    <th class="px-0">
+                                        Original Amount
                                     </th>
-                                    <th>
+                                    <th class="px-0">
+                                        Refund Amount
+                                    </th>
+                                    <th class="px-0">
+                                        Modified Amount
+                                    </th>
+                                    <th class="px-0">
                                         Apply Full Amount
                                     </th>
-                                    <th>
+                                    <th class="px-0">
                                         Remove
                                     </th>
                                 </tr>
@@ -164,27 +167,34 @@
                             @foreach (var expense in Model.SelectedExpenses)
                             {
                                         <tr class="text-center">
-                                            <form method="post" asp-page-handler="RemoveExpense">
+                                            
                                             <td>
                                                 @expense.Date.Date.ToShortDateString()
-                                            </td>
-                                            <td>
-                                                @expense.Amount
                                             </td>
                                             <td>
                                                 @expense.Merchant
                                             </td>
                                             <td>
-                                                @expense.SubCategory
+                                                @expense.Category
                                             </td>
                                             <td>
-                                        @*this is a posted list so might need a for loop or indexer*@
-                                                <input type="number" class="form-control" id="selectedExpense-@expense.Id" />
+                                                @expense.OriginalAmount
+                                            </td>
+                                            <td class="d-flex justify-content-center px-0">
+                                                <input style="width: 100px;" asp-for="@expense.AmountToApply" 
+                                                type="number" class="form-control text-center" id="amountToApply-@expense.Id" min="0.00" step="any" />
+                                            </td>
+                                            <td class="px-0">
+                                                0.00
+                                            </td>
+                                            <td class="px-0 d-flex align-content-center justify-content-center">
+                                               <div class="form-check-inline form-switch">
+                                                   <input asp-for="@expense.ApplyFullAmount" 
+                                                   class="form-check-input" type="checkbox" role="switch" id="applyFull-@expense.Id">
+                                               </div>
                                             </td>
                                             <td>
-                                               <button class="btn btn-primary" type="submit">Apply Full</button>
-                                            </td>
-                                            <td>
+                                                <form method="post" asp-page-handler="RemoveExpense">
                                                 <input type="hidden" asp-for="@Model.Query" />
                                                 @if (Model.ExpenseSearchChosenIds.Any())
                                                 {
@@ -196,9 +206,10 @@
                                                 @{
                                                     <input type="hidden" asp-for="@Model.SelectedId" value="@expense.Id" />
                                                 }
-                                                <button class="btn btn-primary" type="submit">Remove</button>
+                                                <button class="btn btn-outline-primary" type="submit">Remove</button>
+                                                </form>
                                             </td>
-                                            </form>
+                                            
                                         </tr>
                             }
                             </tbody>
