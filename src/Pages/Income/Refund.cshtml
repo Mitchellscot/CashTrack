@@ -13,21 +13,21 @@
     <hr />
     @if (!ViewData.ModelState.IsValid)
     {
-                <div style="position: relative;">
-                    <div class="toast fade show mt-3 bg-danger" role="alert" id="modelStateToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
-                        <div class="toast-body d-flex align-items-center" asp-validation-summary="All">
-                            <i class="bi bi-x-circle text-white mx-3" role="img"
+                    <div style="position: relative;">
+                        <div class="toast fade show mt-3 bg-danger" role="alert" id="modelStateToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
+                            <div class="toast-body d-flex align-items-center" asp-validation-summary="All">
+                                <i class="bi bi-x-circle text-white mx-3" role="img"
                    style="font-size: 1.5rem;"></i>
+                            </div>
                         </div>
                     </div>
-                </div>
     }
     <form method="Post" asp-page-handler="Query">
         @if (Model.ExpenseSearchChosenIds.Any())
         {
             for (var i = 0; i < Model.ExpenseSearchChosenIds.Count(); i++)
             {   
-                <input type="hidden" asp-for="@Model.ExpenseSearchChosenIds[@i]" />
+                        <input type="hidden" asp-for="@Model.ExpenseSearchChosenIds[@i]" />
             }
         }
         <div class="row">
@@ -43,160 +43,168 @@
                 </div>
             </div>
             <div class="col-6">
-
+                    @if (Model.ExpenseSearch != null && !Model.ExpenseSearch.Any())
+    {
+            <div style="position: relative;">
+                <div class="mt-0 toast fade show bg-info" role="alert" id="noExpensesToast" style="position: absolute; right: 0; top: 0; z-index:1200;">
+                    <div class="toast-body  d-flex justify-content-center align-items-center">
+                        <i class="bi bi-exclamation-circle text-white mx-3" role="button" data-bs-dismiss="toast"
+                   style="font-size: 1.5rem;"></i>
+                        <span style="font-size: 1.25rem;">No Expenses Found!</span>
+                    </div>
+                </div>
+            </div>
+    }
             </div>
         </div>
     </form>
     @if (Model.ExpenseSearch != null && Model.ExpenseSearch.Count() > 0)
     {
-        <div class="row mt-3">
-            <form class="form-horizontal" method="post" id="expenseSearchForm">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        
-                        <thead>
-                            <tr class="text-center">
-                                <th>
-                                    Date
-                                </th>
-                                <th>
-                                    Amount
-                                </th>
-                                <th>
-                                    Merchant
-                                </th>
-                                <th>
-                                    Category
-                                </th>
-                                <th>
-                                    Notes
-                                </th>
-                                <th>
-                                    Select
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach(var expense in Model.ExpenseSearch)
-                            {
-                            <tr class="text-center">
-                                <form class="form-horizontal" method="post" id="expenseSearchForm-@expense.Id" asp-page-handler="SelectExpense">
-                                    <input type="hidden" asp-for="@Model.Query" />
-                                            @if (Model.ExpenseSearchChosenIds.Any())
-                                            {
-                                        var total = Model.ExpenseSearchChosenIds.Distinct().Count();
-                                        for (var i = 0; i <= total; i++)
-                                                {
-                                                    if (i == total)
-                                                    {
-                                                Model.ExpenseSearchChosenIds.Add(expense.Id.Value);
-                                                <input type="hidden" 
-                                                        asp-for="@Model.ExpenseSearchChosenIds[@i]" />
-                                                Model.ExpenseSearchChosenIds.RemoveAll(x => x == expense.Id.Value);
-                                                continue;
-                                            }
+            <div class="row mt-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+
+                            <thead>
+                                <tr class="text-center">
+                                    <th>
+                                        Date
+                                    </th>
+                                    <th>
+                                        Amount
+                                    </th>
+                                    <th>
+                                        Merchant
+                                    </th>
+                                    <th>
+                                        Category
+                                    </th>
+                                    <th>
+                                        Notes
+                                    </th>
+                                    <th>
+                                        Select
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        @foreach (var expense in Model.ExpenseSearch)
+                        {
+                                    <tr class="text-center">
+                                        <form class="form-horizontal" method="post" id="expenseSearchForm-@expense.Id" asp-page-handler="SelectExpense">
+                                            <input type="hidden" asp-for="@Model.Query" />
+                                    @if (Model.ExpenseSearchChosenIds.Any())
+                                    {
+                                        for (var i = 0; i < Model.ExpenseSearchChosenIds.Count(); i++)
+                                        {
                                             <input type="hidden" asp-for="@Model.ExpenseSearchChosenIds[@i]" />
                                         }
                                     }
-                                    else
-                                    {
-                                        <input type="hidden"
-                                        asp-for="@Model.ExpenseSearchChosenIds" value="@expense.Id" />
+                                    @{
+                                        <input type="hidden" asp-for="@Model.SelectedId" value="@expense.Id" />
                                     }
-                                    <td>
+                                            <td>
                                         @expense.Date.Date.ToShortDateString()
-                                    </td>
-                                                                        <td>
+                                            </td>
+                                            <td>
                                         @expense.Amount
-                                    </td>
-                                                                        <td>
+                                            </td>
+                                            <td>
                                         @expense.Merchant
-                                    </td>
-                                                                        <td>
+                                            </td>
+                                            <td>
                                         @expense.SubCategory
-                                    </td>
-                                                                        <td>
+                                            </td>
+                                            <td>
                                         @expense.Notes
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-primary" type="submit">Select</button>
-                                    </td>
-                                    </form>
-                                </tr>
-                                
-                            }
-                        </tbody>
-                        
-                    </table>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-primary" type="submit">Select</button>
+                                            </td>
+                                            </form>
+                                        </tr>
+                        }
+                            </tbody>
+
+                        </table>
+                    </div>
+
                 </div>
-            
-            </div>
-    }
-    else if(Model.ExpenseSearch != null && Model.ExpenseSearch.Count() == 0)
-    {
-        <div style="position: relative;">
-            <div class="toast fade show mt-3 bg-info" role="alert" id="noExpensesToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
-                <div class="toast-body  d-flex justify-content-between align-items-center">
-                    <i class="bi bi-exclamation-circle text-white mx-3" role="img"
-                   style="font-size: 1.5rem;"></i>
-                    <span style="font-size: 1.25rem;">No Expenses Found!</span><button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-                </div>
-            </div>
-        </div>
     }
     @if (Model.SelectedExpenses != null)
     {
-                <div class="row mt-3">
-            <form class="form-horizontal" method="post" id="selectedExpenseForm">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr class="text-center">
-                                <th>
-                                    Date
-                                </th>
-                                <th>
-                                    Original Amount
-                                </th>
-                                <th>
-                                    Amount To Apply
-                                </th>
-                                <th>
-                                    Apply Full Amount
-                                </th>
-                                <th>
-                                    Remove
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach(var expense in Model.SelectedExpenses)
-                            {
+                    <div class="row mt-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead>
                                 <tr class="text-center">
-                                    <input type="hidden" asp-for="@expense.Id" />
-                                    <td>
-                                        @expense.Date.Date.ToShortDateString()
-                                    </td>
-                                                                        <td>
-                                        @expense.Amount
-                                    </td>
-                                    <td>
-                                                                            @*this is a posted list so might need a for loop or indexer*@
-                                        <input type="number" class="form-control" id="selectedExpense-@expense.Id" />
-                                    </td>
-                                    <td>
-                                       <button class="btn btn-primary" type="submit">Apply Full</button>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-primary" type="submit">Remove</button>
-                                    </td>
+                                    <th>
+                                        Date
+                                    </th>
+                                    <th>
+                                        Original Amount
+                                    </th>
+                                    <th>
+                                        Merchant
+                                    </th>
+                                    <th>
+                                        Category
+                                    </th>
+                                    <th>
+                                        Amount To Apply
+                                    </th>
+                                    <th>
+                                        Apply Full Amount
+                                    </th>
+                                    <th>
+                                        Remove
+                                    </th>
                                 </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var expense in Model.SelectedExpenses)
+                            {
+                                        <tr class="text-center">
+                                            <form method="post" asp-page-handler="RemoveExpense">
+                                            <td>
+                                                @expense.Date.Date.ToShortDateString()
+                                            </td>
+                                            <td>
+                                                @expense.Amount
+                                            </td>
+                                            <td>
+                                                @expense.Merchant
+                                            </td>
+                                            <td>
+                                                @expense.SubCategory
+                                            </td>
+                                            <td>
+                                        @*this is a posted list so might need a for loop or indexer*@
+                                                <input type="number" class="form-control" id="selectedExpense-@expense.Id" />
+                                            </td>
+                                            <td>
+                                               <button class="btn btn-primary" type="submit">Apply Full</button>
+                                            </td>
+                                            <td>
+                                                <input type="hidden" asp-for="@Model.Query" />
+                                                @if (Model.ExpenseSearchChosenIds.Any())
+                                                {
+                                                    for (var i = 0; i < Model.ExpenseSearchChosenIds.Count(); i++)
+                                                    {
+                                                        <input type="hidden" asp-for="@Model.ExpenseSearchChosenIds[@i]" />
+                                                    }
+                                                }
+                                                @{
+                                                    <input type="hidden" asp-for="@Model.SelectedId" value="@expense.Id" />
+                                                }
+                                                <button class="btn btn-primary" type="submit">Remove</button>
+                                            </td>
+                                            </form>
+                                        </tr>
                             }
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </form>
-            </div>
     }
 </div>
 
@@ -206,15 +214,16 @@
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
 <partial name="_ValidationScriptsPartial" />
 <script type="text/javascript">
+    @if(!ModelState.IsValid)
+    {
+        @:$("#modelStateToast").show().delay(4000).fadeOut();
+    }
+    @if(Model.ExpenseSearch != null && !Model.ExpenseSearch.Any())
+    {
+        @:$("#noExpensesToast").show().delay(2000).fadeOut();
+    }
     $(document).ready(() => {
-        @if(!ModelState.IsValid)
-        {
-            @:$("#modelStateToast").show().delay(4000).fadeOut();
-        }
-        @if(Model.ExpenseSearch != null && Model.ExpenseSearch.Count() == 0)
-        {
-            @:$("#noExpensesToast").show().delay(2000).fadeOut();
-        }
+
     }
 </Script>
 }

@@ -30,6 +30,7 @@ namespace CashTrack.Pages.Incomes
         public List<Expense> SelectedExpenses { get; set; }
         [BindProperty]
         public List<int> ExpenseSearchChosenIds { get; set; } = new();
+        public int SelectedId { get; set; }
 
         public async Task<IActionResult> OnGet(int id, string Query)
         {
@@ -75,9 +76,38 @@ namespace CashTrack.Pages.Incomes
             }
             return Page();
         }
-        public async Task<IActionResult> OnPostSelectExpense(string Query)
+        public async Task<IActionResult> OnPostSelectExpense(string Query, int SelectedId)
         {
+            ExpenseSearchChosenIds.Add(SelectedId);
             ExpenseSearchChosenIds = ExpenseSearchChosenIds.Distinct().ToList(); //ensures we don't have any duplicates
+            if (ExpenseSearchChosenIds.Count() > 0)
+            {
+                SelectedExpenses = new();
+
+                foreach (var id in ExpenseSearchChosenIds)
+                {
+                    var selectedExpense = await _expenseService.GetExpenseByIdAsync(id);
+                    SelectedExpenses.Add(selectedExpense);
+                }
+            }
+            if (Query != null)
+            {
+                DateTime q;
+                if (!DateTime.TryParse(Query, out q))
+                {
+                    ModelState.AddModelError(string.Empty, "Date is not in desired format, please try again");
+                    return Page();
+                }
+                ExpenseSearch = await _expenseService.GetExpensesByDateWithoutPaginationAsync(q);
+            }
+
+            return Page();
+        }
+        public async Task<IActionResult> OnPostRemoveExpense(string Query, int SelectedId)
+        {
+            
+            ExpenseSearchChosenIds = ExpenseSearchChosenIds.Distinct().ToList(); //ensures we don't have any duplicates
+            ExpenseSearchChosenIds.Remove(SelectedId);
             if (ExpenseSearchChosenIds.Count() > 0)
             {
                 SelectedExpenses = new();
