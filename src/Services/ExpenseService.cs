@@ -6,6 +6,7 @@ using CashTrack.Models.IncomeModels;
 using CashTrack.Models.TagModels;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.IncomeRepository;
+using CashTrack.Repositories.MerchantRepository;
 using CashTrack.Services.Common;
 using System;
 using System.Collections.Generic;
@@ -36,12 +37,14 @@ public class ExpenseService : IExpenseService
 {
     private readonly IIncomeRepository _incomeRepo;
     private readonly IExpenseRepository _expenseRepo;
+    private readonly IMerchantRepository _merchantRepo;
     private readonly IMapper _mapper;
 
-    public ExpenseService(IExpenseRepository expenseRepository, IIncomeRepository incomeRepository, IMapper mapper)
+    public ExpenseService(IExpenseRepository expenseRepository, IIncomeRepository incomeRepository, IMerchantRepository merchantRepository, IMapper mapper)
     {
         _incomeRepo = incomeRepository;
         _expenseRepo = expenseRepository;
+        _merchantRepo = merchantRepository;
         _mapper = mapper;
     }
     public async Task<Expense> GetExpenseByIdAsync(int id)
@@ -107,7 +110,7 @@ public class ExpenseService : IExpenseService
             CategoryId = request.SubCategoryId,
             ExcludeFromStatistics = request.ExcludeFromStatistics,
             Notes = request.Notes,
-            MerchantId = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant)
+            MerchantId = string.IsNullOrEmpty(request.Merchant) ? null : (await _merchantRepo.Find(x => x.Name == request.Merchant)).FirstOrDefault().Id
             //add expense_tags in the future
         };
 
@@ -118,7 +121,7 @@ public class ExpenseService : IExpenseService
         var expenseEntity = new ExpenseEntity()
         {
             Date = request.Date,
-            MerchantId = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant),
+            MerchantId = string.IsNullOrEmpty(request.Merchant) ? null : (await _merchantRepo.Find(x => x.Name == request.Merchant)).FirstOrDefault().Id,
             Amount = request.Amount,
             Notes = request.Notes,
             CategoryId = request.SubCategoryId,

@@ -7,6 +7,7 @@ using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.IncomeSourceRepository;
 using CashTrack.Services.Common;
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -98,9 +99,8 @@ public class IncomeService : IIncomeService
             Amount = request.Amount,
             Date = request.Date,
             Notes = request.Notes,
-            //gets converted to string id in controller
-            SourceId = string.IsNullOrEmpty(request.Source) ? null : int.Parse(request.Source),
-            CategoryId = int.Parse(request.Category), //comes in as a string integer (dropdwn list)
+            SourceId = string.IsNullOrEmpty(request.Source) ? null : (await _sourceRepository.Find(x => x.Name == request.Source)).FirstOrDefault().Id,
+            CategoryId = int.Parse(request.Category), //comes in as a string integer (dropdown list)
             IsRefund = request.IsRefund
         };
 
@@ -124,8 +124,8 @@ public class IncomeService : IIncomeService
             Amount = request.Amount,
             Date = request.Date,
             Notes = request.Notes,
-            SourceId = string.IsNullOrEmpty(request.Source) ? null : int.Parse(request.Source), //converted to a string id in page modal
-            CategoryId = int.Parse(request.Category), //comes in as a string integer (dropdwn list)
+            SourceId = string.IsNullOrEmpty(request.Source) ? null : (await _sourceRepository.Find(x => x.Name == request.Source)).FirstOrDefault().Id,
+            CategoryId = int.Parse(request.Category), //comes in as a string integer (dropdown list)
             IsRefund = request.IsRefund
         };
         return await _incomeRespository.Update(incomeEntity);

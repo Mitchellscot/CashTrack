@@ -50,7 +50,7 @@ namespace CashTrack.Pages.Expenses
             Total = originalExpense.Amount;
             Date = originalExpense.Date;
             Merchant = originalExpense.Merchant;
-            this.Tax = Tax ?? 0.0875M;
+            this.Tax = Tax ?? 0.0875M; //TODO: Set Default Tax in Application Settings page
             this.Split = Split ?? 2;
             SplitOptions = new SelectList(Enumerable.Range(2, 7));
             return Page();
@@ -65,8 +65,6 @@ namespace CashTrack.Pages.Expenses
             {
                 foreach (var expenseSplit in expenseSplits)
                 {
-                    //converting merchant name to a string id... kind of dumb but whatever.
-                    expenseSplit.Merchant = (await _merchantService.GetMerchantByNameAsync(expenseSplit.Merchant)).Id.ToString();
                     var success = await _expenseService.CreateExpenseFromSplitAsync(expenseSplit);
                     if (!success)
                     {
