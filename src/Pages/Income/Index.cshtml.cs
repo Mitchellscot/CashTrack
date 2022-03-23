@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Incomes
@@ -133,7 +134,7 @@ namespace CashTrack.Pages.Incomes
             {
                 if (Income.CreateNewSource && !string.IsNullOrEmpty(Income.Source))
                 {
-                    var incomeSourceCreationSuccess = await _sourceService.CreateIncomeSourceAsync(new AddEditIncomeSource() { Name = Income.Source });
+                    var incomeSourceCreationSuccess = await _sourceService.CreateIncomeSourceAsync(new AddEditIncomeSource() { Name = Income.Source, InUse = true });
                 }
                 //converting the source name to a string ID
                 if (!string.IsNullOrEmpty(Income.Source))
@@ -144,6 +145,12 @@ namespace CashTrack.Pages.Incomes
                 {
                     ModelState.AddModelError("", IsEdit ? "An error occured while adding the Income." : "An error occured while updating the Income.");
                     return Page();
+                }
+                if (!IsEdit && Income.IsRefund)
+                {
+                    var id = (await _incomeService.GetIncomeAsync(new IncomeRequest() { DateOptions = DateOptions.All })).ListItems.MaxBy(x => x.Id).Id;
+
+                    return RedirectToPage("Refund", new { id = id });
                 }
                 TempData["Message"] = IsEdit ? "Sucessfully updated the Income!" : "Sucessfully added new Income!";
                 return RedirectToPage("./Index", new { Query = Query, Q = Q, PageNumber = PageNumber == 0 ? 1 : PageNumber });

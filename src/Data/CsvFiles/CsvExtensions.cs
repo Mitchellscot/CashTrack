@@ -18,10 +18,11 @@ namespace CashTrack.Data.CsvFiles
                     null
                     , DateTimeStyles.AdjustToUniversal),
                     Amount = Math.Round(Decimal.Parse(columns[2]), 2),
-                    CategoryId = columns[2] == "" ? null : Convert.ToInt32(columns[3]),
+                    CategoryId = columns[3] == "" ? null : Convert.ToInt32(columns[3]),
                     MerchantId = columns[4] == "" ? null : Convert.ToInt32(columns[4]),
-                    Notes = columns[3] == "" ? null : columns[5],
-                    ExcludeFromStatistics = ParseBoolean(columns[6])
+                    Notes = columns[5] == "" ? null : columns[5],
+                    ExcludeFromStatistics = ParseBoolean(columns[6]),
+                    RefundNotes = columns[7] == "" ? null : columns[7]
                 };
             }
         }
@@ -109,8 +110,9 @@ namespace CashTrack.Data.CsvFiles
                     Amount = Math.Round(Convert.ToDecimal(columns[2]), 2),
                     CategoryId = Convert.ToInt32(columns[3]),
                     SourceId = Convert.ToInt32(columns[4]),
-                    Notes = columns[4] == "" ? null : columns[5],
-                    IsRefund = ParseBoolean(columns[6])
+                    Notes = columns[5] == "" ? null : columns[5],
+                    IsRefund = ParseBoolean(columns[6]),
+                    RefundNotes = columns[7] == "" ? null : columns[7]
                 };
             }
         }

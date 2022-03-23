@@ -9,7 +9,7 @@ namespace CashTrack.Data.Entities
     {
         public int? CategoryId { get; set; }
         public IncomeCategoryEntity? Category { get; set; }
-        public int? SouceId { get; set; }
+        public int? SourceId { get; set; }
         public IncomeSourceEntity? Source { get; set; }
         public bool IsRefund { get; set; }
         public string? RefundNotes { get; set; }
