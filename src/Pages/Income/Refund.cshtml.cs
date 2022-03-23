@@ -1,4 +1,3 @@
-using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.IncomeService;
@@ -93,6 +92,17 @@ namespace CashTrack.Pages.Incomes
                 return Page();
             }
             TempData["Message"] = "Sucessfully Applied the Refund!";
+            return LocalRedirect("~/Income/Index");
+        }
+        public async Task<IActionResult> OnPostDelete(int incomeId)
+        {
+            var success = await _incomeService.DeleteIncomeAsync(incomeId);
+            if (!success)
+            {
+                ModelState.AddModelError("", "Unable to delete the Refund");
+                return Page();
+            }
+            TempData["Message"] = "Sucessfully deleted Refund!";
             return LocalRedirect("~/Income/Index");
         }
         private async Task GetExpenseRefundsFromSelectedIds()

@@ -137,7 +137,7 @@ public class ExpenseService : IExpenseService
     {
         if (request.Id == null)
             throw new ArgumentException("Need an id to update an expense");
-
+        //try to just update the properties here and then save it without clearing the context
         var currentExpense = await _expenseRepo.Find(x => x.Id == request.Id.Value);
         if (currentExpense == null)
             throw new ExpenseNotFoundException(request.Id.Value.ToString());
