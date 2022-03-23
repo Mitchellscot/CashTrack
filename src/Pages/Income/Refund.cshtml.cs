@@ -60,8 +60,6 @@ namespace CashTrack.Pages.Incomes
         }
         public async Task<IActionResult> OnPostRemoveExpense(int id, string Query)
         {
-
-            
             ExpenseSearchChosenIds.Remove(SelectedId);
             SelectedExpenses.RemoveAll(x => x.Id == SelectedId);
             await GetExpensesFromQuery(Query);

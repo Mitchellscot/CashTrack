@@ -13,7 +13,7 @@ namespace CashTrack.Models.Common
             { 4, "Amount" },
             { 5, "Notes" },
             { 6, "Source" },
-            { 7, "Income Category" },
+            { 7, "Category" },
         };
     }
 }
