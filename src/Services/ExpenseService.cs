@@ -213,7 +213,6 @@ public class ExpenseMapperProfile : Profile
             .ForMember(e => e.Category, o => o.MapFrom(src => src.Category.Name))
             .ForMember(e => e.Merchant, o => o.MapFrom(src => src.Merchant.Name));
 
-
         CreateMap<ExpenseEntity, Expense>()
             .ForMember(e => e.Id, o => o.MapFrom(src => src.Id))
             .ForMember(e => e.Date, o => o.MapFrom(src => src.Date))

@@ -46,7 +46,6 @@ namespace CashTrack.Pages.Expenses
 
             var categories = await _subCategoryService.GetSubCategoryDropdownListAsync();
             SubCategories = new SelectList(categories, nameof(SubCategoryDropdownSelection.Id), nameof(SubCategoryDropdownSelection.Category), originalExpense.SubCategoryId);
-
             Id = id;
             Total = originalExpense.Amount;
             Date = originalExpense.Date;
