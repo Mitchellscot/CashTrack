@@ -14,7 +14,7 @@
     @if (!ViewData.ModelState.IsValid)
     {
                     <div style="position: relative;">
-                        <div class="toast fade show mt-3 bg-danger" role="alert" id="modelStateToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
+                        <div class="toast fade show mt-3 bg-danger" role="alert" id="modelStateToast" style="position: absolute; right: auto; top: 0; z-index:1200;">
                             <div class="toast-body d-flex align-items-center" asp-validation-summary="All">
                                 <i class="bi bi-x-circle text-white mx-3" role="img"
                    style="font-size: 1.5rem;"></i>
@@ -130,7 +130,7 @@
 
                 </div>
     }
-    @if (Model.SelectedExpenses != null)
+    @if (Model.SelectedExpenses != null && Model.SelectedExpenses.Count() > 0)
     {
                     <div class="row mt-3">
                     <div class="table-responsive">
@@ -203,16 +203,6 @@
                                             </td>
                                             <td>
                                                 <input type="hidden" asp-for="@Model.Query" />
-                                                @if (Model.ExpenseSearchChosenIds.Any())
-                                                {
-                                                    for (var i = 0; i < Model.ExpenseSearchChosenIds.Count(); i++)
-                                                    {
-                                                        <input type="hidden" asp-for="@Model.ExpenseSearchChosenIds[@i]" />
-                                                    }
-                                                }
-                                                @{
-                                                    <input type="hidden" asp-for="@Model.SelectedId" value="@expense.Id" />
-                                                }
                                                 <button name="SelectedId" value="@expense.Id" type="submit" class="btn btn-outline-primary"
                                                 asp-page-handler="RemoveExpense">Remove</button>
                                             </td>
@@ -248,22 +238,22 @@
         {
             @:$("#noExpensesToast").show().delay(2000).fadeOut();
         }
-        @foreach(var id in Model.ExpenseSearchChosenIds)
+        @foreach(var id in Model.SelectedExpenses.Select(x => x.Id).ToList())
         {
+            var incomeAmount = Model.Total;
             //Refunds the entire expense
             <text>$('#applyFull-@id').change(() =>{
                 if($("#applyFull-@id").is(":checked")){
-                    $("#modifiedAmount-@id").text(formatNumber($("#originalAmount-@id").text()) - formatNumber($("#originalAmount-@id").text()));
-                    $("#refundAmount-@id").val(Number($("#originalAmount-@id").text()));
+                    
+                    $("#modifiedAmount-@id").text(fullRefundModifiedTotal($("#originalAmount-@id").text(), @incomeAmount));
+                    $("#refundAmount-@id").val(handleApplyFullAmount($("#originalAmount-@id").text(), @incomeAmount));
                     $("#refundAmount-@id").prop("readonly", true);
-                    //update the total
                     $("#total").text(adjustFormBasedOnTotal(findTotal()));
                 }
                 if(!$("#applyFull-@id").is(":checked")){
                     $("#refundAmount-@id").prop("readonly", false);
                     $("#refundAmount-@id").val(0.00);
                     $("#modifiedAmount-@id").text($("#originalAmount-@id").text());
-                    //update the total
                     $("#total").text(adjustFormBasedOnTotal(findTotal()));
                 }
             });</text>
@@ -279,9 +269,30 @@
                     $("#total").text(adjustFormBasedOnTotal(findTotal()));
                 }
             });</text>
-
-            
-
+        }
+        function handleApplyFullAmount(originalAmount, incomeAmount)
+        {
+            var num = Number(originalAmount);
+            if(num < incomeAmount)
+            {
+                return formatNumber(num);
+            }
+            else if(num > incomeAmount)
+            {
+                return formatNumber(incomeAmount)
+            }
+        }
+        function fullRefundModifiedTotal(originalAmount, incomeAmount)
+        {
+            var num = Number(originalAmount);
+            if(num > incomeAmount)
+            {
+                return formatNumber((num - incomeAmount));
+            }
+            else if (num < incomeAmount)
+            {
+                return formatNumber(0.00);
+            }
         }
         function adjustFormBasedOnTotal(num)
         {
@@ -314,11 +325,6 @@
             let totals = $('[id^=refundAmount]').map((i, el) => { return Number($(el).val()); }).get();
             let sumOfTotals = totals.reduce((a, b) => a + b);
             return formatNumber((originalTotal - sumOfTotals));
-        }
-        function getModifiedAmount(refund, originalTotal)
-        {
-            let refundAmount = Number(refund);
-
         }
         function formatNumber(num)
         {

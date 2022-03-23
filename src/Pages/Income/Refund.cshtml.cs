@@ -33,6 +33,7 @@ namespace CashTrack.Pages.Incomes
         public List<ExpenseRefund> ExpenseRefunds { get; set; }
         [BindProperty]
         public List<int> ExpenseSearchChosenIds { get; set; } = new();
+        [BindProperty]
         public int SelectedId { get; set; }
 
         public async Task<IActionResult> OnGet(int id)
@@ -57,12 +58,12 @@ namespace CashTrack.Pages.Incomes
             await SetTotal(id);
             return Page();
         }
-        public async Task<IActionResult> OnPostRemoveExpense(int id, string Query, int SelectedId)
+        public async Task<IActionResult> OnPostRemoveExpense(int id, string Query)
         {
 
-            ExpenseSearchChosenIds = ExpenseSearchChosenIds.Distinct().ToList(); //ensures we don't have any duplicates
+            
             ExpenseSearchChosenIds.Remove(SelectedId);
-            await GetExpenseRefundsFromSelectedIds();
+            SelectedExpenses.RemoveAll(x => x.Id == SelectedId);
             await GetExpensesFromQuery(Query);
             await SetTotal(id);
             return Page();
