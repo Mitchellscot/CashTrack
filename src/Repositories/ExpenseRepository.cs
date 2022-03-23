@@ -166,7 +166,6 @@ public class ExpenseRepository : IExpenseRepository
             throw;
         }
     }
-
     public async Task<int> GetCount(Expression<Func<ExpenseEntity, bool>> predicate)
     {
         try
