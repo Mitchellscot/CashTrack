@@ -1,0 +1,94 @@
+﻿@page
+@using CashTrack.Pages.Shared
+@model CashTrack.Pages.Review.ExpensesModel
+@{
+    Layout = "_Layout";
+}
+<div class="container-fluid">
+    <div style="position: absolute; right: 2%; top: 8%; z-index:1;"><button class="btn btn-outline-primary" type="button">Run Script</button></div>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a asp-page="./Expenses" class="nav-link active">Expenses</a>
+        </li>
+        <li class="nav-item">
+            <a asp-page="./Income" class="nav-link">Income</a>
+        </li>
+    </ul>
+            <div class="row">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-sm mb-0 mt-3">
+                    <thead>
+                        <tr class="text-center table-primary">
+                            <th width="10%">
+                                Date
+                            </th>
+                            <th width="10%">
+                                Amount
+                            </th>
+                            <th width="10%">
+                                Merchant
+                            </th>
+                            <th width="10%">
+                                Category
+                            </th>
+                            <th width="10%">
+                                Notes
+                            </th>
+                            <th width="10%">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var expense in Model.ExpenseReviewResponse.ListItems)
+                        {
+                            <tr class="text-center">
+                                <td>
+                                    @expense.Date.Date.ToShortDateString()
+                                </td>
+                                <td>
+                                    @expense.Amount
+                                </td>
+                                <td>
+                                    @expense.SuggestedMerchant
+
+                                </td>
+                                <td>
+                                    @expense.SuggestedCategory
+
+                                </td>
+                                <td>
+                                    @expense.Notes
+
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="row my-1">
+                    <div class="col-sm-6 col-lg-2 col-xl-2 m-auto">
+                        @if (@Model.ExpenseReviewResponse.TotalCount > 0)
+                        {
+                            var currentCount = Model.ExpenseReviewResponse.PageNumber * @Model.ExpenseReviewResponse.PageSize;
+                            <span class="text-muted">@(Math.Min(currentCount, Model.ExpenseReviewResponse.TotalCount)) of @Model.ExpenseReviewResponse.TotalCount</span>
+                        }
+                    </div>
+                    <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
+                        @*Total amount went here. Something else can go here maybe?*@
+                    </div>
+                    <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
+                        @await Html.PartialAsync("_PaginationPartial",
+                    new _PaginationPartialModel {
+                    PathLink = "../Review/Expenses",
+                    IsExpensePage = false,
+                    PageNumber = Model.ExpenseReviewResponse.PageNumber,
+                    TotalPages = Model.ExpenseReviewResponse.TotalPages,
+                    })
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
