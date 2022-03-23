@@ -161,7 +161,7 @@ namespace CashTrack.Pages.Expenses
             {
                 if (Expense.CreateNewMerchant && !string.IsNullOrEmpty(Expense.Merchant))
                 {
-                    var merchantCreationSuccess = await _merchantService.CreateMerchantAsync(new AddEditMerchant() { Name = Expense.Merchant });
+                    var merchantCreationSuccess = await _merchantService.CreateMerchantAsync(new AddEditMerchant() { Name = Expense.Merchant, SuggestOnLookup = true });
                 }
                 //converting the merchant name to a string ID
                 if (!string.IsNullOrEmpty(Expense.Merchant))

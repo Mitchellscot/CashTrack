@@ -31,9 +31,11 @@ public class Expense : Transaction
     public string Merchant { get; set; }
     public ICollection<TagModel> Tags { get; set; }
     public string SubCategory { get; set; }
+    public int SubCategoryId { get; set; }
     public string MainCategory { get; set; }
     public bool ExcludeFromStatistics { get; set; }
     public bool CreateNewMerchant { get; set; }
+    public string RefundNotes { get; set; }
 }
 public class ExpenseQuickView : Transaction
 {
@@ -44,7 +46,7 @@ public class ExpenseSplit
 {
     private decimal _amount;
     [Required]
-    [Range(0, 10000000, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+    [Range(0, int.MaxValue, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
     public decimal Amount
     {
         get => _amount;
@@ -61,4 +63,25 @@ public class ExpenseSplit
     public DateTimeOffset Date { get; set; }
     [Required]
     public string Merchant { get; set; }
+}
+public class ExpenseRefund
+{
+    private decimal _originalAmount;
+    private decimal _refundAmount;
+    public int Id { get; set; }
+    public DateTimeOffset Date { get; set; }
+    public decimal OriginalAmount
+    {
+        get => _originalAmount;
+        set => _originalAmount = Decimal.Round(value, 2);
+    }
+    public string Merchant { get; set; }
+    public string Category { get; set; }
+    [Range(0, int.MaxValue, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+    public decimal RefundAmount
+    {
+        get => _refundAmount;
+        set => _refundAmount = Decimal.Round(value, 2);
+    }
+    public bool ApplyFullAmount { get; set; }
 }

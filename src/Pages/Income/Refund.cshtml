@@ -1,0 +1,336 @@
+﻿@page "{id}"
+@model CashTrack.Pages.Incomes.RefundModel
+@{
+    Layout = "_Layout";
+}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+        <h3>Refund an Expense</h3>
+        <div class="border rounded px-2 py-1" id="totalBox">
+            <h3>Total: <span id="total">@Model.Total</span></h3>
+        </div>
+    </div>
+    <hr />
+    @if (!ViewData.ModelState.IsValid)
+    {
+                    <div style="position: relative;">
+                        <div class="toast fade show mt-3 bg-danger" role="alert" id="modelStateToast" style="position: absolute; right: auto; top: 0; z-index:1200;">
+                            <div class="toast-body d-flex align-items-center" asp-validation-summary="All">
+                                <i class="bi bi-x-circle text-white mx-3" role="img"
+                   style="font-size: 1.5rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+    }
+    <form method="Post" asp-page-handler="Query">
+        @if (Model.ExpenseSearchChosenIds.Any())
+        {
+            for (var i = 0; i < Model.ExpenseSearchChosenIds.Count(); i++)
+            {   
+                        <input type="hidden" asp-for="@Model.ExpenseSearchChosenIds[@i]" />
+            }
+        }
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group">
+                    <div class="input-group-prepend d-none d-sm-block">
+                        <div class="input-group-text">Search</div>
+                    </div>
+                    <input id="queryInput" data-interval="true" asp-for="@Model.Query" type="date" class="form-control text-center" />
+                    <button class="btn btn-secondary" type="submit">
+                        <i class="bi bi-search text-white mx-3" role="img"
+                           style="font-size: 1rem;"></i></button>
+                </div>
+            </div>
+            <div class="col-6">
+                    @if (Model.ExpenseSearch != null && !Model.ExpenseSearch.Any())
+    {
+            <div style="position: relative;">
+                <div class="mt-0 toast fade show bg-info" role="alert" id="noExpensesToast" style="position: absolute; right: 0; top: 0; z-index:1200;">
+                    <div class="toast-body  d-flex justify-content-center align-items-center">
+                        <i class="bi bi-exclamation-circle text-white mx-3" role="button" data-bs-dismiss="toast"
+                   style="font-size: 1.5rem;"></i>
+                        <span style="font-size: 1.25rem;">No Expenses Found!</span>
+                    </div>
+                </div>
+            </div>
+    }
+            </div>
+        </div>
+    </form>
+    @if (Model.ExpenseSearch != null && Model.ExpenseSearch.Count() > 0)
+    {
+            <div class="row mt-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+
+                            <thead>
+                                <tr class="text-center">
+                                    <th>
+                                        Date
+                                    </th>
+                                    <th>
+                                        Merchant
+                                    </th>
+                                    <th>
+                                        Category
+                                    </th>
+                                    <th>
+                                        Amount
+                                    </th>
+                                    <th>
+                                        Notes
+                                    </th>
+                                    <th>
+                                        Select
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        @foreach (var expense in Model.ExpenseSearch)
+                        {
+                                    <tr class="text-center">
+                                        <form class="form-horizontal" method="post" id="expenseSearchForm-@expense.Id" asp-page-handler="SelectExpense">
+                                            <input type="hidden" asp-for="@Model.Query" />
+                                    @if (Model.ExpenseSearchChosenIds.Any())
+                                    {
+                                        for (var i = 0; i < Model.ExpenseSearchChosenIds.Count(); i++)
+                                        {
+                                            <input type="hidden" asp-for="@Model.ExpenseSearchChosenIds[@i]" />
+                                        }
+                                    }
+                                    @{
+                                        <input type="hidden" asp-for="@Model.SelectedId" value="@expense.Id" />
+                                    }
+                                            <td>
+                                        @expense.Date.Date.ToShortDateString()
+                                            </td>
+                                            <td>
+                                        @expense.Merchant
+                                            </td>
+                                            <td>
+                                        @expense.SubCategory
+                                            </td>
+                                            <td>
+                                        @expense.Amount
+                                            </td>
+                                            <td>
+                                        @expense.Notes
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-outline-primary" type="submit">Select</button>
+                                            </td>
+                                            </form>
+                                        </tr>
+                        }
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                </div>
+    }
+    @if (Model.SelectedExpenses != null && Model.SelectedExpenses.Count() > 0)
+    {
+                    <div class="row mt-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr class="text-center">
+                                    <th class="px-0">
+                                        Date
+                                    </th>
+                                    <th class="px-0">
+                                        Merchant
+                                    </th>
+                                    <th class="px-0">
+                                        Category
+                                    </th>
+                                    <th class="px-0">
+                                        Original Amount
+                                    </th>
+                                    <th class="px-0">
+                                        Refund Amount
+                                    </th>
+                                    <th class="px-0">
+                                        Modified Total
+                                    </th>
+                                    <th class="px-0">
+                                        Apply Full Amount
+                                    </th>
+                                    <th class="px-0">
+                                        Remove
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <form method="post" id="applyRefund" asp-page-handler="ApplyRefunds">
+                            @foreach (var expense in Model.SelectedExpenses)
+                            {
+                                        <tr class="text-center">
+                                            <input name="SelectedExpenses.Index" value="@expense.Id" type="hidden" />
+                                            <input name="SelectedExpenses[@expense.Id].Id" value="@expense.Id" type="hidden" />
+                                            <td>
+                                                <input name="SelectedExpenses[@expense.Id].Date" value="@expense.Date" type="hidden" />
+                                                @expense.Date.Date.ToShortDateString()
+                                            </td>
+                                            <td>
+                                                <input name="SelectedExpenses[@expense.Id].Merchant" value="@expense.Merchant" type="hidden" />
+                                                @expense.Merchant
+                                            </td>
+                                            <td>
+                                                <input name="SelectedExpenses[@expense.Id].Category" value="@expense.Category" type="hidden" />
+                                                @expense.Category
+                                            </td>
+                                            <td id="originalAmount-@expense.Id">
+                                                <input name="SelectedExpenses[@expense.Id].OriginalAmount"  value="@expense.OriginalAmount" type="hidden" />
+                                                @expense.OriginalAmount
+                                            </td>
+                                            <td class="d-flex justify-content-center px-0">
+                                                <input style="width: 100px;" 
+                                                name="SelectedExpenses[@expense.Id].RefundAmount" value="@expense.RefundAmount"
+                                                type="number" class="form-control text-center" 
+                                                id="refundAmount-@expense.Id" min="0.00" max="@expense.OriginalAmount" step="any" />
+                                            </td>
+                                            <td class="px-0" id="modifiedAmount-@expense.Id">
+                                                @expense.OriginalAmount
+                                            </td>
+                                            <td class="px-0 d-flex align-content-center justify-content-center">
+                                               <div class="form-check-inline form-switch">
+                                                   <input name="SelectedExpenses[@expense.Id].ApplyFullRefund" value="@expense.ApplyFullAmount"
+                                                   class="form-check-input" type="checkbox" id="applyFull-@expense.Id">
+                                               </div>
+                                            </td>
+                                            <td>
+                                                <input type="hidden" asp-for="@Model.Query" />
+                                                <button name="SelectedId" value="@expense.Id" type="submit" class="btn btn-outline-primary"
+                                                asp-page-handler="RemoveExpense">Remove</button>
+                                            </td>
+                                        </tr>
+                            }
+                            </form>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row float-end mx-3">
+                    <form method="post">
+                        <button id="submitButton" class="btn btn-primary" type="submit" disabled form="applyRefund">Apply Refund</button>
+                    </form>
+                    </div>
+    }
+</div>
+
+@section Scripts {
+<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true">
+</script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
+<partial name="_ValidationScriptsPartial" />
+<script type="text/javascript">
+
+    $(document).ready(() => {
+
+        @if(!ModelState.IsValid)
+        {
+            @:$("#modelStateToast").show().delay(4000).fadeOut();
+        }
+        @if(Model.ExpenseSearch != null && !Model.ExpenseSearch.Any())
+        {
+            @:$("#noExpensesToast").show().delay(2000).fadeOut();
+        }
+        @foreach(var id in Model.SelectedExpenses.Select(x => x.Id).ToList())
+        {
+            var incomeAmount = Model.Total;
+            //Refunds the entire expense
+            <text>$('#applyFull-@id').change(() =>{
+                if($("#applyFull-@id").is(":checked")){
+                    
+                    $("#modifiedAmount-@id").text(fullRefundModifiedTotal($("#originalAmount-@id").text(), @incomeAmount));
+                    $("#refundAmount-@id").val(handleApplyFullAmount($("#originalAmount-@id").text(), @incomeAmount));
+                    $("#refundAmount-@id").prop("readonly", true);
+                    $("#total").text(adjustFormBasedOnTotal(findTotal()));
+                }
+                if(!$("#applyFull-@id").is(":checked")){
+                    $("#refundAmount-@id").prop("readonly", false);
+                    $("#refundAmount-@id").val(0.00);
+                    $("#modifiedAmount-@id").text($("#originalAmount-@id").text());
+                    $("#total").text(adjustFormBasedOnTotal(findTotal()));
+                }
+            });</text>
+
+            //changes the page based on Refund Amount Input
+            <text>$('#refundAmount-@id').change(() => {
+                if(!$("#applyFull-@id").is(":checked")){
+                    //format the number in the input box to 2 decimals
+                    $("#refundAmount-@id").val(formatNumber($("#refundAmount-@id").val()));
+                    //update the modified amount
+                    $("#modifiedAmount-@id").text(formatNumber($("#originalAmount-@id").text() - $("#refundAmount-@id").val()));
+                    //update the total
+                    $("#total").text(adjustFormBasedOnTotal(findTotal()));
+                }
+            });</text>
+        }
+        function handleApplyFullAmount(originalAmount, incomeAmount)
+        {
+            var num = Number(originalAmount);
+            if(num < incomeAmount)
+            {
+                return formatNumber(num);
+            }
+            else if(num > incomeAmount)
+            {
+                return formatNumber(incomeAmount)
+            }
+        }
+        function fullRefundModifiedTotal(originalAmount, incomeAmount)
+        {
+            var num = Number(originalAmount);
+            if(num > incomeAmount)
+            {
+                return formatNumber((num - incomeAmount));
+            }
+            else if (num < incomeAmount)
+            {
+                return formatNumber(0.00);
+            }
+        }
+        function adjustFormBasedOnTotal(num)
+        {
+            let originalTotal = @Model.Total;
+            if(Number(num) !== Number(0.00)){
+                $("#submitButton").prop('disabled', true);
+                $("#totalBox").removeClass("border-success");
+            }
+            if(Number(num) > Number(0.00) && Number(num) <= originalTotal){
+                $("#totalBox").removeClass("border-danger");
+            }
+            if(Number(num) < Number(0.00)){
+                $("#totalBox").addClass("border-danger")
+                return num
+            }
+            if(Number(num) > Number(originalTotal)){
+                $("#totalBox").addClass("border-danger")
+                return num
+            }
+            if(Number(num) === Number(0.00)){
+                $("#submitButton").removeAttr('disabled');
+                $("#totalBox").removeClass("border-danger");
+                $("#totalBox").addClass("border-success")
+            }
+            return num
+        }
+        function findTotal()
+        {
+            let originalTotal = @Model.Total;
+            let totals = $('[id^=refundAmount]').map((i, el) => { return Number($(el).val()); }).get();
+            let sumOfTotals = totals.reduce((a, b) => a + b);
+            return formatNumber((originalTotal - sumOfTotals));
+        }
+        function formatNumber(num)
+        {
+            let rounded = Math.round(Number(num) * 100) / 100;
+            return rounded.toFixed(2);
+        }
+    });
+</Script>
+}
