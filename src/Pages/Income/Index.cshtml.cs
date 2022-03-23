@@ -147,7 +147,7 @@ namespace CashTrack.Pages.Incomes
                 {
                     var id = (await _incomeService.GetIncomeAsync(new IncomeRequest() { DateOptions = DateOptions.All })).ListItems.MaxBy(x => x.Id).Id;
 
-                    return RedirectToPage("Refund", new { id = id });
+                    return RedirectToPage("./Refund", new { id = id });
                 }
                 TempData["Message"] = IsEdit ? "Sucessfully updated the Income!" : "Sucessfully added new Income!";
                 return RedirectToPage("./Index", new { Query = Query, Q = Q, PageNumber = PageNumber == 0 ? 1 : PageNumber });
@@ -180,6 +180,8 @@ namespace CashTrack.Pages.Incomes
             {
                 PageNumber = IncomeResponse.PageNumber;
             }
+            else
+                PageNumber = 1;
             QueryOptions = new SelectList(IncomeQueryOptions.GetAll, "Key", "Value", query);
 
             switch (query)

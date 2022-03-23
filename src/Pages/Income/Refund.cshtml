@@ -4,14 +4,7 @@
     Layout = "_Layout";
 }
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center">
-        <h3>Refund an Expense</h3>
-        <div class="border rounded px-2 py-1" id="totalBox">
-            <h3>Total: <span id="total">@Model.Total</span></h3>
-        </div>
-    </div>
-    <hr />
-    @if (!ViewData.ModelState.IsValid)
+        @if (!ViewData.ModelState.IsValid)
     {
                     <div style="position: relative;">
                         <div class="toast fade show mt-3 bg-danger" role="alert" id="modelStateToast" style="position: absolute; right: auto; top: 0; z-index:1200;">
@@ -22,6 +15,25 @@
                         </div>
                     </div>
     }
+    @if (Model.ExpenseSearch != null && !Model.ExpenseSearch.Any())
+    {
+            <div style="position: relative;">
+                <div class="mt-0 toast fade show bg-info" role="alert" id="noExpensesToast" style="position: absolute; right: 0; top: 0; z-index:1200;">
+                    <div class="toast-body  d-flex justify-content-center align-items-center">
+                        <i class="bi bi-exclamation-circle text-white mx-3" role="button" data-bs-dismiss="toast"
+                   style="font-size: 1.5rem;"></i>
+                        <span style="font-size: 1.25rem;">No Expenses Found!</span>
+                    </div>
+                </div>
+            </div>
+    }
+    <div class="d-flex justify-content-between align-items-center">
+        <h3>Refund an Expense</h3>
+        <div class="border rounded px-2 py-1" id="totalBox">
+            <h3>Total: <span id="total">@Model.Total</span></h3>
+        </div>
+    </div>
+    <hr />
     <form method="Post" asp-page-handler="Query">
         @if (Model.ExpenseSearchChosenIds.Any())
         {
@@ -43,26 +55,52 @@
                 </div>
             </div>
             <div class="col-6">
-                    @if (Model.ExpenseSearch != null && !Model.ExpenseSearch.Any())
-    {
-            <div style="position: relative;">
-                <div class="mt-0 toast fade show bg-info" role="alert" id="noExpensesToast" style="position: absolute; right: 0; top: 0; z-index:1200;">
-                    <div class="toast-body  d-flex justify-content-center align-items-center">
-                        <i class="bi bi-exclamation-circle text-white mx-3" role="button" data-bs-dismiss="toast"
-                   style="font-size: 1.5rem;"></i>
-                        <span style="font-size: 1.25rem;">No Expenses Found!</span>
-                    </div>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">Refund Date</div>
+                        </div>
+                        <input readonly class="form-control text-center" type="date" asp-for="@Model.Income.Date" />
+                        <span class="input-group-text">Source</span>
+                        <input readonly class="form-control text-center" type="text" asp-for="@Model.Income.Source" />
+                        <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
                 </div>
-            </div>
-    }
+                
             </div>
         </div>
     </form>
+    @*Delete Model*@
+    <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h5 class="modal-title text-center">
+                        <strong>Are you sure you want to Delete this Refund?</strong>
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true"></span>
+                                                    </button>
+                                                </div>
+
+                                                <div class="modal-footer d-flex justify-content-evenly">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                        Cancel
+                                                    </button>
+                                                    <form method="post"
+                                                  asp-page="./Index"
+                                                  asp-page-handler="Delete"
+                                                  asp-route-incomeId="@Model.Income.Id">
+                                                        <button type="submit" class="btn btn-danger">DELETE</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*End Delete Modal*@
     @if (Model.ExpenseSearch != null && Model.ExpenseSearch.Count() > 0)
     {
             <div class="row mt-3">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover">
+                        <table class="table table-bordered">
 
                             <thead>
                                 <tr class="text-center">
@@ -134,7 +172,7 @@
     {
                     <div class="row mt-3">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr class="text-center">
                                     <th class="px-0">
@@ -215,6 +253,8 @@
                 </div>
                 <div class="row float-end mx-3">
                     <form method="post">
+                        <a type="button" asp-page="./Index" class="btn btn-secondary mx-5">Cancel
+                   </a>
                         <button id="submitButton" class="btn btn-primary" type="submit" disabled form="applyRefund">Apply Refund</button>
                     </form>
                     </div>
@@ -238,38 +278,39 @@
         {
             @:$("#noExpensesToast").show().delay(2000).fadeOut();
         }
-        @foreach(var id in Model.SelectedExpenses.Select(x => x.Id).ToList())
+        @if(Model.SelectedExpenses != null && Model.SelectedExpenses.Count() > 0)
         {
-            var incomeAmount = Model.Total;
-            //Refunds the entire expense
-            <text>$('#applyFull-@id').change(() =>{
-                if($("#applyFull-@id").is(":checked")){
-                    
-                    $("#modifiedAmount-@id").text(fullRefundModifiedTotal($("#originalAmount-@id").text(), @incomeAmount));
-                    $("#refundAmount-@id").val(handleApplyFullAmount($("#originalAmount-@id").text(), @incomeAmount));
-                    $("#refundAmount-@id").prop("readonly", true);
-                    $("#total").text(adjustFormBasedOnTotal(findTotal()));
-                }
-                if(!$("#applyFull-@id").is(":checked")){
-                    $("#refundAmount-@id").prop("readonly", false);
-                    $("#refundAmount-@id").val(0.00);
-                    $("#modifiedAmount-@id").text($("#originalAmount-@id").text());
-                    $("#total").text(adjustFormBasedOnTotal(findTotal()));
-                }
-            });</text>
+                @foreach(var id in Model.SelectedExpenses.Select(x => x.Id).ToList())
+                {
+                    var incomeAmount = Model.Total;
+                    //Refunds the entire expense
+                    <text>$('#applyFull-@id').change(() =>{
+                        if($("#applyFull-@id").is(":checked")){
+                            $("#modifiedAmount-@id").text(fullRefundModifiedTotal($("#originalAmount-@id").text(), @incomeAmount));
+                            $("#refundAmount-@id").val(handleApplyFullAmount($("#originalAmount-@id").text(), @incomeAmount));
+                            $("#total").text(adjustFormBasedOnTotal(findTotal()));
+                        }
+                        if(!$("#applyFull-@id").is(":checked")){
+                            $("#refundAmount-@id").prop("readonly", false);
+                            $("#refundAmount-@id").val(0.00);
+                            $("#modifiedAmount-@id").text($("#originalAmount-@id").text());
+                            $("#total").text(adjustFormBasedOnTotal(findTotal()));
+                        }
+                        });</text>
+                        //changes the page based on Refund Amount Input
+                        <text>$('#refundAmount-@id').change(() => {
+                            if(!$("#applyFull-@id").is(":checked")){
+                                //format the number in the input box to 2 decimals
+                                $("#refundAmount-@id").val(formatNumber($("#refundAmount-@id").val()));
+                                //update the modified amount
+                                $("#modifiedAmount-@id").text(formatNumber($("#originalAmount-@id").text() - $("#refundAmount-@id").val()));
+                                //update the total
+                                $("#total").text(adjustFormBasedOnTotal(findTotal()));
+                            }
+                            });</text>
+                            }
+                            }
 
-            //changes the page based on Refund Amount Input
-            <text>$('#refundAmount-@id').change(() => {
-                if(!$("#applyFull-@id").is(":checked")){
-                    //format the number in the input box to 2 decimals
-                    $("#refundAmount-@id").val(formatNumber($("#refundAmount-@id").val()));
-                    //update the modified amount
-                    $("#modifiedAmount-@id").text(formatNumber($("#originalAmount-@id").text() - $("#refundAmount-@id").val()));
-                    //update the total
-                    $("#total").text(adjustFormBasedOnTotal(findTotal()));
-                }
-            });</text>
-        }
         function handleApplyFullAmount(originalAmount, incomeAmount)
         {
             var num = Number(originalAmount);
