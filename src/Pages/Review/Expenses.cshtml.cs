@@ -15,10 +15,13 @@ namespace CashTrack.Pages.Review
             _expenseService = expenseService;
         }
         public ExpenseReviewResponse ExpenseReviewResponse { get; set; }
+        [BindProperty(SupportsGet = true)]
         public int PageNumber { get; set; } = 1;
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGet(int pageNumber)
         {
-            ExpenseReviewResponse = await _expenseService.GetExpenseReviewsAsync(new ExpenseReviewRequest() );
+            PageNumber = ExpenseReviewResponse != null ? ExpenseReviewResponse.PageNumber : pageNumber == 0 ? 1 : pageNumber;
+     
+            ExpenseReviewResponse = await _expenseService.GetExpenseReviewsAsync(new ExpenseReviewRequest() { PageNumber = PageNumber });
             return Page();
         }
     }
