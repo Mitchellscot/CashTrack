@@ -27,17 +27,17 @@
                     <div class="input-group-prepend d-none d-sm-block">
                         <div class="input-group-text">Search</div>
                     </div>
-                    <select data-width="100%" asp-items="Model.queryOptions" class="form-select text-center" id="querySelect" asp-for="query">
+                    <select data-width="100%" asp-items="Model.QueryOptions" class="form-select text-center" id="querySelect" asp-for="Query">
                     </select>
-                    <select id="categorySelect" style="display: none;" data-width="100%" class="form-select text-center" asp-for="@Model.q">
+                    <select id="categorySelect" style="display: none;" data-width="100%" class="form-select text-center" asp-for="@Model.Q">
                     </select>
-                    <input id="qInput" data-val="true" asp-for="@Model.q" type="Model.inputType" class="form-control w-50 text-center">
-                    <input id="q2Input" style="display: none;" data-val="true" asp-for=@Model.q2 type="date" class="form-control">
+                    <input id="qInput" data-val="true" asp-for="@Model.Q" type="Model.inputType" class="form-control w-50 text-center">
+                    <input id="q2Input" style="display: none;" data-val="true" asp-for=@Model.Q2 type="date" class="form-control">
                     <button class="btn btn-secondary" type="submit" asp-route-pageNumber="1">
                         <i class="bi bi-search text-white mx-3" role="img"
                            style="font-size: 1rem;"></i>
                     </button>
-                    <input type="hidden" asp-for="@Model.pageNumber" value="1" />
+                    <input type="hidden" asp-for="@Model.PageNumber" value="1" />
                 </div>
             </form>
         </div>
@@ -46,14 +46,14 @@
                 <div class="input-group-prepend d-none d-md-block">
                     <div class="input-group-text">Current</div>
                 </div>
-                <a asp-page="./Index" asp-route-query="11" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary">Month</a>
-                <a asp-page="./Index" asp-route-query="12" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary">Quarter</a>
-                <a asp-page="./Index" asp-route-query="13" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary">Year</a>
-                <a asp-page="./Index" asp-route-query="14" asp-route-pageNumber="@Model.pageNumber" type="button" class="btn btn-secondary" style="height: 38px; overflow: hidden;">30 Days</a>
+                <a asp-page="./Index" asp-route-query="11" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary">Month</a>
+                <a asp-page="./Index" asp-route-query="12" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary">Quarter</a>
+                <a asp-page="./Index" asp-route-query="13" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary">Year</a>
+                <a asp-page="./Index" asp-route-query="14" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary" style="height: 38px; overflow: hidden;">30 Days</a>
             </div>
         </div>
         <div class="col-4 col-xl-1">
-            <span style="color: red;" asp-validation-for="@Model.q"></span>
+            <span style="color: red;" asp-validation-for="@Model.Q"></span>
         </div>
         <div class="col-xl-2 col-2 d-flex justify-content-end">
             <button class="btn btn-primary text-wrap" style="height: 38px;" data-bs-toggle="modal" data-bs-target="#addExpenseModal" id="addExpenseButton">Add Expense</button>
@@ -480,10 +480,10 @@
                                                   asp-page="./Index"
                                                   asp-page-handler="Delete"
                                                   asp-route-expenseId="@expense.Id"
-                                                  asp-route-query="@Model.query"
-                                                  asp-route-q="@Model.q"
-                                                  asp-route-q2="@Model.q2"
-                                                  asp-route-pageNumber="@Model.pageNumber">
+                                                  asp-route-query="@Model.Query"
+                                                  asp-route-q="@Model.Q"
+                                                  asp-route-q2="@Model.Q2"
+                                                  asp-route-pageNumber="@Model.PageNumber">
                                                         <button type="submit" class="btn btn-danger">DELETE</button>
                                                     </form>
                                                 </div>
@@ -519,9 +519,9 @@
                     IsExpensePage = true,
                     PageNumber = Model.ExpenseResponse.PageNumber,
                     TotalPages = Model.ExpenseResponse.TotalPages,
-                    Query = Model.query,
-                    q = Model.q,
-                    q2 = Model.q2
+                    Query = Model.Query,
+                    q = Model.Q,
+                    q2 = Model.Q2
                     })
                     </div>
                 </div>
