@@ -29,7 +29,7 @@ public class ExpenseReviewRepository : IExpenseReviewRepository
             .Where(predicate)
             .Include(x => x.SuggestedCategory)
             .Include(x => x.SuggestedMerchant)
-            .OrderBy(x => x.Date)
+            .OrderByDescending(x => x.Date)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToArrayAsync();
@@ -69,7 +69,7 @@ public class ExpenseReviewRepository : IExpenseReviewRepository
             .Include(x => x.SuggestedMerchant)
             .Where(x => x.IsReviewed == false)
             .Where(predicate)
-            .OrderBy(x => x.Date)
+            .OrderByDescending(x => x.Date)
             .ToArrayAsync();
         }
         catch (Exception)

@@ -27,7 +27,7 @@ public class IncomeReviewRepository : IIncomeReviewRepository
                     .Where(predicate)
                     .Include(x => x.SuggestedCategory)
                     .Include(x => x.SuggestedSource)
-                    .OrderBy(x => x.Date)
+                    .OrderByDescending(x => x.Date)
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
                     .ToArrayAsync();
@@ -60,7 +60,7 @@ public class IncomeReviewRepository : IIncomeReviewRepository
             .Include(x => x.SuggestedSource)
             .Where(x => x.IsReviewed == false)
             .Where(predicate)
-            .OrderBy(x => x.Date)
+            .OrderByDescending(x => x.Date)
             .ToArrayAsync();
         }
         catch (Exception)
