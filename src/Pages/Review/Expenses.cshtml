@@ -71,7 +71,17 @@
 
                             </td>
                             <td>
-                                @expense.SuggestedCategory
+                                @{
+                                    var dropdownList  = new SelectList(Model.CategoryList, "Category", "Category", expense.SuggestedCategory);
+                                }
+                                <select class="form-select text-center" id="category-@expense.Id" asp-for="@expense.SuggestedCategory" asp-items="@dropdownList" >
+                                    @{
+                                        if (expense.SuggestedCategory == null)
+                                        {
+                                            <option value="" selected disabled hidden></option>
+                                        }
+                                    }
+                                </select>
 
                             </td>
                             <td>
@@ -114,13 +124,13 @@
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
 <partial name="_ValidationScriptsPartial" />
 <script type="text/javascript">
-
+    @if(Model.ScriptResults != null)
+    {
+        @:$("#scriptResultsToast").show().delay(4000).fadeOut();
+    }
     $(document).ready(() => {
 
-        @if(Model.ScriptResults != null)
-        {
-            @:$("#scriptResultsToast").show().delay(4000).fadeOut();
-        }
+
     }
 </Script>
 }
