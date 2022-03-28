@@ -1,0 +1,18 @@
+﻿@page
+@model CashTrack.Pages.Merchants.CreateNewModel
+@{
+    Layout = "_Layout";
+}
+<div class="container">
+    @if (Model.PrintTempData)
+    {
+            <form>
+                <input type="hidden" asp-for="@Model.ExpenseToAdd.Date" value="@Model.ExpenseDate" />
+                <input type="hidden" asp-for="@Model.ExpenseToAdd.Amount" value="@Model.Amount" />
+                <input type="hidden" asp-for="@Model.ExpenseToAdd.Merchant" value="@Model.Merchant" />
+                <input type="hidden" asp-for="@Model.ExpenseToAdd.SubCategory" value="@Model.SubCategory" />
+                <input type="hidden" asp-for="@Model.ExpenseToAdd.Notes" value="@Model.Notes" />
+                <button type="submit" asp-page="./CreateNew" asp-page-handler="AddNewExpense">Inspect Me</button>
+            </form>
+    }
+</div>

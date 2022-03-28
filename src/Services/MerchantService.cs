@@ -22,6 +22,7 @@ public interface IMerchantService
     Task<bool> UpdateMerchantAsync(AddEditMerchant request);
     Task<bool> DeleteMerchantAsync(int id);
     Task<MerchantEntity> GetMerchantByNameAsync(string name);
+    Task<string[]> GetAllMerchantNames();
 }
 public class MerchantService : IMerchantService
 {
@@ -184,6 +185,10 @@ public class MerchantService : IMerchantService
             throw new MerchantNotFoundException(name);
         return merchant;
 
+    }
+    public async Task<string[]> GetAllMerchantNames()
+    {
+        return (await _merchantRepo.Find(x => true)).Select(x => x.Name).ToArray();
     }
 }
 public class MerchantMapperProfile : Profile
