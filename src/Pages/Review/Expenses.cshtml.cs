@@ -29,8 +29,10 @@ namespace CashTrack.Pages.Review
         [BindProperty(SupportsGet = true)]
         public int PageNumber { get; set; } = 1;
         [BindProperty]
-        //public SelectList SuggestedCategory { get; set; }
         public SubCategoryDropdownSelection[] CategoryList { get; set; }
+        [BindProperty]
+        public ExpenseReviewListItem SelectedExpense { get; set; }
+
         public async Task<IActionResult> OnGet()
         {
             await PrepareData();

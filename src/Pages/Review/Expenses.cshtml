@@ -19,7 +19,7 @@
         </div>
     }
     <form method="post" asp-page-handler="RunScript">
-        <div style="position: absolute; right: 2%; top: 8%; z-index:1;"><button class="btn btn-outline-primary" type="submit">Run Script</button></div>
+        <div style="position: absolute; right: 2%; top: 8%; z-index:1;"><button class="btn btn-outline-primary" type="submit">Import</button></div>
     </form>
 
     <ul class="nav nav-tabs">
@@ -31,7 +31,7 @@
         </li>
     </ul>
     <div class="row">
-        <div class="table-responsive">
+        <div class="table-responsive table-sm">
             <table class="table table-bordered table-hover table-sm mb-0 mt-3">
                 <thead>
                     <tr class="text-center table-primary">
@@ -41,13 +41,13 @@
                         <th width="10%">
                             Amount
                         </th>
-                        <th width="10%">
+                        <th width="15%">
                             Merchant
                         </th>
-                        <th width="10%">
+                        <th width="15%">
                             Category
                         </th>
-                        <th width="10%">
+                        <th width="40%">
                             Notes
                         </th>
                         <th width="10%">
@@ -67,14 +67,15 @@
                                 @expense.Amount
                             </td>
                             <td>
-                                @expense.SuggestedMerchant
-
+                                <input class="form-control text-center" asp-for="@Model.SelectedExpense.SuggestedMerchant" id="merchantName-@expense.Id" value="@expense.SuggestedMerchant" />
                             </td>
                             <td>
                                 @{
                                     var dropdownList  = new SelectList(Model.CategoryList, "Category", "Category", expense.SuggestedCategory);
                                 }
-                                <select class="form-select text-center" id="category-@expense.Id" asp-for="@expense.SuggestedCategory" asp-items="@dropdownList" >
+                                <select class="form-select text-center" 
+                                id="category-@expense.Id" asp-for="SelectedExpense.SuggestedCategory" 
+                                asp-items="@dropdownList" value="@expense.SuggestedCategory">
                                     @{
                                         if (expense.SuggestedCategory == null)
                                         {
@@ -85,10 +86,13 @@
 
                             </td>
                             <td>
-                                @expense.Notes
-
+                                <input class="form-control mx-auto" asp-for="@Model.SelectedExpense.Notes" value="@expense.Notes" />
                             </td>
                             <td>
+                                <i class="bi bi-check-circle text-success me-2 ms-1 ps-1" role="img"
+                   style="font-size: 1.5rem;"></i>
+                   <i class="bi bi-x-circle text-danger ms-2 me-1 pe-1" role="img"
+                   style="font-size: 1.5rem;"></i>
                             </td>
                         </tr>
                     }
@@ -129,8 +133,26 @@
         @:$("#scriptResultsToast").show().delay(4000).fadeOut();
     }
     $(document).ready(() => {
+        @if(@Model.ExpenseReviewResponse != null && Model.ExpenseReviewResponse.ListItems.Any())
+        {
+            var ids = Model.ExpenseReviewResponse.ListItems.Select(x => x.Id).ToList();
+            foreach(var id in ids)
+            {
+                //Autocomplete for merchant names
+                <text>$("#merchantName-@id").on("input", () => {
+                    let editSearchTerm = $("#merchantName-@id").val();
+                    $.ajax({
+                        url: `/api/merchants?merchantName=${editSearchTerm}`,
+                        method: 'GET'
+                    }).then((response) => {
+                        $("#merchantName-@id").empty();
+                        $("#merchantName-@id").autocomplete({ source: response });
+                    });
+                })
+                </text>
+            }
+        }
 
-
-    }
+    });
 </Script>
 }
