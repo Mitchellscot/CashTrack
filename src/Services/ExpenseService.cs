@@ -2,11 +2,11 @@
 using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.ExpenseModels;
-using CashTrack.Models.IncomeModels;
 using CashTrack.Models.TagModels;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.MerchantRepository;
+using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Services.Common;
 using System;
 using System.Collections.Generic;
@@ -35,13 +35,15 @@ public interface IExpenseService
 }
 public class ExpenseService : IExpenseService
 {
+    private readonly ISubCategoryRepository _subCategoryRepo;
     private readonly IIncomeRepository _incomeRepo;
     private readonly IExpenseRepository _expenseRepo;
     private readonly IMerchantRepository _merchantRepo;
     private readonly IMapper _mapper;
 
-    public ExpenseService(IExpenseRepository expenseRepository, IIncomeRepository incomeRepository, IMerchantRepository merchantRepository, IMapper mapper)
+    public ExpenseService(IExpenseRepository expenseRepository, IIncomeRepository incomeRepository, IMerchantRepository merchantRepository, IMapper mapper, ISubCategoryRepository subCategoryRepository)
     {
+        _subCategoryRepo = subCategoryRepository;
         _incomeRepo = incomeRepository;
         _expenseRepo = expenseRepository;
         _merchantRepo = merchantRepository;
@@ -103,6 +105,13 @@ public class ExpenseService : IExpenseService
     }
     public async Task<bool> CreateExpenseAsync(Expense request)
     {
+        var merchantId = 0;
+        if (request.Merchant != null)
+            merchantId = (await _merchantRepo.Find(x => x.Name == request.Merchant)).FirstOrDefault().Id;
+
+        if (!string.IsNullOrEmpty(request.SubCategory))
+            request.SubCategoryId = (await _subCategoryRepo.Find(x => x.Name == request.SubCategory)).FirstOrDefault().Id;
+
         var expenseEntity = new ExpenseEntity()
         {
             Amount = request.Amount,
@@ -110,7 +119,7 @@ public class ExpenseService : IExpenseService
             CategoryId = request.SubCategoryId,
             ExcludeFromStatistics = request.ExcludeFromStatistics,
             Notes = request.Notes,
-            MerchantId = string.IsNullOrEmpty(request.Merchant) ? null : (await _merchantRepo.Find(x => x.Name == request.Merchant)).FirstOrDefault().Id
+            MerchantId = merchantId > 0 ? merchantId : null,
             //add expense_tags in the future
         };
 
