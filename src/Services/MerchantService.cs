@@ -18,8 +18,8 @@ public interface IMerchantService
     Task<MerchantResponse> GetMerchantsAsync(MerchantRequest request);
     Task<string[]> GetMatchingMerchantsAsync(string match);
     Task<MerchantDetail> GetMerchantDetailAsync(int id);
-    Task<bool> CreateMerchantAsync(AddEditMerchant request);
-    Task<bool> UpdateMerchantAsync(AddEditMerchant request);
+    Task<bool> CreateMerchantAsync(Merchant request);
+    Task<bool> UpdateMerchantAsync(Merchant request);
     Task<bool> DeleteMerchantAsync(int id);
     Task<MerchantEntity> GetMerchantByNameAsync(string name);
     Task<string[]> GetAllMerchantNames();
@@ -146,7 +146,7 @@ public class MerchantService : IMerchantService
         return merchantDetail;
     }
 
-    public async Task<bool> CreateMerchantAsync(AddEditMerchant request)
+    public async Task<bool> CreateMerchantAsync(Merchant request)
     {
         var merchants = await _merchantRepo.Find(x => x.Name == request.Name);
         if (merchants.Any())
@@ -156,7 +156,7 @@ public class MerchantService : IMerchantService
 
         return await _merchantRepo.Create(merchantEntity);
     }
-    public async Task<bool> UpdateMerchantAsync(AddEditMerchant request)
+    public async Task<bool> UpdateMerchantAsync(Merchant request)
     {
         var merchants = await _merchantRepo.Find(x => x.Name == request.Name);
         if (merchants.Any())
@@ -202,7 +202,7 @@ public class MerchantMapperProfile : Profile
             .ForMember(m => m.IsOnline, o => o.MapFrom(src => src.IsOnline))
             .ReverseMap();
 
-        CreateMap<AddEditMerchant, MerchantEntity>()
+        CreateMap<Merchant, MerchantEntity>()
             .ForMember(m => m.Id, o => o.MapFrom(src => src.Id))
             .ForMember(m => m.Name, o => o.MapFrom(src => src.Name))
             .ForMember(m => m.IsOnline, o => o.MapFrom(src => src.IsOnline))

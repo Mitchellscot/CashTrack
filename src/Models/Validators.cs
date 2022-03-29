@@ -94,7 +94,7 @@ public class MerchantValidator : AbstractValidator<MerchantRequest>
         RuleFor(x => x.PageSize).InclusiveBetween(5, 100);
     }
 }
-public class AddEditMerchantValidator : AbstractValidator<AddEditMerchant>
+public class AddEditMerchantValidator : AbstractValidator<Merchant>
 {
     public AddEditMerchantValidator()
     {

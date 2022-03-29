@@ -94,7 +94,7 @@ namespace CashTrack.Pages.Review
 
             if (SelectedExpense.Merchant != null && SelectedExpense.CreateNewMerchant)
             {
-                var createMerchant = await _merchantService.CreateMerchantAsync(new AddEditMerchant() { Name = SelectedExpense.Merchant, SuggestOnLookup = true });
+                var createMerchant = await _merchantService.CreateMerchantAsync(new Merchant() { Name = SelectedExpense.Merchant, SuggestOnLookup = true });
                 if (!createMerchant)
                 {
                     ModelState.AddModelError("", "Unable to create a new merchant. Please try again.");

@@ -161,7 +161,7 @@ namespace CashTrack.Pages.Expenses
             {
                 if (Expense.CreateNewMerchant && !string.IsNullOrEmpty(Expense.Merchant))
                 {
-                    var merchantCreationSuccess = await _merchantService.CreateMerchantAsync(new AddEditMerchant() { Name = Expense.Merchant, SuggestOnLookup = true });
+                    var merchantCreationSuccess = await _merchantService.CreateMerchantAsync(new Merchant() { Name = Expense.Merchant, SuggestOnLookup = true });
                 }
 
                 var success = IsEdit ? await _expenseService.CreateExpenseAsync(Expense) : await _expenseService.CreateExpenseAsync(Expense);
