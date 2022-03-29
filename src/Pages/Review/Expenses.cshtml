@@ -70,7 +70,7 @@
               </ul>
 
               <div class="modal fade" id="addMerchantModal">
-                  @await Html.PartialAsync("_AddMerchantPartial", new AddMerchantModal() { Returnurl = "~/Review/Expenses" })
+                  @await Html.PartialAsync("_AddMerchantPartial", new AddMerchantModal() { Returnurl = "~/Review/Expenses", SuggestOnLookup = true })
                   </div>
 
     @if(Model.ExpenseReviewResponse != null && Model.ExpenseReviewResponse.ListItems.Count() > 0)
@@ -210,6 +210,18 @@
     }
 
     $(document).ready(() => {
+
+        //disables city and state inputs if merchant is online - for add merchant modal
+        $("#addMerchantIsOnline").click(() => {
+            console.log('hi');
+            if($("#addMerchantIsOnline").is(":checked")){
+                $("#addMerchantCity").prop("disabled", true);
+                $("#addMerchantState").prop("disabled", true);
+            }
+            else{
+                $("#addMerchantCity").prop("disabled", false);
+                $("#addMerchantState").prop("disabled", false);
+            }});
 
         @if(@Model.ExpenseReviewResponse != null && Model.ExpenseReviewResponse.ListItems.Any())
         {
