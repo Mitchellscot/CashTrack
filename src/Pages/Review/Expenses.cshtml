@@ -107,8 +107,6 @@
                             <tr class="text-center">
                                 <form method="post" id="editExpenseReviewForm-@expense.Id" asp-page-handler="ExpenseAdd">
                                     <input type="hidden" asp-for="@Model.SelectedExpenseId" value="@expense.Id" />
-                                    @*TODO: In the future, add an option in settings whether to automatically create a new merchant if none existing are found.*@
-                                    <input type="hidden" asp-for="@Model.SelectedExpense.CreateNewMerchant" value="false" />
                                 <td>
                                     <input type="hidden" asp-for="@Model.SelectedExpense.Date" value="@expense.Date" />
                                 @expense.Date.Date.ToShortDateString()
@@ -145,12 +143,39 @@
                                     <i class="bi bi-check2-circle text-primary" role="img"
                    style="font-size: 1.4rem;"></i>
                    </button>
-                   @*TODO: Create a delete modal that removes the expense from the page*@
+
                    <button style="background: none; padding: 0px; border: none;"
-                                    type="button" class="mx-0 px-0 py-0 my-0">
+                   data-bs-toggle="modal"
+                   data-bs-target="#deleteModal-@expense.Id"
+                   type="button" class="mx-0 px-0 py-0 my-0">
                        <i class="bi bi-x-circle text-primary" role="img"
                    style="font-size: 1.4rem;"></i>
                    </button>
+                   @*Delete Modal*@
+                   <div class="modal fade" id="deleteModal-@expense.Id">
+                       <div class="modal-dialog" role="document">
+                           <div class="modal-content">
+                               <div class="modal-header text-center">
+                                   <h5 class="modal-title text-center">
+                                       <strong>Are you sure you want to Remove this Expense?</strong>
+                                       </h5>
+                                           </div>
+                                           <div class="modal-body text-wrap text-center">
+                                               Once this is done, you will have to manually add it on the expense page. It will no longer show up in future imports.
+                                           </div>
+                                           <div class="modal-footer d-flex justify-content-evenly">
+                                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                   Cancel
+                                                   </button>
+                                                   <button 
+                                                   asp-page-handler="RemoveExpense" 
+                                                   name="SelectedId" value="@expense.Id" 
+                                                   type="submit" class="btn btn-danger">DELETE</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                   @*End Delete Modal*@
                    @*TODO: Create split modal that then leads to a split page*@
                    <button style="background: none; padding: 0px; border: none;"
                                     type="button" class="ms-2 me-1 py-0 my-0" data-bs-toggle="modal" data-bs-target="#split-@expense.Id">

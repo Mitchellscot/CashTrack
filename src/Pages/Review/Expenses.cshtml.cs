@@ -47,8 +47,6 @@ namespace CashTrack.Pages.Review
         public Expense SelectedExpense { get; set; }
         [BindProperty]
         public int SelectedExpenseId { get; set; }
-        [BindProperty]
-        public Merchant Merchant { get; set; }
 
         public async Task<IActionResult> OnGet()
         {
@@ -86,24 +84,8 @@ namespace CashTrack.Pages.Review
             }
             if (!(await _merchantService.GetAllMerchantNames()).Any(x => x == SelectedExpense.Merchant))
             {
-                TempData["ExpenseDate"] = SelectedExpense.Date.ToString();
-                TempData["Amount"] = SelectedExpense.Amount.ToString();
-                TempData["Merchant"] = SelectedExpense.Merchant;
-                TempData["SubCategory"] = SelectedExpense.SubCategory;
-                TempData["Notes"] = SelectedExpense.Notes;
-                return RedirectToPage("../Merchants/CreateNew");
-            }
-
-            if (SelectedExpense.Merchant != null && SelectedExpense.CreateNewMerchant)
-            {
-                var createMerchant = await _merchantService.CreateMerchantAsync(new Merchant() { Name = SelectedExpense.Merchant, SuggestOnLookup = true });
-                if (!createMerchant)
-                {
-                    ModelState.AddModelError("", "Unable to create a new merchant. Please try again.");
-                    await PrepareData();
-                    return Page();
-                }
-                Message = $"Successfully Added A New Merchant {SelectedExpense.Merchant} And ";
+                await PrepareData();
+                return Page();
             }
 
             try
@@ -116,7 +98,7 @@ namespace CashTrack.Pages.Review
                     return Page();
                 }
                 var setExpenseReviewToIgnore = await _expenseReviewService.SetExpenseReviewToIgnoreAsync(SelectedExpenseId);
-                if (!expenseCreationSuccess)
+                if (!setExpenseReviewToIgnore)
                 {
                     ModelState.AddModelError("", "Error removing the selected expense. Please try again.");
                     await PrepareData();
@@ -129,7 +111,21 @@ namespace CashTrack.Pages.Review
                 await PrepareData();
                 return Page();
             }
-            Message += "Sucessfully Added New Expense!";
+            TempData["Message"] = "Sucessfully Added A New Expense!";
+            return LocalRedirect("~/Review/Expenses");
+        }
+        public async Task<IActionResult> OnPostRemoveExpense()
+        {
+            try
+            {
+                var deleteSuccess = await _expenseReviewService.SetExpenseReviewToIgnoreAsync(SelectedExpenseId);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return Page();
+            }
+            TempData["Message"] = "Successfully Removed the Expense!";
             return LocalRedirect("~/Review/Expenses");
         }
         private async Task PrepareData()
