@@ -132,11 +132,6 @@ namespace CashTrack.Pages.Review
             Message += "Sucessfully Added New Expense!";
             return LocalRedirect("~/Review/Expenses");
         }
-        public async Task<IActionResult> OnPostAddMerchant()
-        {
-            
-            return Page();
-        }
         private async Task PrepareData()
         {
             CategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();

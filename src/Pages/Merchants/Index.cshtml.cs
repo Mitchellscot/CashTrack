@@ -16,7 +16,7 @@ namespace CashTrack.Pages.Merchants
         public void OnGet()
         {
         }
-        public async Task<IActionResult> OnPostAddMerchant()
+        public async Task<IActionResult> OnPostAddMerchantModal()
         {
             if (!ModelState.IsValid)
             {
