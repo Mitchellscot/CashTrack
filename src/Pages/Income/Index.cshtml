@@ -738,9 +738,10 @@
             if($("#addIncomeRefundBool").is(":checked")){
                 $("#addIncomeCategory").empty();
                 $("#addIncomeCategory").append(`<option value="9" selected>Refund</option>`);
+                $("#addIncomeSubmitButton").text("Apply Refund");
             }
             else{
-                $("#addIncomeSubmitButton").text("Save Changes");
+                $("#addIncomeSubmitButton").text("Add New Income");
                 $.ajax({
                     url: `/api/incomecategory`,
                     method: 'GET'

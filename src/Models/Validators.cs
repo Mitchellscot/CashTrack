@@ -36,17 +36,20 @@ public class ExpenseValidators : AbstractValidator<Expense>
         RuleFor(x => x.Amount).NotEmpty().GreaterThan(0);
         RuleFor(x => x.Date).NotEmpty();
         RuleFor(x => x.Date).Must(x => x < DateTime.Today.AddDays(1)).WithMessage("The Purchase Date cannot be in the future.");
-        RuleFor(x => x.SubCategoryId).MustAsync(async (model, value, _) =>
+        When(x => x.SubCategoryId > 0, () =>
+        {
+            RuleFor(x => x.SubCategoryId).MustAsync(async (model, value, _) =>
                 {
                     return (await _categoryRepo.Find(x => x.Id == value)).Any();
                 }).WithMessage("Invalid Category");
+        });
         When(x => !string.IsNullOrEmpty(x.Merchant) && !x.CreateNewMerchant,
             () =>
             {
                 RuleFor(x => x.Merchant).MustAsync(async (model, value, _) =>
                 {
                     return (await _merchantRepo.Find(x => true)).Any(x => x.Name == value);
-                }).WithMessage("Please Select a merchant from the list or check \"Create New Merchant\"");
+                }).WithMessage("Please Select a merchant from the list or create a new Merchant.");
             });
         When(x => !string.IsNullOrEmpty(x.Merchant) && x.CreateNewMerchant,
             () =>
