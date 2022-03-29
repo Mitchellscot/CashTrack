@@ -47,6 +47,8 @@ namespace CashTrack.Pages.Review
         public Expense SelectedExpense { get; set; }
         [BindProperty]
         public int SelectedExpenseId { get; set; }
+        [BindProperty]
+        public Merchant Merchant { get; set; }
 
         public async Task<IActionResult> OnGet()
         {
@@ -129,6 +131,11 @@ namespace CashTrack.Pages.Review
             }
             Message += "Sucessfully Added New Expense!";
             return LocalRedirect("~/Review/Expenses");
+        }
+        public async Task<IActionResult> OnPostAddMerchant()
+        {
+            
+            return Page();
         }
         private async Task PrepareData()
         {
