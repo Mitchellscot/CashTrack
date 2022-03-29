@@ -1,4 +1,5 @@
 ﻿@page
+@using CashTrack.Models.MerchantModels
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Review.ExpensesModel
 @{
@@ -53,10 +54,10 @@
               <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button">Add</a>
               <ul class="dropdown-menu">
                   <li class="text-center">
-                      <button class="dropdown-item fakelink">Add Merchant</button>
+                      <button class="dropdown-item fakelink text-center" id="addMerchant" data-bs-toggle="modal" data-bs-target="#addMerchantModal">Add Merchant</button>
                       </li>
                   <li class="text-center">
-                      <button class="dropdown-item fakelink text-center">Add Category</button>
+                      <button class="dropdown-item fakelink text-center" id="addSubCategory">Add Category</button>
                       </li>
                   <li><hr class="dropdown-divider"></li>
                   <li>
@@ -67,9 +68,11 @@
               </ul>
               </li>
               </ul>
-              <div class="">
-                  @*TODO: Add Modal*@
-              </div>
+
+              <div class="modal fade" id="addMerchantModal">
+                  @await Html.PartialAsync("_AddMerchantPartial", new AddMerchantModal() { Returnurl = "~/Review/Expenses" })
+                  </div>
+
     @if(Model.ExpenseReviewResponse != null && Model.ExpenseReviewResponse.ListItems.Count() > 0)
     {
     <div class="row">
@@ -192,6 +195,7 @@
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
 <partial name="_ValidationScriptsPartial" />
 <script type="text/javascript">
+
     @if(Model.ScriptResults != null)
     {
         @:$("#scriptResultsToast").show().delay(4000).fadeOut();
@@ -204,7 +208,9 @@
     {
         @:$("#toast").show().delay(2000).fadeOut();
     }
+
     $(document).ready(() => {
+
         @if(@Model.ExpenseReviewResponse != null && Model.ExpenseReviewResponse.ListItems.Any())
         {
             var ids = Model.ExpenseReviewResponse.ListItems.Select(x => x.Id).ToList();
