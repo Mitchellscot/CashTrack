@@ -42,10 +42,6 @@
                 </div>
             </div>
     }
-    <form method="post" asp-page-handler="RunScript">
-        <div style="position: absolute; right: 2%; top: 8%; z-index:1;"><button class="btn btn-outline-primary" type="submit">Import</button></div>
-    </form>
-
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a asp-page="./Expenses" class="nav-link active">Expenses</a>
@@ -53,7 +49,27 @@
         <li class="nav-item">
             <a asp-page="./Income" class="nav-link">Income</a>
         </li>
-    </ul>
+          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button">Add</a>
+              <ul class="dropdown-menu">
+                  <li class="text-center">
+                      <button class="dropdown-item fakelink">Add Merchant</button>
+                      </li>
+                  <li class="text-center">
+                      <button class="dropdown-item fakelink text-center">Add Category</button>
+                      </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                      <form method="post" asp-page-handler="RunScript">
+                      <button type="submit" class="dropdown-item fakelink">Import Transactions</button>
+                              </form>
+                              </li>
+              </ul>
+              </li>
+              </ul>
+              <div class="">
+                  @*TODO: Add Modal*@
+              </div>
     @if(Model.ExpenseReviewResponse != null && Model.ExpenseReviewResponse.ListItems.Count() > 0)
     {
     <div class="row">

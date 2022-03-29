@@ -4,15 +4,53 @@
     Layout = "_Layout";
 }
 <div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+        <h3>Create a New Merchant</h3>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-4">
+            <div class="input-group">
+                <span class="input-group-text d-none d-sm-block">Name</span>
+                <input asp-for="@Model.Merchant.Name" type="text" />
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="input-group">
+                <span class="input-group-text d-none d-sm-block">City</span>
+                <input asp-for="@Model.Merchant.City" type="text" />
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="input-group">
+                <span class="input-group-text d-none d-sm-block">State</span>
+                <input asp-for="@Model.Merchant.State" type="text" />
+            </div>
+        </div>
+        <div class="col-2 align-self-center border rounded py-1">
+            <div class="form-check form-switch ">
+                <label class="form-check-label" asp-for="@Model.Merchant.IsOnline">Online Merchant</label>
+                <input class="form-check-input" type="checkbox" role="switch" id="merchantIsOnline" data-val="true"
+                       asp-for="@Model.Merchant.IsOnline" />
+            </div>
+        </div>
+                <div class="col-2 align-self-center border rounded py-1">
+            <div class="form-check form-switch ">
+                <label class="form-check-label" asp-for="@Model.Merchant.IsOnline">Show On Lookup</label>
+                <input class="form-check-input" type="checkbox" role="switch" id="showOnLookup" data-val="true"
+                       asp-for="@Model.Merchant.SuggestOnLookup" />
+            </div>
+        </div>
+    </div>
     @if (Model.PrintTempData)
     {
-            <form>
-                <input type="hidden" asp-for="@Model.ExpenseToAdd.Date" value="@Model.ExpenseDate" />
-                <input type="hidden" asp-for="@Model.ExpenseToAdd.Amount" value="@Model.Amount" />
-                <input type="hidden" asp-for="@Model.ExpenseToAdd.Merchant" value="@Model.Merchant" />
-                <input type="hidden" asp-for="@Model.ExpenseToAdd.SubCategory" value="@Model.SubCategory" />
-                <input type="hidden" asp-for="@Model.ExpenseToAdd.Notes" value="@Model.Notes" />
-                <button type="submit" asp-page="./CreateNew" asp-page-handler="AddNewExpense">Inspect Me</button>
-            </form>
+        <form>
+            <input type="hidden" asp-for="@Model.ExpenseToAdd.Date" value="@Model.ExpenseDate" />
+            <input type="hidden" asp-for="@Model.ExpenseToAdd.Amount" value="@Model.Amount" />
+            <input type="hidden" asp-for="@Model.ExpenseToAdd.Merchant" value="@Model.ExpenseMerchant" />
+            <input type="hidden" asp-for="@Model.ExpenseToAdd.SubCategory" value="@Model.SubCategory" />
+            <input type="hidden" asp-for="@Model.ExpenseToAdd.Notes" value="@Model.Notes" />
+            <button type="submit" asp-page="./CreateNew" asp-page-handler="AddNewExpense">Inspect Me</button>
+        </form>
     }
 </div>

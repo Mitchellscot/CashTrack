@@ -1,4 +1,5 @@
 using CashTrack.Models.ExpenseModels;
+using CashTrack.Models.MerchantModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
@@ -13,7 +14,7 @@ namespace CashTrack.Pages.Merchants
         [TempData]
         public string Amount { get; set; }
         [TempData]
-        public string Merchant { get; set; }
+        public string ExpenseMerchant { get; set; }
         [TempData]
         public string SubCategory { get; set; }
         [TempData]
@@ -21,6 +22,8 @@ namespace CashTrack.Pages.Merchants
         public bool PrintTempData { get; set; }
         [BindProperty]
         public Expense ExpenseToAdd { get; set; }
+        [BindProperty]
+        public Merchant Merchant { get; set; }
         public ActionResult OnGet()
         {
             PrintTempData = CheckForTempData();
@@ -28,7 +31,7 @@ namespace CashTrack.Pages.Merchants
         }
         private bool CheckForTempData()
         {
-            if (!string.IsNullOrEmpty(ExpenseDate) && !string.IsNullOrEmpty(Amount) && !string.IsNullOrEmpty(Merchant)
+            if (!string.IsNullOrEmpty(ExpenseDate) && !string.IsNullOrEmpty(Amount) && !string.IsNullOrEmpty(ExpenseMerchant)
                 && !string.IsNullOrEmpty(SubCategory))
                 return true;
 

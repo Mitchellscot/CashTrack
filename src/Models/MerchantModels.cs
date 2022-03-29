@@ -14,7 +14,7 @@ public class MerchantResponse : PaginationResponse<MerchantListItem>
     public MerchantResponse(int pageNumber, int pageSize, int totalCount, MerchantListItem[] listItems) : base(pageNumber, pageSize, totalCount, listItems) { }
 }
 
-public record AddEditMerchant
+public record Merchant
 {
     public int? Id { get; set; }
     public string Name { get; set; }

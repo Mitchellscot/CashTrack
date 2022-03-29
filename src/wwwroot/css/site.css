@@ -116,6 +116,15 @@ ul.ui-autocomplete {
     z-index: 1100;
 }
 
+.fakeLink {
+    border: 0px;
+    background-color: transparent;
+    color: gray;
+}
+
+.fakelink:hover {
+   text-decoration: none;
+}
 /* all of this is from layout.cshtml.css and I think it was boilerplate ASP.NET stuff so it might be safe to delete later. */
 /*a.navbar-brand {
     white-space: normal;
