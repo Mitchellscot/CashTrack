@@ -165,11 +165,7 @@ namespace CashTrack.Pages.Expenses
                 }
 
                 var success = IsEdit ? await _expenseService.CreateExpenseAsync(Expense) : await _expenseService.CreateExpenseAsync(Expense);
-                if (!success)
-                {
-                    ModelState.AddModelError("", IsEdit ? "An error occured while adding the expense." : "An error occured while updating the expense.");
-                    return Page();
-                }
+
                 TempData["Message"] = IsEdit ? "Sucessfully added a new Expense!" : "Sucessfully updated the Expense!";
                 return RedirectToPage("./Index", new { query = Query, q = Q, q2 = Q2, pageNumber = PageNumber });
             }

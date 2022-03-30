@@ -18,8 +18,8 @@ public interface IMerchantService
     Task<MerchantResponse> GetMerchantsAsync(MerchantRequest request);
     Task<string[]> GetMatchingMerchantsAsync(string match);
     Task<MerchantDetail> GetMerchantDetailAsync(int id);
-    Task<bool> CreateMerchantAsync(Merchant request);
-    Task<bool> UpdateMerchantAsync(Merchant request);
+    Task<int> CreateMerchantAsync(Merchant request);
+    Task<int> UpdateMerchantAsync(Merchant request);
     Task<bool> DeleteMerchantAsync(int id);
     Task<MerchantEntity> GetMerchantByNameAsync(string name);
     Task<string[]> GetAllMerchantNames();
@@ -146,7 +146,7 @@ public class MerchantService : IMerchantService
         return merchantDetail;
     }
 
-    public async Task<bool> CreateMerchantAsync(Merchant request)
+    public async Task<int> CreateMerchantAsync(Merchant request)
     {
         var merchants = await _merchantRepo.Find(x => x.Name == request.Name);
         if (merchants.Any())
@@ -156,7 +156,7 @@ public class MerchantService : IMerchantService
 
         return await _merchantRepo.Create(merchantEntity);
     }
-    public async Task<bool> UpdateMerchantAsync(Merchant request)
+    public async Task<int> UpdateMerchantAsync(Merchant request)
     {
         var merchants = await _merchantRepo.Find(x => x.Name == request.Name);
         if (merchants.Any())

@@ -12,7 +12,7 @@ public interface IIncomeReviewService
 {
     Task<IncomeReviewListItem> GetIncomeReviewByIdAsync(int id);
     Task<IncomeReviewResponse> GetIncomeReviewsAsync(IncomeReviewRequest request);
-    Task<bool> UpdateIncomeReviewAsync(int id);
+    Task<int> SetIncomeReviewToIgnoreAsync(int id);
 }
 
 public class IncomeReviewService : IIncomeReviewService
@@ -36,7 +36,7 @@ public class IncomeReviewService : IIncomeReviewService
         return new IncomeReviewResponse(request.PageNumber, request.PageSize, count, _mapper.Map<IncomeReviewListItem[]>(income));
     }
 
-    public async Task<bool> UpdateIncomeReviewAsync(int id)
+    public async Task<int> SetIncomeReviewToIgnoreAsync(int id)
     {
         //only sets it to reviewed... nothing else
         //might have bugs here... if so take off change tracker in repo

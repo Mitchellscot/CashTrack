@@ -27,9 +27,9 @@ public interface IExpenseService
     Task<ExpenseResponse> GetExpensesByMainCategoryAsync(ExpenseRequest request);
     Task<Expense[]> GetExpensesByDateWithoutPaginationAsync(DateTime request);
     Task<ExpenseRefund> GetExpenseRefundByIdAsync(int id);
-    Task<bool> CreateExpenseAsync(Expense request);
-    Task<bool> CreateExpenseFromSplitAsync(ExpenseSplit request);
-    Task<bool> UpdateExpenseAsync(Expense request);
+    Task<int> CreateExpenseAsync(Expense request);
+    Task<int> CreateExpenseFromSplitAsync(ExpenseSplit request);
+    Task<int> UpdateExpenseAsync(Expense request);
     Task<bool> DeleteExpenseAsync(int id);
     Task<bool> RefundExpensesAsync(List<ExpenseRefund> refunds, int incomeId);
 }
@@ -103,7 +103,7 @@ public class ExpenseService : IExpenseService
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
         return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Expense[]>(expenses), amount);
     }
-    public async Task<bool> CreateExpenseAsync(Expense request)
+    public async Task<int> CreateExpenseAsync(Expense request)
     {
         var merchantId = 0;
         if (request.Merchant != null)
@@ -125,7 +125,7 @@ public class ExpenseService : IExpenseService
 
         return await _expenseRepo.Create(expenseEntity);
     }
-    public async Task<bool> CreateExpenseFromSplitAsync(ExpenseSplit request)
+    public async Task<int> CreateExpenseFromSplitAsync(ExpenseSplit request)
     {
         var expenseEntity = new ExpenseEntity()
         {
@@ -142,7 +142,7 @@ public class ExpenseService : IExpenseService
         return await _expenseRepo.Create(expenseEntity);
     }
 
-    public async Task<bool> UpdateExpenseAsync(Expense request)
+    public async Task<int> UpdateExpenseAsync(Expense request)
     {
         if (request.Id == null)
             throw new ArgumentException("Need an id to update an expense");
