@@ -41,7 +41,6 @@ namespace CashTrack.Pages.Review
         public ExpenseReviewResponse ExpenseReviewResponse { get; set; }
         [BindProperty(SupportsGet = true)]
         public int PageNumber { get; set; } = 1;
-        [BindProperty]
         public SubCategoryDropdownSelection[] CategoryList { get; set; }
         [BindProperty]
         public Expense SelectedExpense { get; set; }

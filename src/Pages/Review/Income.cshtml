@@ -1,11 +1,48 @@
 ﻿@page
+@using CashTrack.Models.IncomeSourceModels
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Review.IncomeModel
 @{
     Layout = "_Layout";
 }
 <div class="container-fluid">
-    <div style="position: absolute; right: 2%; top: 8%; z-index:1;"><button class="btn btn-outline-primary" type="button">Run Script</button></div>
+    @if (Model.Message != null)
+    {
+        <div style="position: relative;">
+            <div class="toast fade show bg-success" role="alert" id="toast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
+                <div class="toast-body d-flex justify-content-between align-items-center">
+                    <i class="bi bi-hand-thumbs-up text-white mx-3" role="img"
+                   style="font-size: 1.5rem;"></i>
+                    @Model.Message
+                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        </div>
+    }
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div style="position: relative;">
+            <div class="toast fade show bg-danger" role="alert" id="modelStateToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
+                <div class="toast-body d-flex align-items-center" asp-validation-summary="All">
+                    <i class="bi bi-x-circle text-white mx-3" role="img"
+                   style="font-size: 1.5rem;"></i>
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model.ScriptResults != null)
+    {
+        <div style="position: relative;">
+            <div class="toast fade show mt-3 bg-info" role="alert" id="scriptResultsToast" style="position: absolute; right: 0; top: 0; z-index:1200;">
+                <div class="toast-body d-flex justify-content-between align-items-center">
+                    <i class="bi bi-hand-thumbs-up text-white mx-3" role="img"
+                   style="font-size: 1.5rem;"></i>
+                    @Model.ScriptResults
+                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        </div>
+    }
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a asp-page="./Expenses" class="nav-link">Expenses</a>
@@ -13,9 +50,32 @@
         <li class="nav-item">
             <a asp-page="./Income" class="nav-link active">Income</a>
         </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button">Add</a>
+            <ul class="dropdown-menu">
+                <li class="text-center">
+                    <button class="dropdown-item fakelink text-center" id="addSource" data-bs-toggle="modal" data-bs-target="#addSourceModal">Add Source</button>
+                </li>
+                <li class="text-center">
+                    <button class="dropdown-item fakelink text-center" id="addCategory">Add Category</button>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form method="post" asp-page-handler="RunScript">
+                        <button type="submit" class="dropdown-item fakelink">Import Transactions</button>
+                    </form>
+                </li>
+            </ul>
+        </li>
     </ul>
-            <div class="row">
-            <div class="table-responsive">
+    <div class="modal fade" id="addSourceModal">
+        @await Html.PartialAsync("_AddIncomeSourcePartial", new AddIncomeSourceModal() { ReturnUrl = "~/Review/Income", InUse = true })
+    </div>
+
+    @if (Model.IncomeReviewResponse != null && Model.IncomeReviewResponse.ListItems.Count() > 0)
+    {
+        <div class="row">
+            <div class="table-responsive table-sm">
                 <table class="table table-bordered table-hover table-sm mb-0 mt-3">
                     <thead>
                         <tr class="text-center table-primary">
@@ -25,13 +85,13 @@
                             <th width="10%">
                                 Amount
                             </th>
-                            <th width="10%">
+                            <th width="15%">
                                 Source
                             </th>
-                            <th width="10%">
+                            <th width="15%">
                                 Category
                             </th>
-                            <th width="10%">
+                            <th width="40%">
                                 Notes
                             </th>
                             <th width="10%">
@@ -40,29 +100,115 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var expense in Model.IncomeReviewResponse.ListItems)
+                        @foreach (var income in Model.IncomeReviewResponse.ListItems)
                         {
                             <tr class="text-center">
-                                <td>
-                                    @expense.Date.Date.ToShortDateString()
-                                </td>
-                                <td>
-                                    @expense.Amount
-                                </td>
-                                <td>
-                                    @expense.SuggestedSource
+                                <form method="post" id="editIncomeReviewForm-@income.Id" asp-page-handler="IncomeAdd">
+                                    <input type="hidden" asp-for="@Model.SelectedIncomeId" value="@income.Id" />
 
+                                <td>
+                                    <input type="hidden" asp-for="@Model.SelectedIncome.Date" value="@income.Date" />
+                                    @income.Date.Date.ToShortDateString()
                                 </td>
                                 <td>
-                                    @expense.SuggestedCategory
+                                    <input type="hidden" asp-for="@Model.SelectedIncome.Amount" value="@income.Amount" />
+                                    @income.Amount
+                                </td>
+                                <td>
+                                    <input class="form-control text-center form-control-sm" 
+                                    asp-for="@Model.SelectedIncome.Source" id="sourceName-@income.Id" value="@income.SuggestedSource" />
+                                </td>
+                                <td>
+                                    @{
+                                    var dropdownList = new SelectList(Model.CategoryList, "", "", income.SuggestedCategory);
+                                }
+                                <select class="form-select text-center form-select-sm" 
+                                id="category-@income.Id" asp-for="SelectedIncome.Category" 
+                                asp-items="@dropdownList">
+                                @{
+                                    if (income.SuggestedCategory == null)
+                                    {
+                                        <option value="" selected disabled hidden></option>
+                                    }
+                                    }
+                                    </select>
+                                </td>
+                                <td>
+                                    <input class="form-control mx-auto form-control-sm" asp-for="@Model.SelectedIncome.Notes" value="@income.Notes" />
+                                </td>
+                                <td class="mx-0 px-0 py-0 my-0">
+                                    <button style="background: none; padding: 0px; border: none;"
+                                    type="submit" class="me-2 ms-1 py-0 my-0">
+                                    <i class="bi bi-check2-circle text-primary" role="img" style="font-size: 1.4rem;"></i>
+                                </button>
 
+                                <button style="background: none; padding: 0px; border: none;"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteModal-@income.Id"
+                                type="button" class="mx-0 px-0 py-0 my-0">
+                                <i class="bi bi-x-circle text-primary" role="img"
+                                style="font-size: 1.4rem;"></i>
+                            </button>
+                            @*Delete Modal*@
+                   <div class="modal fade" id="deleteModal-@income.Id">
+                       <div class="modal-dialog" role="document">
+                           <div class="modal-content">
+                               <div class="modal-header text-center">
+                                   <h5 class="modal-title text-center">
+                                       <strong>Are you sure you want to Remove this Income?</strong>
+                                       </h5>
+                                           </div>
+                                           <div class="modal-body text-wrap text-center">
+                                               Once this is done, you will have to manually add it on the income page. It will no longer show up in future imports.
+                                           </div>
+                                           <div class="modal-footer d-flex justify-content-evenly">
+                                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                   Cancel
+                                                   </button>
+                                                   <button 
+                                                   asp-page-handler="RemoveIncome" 
+                                                   name="SelectedId" value="@income.Id" 
+                                                   type="submit" class="btn btn-danger">DELETE</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                   @*End Delete Modal*@
+                   <button style="background: none; padding: 0px; border: none;" type="button" class="ms-2 me-1 py-0 my-0" data-bs-toggle="modal" 
+                                    data-bs-target="#refundModal-@income.Id">
+                                      <i class="bi bi-bootstrap-reboot text-primary" role="img"
+                   style="font-size: 1.4rem;"></i>
+                   </button>
+                   @*Refund Modal*@
+                   <div class="modal fade" id="refundModal-@income.Id">
+                       <div class="modal-dialog" role="document">
+                           <div class="modal-content">
+                               <div class="modal-header">
+                                   <h5 class="modal-title w-100">
+                                       <strong>Refund An Expense</strong>
+                                       </h5>
+                                           </div>
+                                           <div class="modal-body text-wrap text-center">
+                                               This will take you to a page where you can search for an expense to apply this refund to.
+                                           </div>
+                                           <div class="modal-footer d-flex justify-content-evenly">
+                                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                   Cancel
+                                                   </button>
+                                                   @*This might not work*@
+                                                   <button
+                                                   name="@Model.IsRefund"
+                                                   value="true"
+                                                   form="editIncomeReviewForm-@income.Id"
+                                                   asp-page-handler="AddIncome"
+                                                   type="submit" class="btn btn-primary">Ok</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                   @*End Split Expense Modal*@
                                 </td>
-                                <td>
-                                    @expense.Notes
-
-                                </td>
-                                <td>
-                                </td>
+                                </form>
                             </tr>
                         }
                     </tbody>
@@ -90,4 +236,49 @@
                 </div>
             </div>
         </div>
+    }
 </div>
+@section Scripts {
+<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true">
+</script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
+<partial name="_ValidationScriptsPartial" />
+<script type="text/javascript">
+
+    @if(Model.ScriptResults != null)
+    {
+        @:$("#scriptResultsToast").show().delay(4000).fadeOut();
+    }
+    @if(!ModelState.IsValid)
+    {
+        @:$("#modelStateToast").show().delay(4000).fadeOut();
+    }
+    @if(Model.Message != null)
+    {
+        @:$("#toast").show().delay(2000).fadeOut();
+    }
+
+    $(document).ready(() => {
+
+        @if(@Model.IncomeReviewResponse != null && Model.IncomeReviewResponse.ListItems.Any())
+        {
+            var ids = Model.IncomeReviewResponse.ListItems.Select(x => x.Id).ToList();
+            foreach(var id in ids)
+            {
+                //Autocomplete for income source names
+                <text>$("#merchantName-@id").on("input", () => {
+                    let searchTerm = $("#sourceName-@id").val();
+                    $.ajax({
+                        url: `/api/incomesource?sourceName=${searchTerm}`,
+                        method: 'GET'
+                    }).then((response) => {
+                        $("#sourceName-@id").empty();
+                        $("#sourceName-@id").autocomplete({ source: response });
+                    }).catch((error) => console.log(error));
+                })
+                </text>
+            }
+        }
+    });
+</Script>
+}

@@ -164,9 +164,9 @@ public class IncomeRequestValidators : AbstractValidator<IncomeRequest>
         RuleFor(x => x.EndDate).Must(endDate => endDate > earliestIncome).WithMessage($"The end date cannot be before {earliestIncome.DateTime.ToShortDateString()}.");
     }
 }
-public class AddEditIncomeValidators : AbstractValidator<Income>
+public class IncomeValidators : AbstractValidator<Income>
 {
-    public AddEditIncomeValidators(ISubCategoryRepository _categoryRepo, IIncomeSourceRepository _sourceRepo)
+    public IncomeValidators(ISubCategoryRepository _categoryRepo, IIncomeSourceRepository _sourceRepo)
     {
         RuleFor(x => x.Amount).NotEmpty().GreaterThan(0);
         RuleFor(x => x.Date).NotEmpty();
