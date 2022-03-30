@@ -49,7 +49,6 @@ html, body {
 .sidebar-sticky {
     position: relative;
     top: 0;
-    height: calc(100vh - 75px);
     padding-top: 1rem;
 }
 
@@ -75,10 +74,6 @@ html, body {
 
 .sidebar-heading, a {
     text-decoration: none;
-}
-
-.nav-link {
-    
 }
 
 .validation-summary-errors ul {

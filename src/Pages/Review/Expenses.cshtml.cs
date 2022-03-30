@@ -143,8 +143,7 @@ namespace CashTrack.Pages.Review
                 await PrepareData();
                 return Page();
             }
-            TempData["Message"] = "Sucessfully Added A New Expense!";
-            return RedirectToPage($"../Expenses/Split/{expenseId}");
+            return RedirectToPage($"../Expenses/Split", new { id = expenseId });
         }
         private async Task PrepareData()
         {
