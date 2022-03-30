@@ -18,7 +18,7 @@ public interface ISubCategoryService
     Task<SubCategoryDetail> GetSubCategoryDetailsAsync(int id);
     Task<AddEditSubCategory> CreateSubCategoryAsync(AddEditSubCategory request);
     Task<SubCategoryDropdownSelection[]> GetSubCategoryDropdownListAsync();
-    Task<bool> UpdateSubCategoryAsync(AddEditSubCategory request);
+    Task<int> UpdateSubCategoryAsync(AddEditSubCategory request);
     Task<bool> DeleteSubCategoryAsync(int id);
 }
 public class SubCategoryService : ISubCategoryService
@@ -57,15 +57,12 @@ public class SubCategoryService : ISubCategoryService
 
         var subCategoryEntity = _mapper.Map<SubCategoryEntity>(request);
 
-        if (!await _subCategoryRepo.Create(subCategoryEntity))
-            throw new Exception("Couldn't save category to the database");
-
         //Here i am setting the id and then returning addedit because I'm lazy and returning the entity causes json circular reference issues.
         request.Id = subCategoryEntity.Id;
 
         return request;
     }
-    public async Task<bool> UpdateSubCategoryAsync(AddEditSubCategory request)
+    public async Task<int> UpdateSubCategoryAsync(AddEditSubCategory request)
     {
         var checkId = await _subCategoryRepo.FindById(request.Id.Value);
         if (checkId == null)

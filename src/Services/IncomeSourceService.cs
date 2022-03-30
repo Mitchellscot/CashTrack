@@ -13,9 +13,9 @@ namespace CashTrack.Services.IncomeSourceService;
 public interface IIncomeSourceService
 {
     Task<IncomeSourceResponse> GetIncomeSourcesAsync(IncomeSourceRequest request);
-    Task<bool> CreateIncomeSourceAsync(AddEditIncomeSource request);
+    Task<int> CreateIncomeSourceAsync(AddEditIncomeSource request);
     Task<IncomeSourceEntity> GetIncomeSourceByName(string name);
-    Task<bool> UpdateIncomeSourceAsync(AddEditIncomeSource request);
+    Task<int> UpdateIncomeSourceAsync(AddEditIncomeSource request);
     Task<bool> DeleteIncomeSourceAsync(int id);
     Task<string[]> GetMatchingIncomeSourcesAsync(string name);
 }
@@ -26,7 +26,7 @@ public class IncomeSourceService : IIncomeSourceService
 
     public IncomeSourceService(IIncomeSourceRepository repo, IMapper mapper) => (_repo, _mapper) = (repo, mapper);
 
-    public async Task<bool> CreateIncomeSourceAsync(AddEditIncomeSource request)
+    public async Task<int> CreateIncomeSourceAsync(AddEditIncomeSource request)
     {
         var categories = await _repo.Find(x => true);
         if (categories.Any(x => x.Name == request.Name))
@@ -74,7 +74,7 @@ public class IncomeSourceService : IIncomeSourceService
         return (await _repo.Find(x => x.Name.StartsWith(name) && x.InUse == true)).Select(x => x.Name).Take(10).ToArray();
     }
 
-    public async Task<bool> UpdateIncomeSourceAsync(AddEditIncomeSource request)
+    public async Task<int> UpdateIncomeSourceAsync(AddEditIncomeSource request)
     {
         var checkId = await _repo.FindById(request.Id.Value);
         if (checkId == null)

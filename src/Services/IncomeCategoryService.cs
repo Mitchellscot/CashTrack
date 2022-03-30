@@ -15,7 +15,7 @@ public interface IIncomeCategoryService
 {
     Task<IncomeCategoryResponse> GetIncomeCategoriesAsync(IncomeCategoryRequest request);
     Task<AddEditIncomeCategory> CreateIncomeCategoryAsync(AddEditIncomeCategory request);
-    Task<bool> UpdateIncomeCategoryAsync(AddEditIncomeCategory request);
+    Task<int> UpdateIncomeCategoryAsync(AddEditIncomeCategory request);
     Task<bool> DeleteIncomeCategoryAsync(int id);
     Task<IncomeCategoryDropdownSelection[]> GetIncomeCategoryDropdownListAsync();
 }
@@ -34,9 +34,6 @@ public class IncomeCategoryService : IIncomeCategoryService
 
         var incomeCategoryEntity = _mapper.Map<IncomeCategoryEntity>(request);
         incomeCategoryEntity.Id = await _repo.GetCount(x => true) + 1;
-
-        if (!await _repo.Create(incomeCategoryEntity))
-            throw new Exception("Couldn't save income category to the database.");
 
         request.Id = incomeCategoryEntity.Id;
         return request;
@@ -75,7 +72,7 @@ public class IncomeCategoryService : IIncomeCategoryService
         }).ToArray();
     }
 
-    public async Task<bool> UpdateIncomeCategoryAsync(AddEditIncomeCategory request)
+    public async Task<int> UpdateIncomeCategoryAsync(AddEditIncomeCategory request)
     {
         var checkId = await _repo.FindById(request.Id.Value);
         if (checkId == null)

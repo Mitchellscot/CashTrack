@@ -176,12 +176,37 @@
                                         </div>
                                     </div>
                    @*End Delete Modal*@
-                   @*TODO: Create split modal that then leads to a split page*@
                    <button style="background: none; padding: 0px; border: none;"
                                     type="button" class="ms-2 me-1 py-0 my-0" data-bs-toggle="modal" data-bs-target="#split-@expense.Id">
                                       <i class="bi bi-arrow-left-right text-primary" role="img"
                    style="font-size: 1.4rem;"></i>
                    </button>
+                   @*Split Expense Modal*@
+                   <div class="modal fade" id="splitExpenseModal-@expense.Id">
+                       <div class="modal-dialog" role="document">
+                           <div class="modal-content">
+                               <div class="modal-header text-center">
+                                   <h5 class="modal-title text-center">
+                                       <strong>Split An Expense</strong>
+                                       </h5>
+                                           </div>
+                                           <div class="modal-body text-wrap text-center">
+                                               This will take you to a page where you can split this expense into seperate expenses.
+                                           </div>
+                                           <div class="modal-footer d-flex justify-content-evenly">
+                                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                   Cancel
+                                                   </button>
+                                                   @*TODO: Please a form here with all the inputs.*@
+                                                   <button 
+                                                   form="editExpenseReviewForm-@expense.Id"
+                                                   asp-page-handler="SplitExpense"
+                                                   type="submit" class="btn btn-danger">DELETE</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                   @*End Split Expense Modal*@
 
                    </td>
                    </form>

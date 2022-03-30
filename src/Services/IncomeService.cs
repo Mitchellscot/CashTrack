@@ -21,8 +21,8 @@ public interface IIncomeService
     Task<IncomeResponse> GetIncomeBySourceAsync(IncomeRequest request);
     Task<IncomeResponse> GetIncomeByIncomeCategoryIdAsync(IncomeRequest request);
     Task<IncomeResponse> GetIncomeByNotesAsync(IncomeRequest request);
-    Task<bool> CreateIncomeAsync(Income request);
-    Task<bool> UpdateIncomeAsync(Income request);
+    Task<int> CreateIncomeAsync(Income request);
+    Task<int> UpdateIncomeAsync(Income request);
     Task<bool> DeleteIncomeAsync(int id);
 }
 public class IncomeService : IIncomeService
@@ -89,7 +89,7 @@ public class IncomeService : IIncomeService
         var singleExpense = await _incomeRespository.FindById(id);
         return _mapper.Map<Income>(singleExpense);
     }
-    public async Task<bool> CreateIncomeAsync(Income request)
+    public async Task<int> CreateIncomeAsync(Income request)
     {
         if (request.Id != null)
             throw new ArgumentException("Request must not contain an id in order to create an income.");
@@ -106,7 +106,7 @@ public class IncomeService : IIncomeService
 
         return await _incomeRespository.Create(incomeEntity);
     }
-    public async Task<bool> UpdateIncomeAsync(Income request)
+    public async Task<int> UpdateIncomeAsync(Income request)
     {
         if (request.Id == null)
             throw new ArgumentException("Need an id to update an income");

@@ -90,20 +90,9 @@ namespace CashTrack.Pages.Review
 
             try
             {
-                var expenseCreationSuccess = await _expenseService.CreateExpenseAsync(SelectedExpense);
-                if (!expenseCreationSuccess)
-                {
-                    ModelState.AddModelError("", "Unable to create the expense. Please try again.");
-                    await PrepareData();
-                    return Page();
-                }
-                var setExpenseReviewToIgnore = await _expenseReviewService.SetExpenseReviewToIgnoreAsync(SelectedExpenseId);
-                if (!setExpenseReviewToIgnore)
-                {
-                    ModelState.AddModelError("", "Error removing the selected expense. Please try again.");
-                    await PrepareData();
-                    return Page();
-                }
+                var expenseId = await _expenseService.CreateExpenseAsync(SelectedExpense);
+
+                var expenseReviewId = await _expenseReviewService.SetExpenseReviewToIgnoreAsync(SelectedExpenseId);
             }
             catch (Exception ex)
             {
@@ -127,6 +116,35 @@ namespace CashTrack.Pages.Review
             }
             TempData["Message"] = "Successfully Removed the Expense!";
             return LocalRedirect("~/Review/Expenses");
+        }
+        public async Task<IActionResult> OnPostSplitExpense()
+        {
+            if (string.IsNullOrEmpty(SelectedExpense.SubCategory))
+            {
+                ModelState.AddModelError("", "Expense must have an assigned category");
+                await PrepareData();
+                return Page();
+            }
+            if (!(await _merchantService.GetAllMerchantNames()).Any(x => x == SelectedExpense.Merchant))
+            {
+                await PrepareData();
+                return Page();
+            }
+            int expenseId = 0;
+            try
+            {
+                expenseId = await _expenseService.CreateExpenseAsync(SelectedExpense);
+
+                var expenseReviewId = await _expenseReviewService.SetExpenseReviewToIgnoreAsync(SelectedExpenseId);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                await PrepareData();
+                return Page();
+            }
+            TempData["Message"] = "Sucessfully Added A New Expense!";
+            return RedirectToPage($"../Expenses/Split/{expenseId}");
         }
         private async Task PrepareData()
         {

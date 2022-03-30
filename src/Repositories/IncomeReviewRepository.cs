@@ -83,12 +83,13 @@ public class IncomeReviewRepository : IIncomeReviewRepository
         }
     }
 
-    public async Task<bool> Create(IncomeReviewEntity entity)
+    public async Task<int> Create(IncomeReviewEntity entity)
     {
         try
         {
             await _ctx.IncomeToReview.AddAsync(entity);
-            return await (_ctx.SaveChangesAsync()) > 0;
+            var success = await _ctx.SaveChangesAsync();
+            return success > 0 ? entity.Id : throw new Exception();
         }
         catch (Exception)
         {
@@ -96,14 +97,14 @@ public class IncomeReviewRepository : IIncomeReviewRepository
         }
     }
 
-    public async Task<bool> Update(IncomeReviewEntity entity)
+    public async Task<int> Update(IncomeReviewEntity entity)
     {
         try
         {
             _ctx.ChangeTracker.Clear();
             var Entity = _ctx.IncomeToReview.Attach(entity);
             Entity.State = EntityState.Modified;
-            return await (_ctx.SaveChangesAsync()) > 0;
+            return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception();
         }
         catch (Exception)
         {

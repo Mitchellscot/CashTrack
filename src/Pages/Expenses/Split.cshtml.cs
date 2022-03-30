@@ -65,19 +65,9 @@ namespace CashTrack.Pages.Expenses
             {
                 foreach (var expenseSplit in expenseSplits)
                 {
-                    var success = await _expenseService.CreateExpenseFromSplitAsync(expenseSplit);
-                    if (!success)
-                    {
-                        ModelState.AddModelError("", "Unable to split the expenses - please try again");
-                        return Page();
-                    }
+                    var expenseId = await _expenseService.CreateExpenseFromSplitAsync(expenseSplit);
                 }
                 var deleteSuccess = await _expenseService.DeleteExpenseAsync(int.Parse(RouteData.Values["id"].ToString()));
-                if (!deleteSuccess)
-                {
-                    ModelState.AddModelError("", "Unable to delete the original expenses - please try again");
-                    return Page();
-                }
             }
             catch (Exception ex)
             {

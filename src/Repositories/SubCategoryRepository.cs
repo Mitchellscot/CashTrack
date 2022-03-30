@@ -70,26 +70,27 @@ public class SubCategoryRepository : ISubCategoryRepository
         }
     }
 
-    public async Task<bool> Create(SubCategoryEntity entity)
+    public async Task<int> Create(SubCategoryEntity entity)
     {
         try
         {
             await _context.SubCategories.AddAsync(entity);
-            return await (_context.SaveChangesAsync()) > 0;
+            var success = await _context.SaveChangesAsync();
+            return success > 0 ? entity.Id : throw new Exception();
         }
         catch (Exception)
         {
             throw;
         }
     }
-    public async Task<bool> Update(SubCategoryEntity entity)
+    public async Task<int> Update(SubCategoryEntity entity)
     {
         try
         {
             _context.ChangeTracker.Clear();
             var contextAttachedEntity = _context.SubCategories.Attach(entity);
             contextAttachedEntity.State = EntityState.Modified;
-            return await (_context.SaveChangesAsync()) > 0;
+            return await _context.SaveChangesAsync() > 0 ? entity.Id : throw new Exception();
         }
         catch (Exception)
         {
