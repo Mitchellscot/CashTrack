@@ -177,7 +177,8 @@
                                     </div>
                    @*End Delete Modal*@
                    <button style="background: none; padding: 0px; border: none;"
-                                    type="button" class="ms-2 me-1 py-0 my-0" data-bs-toggle="modal" data-bs-target="#split-@expense.Id">
+                                    type="button" class="ms-2 me-1 py-0 my-0" data-bs-toggle="modal" 
+                                    data-bs-target="#splitExpenseModal-@expense.Id">
                                       <i class="bi bi-arrow-left-right text-primary" role="img"
                    style="font-size: 1.4rem;"></i>
                    </button>
@@ -185,8 +186,8 @@
                    <div class="modal fade" id="splitExpenseModal-@expense.Id">
                        <div class="modal-dialog" role="document">
                            <div class="modal-content">
-                               <div class="modal-header text-center">
-                                   <h5 class="modal-title text-center">
+                               <div class="modal-header">
+                                   <h5 class="modal-title w-100">
                                        <strong>Split An Expense</strong>
                                        </h5>
                                            </div>
@@ -197,11 +198,11 @@
                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                                    Cancel
                                                    </button>
-                                                   @*TODO: Please a form here with all the inputs.*@
+                                                   @*TODO: Place a form here with all the inputs.*@
                                                    <button 
                                                    form="editExpenseReviewForm-@expense.Id"
                                                    asp-page-handler="SplitExpense"
-                                                   type="submit" class="btn btn-danger">DELETE</button>
+                                                   type="submit" class="btn btn-primary">Ok</button>
                                                 </div>
                                             </div>
                                         </div>
