@@ -4,7 +4,6 @@ using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.MerchantModels;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.MerchantService;
-using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;

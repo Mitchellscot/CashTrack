@@ -18,6 +18,7 @@ public interface IIncomeCategoryService
     Task<int> UpdateIncomeCategoryAsync(AddEditIncomeCategory request);
     Task<bool> DeleteIncomeCategoryAsync(int id);
     Task<IncomeCategoryDropdownSelection[]> GetIncomeCategoryDropdownListAsync();
+    Task<string[]> GetIncomeCategoryNames();
 }
 public class IncomeCategoryService : IIncomeCategoryService
 {
@@ -61,6 +62,11 @@ public class IncomeCategoryService : IIncomeCategoryService
         var response = new IncomeCategoryResponse(request.PageNumber, request.PageSize, count, _mapper.Map<IncomeCategoryListItem[]>(categories));
 
         return response;
+    }
+
+    public async Task<string[]> GetIncomeCategoryNames()
+    {
+        return (await _repo.Find(x => x.InUse)).Select(x => x.Name).ToArray();
     }
 
     public async Task<IncomeCategoryDropdownSelection[]> GetIncomeCategoryDropdownListAsync()
