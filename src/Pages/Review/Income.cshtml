@@ -103,7 +103,7 @@
                         @foreach (var income in Model.IncomeReviewResponse.ListItems)
                         {
                             <tr class="text-center">
-                                <form method="post" id="editIncomeReviewForm-@income.Id" asp-page-handler="IncomeAdd">
+                                <form method="post" id="editIncomeReviewForm-@income.Id" asp-page-handler="AddIncome">
                                     <input type="hidden" asp-for="@Model.SelectedIncomeId" value="@income.Id" />
 
                                 <td>
@@ -197,8 +197,8 @@
                                                    </button>
                                                    @*This might not work*@
                                                    <button
-                                                   name="@Model.IsRefund"
-                                                   value="true"
+                                                   name="IsRefund"
+                                                   value=true
                                                    form="editIncomeReviewForm-@income.Id"
                                                    asp-page-handler="AddIncome"
                                                    type="submit" class="btn btn-primary">Ok</button>

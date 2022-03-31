@@ -8,6 +8,7 @@ using CashTrack.Models.MainCategoryModels;
 using CashTrack.Models.MerchantModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Repositories.ExpenseRepository;
+using CashTrack.Repositories.IncomeCategoryRepository;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.IncomeSourceRepository;
 using CashTrack.Repositories.MerchantRepository;
@@ -166,7 +167,7 @@ public class IncomeRequestValidators : AbstractValidator<IncomeRequest>
 }
 public class IncomeValidators : AbstractValidator<Income>
 {
-    public IncomeValidators(ISubCategoryRepository _categoryRepo, IIncomeSourceRepository _sourceRepo)
+    public IncomeValidators(IIncomeCategoryRepository _categoryRepo, IIncomeSourceRepository _sourceRepo)
     {
         RuleFor(x => x.Amount).NotEmpty().GreaterThan(0);
         RuleFor(x => x.Date).NotEmpty();
@@ -176,7 +177,7 @@ public class IncomeValidators : AbstractValidator<Income>
             {
                 RuleFor(x => x.Category).MustAsync(async (model, value, _) =>
                 {
-                    return (await _categoryRepo.Find(x => true)).Count() >= int.Parse(value);
+                    return (await _categoryRepo.Find(x => true)).Any(x => x.Name == value);
                 }).WithMessage("Invalid Category");
             });
         When(x => !string.IsNullOrEmpty(x.Source) && !x.CreateNewSource,
