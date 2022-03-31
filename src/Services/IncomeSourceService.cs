@@ -18,6 +18,7 @@ public interface IIncomeSourceService
     Task<int> UpdateIncomeSourceAsync(IncomeSource request);
     Task<bool> DeleteIncomeSourceAsync(int id);
     Task<string[]> GetMatchingIncomeSourcesAsync(string name);
+    Task<string[]> GetAllIncomeSourceNames();
 }
 public class IncomeSourceService : IIncomeSourceService
 {
@@ -44,6 +45,11 @@ public class IncomeSourceService : IIncomeSourceService
             throw new IncomeSourceNotFoundException(id.ToString());
 
         return await _repo.Delete(source);
+    }
+
+    public async Task<string[]> GetAllIncomeSourceNames()
+    {
+        return (await _repo.Find(x => true)).Select(x => x.Name).ToArray();
     }
 
     public async Task<IncomeSourceEntity> GetIncomeSourceByName(string name)

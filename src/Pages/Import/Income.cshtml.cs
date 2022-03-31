@@ -12,7 +12,7 @@ using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Threading.Tasks;
 
-namespace CashTrack.Pages.Review
+namespace CashTrack.Pages.Import
 {
     public class IncomeModel : PageModel
     {
@@ -56,7 +56,7 @@ namespace CashTrack.Pages.Review
                 await PrepareData();
                 return Page();
             }
-            if ((await _incomeCategoryService.GetIncomeCategoryNames()).Any(x => x == SelectedIncome.Source))
+            if ((await _incomeSourceService.GetAllIncomeSourceNames()).Any(x => x == SelectedIncome.Source))
             {
                 await PrepareData();
                 return Page();
@@ -77,7 +77,7 @@ namespace CashTrack.Pages.Review
                 return RedirectToPage("../Income/Refund", new { id = incomeId });
 
             TempData["Message"] = "Sucessfully Added New Income!";
-            return LocalRedirect("~/Review/Income");
+            return LocalRedirect("~/Import/Income");
         }
         public async Task<IActionResult> OnPostRemoveIncome()
         {
@@ -91,7 +91,7 @@ namespace CashTrack.Pages.Review
                 return Page();
             }
             TempData["Message"] = "Successfully Removed the Income!";
-            return LocalRedirect("~/Review/Income");
+            return LocalRedirect("~/Import/Income");
         }
         public async Task<IActionResult> OnPostRunScript()
         {
@@ -112,7 +112,7 @@ namespace CashTrack.Pages.Review
                 var result = await ps.InvokeAsync().ConfigureAwait(false);
             }
             await PrepareData();
-            return LocalRedirect("~/Review/Income");
+            return LocalRedirect("~/Import/Income");
         }
         private async Task PrepareData()
         {
