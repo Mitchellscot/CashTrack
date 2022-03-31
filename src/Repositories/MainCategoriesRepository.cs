@@ -18,7 +18,7 @@ namespace CashTrack.Repositories.MainCategoriesRepository
         private readonly AppDbContext _context;
         public MainCategoriesRepository(AppDbContext dbContext) => (_context) = (dbContext);
 
-        public async Task<bool> Create(MainCategoryEntity entity)
+        public async Task<int> Create(MainCategoryEntity entity)
         {
             var count = await GetCount(x => true);
             if (count >= 25)
@@ -27,7 +27,8 @@ namespace CashTrack.Repositories.MainCategoriesRepository
             try
             {
                 await _context.MainCategories.AddAsync(entity);
-                return await (_context.SaveChangesAsync()) > 0;
+                var success = await _context.SaveChangesAsync();
+                return success > 0 ? entity.Id : throw new Exception();
             }
             catch (Exception)
             {
@@ -94,14 +95,14 @@ namespace CashTrack.Repositories.MainCategoriesRepository
             }
         }
 
-        public async Task<bool> Update(MainCategoryEntity entity)
+        public async Task<int> Update(MainCategoryEntity entity)
         {
             try
             {
                 _context.ChangeTracker.Clear();
                 var contextAttachedEntity = _context.MainCategories.Attach(entity);
                 contextAttachedEntity.State = EntityState.Modified;
-                return await (_context.SaveChangesAsync()) > 0;
+                return await _context.SaveChangesAsync() > 0 ? entity.Id : throw new Exception();
             }
             catch (Exception)
             {

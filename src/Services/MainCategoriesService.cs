@@ -18,7 +18,7 @@ namespace CashTrack.Services.MainCategoriesService
         Task<string> GetMainCategoryNameBySubCategoryIdAsync(int id);
         Task<AddEditMainCategory> CreateMainCategoryAsync(AddEditMainCategory request);
         Task<MainCategoryDropdownSelection[]> GetMainCategoriesForDropdownListAsync();
-        Task<bool> UpdateMainCategoryAsync(AddEditMainCategory request);
+        Task<int> UpdateMainCategoryAsync(AddEditMainCategory request);
         Task<bool> DeleteMainCategoryAsync(int id);
     }
     public class MainCategoriesService : IMainCategoriesService
@@ -41,9 +41,6 @@ namespace CashTrack.Services.MainCategoriesService
                 throw new DuplicateNameException(nameof(MainCategoryEntity), request.Name);
 
             var category = _mapper.Map<MainCategoryEntity>(request);
-
-            if (!await _mainCategoryRepo.Create(category))
-                throw new Exception("Unable to save category to the database");
 
             request.Id = category.Id;
 
@@ -107,7 +104,7 @@ namespace CashTrack.Services.MainCategoriesService
             return mainCategory.Name;
         }
 
-        public async Task<bool> UpdateMainCategoryAsync(AddEditMainCategory request)
+        public async Task<int> UpdateMainCategoryAsync(AddEditMainCategory request)
         {
             var checkId = await _mainCategoryRepo.FindById(request.Id.Value);
             if (checkId == null)

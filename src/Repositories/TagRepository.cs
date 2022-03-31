@@ -21,7 +21,7 @@ public class TagRepository : ITagRepository
         _context = context;
     }
 
-    public Task<bool> Create(TagEntity entity)
+    public Task<int> Create(TagEntity entity)
     {
         throw new NotImplementedException();
     }
@@ -60,7 +60,7 @@ public class TagRepository : ITagRepository
         throw new NotImplementedException();
     }
 
-    public Task<bool> Update(TagEntity entity)
+    public Task<int> Update(TagEntity entity)
     {
         throw new NotImplementedException();
     }

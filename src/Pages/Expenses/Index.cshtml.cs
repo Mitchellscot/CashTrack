@@ -4,7 +4,6 @@ using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.MerchantModels;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.MerchantService;
-using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -22,16 +21,16 @@ namespace CashTrack.Pages.Expenses
             (_expenseService, _merchantService) = (expenseService, merchantService);
 
         [BindProperty(SupportsGet = true)]
-        public string q { get; set; }
+        public string Q { get; set; }
         [BindProperty(SupportsGet = true)]
-        public string q2 { get; set; }
+        public string Q2 { get; set; }
         [BindProperty(SupportsGet = true)]
-        public int query { get; set; }
+        public int Query { get; set; }
         public ExpenseResponse ExpenseResponse { get; set; }
-        public SelectList queryOptions { get; set; }
-        public string inputType { get; set; }
+        public SelectList QueryOptions { get; set; }
+        public string InputType { get; set; }
         [BindProperty(SupportsGet = true)]
-        public int pageNumber { get; set; } = 1;
+        public int PageNumber { get; set; } = 1;
         [TempData]
         public string Message { get; set; }
         [BindProperty]
@@ -136,7 +135,7 @@ namespace CashTrack.Pages.Expenses
                 return Page();
             }
 
-            ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.All, PageNumber = this.pageNumber });
+            ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.All, PageNumber = this.PageNumber });
             return Page();
         }
         public async Task<IActionResult> OnPostDelete(int expenseId, int query, string q, string q2, int pageNumber)
@@ -161,17 +160,13 @@ namespace CashTrack.Pages.Expenses
             {
                 if (Expense.CreateNewMerchant && !string.IsNullOrEmpty(Expense.Merchant))
                 {
-                    var merchantCreationSuccess = await _merchantService.CreateMerchantAsync(new AddEditMerchant() { Name = Expense.Merchant, SuggestOnLookup = true });
+                    var merchantCreationSuccess = await _merchantService.CreateMerchantAsync(new Merchant() { Name = Expense.Merchant, SuggestOnLookup = true });
                 }
 
                 var success = IsEdit ? await _expenseService.CreateExpenseAsync(Expense) : await _expenseService.CreateExpenseAsync(Expense);
-                if (!success)
-                {
-                    ModelState.AddModelError("", IsEdit ? "An error occured while adding the expense." : "An error occured while updating the expense.");
-                    return Page();
-                }
+
                 TempData["Message"] = IsEdit ? "Sucessfully added a new Expense!" : "Sucessfully updated the Expense!";
-                return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
+                return RedirectToPage("./Index", new { query = Query, q = Q, q2 = Q2, pageNumber = PageNumber });
             }
             catch (CategoryNotFoundException)
             {
@@ -186,28 +181,25 @@ namespace CashTrack.Pages.Expenses
         }
         private void PrepareForm(int query)
         {
-            if (ExpenseResponse != null)
-            {
-                pageNumber = ExpenseResponse.PageNumber;
-            }
-            queryOptions = new SelectList(ExpenseQueryOptions.GetAll, "Key", "Value", query);
+            PageNumber = ExpenseResponse != null ? ExpenseResponse.PageNumber : PageNumber == 0 ? 1 : PageNumber;
+            QueryOptions = new SelectList(ExpenseQueryOptions.GetAll, "Key", "Value", query);
 
             switch (query)
             {
                 case 0 or 1:
-                    inputType = "date";
+                    InputType = "date";
                     break;
                 case 2 or 3:
-                    inputType = "month";
+                    InputType = "month";
                     break;
                 case 4 or 5:
-                    inputType = "number";
+                    InputType = "number";
                     break;
                 case 6 or 7 or 8 or 9 or 10:
-                    inputType = "text";
+                    InputType = "text";
                     break;
                 default:
-                    inputType = "date";
+                    InputType = "date";
                     break;
             }
         }

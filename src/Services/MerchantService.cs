@@ -18,10 +18,11 @@ public interface IMerchantService
     Task<MerchantResponse> GetMerchantsAsync(MerchantRequest request);
     Task<string[]> GetMatchingMerchantsAsync(string match);
     Task<MerchantDetail> GetMerchantDetailAsync(int id);
-    Task<bool> CreateMerchantAsync(AddEditMerchant request);
-    Task<bool> UpdateMerchantAsync(AddEditMerchant request);
+    Task<int> CreateMerchantAsync(Merchant request);
+    Task<int> UpdateMerchantAsync(Merchant request);
     Task<bool> DeleteMerchantAsync(int id);
     Task<MerchantEntity> GetMerchantByNameAsync(string name);
+    Task<string[]> GetAllMerchantNames();
 }
 public class MerchantService : IMerchantService
 {
@@ -145,7 +146,7 @@ public class MerchantService : IMerchantService
         return merchantDetail;
     }
 
-    public async Task<bool> CreateMerchantAsync(AddEditMerchant request)
+    public async Task<int> CreateMerchantAsync(Merchant request)
     {
         var merchants = await _merchantRepo.Find(x => x.Name == request.Name);
         if (merchants.Any())
@@ -155,7 +156,7 @@ public class MerchantService : IMerchantService
 
         return await _merchantRepo.Create(merchantEntity);
     }
-    public async Task<bool> UpdateMerchantAsync(AddEditMerchant request)
+    public async Task<int> UpdateMerchantAsync(Merchant request)
     {
         var merchants = await _merchantRepo.Find(x => x.Name == request.Name);
         if (merchants.Any())
@@ -185,6 +186,10 @@ public class MerchantService : IMerchantService
         return merchant;
 
     }
+    public async Task<string[]> GetAllMerchantNames()
+    {
+        return (await _merchantRepo.Find(x => true)).Select(x => x.Name).ToArray();
+    }
 }
 public class MerchantMapperProfile : Profile
 {
@@ -197,7 +202,7 @@ public class MerchantMapperProfile : Profile
             .ForMember(m => m.IsOnline, o => o.MapFrom(src => src.IsOnline))
             .ReverseMap();
 
-        CreateMap<AddEditMerchant, MerchantEntity>()
+        CreateMap<Merchant, MerchantEntity>()
             .ForMember(m => m.Id, o => o.MapFrom(src => src.Id))
             .ForMember(m => m.Name, o => o.MapFrom(src => src.Name))
             .ForMember(m => m.IsOnline, o => o.MapFrom(src => src.IsOnline))

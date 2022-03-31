@@ -134,20 +134,14 @@ namespace CashTrack.Pages.Incomes
             {
                 if (Income.CreateNewSource && !string.IsNullOrEmpty(Income.Source))
                 {
-                    var incomeSourceCreationSuccess = await _sourceService.CreateIncomeSourceAsync(new AddEditIncomeSource() { Name = Income.Source, InUse = true });
+                    var incomeSourceCreationSuccess = await _sourceService.CreateIncomeSourceAsync(new IncomeSource() { Name = Income.Source, InUse = true });
                 }
 
-                var success = IsEdit ? await _incomeService.UpdateIncomeAsync(Income) : await _incomeService.CreateIncomeAsync(Income);
-                if (!success)
-                {
-                    ModelState.AddModelError("", IsEdit ? "An error occured while adding the Income." : "An error occured while updating the Income.");
-                    return Page();
-                }
+                var incomeId = IsEdit ? await _incomeService.UpdateIncomeAsync(Income) : await _incomeService.CreateIncomeAsync(Income);
+
                 if (!IsEdit && Income.IsRefund)
                 {
-                    var id = (await _incomeService.GetIncomeAsync(new IncomeRequest() { DateOptions = DateOptions.All })).ListItems.MaxBy(x => x.Id).Id;
-
-                    return RedirectToPage("./Refund", new { id = id });
+                    return RedirectToPage("./Refund", new { id = incomeId });
                 }
                 TempData["Message"] = IsEdit ? "Sucessfully updated the Income!" : "Sucessfully added new Income!";
                 return RedirectToPage("./Index", new { Query = Query, Q = Q, PageNumber = PageNumber == 0 ? 1 : PageNumber });
@@ -176,12 +170,8 @@ namespace CashTrack.Pages.Incomes
         }
         private void PrepareForm(int query)
         {
-            if (IncomeResponse != null)
-            {
-                PageNumber = IncomeResponse.PageNumber;
-            }
-            else
-                PageNumber = 1;
+            PageNumber = IncomeResponse != null ? IncomeResponse.PageNumber : PageNumber == 0 ? 1 : PageNumber;
+
             QueryOptions = new SelectList(IncomeQueryOptions.GetAll, "Key", "Value", query);
 
             switch (query)

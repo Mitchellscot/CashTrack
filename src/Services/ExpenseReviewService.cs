@@ -11,7 +11,7 @@ public interface IExpenseReviewService
 {
     Task<ExpenseReviewListItem> GetExpenseReviewByIdAsync(int id);
     Task<ExpenseReviewResponse> GetExpenseReviewsAsync(ExpenseReviewRequest request);
-    Task<bool> UpdateExpenseReviewAsync(int id);
+    Task<int> SetExpenseReviewToIgnoreAsync(int id);
 }
 
 public class ExpenseReviewService : IExpenseReviewService
@@ -35,7 +35,7 @@ public class ExpenseReviewService : IExpenseReviewService
         return new ExpenseReviewResponse(request.PageNumber, request.PageSize, count, _mapper.Map<ExpenseReviewListItem[]>(expenses));
     }
 
-    public async Task<bool> UpdateExpenseReviewAsync(int id)
+    public async Task<int> SetExpenseReviewToIgnoreAsync(int id)
     {
         //only sets it to reviewed... nothing else
         //might have bugs here... if so take off change tracker in repo

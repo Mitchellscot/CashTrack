@@ -19,12 +19,13 @@ public class IncomeSourceRepository : IIncomeSourceRepository
 
     public IncomeSourceRepository(AppDbContext ctx) => _ctx = ctx;
 
-    public async Task<bool> Create(IncomeSourceEntity entity)
+    public async Task<int> Create(IncomeSourceEntity entity)
     {
         try
         {
             await _ctx.IncomeSources.AddAsync(entity);
-            return await (_ctx.SaveChangesAsync()) > 0;
+            var success = await _ctx.SaveChangesAsync();
+            return success > 0 ? entity.Id : throw new Exception();
         }
         catch (Exception)
         {
@@ -104,14 +105,14 @@ public class IncomeSourceRepository : IIncomeSourceRepository
         }
     }
 
-    public async Task<bool> Update(IncomeSourceEntity entity)
+    public async Task<int> Update(IncomeSourceEntity entity)
     {
         try
         {
             _ctx.ChangeTracker.Clear();
             var contextAttachedEntity = _ctx.IncomeSources.Attach(entity);
             contextAttachedEntity.State = EntityState.Modified;
-            return await (_ctx.SaveChangesAsync()) > 0;
+            return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception();
         }
         catch (Exception)
         {

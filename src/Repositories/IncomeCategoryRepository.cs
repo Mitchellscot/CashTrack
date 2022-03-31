@@ -20,12 +20,13 @@ public class IncomeCategoryRepository : IIncomeCategoryRepository
 
     public IncomeCategoryRepository(AppDbContext context) => _ctx = context;
 
-    public async Task<bool> Create(IncomeCategoryEntity entity)
+    public async Task<int> Create(IncomeCategoryEntity entity)
     {
         try
         {
             await _ctx.IncomeCategories.AddAsync(entity);
-            return await (_ctx.SaveChangesAsync()) > 0;
+            var success = await _ctx.SaveChangesAsync();
+            return success > 0 ? entity.Id : throw new Exception();
         }
         catch (Exception)
         {
@@ -105,14 +106,14 @@ public class IncomeCategoryRepository : IIncomeCategoryRepository
         }
     }
 
-    public async Task<bool> Update(IncomeCategoryEntity entity)
+    public async Task<int> Update(IncomeCategoryEntity entity)
     {
         try
         {
             _ctx.ChangeTracker.Clear();
             var contextAttachedEntity = _ctx.IncomeCategories.Attach(entity);
             contextAttachedEntity.State = EntityState.Modified;
-            return await (_ctx.SaveChangesAsync()) > 0;
+            return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception();
         }
         catch (Exception)
         {

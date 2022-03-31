@@ -87,26 +87,27 @@ public class ExpenseRepository : IExpenseRepository
             throw;
         }
     }
-    public async Task<bool> Create(ExpenseEntity entity)
+    public async Task<int> Create(ExpenseEntity entity)
     {
         try
         {
             await _ctx.Expenses.AddAsync(entity);
-            return await (_ctx.SaveChangesAsync()) > 0;
+            var success = await _ctx.SaveChangesAsync();
+            return success > 0 ? entity.Id : throw new Exception();
         }
         catch (Exception)
         {
             throw;
         }
     }
-    public async Task<bool> Update(ExpenseEntity entity)
+    public async Task<int> Update(ExpenseEntity entity)
     {
         try
         {
             _ctx.ChangeTracker.Clear();
             var Entity = _ctx.Expenses.Attach(entity);
             Entity.State = EntityState.Modified;
-            return await (_ctx.SaveChangesAsync()) > 0;
+            return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception();
         }
         catch (Exception)
         {

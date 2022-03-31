@@ -10,23 +10,23 @@ public class IncomeSourceResponse : PaginationResponse<IncomeSourceListItem>
 {
     public IncomeSourceResponse(int pageNumber, int pageSize, int totalCount, IncomeSourceListItem[] listItems) : base(pageNumber, pageSize, totalCount, listItems) { }
 }
-public record AddEditIncomeSource
+public record IncomeSource
 {
     public int? Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public bool InUse { get; set; }
 }
+public record AddIncomeSourceModal : IncomeSource
+{ 
+    public string ReturnUrl { get; set; }
+}
 public record IncomeSourceListItem
 {
     public int Id { get; set; }
     public string Name { get; set; }
 }
-public record IncomeSourceDetail
+public record IncomeSourceDetail : IncomeSource
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public bool InUse { get; set; }
     //some other stuff goes here
 }

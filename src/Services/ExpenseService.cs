@@ -2,11 +2,11 @@
 using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.ExpenseModels;
-using CashTrack.Models.IncomeModels;
 using CashTrack.Models.TagModels;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.MerchantRepository;
+using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Services.Common;
 using System;
 using System.Collections.Generic;
@@ -27,21 +27,23 @@ public interface IExpenseService
     Task<ExpenseResponse> GetExpensesByMainCategoryAsync(ExpenseRequest request);
     Task<Expense[]> GetExpensesByDateWithoutPaginationAsync(DateTime request);
     Task<ExpenseRefund> GetExpenseRefundByIdAsync(int id);
-    Task<bool> CreateExpenseAsync(Expense request);
-    Task<bool> CreateExpenseFromSplitAsync(ExpenseSplit request);
-    Task<bool> UpdateExpenseAsync(Expense request);
+    Task<int> CreateExpenseAsync(Expense request);
+    Task<int> CreateExpenseFromSplitAsync(ExpenseSplit request);
+    Task<int> UpdateExpenseAsync(Expense request);
     Task<bool> DeleteExpenseAsync(int id);
     Task<bool> RefundExpensesAsync(List<ExpenseRefund> refunds, int incomeId);
 }
 public class ExpenseService : IExpenseService
 {
+    private readonly ISubCategoryRepository _subCategoryRepo;
     private readonly IIncomeRepository _incomeRepo;
     private readonly IExpenseRepository _expenseRepo;
     private readonly IMerchantRepository _merchantRepo;
     private readonly IMapper _mapper;
 
-    public ExpenseService(IExpenseRepository expenseRepository, IIncomeRepository incomeRepository, IMerchantRepository merchantRepository, IMapper mapper)
+    public ExpenseService(IExpenseRepository expenseRepository, IIncomeRepository incomeRepository, IMerchantRepository merchantRepository, IMapper mapper, ISubCategoryRepository subCategoryRepository)
     {
+        _subCategoryRepo = subCategoryRepository;
         _incomeRepo = incomeRepository;
         _expenseRepo = expenseRepository;
         _merchantRepo = merchantRepository;
@@ -101,8 +103,15 @@ public class ExpenseService : IExpenseService
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
         return new ExpenseResponse(request.PageNumber, request.PageSize, count, _mapper.Map<Expense[]>(expenses), amount);
     }
-    public async Task<bool> CreateExpenseAsync(Expense request)
+    public async Task<int> CreateExpenseAsync(Expense request)
     {
+        var merchantId = 0;
+        if (request.Merchant != null)
+            merchantId = (await _merchantRepo.Find(x => x.Name == request.Merchant)).FirstOrDefault().Id;
+
+        if (!string.IsNullOrEmpty(request.SubCategory))
+            request.SubCategoryId = (await _subCategoryRepo.Find(x => x.Name == request.SubCategory)).FirstOrDefault().Id;
+
         var expenseEntity = new ExpenseEntity()
         {
             Amount = request.Amount,
@@ -110,13 +119,13 @@ public class ExpenseService : IExpenseService
             CategoryId = request.SubCategoryId,
             ExcludeFromStatistics = request.ExcludeFromStatistics,
             Notes = request.Notes,
-            MerchantId = string.IsNullOrEmpty(request.Merchant) ? null : (await _merchantRepo.Find(x => x.Name == request.Merchant)).FirstOrDefault().Id
+            MerchantId = merchantId > 0 ? merchantId : null,
             //add expense_tags in the future
         };
 
         return await _expenseRepo.Create(expenseEntity);
     }
-    public async Task<bool> CreateExpenseFromSplitAsync(ExpenseSplit request)
+    public async Task<int> CreateExpenseFromSplitAsync(ExpenseSplit request)
     {
         var expenseEntity = new ExpenseEntity()
         {
@@ -133,7 +142,7 @@ public class ExpenseService : IExpenseService
         return await _expenseRepo.Create(expenseEntity);
     }
 
-    public async Task<bool> UpdateExpenseAsync(Expense request)
+    public async Task<int> UpdateExpenseAsync(Expense request)
     {
         if (request.Id == null)
             throw new ArgumentException("Need an id to update an expense");
