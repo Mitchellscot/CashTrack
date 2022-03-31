@@ -1,7 +1,5 @@
-using CashTrack.Common.Exceptions;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.ExpenseReviewModels;
-using CashTrack.Models.MerchantModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Services.ExpenseReviewService;
 using CashTrack.Services.ExpenseService;
@@ -9,16 +7,14 @@ using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.PowerShell;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Threading.Tasks;
 
-namespace CashTrack.Pages.Review
+namespace CashTrack.Pages.Import
 {
     public class ExpensesModel : PageModel
     {
@@ -71,7 +67,7 @@ namespace CashTrack.Pages.Review
                 var result = await ps.InvokeAsync().ConfigureAwait(false);
             }
             await PrepareData();
-            return LocalRedirect("~/Review/Expenses");
+            return LocalRedirect("~/Import/Expenses");
         }
         public async Task<IActionResult> OnPostExpenseAdd()
         {

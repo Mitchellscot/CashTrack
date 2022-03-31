@@ -1,11 +1,11 @@
 ﻿@page
 @using CashTrack.Models.IncomeSourceModels
 @using CashTrack.Pages.Shared
-@model CashTrack.Pages.Review.IncomeModel
+@model CashTrack.Pages.Import.IncomeModel
 @{
     Layout = "_Layout";
 }
-<div class="container-fluid">
+<div class="container-fluid mb-0">
     @if (Model.Message != null)
     {
         <div style="position: relative;">
@@ -43,6 +43,9 @@
             </div>
         </div>
     }
+    <form method="post" asp-page-handler="RunScript">
+        <div style="position: absolute; right: 4%; top: 8%; z-index:1;"><button class="btn btn-primary" type="submit" id="importButton">Import</button></div>
+    </form>
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a asp-page="./Expenses" class="nav-link">Expenses</a>
@@ -59,22 +62,16 @@
                 <li class="text-center">
                     <button class="dropdown-item fakelink text-center" id="addCategory">Add Category</button>
                 </li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <form method="post" asp-page-handler="RunScript">
-                        <button type="submit" class="dropdown-item fakelink">Import Transactions</button>
-                    </form>
-                </li>
             </ul>
         </li>
     </ul>
     <div class="modal fade" id="addSourceModal">
-        @await Html.PartialAsync("_AddIncomeSourcePartial", new AddIncomeSourceModal() { ReturnUrl = "~/Review/Income", InUse = true })
+        @await Html.PartialAsync("_AddIncomeSourcePartial", new AddIncomeSourceModal() { ReturnUrl = "~/Import/Income", InUse = true })
     </div>
 
     @if (Model.IncomeReviewResponse != null && Model.IncomeReviewResponse.ListItems.Count() > 0)
     {
-        <div class="row">
+        <div class="row mb-0">
             <div class="table-responsive table-sm">
                 <table class="table table-bordered table-hover table-sm mb-0 mt-3">
                     <thead>
@@ -214,7 +211,7 @@
                     </tbody>
                 </table>
                 <div class="row my-1">
-                    <div class="col-sm-6 col-lg-2 col-xl-2 m-auto">
+                    <div class="col-sm-6 col-lg-2 col-xl-2 mx-auto">
                         @if (@Model.IncomeReviewResponse.TotalCount > 0)
                         {
                             var currentCount = Model.IncomeReviewResponse.PageNumber * @Model.IncomeReviewResponse.PageSize;
@@ -227,7 +224,7 @@
                     <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
                         @await Html.PartialAsync("_PaginationPartial",
                     new _PaginationPartialModel {
-                    PathLink = "../Review/Income",
+                    PathLink = "../Import/Income",
                     IsExpensePage = false,
                     PageNumber = Model.IncomeReviewResponse.PageNumber,
                     TotalPages = Model.IncomeReviewResponse.TotalPages,
@@ -259,6 +256,10 @@
     }
 
     $(document).ready(() => {
+        //creates a waiting affect while import script runs
+        $('#importButton').click(()=>{
+            $("html").css("cursor", "progress");
+        });
 
         @if(@Model.IncomeReviewResponse != null && Model.IncomeReviewResponse.ListItems.Any())
         {
