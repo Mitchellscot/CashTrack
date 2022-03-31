@@ -53,7 +53,7 @@ public class UserRepository : IUserRepository
         }
         throw new NotImplementedException();
     }
-    public Task<bool> Create(UserEntity entity)
+    public Task<int> Create(UserEntity entity)
     {
         //using userManager to create
         throw new NotImplementedException();
@@ -68,7 +68,7 @@ public class UserRepository : IUserRepository
         //not paginating users
         throw new NotImplementedException();
     }
-    public Task<bool> Update(UserEntity entity)
+    public Task<int> Update(UserEntity entity)
     {
         //using userManager to update
         throw new NotImplementedException();

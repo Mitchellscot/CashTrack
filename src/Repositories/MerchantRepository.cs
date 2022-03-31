@@ -64,26 +64,27 @@ public class MerchantRepository : IMerchantRepository
             throw;
         }
     }
-    public async Task<bool> Create(MerchantEntity entity)
+    public async Task<int> Create(MerchantEntity entity)
     {
         try
         {
             await _context.Merchants.AddAsync(entity);
-            return await (_context.SaveChangesAsync()) > 0;
+            var success = await _context.SaveChangesAsync();
+            return success > 0 ? entity.Id : throw new Exception();
         }
         catch (Exception)
         {
             throw;
         }
     }
-    public async Task<bool> Update(MerchantEntity entity)
+    public async Task<int> Update(MerchantEntity entity)
     {
         try
         {
             _context.ChangeTracker.Clear();
             var contextAttachedEntity = _context.Merchants.Attach(entity);
             contextAttachedEntity.State = EntityState.Modified;
-            return await (_context.SaveChangesAsync()) > 0;
+            return await _context.SaveChangesAsync() > 0 ? entity.Id : throw new Exception();
         }
         catch (Exception)
         {
