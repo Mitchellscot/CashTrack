@@ -1,11 +1,11 @@
 ﻿@page
 @using CashTrack.Models.MerchantModels
 @using CashTrack.Pages.Shared
-@model CashTrack.Pages.Review.ExpensesModel
+@model CashTrack.Pages.Import.ExpensesModel
 @{
     Layout = "_Layout";
 }
-<div class="container-fluid">
+<div class="container-fluid mb-0">
         @if (Model.Message != null)
     {
         <div style="position: relative;">
@@ -43,6 +43,9 @@
                 </div>
             </div>
     }
+    <form method="post" asp-page-handler="RunScript">
+        <div style="position: absolute; right: 4%; top: 8%; z-index:1;"><button class="btn btn-primary" type="submit" id="importButton">Import</button></div>
+    </form>
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a asp-page="./Expenses" class="nav-link active">Expenses</a>
@@ -59,18 +62,12 @@
                   <li class="text-center">
                       <button class="dropdown-item fakelink text-center" id="addSubCategory">Add Category</button>
                       </li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li>
-                      <form method="post" asp-page-handler="RunScript">
-                      <button type="submit" class="dropdown-item fakelink">Import Transactions</button>
-                              </form>
-                              </li>
               </ul>
               </li>
               </ul>
 
               <div class="modal fade" id="addMerchantModal">
-                  @await Html.PartialAsync("_AddMerchantPartial", new AddMerchantModal() { Returnurl = "~/Review/Expenses", SuggestOnLookup = true })
+                  @await Html.PartialAsync("_AddMerchantPartial", new AddMerchantModal() { Returnurl = "~/Import/Expenses", SuggestOnLookup = true })
                   </div>
 
     @if(Model.ExpenseReviewResponse != null && Model.ExpenseReviewResponse.ListItems.Count() > 0)
@@ -214,7 +211,7 @@
                 </tbody>
             </table>
             <div class="row my-1">
-                <div class="col-sm-6 col-lg-2 col-xl-2 m-auto">
+                <div class="col-sm-6 col-lg-2 col-xl-2 mx-auto">
                     @if (@Model.ExpenseReviewResponse.TotalCount > 0)
                     {
                         var currentCount = Model.ExpenseReviewResponse.PageNumber * @Model.ExpenseReviewResponse.PageSize;
@@ -227,7 +224,7 @@
                 <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
                     @await Html.PartialAsync("_PaginationPartial",
                     new _PaginationPartialModel {
-                    PathLink = "../Review/Expenses",
+                    PathLink = "../Import/Expenses",
                     IsExpensePage = false,
                     PageNumber = Model.ExpenseReviewResponse.PageNumber,
                     TotalPages = Model.ExpenseReviewResponse.TotalPages,
@@ -271,6 +268,11 @@
                 $("#addMerchantCity").prop("disabled", false);
                 $("#addMerchantState").prop("disabled", false);
             }});
+
+        //creates a waiting affect while import script runs
+        $('#importButton').click(()=>{
+            $("html").css("cursor", "progress");
+        });
 
         @if(@Model.ExpenseReviewResponse != null && Model.ExpenseReviewResponse.ListItems.Any())
         {

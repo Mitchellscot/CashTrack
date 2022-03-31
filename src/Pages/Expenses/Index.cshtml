@@ -52,10 +52,11 @@
                 <a asp-page="./Index" asp-route-query="14" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary" style="height: 38px; overflow: hidden;">30 Days</a>
             </div>
         </div>
-        <div class="col-4 col-xl-1">
+        <div class="col-3 col-xl-1 d-none d-sm-block">
             <span style="color: red;" asp-validation-for="@Model.Q"></span>
         </div>
-        <div class="col-xl-2 col-2 d-flex justify-content-end">
+        <div class="col-xs-12 col-xl-2 col-3 d-flex justify-content-md-between justify-content-xs-between me-xl-0">
+            <a type="button" asp-page="../Import/Expenses" class="btn btn-outline-primary text-wrap" style="height: 38px;" id="importLink">Import</a>
             <button class="btn btn-primary text-wrap" style="height: 38px;" data-bs-toggle="modal" data-bs-target="#addExpenseModal" id="addExpenseButton">Add Expense</button>
         </div>
     </div>
@@ -278,7 +279,7 @@
                                         </div>
                                         @*End Detail Modal*@
                                     }
-                                    else if(string.IsNullOrEmpty(expense.Notes) && !string.IsNullOrEmpty(expense.RefundNotes))
+                                    else if (string.IsNullOrEmpty(expense.Notes) && !string.IsNullOrEmpty(expense.RefundNotes))
                                     {
                                         <button style="background: none; padding: 0px; border: none;"
                                     type="button" data-bs-toggle="modal" disabled
@@ -310,14 +311,14 @@
                                         @*End Refund Notes Modal*@
                                     }
                                     else
-                                    {    
+                                    {
                                         <button style="background: none; padding: 0px; border: none;"
                                     type="button" data-bs-toggle="modal" disabled
                                     data-bs-target="#detailModal-@expense.Id" class="pe-2 ps-0 ms-0">
                                             <i class="bi bi-file-earmark-check text-white" role="img"
                                    style="font-size: 1.25rem; visibility: hidden;"></i>
                                         </button>
-                                    
+
                                     }
                                     <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
                                     data-bs-target="#editExpenseModal-@expense.Id" id="editExpenseButton-@expense.Id" class="px-2">

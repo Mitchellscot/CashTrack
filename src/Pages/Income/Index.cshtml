@@ -74,10 +74,11 @@
                 <a asp-page="./Index" asp-route-Query="11" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary" style="height: 38px; overflow: hidden;">30 Days</a>
             </div>
         </div>
-        <div class="col-4 col-xl-1">
+        <div class="col-3 col-xl-1 d-none d-sm-block">
             <span style="color: red;" asp-validation-for="@Model.Q"></span>
         </div>
-        <div class="col-xl-2 col-2 d-flex justify-content-end">
+        <div class="col-xs-12 col-xl-2 col-3 d-flex justify-content-md-between justify-content-xs-between me-xl-0">
+            <a type="button" asp-page="../Import/Expenses" class="btn btn-outline-primary text-wrap" style="height: 38px;" id="importLink">Import</a>
             <button class="btn btn-primary text-wrap" style="height: 38px;" data-bs-toggle="modal" data-bs-target="#addIncomeModal" id="addIncomeButton">Add Income</button>
         </div>
     </div>
