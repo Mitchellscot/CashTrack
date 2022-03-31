@@ -181,10 +181,7 @@ namespace CashTrack.Pages.Expenses
         }
         private void PrepareForm(int query)
         {
-            if (ExpenseResponse != null)
-            {
-                PageNumber = ExpenseResponse.PageNumber;
-            }
+            PageNumber = ExpenseResponse != null ? ExpenseResponse.PageNumber : PageNumber == 0 ? 1 : PageNumber;
             QueryOptions = new SelectList(ExpenseQueryOptions.GetAll, "Key", "Value", query);
 
             switch (query)

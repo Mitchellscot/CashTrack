@@ -132,7 +132,7 @@
                                                 asp-for=@Model.Income.Category
                                                 class="form-control text-center"
                                                 id="addIncomeCategory">
-                                            <option value="" selected disabled hidden>Select</option>
+                                            <option value="" selected disabled hidden></option>
                                         </select>
                                     </div>
                                 </div>
@@ -262,7 +262,7 @@
                                         </button>
                                         @*Begin Detail Modal*@
                                         <div class="modal fade" id="detailModal-@income.Id">
-                                            <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header text-center">
                                                         <h5 class="modal-title w-100">Notes</h5>
@@ -715,7 +715,7 @@
                 $("#addIncomeCategory").empty();
                 $("#addIncomeCategory").append(`<option value="" selected disabled hidden>Select</option>`);
                 for (let category of response) {
-                    $("#addIncomeCategory").append(`<option value=${category.id}>${category.category}</option>`);
+                    $("#addIncomeCategory").append(`<option value=${category.category}>${category.category}</option>`);
                 }});
         });
 
@@ -748,7 +748,7 @@
                     $("#addIncomeCategory").empty();
                     $("#addIncomeCategory").append(`<option value="" selected disabled hidden>Select</option>`);
                     for (let category of response) {
-                        $("#addIncomeCategory").append(`<option value=${category.id}>${category.category}</option>`);
+                        $("#addIncomeCategory").append(`<option value=${category.category}>${category.category}</option>`);
                     }});
             }
         });
@@ -774,10 +774,10 @@
                         for (let category of response) {
                             if(category.category === "@id.Value")
                             {
-                                $("#editIncomeCategory-@id.Key").append(`<option selected value=${category.id}>${category.category}</option>`);
+                                $("#editIncomeCategory-@id.Key").append(`<option selected value=${category.category}>${category.category}</option>`);
                             }
                             else{
-                                $("#editIncomeCategory-@id.Key").append(`<option value=${category.id}>${category.category}</option>`);
+                                $("#editIncomeCategory-@id.Key").append(`<option value=${category.category}>${category.category}</option>`);
                             }
                         }});
                         });
@@ -819,7 +819,7 @@
                             $("#editIncomeCategory-@id.Key").empty();
                             $("#editIncomeCategory-@id.Key").append(`<option value="" selected disabled hidden>Select</option>`);
                             for (let category of response) {
-                                $("#editIncomeCategory-@id.Key").append(`<option value=${category.id}>${category.category}</option>`);
+                                $("#editIncomeCategory-@id.Key").append(`<option value=${category.category}>${category.category}</option>`);
                             }});
                             }});
                 </text>

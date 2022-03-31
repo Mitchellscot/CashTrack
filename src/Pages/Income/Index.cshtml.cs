@@ -170,10 +170,7 @@ namespace CashTrack.Pages.Incomes
         }
         private void PrepareForm(int query)
         {
-            if (IncomeResponse != null)
-            {
-                PageNumber = IncomeResponse.PageNumber;
-            }
+            PageNumber = IncomeResponse != null ? IncomeResponse.PageNumber : PageNumber == 0 ? 1 : PageNumber;
 
             QueryOptions = new SelectList(IncomeQueryOptions.GetAll, "Key", "Value", query);
 

@@ -3,6 +3,7 @@ using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.IncomeModels;
+using CashTrack.Repositories.IncomeCategoryRepository;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.IncomeSourceRepository;
 using CashTrack.Services.Common;
@@ -30,8 +31,9 @@ public class IncomeService : IIncomeService
     private readonly IMapper _mapper;
     private readonly IIncomeRepository _incomeRespository;
     private readonly IIncomeSourceRepository _sourceRepository;
+    private readonly IIncomeCategoryRepository _categoryRepository;
 
-    public IncomeService(IIncomeRepository incomeRepository, IIncomeSourceRepository sourceRepository, IMapper mapper) => (_incomeRespository, _sourceRepository, _mapper) = (incomeRepository, sourceRepository, mapper);
+    public IncomeService(IIncomeRepository incomeRepository, IIncomeSourceRepository sourceRepository, IMapper mapper, IIncomeCategoryRepository incomeCategoryRepository) => (_incomeRespository, _sourceRepository, _mapper, _categoryRepository) = (incomeRepository, sourceRepository, mapper, incomeCategoryRepository);
 
     public async Task<bool> DeleteIncomeAsync(int id)
     {
@@ -91,17 +93,26 @@ public class IncomeService : IIncomeService
     }
     public async Task<int> CreateIncomeAsync(Income request)
     {
-        if (request.Id != null)
-            throw new ArgumentException("Request must not contain an id in order to create an income.");
+        if(request.Category == "Refund")
+            request.IsRefund = true;
+
+        var sourceId = 0;
+        if (request.Source != null)
+            sourceId = (await _sourceRepository.Find(x => x.Name == request.Source)).FirstOrDefault().Id;
+
+        var categoryId = 0;
+        if (!string.IsNullOrEmpty(request.Category))
+            categoryId = (await _categoryRepository.Find(x => x.Name == request.Category)).FirstOrDefault().Id;
 
         var incomeEntity = new IncomeEntity()
         {
             Amount = request.Amount,
             Date = request.Date,
             Notes = request.Notes,
-            SourceId = string.IsNullOrEmpty(request.Source) ? null : (await _sourceRepository.Find(x => x.Name == request.Source)).FirstOrDefault().Id,
-            CategoryId = int.Parse(request.Category), //comes in as a string integer (dropdown list)
-            IsRefund = request.IsRefund
+            SourceId = sourceId > 0 ? sourceId : null,
+            CategoryId = categoryId,
+            IsRefund = request.IsRefund,
+            RefundNotes = request.RefundNotes
         };
 
         return await _incomeRespository.Create(incomeEntity);
@@ -114,21 +125,20 @@ public class IncomeService : IIncomeService
         if (string.IsNullOrEmpty(request.Category))
             throw new CategoryNotFoundException("null");
 
-        var currentIncome = await _incomeRespository.Find(x => x.Id == request.Id.Value);
-        if (currentIncome == null)
-            throw new IncomeNotFoundException(request.Id.Value.ToString());
+        var currentIncome = await _incomeRespository.FindById(request.Id.Value);
+        var categoryId = (await _categoryRepository.Find(x => x.Name == request.Category)).FirstOrDefault().Id;
 
-        var incomeEntity = new IncomeEntity()
-        {
-            Id = request.Id.Value,
-            Amount = request.Amount,
-            Date = request.Date,
-            Notes = request.Notes,
-            SourceId = string.IsNullOrEmpty(request.Source) ? null : (await _sourceRepository.Find(x => x.Name == request.Source)).FirstOrDefault().Id,
-            CategoryId = int.Parse(request.Category), //comes in as a string integer (dropdown list)
-            IsRefund = request.IsRefund
-        };
-        return await _incomeRespository.Update(incomeEntity);
+        currentIncome.Amount = request.Amount;
+        currentIncome.Date = request.Date;
+        currentIncome.Notes = request.Notes;
+        currentIncome.IsRefund = request.IsRefund;
+        currentIncome.RefundNotes = request.RefundNotes;
+        currentIncome.CategoryId = categoryId;
+
+        if (request.Source != null)
+            currentIncome.SourceId = (await _sourceRepository.Find(x => x.Name == request.Source)).FirstOrDefault().Id;
+
+        return await _incomeRespository.Update(currentIncome);
     }
 }
 

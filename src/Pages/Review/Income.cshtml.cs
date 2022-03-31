@@ -48,7 +48,7 @@ namespace CashTrack.Pages.Review
             await PrepareData();
             return Page();
         }
-        public async Task<IActionResult> OnPostIncomeAdd()
+        public async Task<IActionResult> OnPostAddIncome()
         {
             if (string.IsNullOrEmpty(SelectedIncome.Category))
             {
@@ -61,9 +61,10 @@ namespace CashTrack.Pages.Review
                 await PrepareData();
                 return Page();
             }
+            var incomeId = 0;
             try
             {
-                var incomeId = await _incomeService.CreateIncomeAsync(SelectedIncome);
+                incomeId = await _incomeService.CreateIncomeAsync(SelectedIncome);
                 var incomeReviewId = await _incomeReviewService.SetIncomeReviewToIgnoreAsync(SelectedIncomeId);
             }
             catch (Exception ex)
@@ -72,6 +73,9 @@ namespace CashTrack.Pages.Review
                 await PrepareData();
                 return Page();
             }
+            if (IsRefund || SelectedIncome.Category == "Refund")
+                return RedirectToPage("../Income/Refund", new { id = incomeId });
+
             TempData["Message"] = "Sucessfully Added New Income!";
             return LocalRedirect("~/Review/Income");
         }

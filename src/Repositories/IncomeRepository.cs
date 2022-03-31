@@ -148,9 +148,7 @@ public class IncomeRepository : IIncomeRepository
     {
         try
         {
-            _ctx.ChangeTracker.Clear();
-            var Entity = _ctx.Incomes.Attach(entity);
-            Entity.State = EntityState.Modified;
+
             return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception();
         }
         catch (Exception)
