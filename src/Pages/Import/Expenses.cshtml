@@ -271,7 +271,11 @@
 
         //creates a waiting affect while import script runs
         $('#importButton').click(()=>{
-            $("html").css("cursor", "progress");
+            $("#importButton").prepend("<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> ");
+            $("#importButton").append("ing...");
+            $("#importButton").css('pointer-events', 'none');
+            $("#importButton").removeClass('btn-primary');
+            $("#importButton").addClass('btn-secondary');
         });
 
         @if(@Model.ExpenseReviewResponse != null && Model.ExpenseReviewResponse.ListItems.Any())
