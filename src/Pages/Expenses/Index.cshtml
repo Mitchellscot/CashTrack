@@ -9,16 +9,8 @@
 <div class="container-fluid">
     @if (Model.Message != null)
     {
-        <div style="position: relative;">
-            <div class="toast fade show mt-3 bg-success" role="alert" id="toast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
-                <div class="toast-body d-flex justify-content-between align-items-center">
-                    <i class="bi bi-hand-thumbs-up text-white mx-3" role="img"
-                   style="font-size: 1.5rem;"></i>
-                    @Model.Message
-                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-                </div>
-            </div>
-        </div>
+        @await Html.PartialAsync("_MessagePartial", Model.Message)
+        ;
     }
     <div class="row mb-1">
         <div class="col-xl-6 col-12 mb-1 mr-auto">
