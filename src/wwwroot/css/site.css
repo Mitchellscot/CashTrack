@@ -64,7 +64,10 @@ html, body {
     font-weight: 300;
     font-size: calc(100% + .5vw + .5vh);
     user-select: none;
+}
 
+div.nav-sub-link:hover * {
+    color: #18bc9c !important;
 }
 
 .logo {
@@ -74,6 +77,9 @@ html, body {
     text-transform: uppercase;
     text-decoration: none;
     overflow: hidden;
+}
+.orderIcon:hover * {
+    color: #18bc9c !important;
 }
 
 .sidebar-heading {
@@ -127,9 +133,16 @@ ul.ui-autocomplete {
     cursor: pointer;
 }
 
-.fakelink:hover {
-   text-decoration: none;
+    .fakelink:hover {
+        text-decoration: none;
+    }
+
+.iconButton {
+    background: none;
+    padding: 0px;
+    border: none;
 }
+
 /* all of this is from layout.cshtml.css and I think it was boilerplate ASP.NET stuff so it might be safe to delete later. */
 /*a.navbar-brand {
     white-space: normal;

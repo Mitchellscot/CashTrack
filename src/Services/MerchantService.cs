@@ -11,6 +11,8 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using CashTrack.Models.Common;
 
 namespace CashTrack.Services.MerchantService;
 public interface IMerchantService
@@ -41,25 +43,62 @@ public class MerchantService : IMerchantService
 
     public async Task<MerchantResponse> GetMerchantsAsync(MerchantRequest request)
     {
-        Expression<Func<MerchantEntity, bool>> allMerchants = (MerchantEntity m) => true;
-        Expression<Func<MerchantEntity, bool>> merchantSearch = (MerchantEntity m) => m.Name.ToLower().Contains(request.Query.ToLower());
+        var merchantListItems = await ParseMerchantQuery(request);
 
-        var predicate = request.Query == null ? allMerchants : merchantSearch;
+        var count = await _merchantRepo.GetCount(x => true);
 
-        var merchantEntities = await _merchantRepo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
-
-        var count = await _merchantRepo.GetCount(predicate);
-
-        var merchantViewModels = merchantEntities.Select(m => new MerchantListItem
+        return new MerchantResponse(request.PageNumber, request.PageSize, count, merchantListItems);
+    }
+    private async Task<List<MerchantListItem>> ParseMerchantQuery(MerchantRequest request)
+    {
+        var merchantViewModels = new List<MerchantListItem>();
+        switch (request.Order)
         {
-            Id = m.Id,
-            Name = m.Name,
-            City = m.City,
-            IsOnline = m.IsOnline,
-            NumberOfExpenses = _expenseRepo.GetCount(x => x.MerchantId == m.Id).Result
-        }).ToArray();
+            case MerchantOrder.Name:
+                var merchantsByName = await _merchantRepo.FindWithPaginationReversable(x => true, request.PageNumber, request.PageSize, request.Reversed);
+                foreach (var entity in merchantsByName)
+                {
+                    var location = entity.IsOnline ? "Online" : entity.City != null && entity.State != null ? $"{entity.City}, {entity.State}"
+                        : entity.City == "Multiple" ? "Multiple:" : null;
+                    var totalSpent = await _expenseRepo.GetAmountOfExpensesByMerchantId(entity.Id);
 
-        return new MerchantResponse(request.PageNumber, request.PageSize, count, merchantViewModels);
+                    var merchant = new MerchantListItem
+                    {
+                        Id = entity.Id,
+                        Name = entity.Name,
+                        Location = location,
+                        NumberOfExpenses = await _expenseRepo.GetCount(x => x.MerchantId == entity.Id),
+                        TotalSpent = totalSpent,
+                        LastPurchase = DateTime.Now,
+                        Category = "Unknown"
+                    };
+                    merchantViewModels.Add(merchant);
+                }
+                break;
+            case MerchantOrder.Location:
+                var merchantsByLocation = await _merchantRepo.FindWithPaginationReversable(x => true, request.PageNumber, request.PageSize, request.Reversed);
+                foreach (var entity in merchantsByLocation)
+                {
+                    var location = entity.IsOnline ? "Online" : entity.City != null && entity.State != null ? $"{entity.City}, {entity.State}"
+                        : entity.City == "Multiple" ? "Multiple:" : null;
+                    var totalSpent = await _expenseRepo.GetAmountOfExpensesByMerchantId(entity.Id);
+
+                    var merchant = new MerchantListItem
+                    {
+                        Id = entity.Id,
+                        Name = entity.Name,
+                        Location = location,
+                        NumberOfExpenses = await _expenseRepo.GetCount(x => x.MerchantId == entity.Id),
+                        TotalSpent = totalSpent,
+                        LastPurchase = DateTime.Now,
+                        Category = "Unknown"
+                    };
+                    merchantViewModels.Add(merchant);
+                }
+                break;
+
+        }
+        return merchantViewModels;
     }
 
     public async Task<MerchantDetail> GetMerchantDetailAsync(int id)
@@ -195,12 +234,6 @@ public class MerchantMapperProfile : Profile
 {
     public MerchantMapperProfile()
     {
-        CreateMap<MerchantEntity, MerchantListItem>()
-            .ForMember(m => m.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(m => m.Name, o => o.MapFrom(src => src.Name))
-            .ForMember(m => m.City, o => o.MapFrom(src => src.City))
-            .ForMember(m => m.IsOnline, o => o.MapFrom(src => src.IsOnline))
-            .ReverseMap();
 
         CreateMap<Merchant, MerchantEntity>()
             .ForMember(m => m.Id, o => o.MapFrom(src => src.Id))

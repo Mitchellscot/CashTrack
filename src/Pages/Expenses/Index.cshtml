@@ -44,7 +44,7 @@
                     </select>
                     <input id="qInput" data-val="true" asp-for="@Model.Q" type="Model.inputType" class="form-control w-50 text-center">
                     <input id="q2Input" style="display: none;" data-val="true" asp-for=@Model.Q2 type="date" class="form-control">
-                    <button class="btn btn-secondary" type="submit" asp-route-pageNumber="1">
+                    <button class="btn btn-secondary rounded-end" type="submit" asp-route-pageNumber="1">
                         <i class="bi bi-search text-white mx-3" role="img"
                            style="font-size: 1rem;"></i>
                     </button>
@@ -223,9 +223,8 @@
                                 <td>
                                     @if (!string.IsNullOrEmpty(expense.RefundNotes) && !string.IsNullOrEmpty(expense.Notes))
                                     {
-                                        <button style="background: none; padding: 0px; border: none;"
-                                    type="button" data-bs-toggle="modal"
-                                    data-bs-target="#refundNotes-@expense.Id" class="pe-2 ps-0 ms-0">
+                                        <button type="button" data-bs-toggle="modal"
+                                    data-bs-target="#refundNotes-@expense.Id" class="iconButton pe-2 ps-0 ms-0">
                                             <i class="bi bi-bootstrap-reboot text-primary" role="img"
                                    style="font-size: 1.25rem;"></i>
                                         </button>
@@ -248,18 +247,16 @@
                                     }
                                     else if (string.IsNullOrEmpty(expense.RefundNotes))
                                     {
-                                        <button style="background: none; padding: 0px; border: none;"
-                                    type="button" data-bs-toggle="modal" disabled
-                                    data-bs-target="#detailModal-@expense.Id" class="pe-2 ps-0 ms-0">
+                                        <button type="button" data-bs-toggle="modal" disabled
+                                    data-bs-target="#detailModal-@expense.Id" class="iconButton pe-2 ps-0 ms-0">
                                             <i class="bi bi-file-earmark-check text-white" role="img"
                                    style="font-size: 1.25rem; visibility: hidden;"></i>
                                         </button>
                                     }
                                     @if (!string.IsNullOrEmpty(expense.Notes))
                                     {
-                                        <button style="background: none; padding: 0px; border: none;"
-                                    type="button" data-bs-toggle="modal"
-                                    data-bs-target="#detailModal-@expense.Id" class="pe-2 ps-0 ms-0">
+                                        <button type="button" data-bs-toggle="modal"
+                                    data-bs-target="#detailModal-@expense.Id" class="iconButton pe-2 ps-0 ms-0">
                                             <i class="bi bi-file-earmark-check text-primary" role="img"
                                    style="font-size: 1.25rem;"></i>
                                         </button>
@@ -282,15 +279,13 @@
                                     }
                                     else if (string.IsNullOrEmpty(expense.Notes) && !string.IsNullOrEmpty(expense.RefundNotes))
                                     {
-                                        <button style="background: none; padding: 0px; border: none;"
-                                    type="button" data-bs-toggle="modal" disabled
-                                    data-bs-target="#detailModal-@expense.Id" class="pe-2 ps-0 ms-0">
+                                        <button type="button" data-bs-toggle="modal" disabled
+                                    data-bs-target="#detailModal-@expense.Id" class="iconButton pe-2 ps-0 ms-0">
                                             <i class="bi bi-file-earmark-check text-white" role="img"
                                    style="font-size: 1.25rem; visibility: hidden;"></i>
                                         </button>
-                                        <button style="background: none; padding: 0px; border: none;"
-                                    type="button" data-bs-toggle="modal"
-                                    data-bs-target="#refundNotes-@expense.Id" class="pe-2 ps-0 ms-0">
+                                        <button type="button" data-bs-toggle="modal"
+                                    data-bs-target="#refundNotes-@expense.Id" class="iconButton pe-2 ps-0 ms-0">
                                             <i class="bi bi-bootstrap-reboot text-primary" role="img"
                                    style="font-size: 1.25rem;"></i>
                                         </button>
@@ -313,16 +308,14 @@
                                     }
                                     else
                                     {
-                                        <button style="background: none; padding: 0px; border: none;"
-                                    type="button" data-bs-toggle="modal" disabled
-                                    data-bs-target="#detailModal-@expense.Id" class="pe-2 ps-0 ms-0">
+                                        <button type="button" data-bs-toggle="modal" disabled
+                                    data-bs-target="#detailModal-@expense.Id" class="iconButton pe-2 ps-0 ms-0">
                                             <i class="bi bi-file-earmark-check text-white" role="img"
                                    style="font-size: 1.25rem; visibility: hidden;"></i>
                                         </button>
 
                                     }
-                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
-                                    data-bs-target="#editExpenseModal-@expense.Id" id="editExpenseButton-@expense.Id" class="px-2">
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#editExpenseModal-@expense.Id" id="editExpenseButton-@expense.Id" class="iconButton px-2">
                                         <i class="bi bi-pencil text-primary" role="img"
                                    style="font-size: 1.25rem;"></i>
                                     </button>
@@ -456,8 +449,8 @@
                                     </div>
                                     @*End Edit Expense Modal*@
 
-                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal-@expense.Id" class="ps-2 ps-0 me-0">
+                                    <button type="button" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal-@expense.Id" class="iconButton ps-2 ps-0 me-0">
                                         <i class="bi bi-trash text-primary" role="img"
                                    style="font-size: 1.25rem;"></i>
                                     </button>
