@@ -25,5 +25,4 @@ namespace CashTrack.Models.Common
             ListItems = listItems;
         }
     }
-
 }

@@ -1,4 +1,5 @@
 ﻿@page
+@using CashTrack.Models.MerchantModels
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Merchants.IndexModel
 @{
@@ -23,7 +24,146 @@
     new _MessagePartial() {MessageType = MessageType.Danger })
         ;
     }
-
+    <div class="row mb-1">
+        <div class="col-4">
+            <form method="get">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">Search</div>
+                    </div>
+                    <input id="QueryInput" data-val="true" asp-for="@Model.SearchTerm" type="text" class="form-control">
+                    <button class="btn btn-secondary rounded-end" type="submit" asp-route-pageNumber="1">
+                        <i class="bi bi-search text-white mx-3" role="img"
+                           style="font-size: 1rem;"></i>
+                    </button>
+                    <input type="hidden" asp-for="@Model.PageNumber" value="1" />
+                </div>
+            </form>
+        </div>
+        <div class="col-4">
+            <span style="color: red;" asp-validation-for="@Model.SearchTerm"></span>
+        </div>
+        <div class="col-4">
+            <button class="btn btn-primary float-end" id="addMerchantButton" data-bs-toggle="modal" data-bs-target="#addMerchantModal">Add Merchant</button>
+            <div class="modal fade" id="addMerchantModal">
+                @await Html.PartialAsync("_AddMerchantPartial", new AddMerchantModal() { Returnurl = "~/Merchants/Index", SuggestOnLookup = true })
+            </div>
+        </div>
+    </div>
+    @if (Model.MerchantResponse != null && Model.MerchantResponse.ListItems.Count() > 0)
+    {
+        <div class="row mt-2">
+            <div class="table-responsive table-sm">
+                <table class="table table-bordered table-sm table-hover mb-0">
+                    <thead>
+                        <tr class="text-center table-primary">
+                            <th>
+                                Name
+                                <a asp-page="./Index" asp-route-Query="0" asp-route-Q2="true" class="iconButton float-end orderIcon">
+                                    <i class="bi bi-arrow-up text-white" style="font-size: 1rem;"></i>
+                                </a>
+                                <a asp-page="./Index" asp-route-Query="0" asp-route-Q2="false" class="iconButton float-end orderIcon">
+                                    <i class="bi bi-arrow-down text-white" style="font-size: 1rem;"></i>
+                                </a>
+                            </th>
+                            <th>
+                                Location
+                                <a asp-page="./Index" asp-route-Query="1" asp-route-Q2="true" class="iconButton float-end orderIcon">
+                                    <i class="bi bi-arrow-up text-white" style="font-size: 1rem;"></i>
+                                </a>
+                                <a asp-page="./Index" asp-route-Query="1" asp-route-Q2="false" class="iconButton float-end orderIcon">
+                                    <i class="bi bi-arrow-down text-white" style="font-size: 1rem;"></i>
+                                </a>
+                            </th>
+                            <th>
+                                Purchases
+                                <a asp-page="./Index" asp-route-Query="2" asp-route-Q2="true" class="iconButton float-end orderIcon">
+                                    <i class="bi bi-arrow-up text-white" style="font-size: 1rem;"></i>
+                                </a>
+                                <a asp-page="./Index" asp-route-Query="2" asp-route-Q2="false" class="iconButton float-end orderIcon">
+                                    <i class="bi bi-arrow-down text-white" style="font-size: 1rem;"></i>
+                                </a>
+                            </th>
+                            <th>
+                                Amount
+                                <a asp-page="./Index" asp-route-Query="3" asp-route-Q2="true" class="iconButton float-end orderIcon">
+                                    <i class="bi bi-arrow-up text-white" style="font-size: 1rem;"></i>
+                                </a>
+                                <a asp-page="./Index" asp-route-Query="3" asp-route-Q2="false" class="iconButton float-end orderIcon">
+                                    <i class="bi bi-arrow-down text-white" style="font-size: 1rem;"></i>
+                                </a>
+                            </th>
+                            <th>
+                                Last Purchase
+                                <a asp-page="./Index" asp-route-Query="4" asp-route-Q2="true" class="iconButton float-end orderIcon">
+                                    <i class="bi bi-arrow-up text-white" style="font-size: 1rem;"></i>
+                                </a>
+                                <a asp-page="./Index" asp-route-Query="4" asp-route-Q2="false" class="iconButton float-end orderIcon">
+                                    <i class="bi bi-arrow-down text-white" style="font-size: 1rem;"></i>
+                                </a>
+                            </th>
+                            <th>
+                                Category
+                                <a asp-page="./Index" asp-route-Query="5" asp-route-Q2="true" class="iconButton float-end orderIcon">
+                                    <i class="bi bi-arrow-up text-white" style="font-size: 1rem;"></i>
+                                </a>
+                                <a asp-page="./Index" asp-route-Query="5" asp-route-Q2="false" class="iconButton float-end orderIcon">
+                                    <i class="bi bi-arrow-down text-white" style="font-size: 1rem;"></i>
+                                </a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.MerchantResponse.ListItems)
+                        {
+                            <tr class="text-center">
+                                <td>
+                                    @item.Name
+                                </td>
+                                <td>
+                                    @item.Location
+                                </td>
+                                <td>
+                                    @item.NumberOfExpenses
+                                </td>
+                                <td>
+                                    @item.TotalSpent
+                                </td>
+                                <td>
+                                    @item.LastPurchase.Date.ToShortDateString()
+                                </td>
+                                <td>
+                                    @item.Category
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="row my-1">
+                    <div class="col-sm-6 col-lg-2 col-xl-2 m-auto">
+                        @if (@Model.MerchantResponse.TotalCount > 0)
+                        {
+                            var currentCount = Model.MerchantResponse.PageNumber * @Model.MerchantResponse.PageSize;
+                            <span class="text-muted">@(Math.Min(currentCount, Model.MerchantResponse.TotalCount)) of @Model.MerchantResponse.TotalCount</span>
+                        }
+                    </div>
+                    <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
+                    </div>
+                    <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
+                        @await Html.PartialAsync("_PaginationPartial",
+                    new _PaginationPartialModel {
+                    PathLink = "../Merchants/Index",
+                    IsExpensePage = false,
+                    PageNumber = Model.MerchantResponse.PageNumber,
+                    TotalPages = Model.MerchantResponse.TotalPages,
+                    Query = (int)Model.Query,
+                    q2 = Model.Q2.ToString()
+                    })
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>
 @section Scripts {
 <script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true">
@@ -47,141 +187,18 @@
         {
             @:$("#danger-toast").show().delay(4000).fadeOut();
         }
-        //get query values for dropdown lists
-        let q = getQueryValue();
-        let queryType = getQueryType();
-        //fires on load
-        let selectListValue = $("#querySelect").val();
-        handleQuerySelectChange(selectListValue);
 
-        //GET REQUEST METHODS
-        //When the query selection option changes, change the input type box
-        $("#querySelect").change(() => {
-            let selectListValue = $("#querySelect").val();
-            handleQuerySelectChange(selectListValue);
+        //show a dropdown list of matching merchant names
+        $("#QueryInput").on("input", () => {
+            let searchTerm = $("#QueryInput").val();
+            $.ajax({
+                url: `/api/merchants?merchantName=${searchTerm}`,
+                method: 'GET'
+            }).then((response) => {
+                $("#QueryInput").empty();
+                $("#QueryInput").autocomplete({ source: response });
+            }).catch((error) => console.log(error));
         });
-        //massive switch statement handling qet requests
-        function handleQuerySelectChange(selectListValue) {
-            switch (selectListValue) {
-                //date
-                case "0":
-                    resetCategorySelect();
-                    resetNumbersForm();
-                    $("#qInput").prop("type", "date");
-                    break;
-                //month
-                case "1":
-                    resetCategorySelect();
-                    resetNumbersForm();
-                    $("#qInput").prop("type", "month");
-                    break;
-                //quarter
-                case "2":
-                    resetCategorySelect();
-                    resetNumbersForm();
-                    $("#qInput").prop("type", "month");
-                    break;
-                //year
-                case "3":
-                    resetCategorySelect();
-                    $("#qInput").prop("type", "number");
-                    $("#qInput").prop('min', "2012");
-                    let currentYear = new Date().getFullYear();
-                    $("#qInput").prop('max', currentYear);
-                    if(q !== undefined && queryType === "4"){
-                        console.log(q)
-                        $("#qInput").val(q);
-                    }
-                    else{
-                        $("#qInput").val(parseInt(new Date().getFullYear()));
-                    }
-                    break;
-                //amount
-                case "4":
-                    resetCategorySelect();
-                    $("#qInput").val('');
-                    $("#qInput").prop("type", "number");
-                    $("#qInput").prop('step', "any");
-                    $("#qInput").prop('min', "0.00");
-                    if(q !== undefined && queryType === "5"){
-                        $("#qInput").val(q);
-                    }
-                    break;
-                //notes
-                case "5":
-                    resetCategorySelect();
-                    resetNumbersForm();
-                    $("#qInput").prop("type", "text");
-                    if(q !== undefined && queryType === "6"){
-                        $("#qInput").val(q);
-                    }
-                    break;
-                //source
-                case "6":
-                    resetCategorySelect();
-                    resetNumbersForm();
-                    $("#qInput").prop("type", "text");
-                    break;
-                //category
-                case "7":
-                    resetNumbersForm();
-                    $("#qInput").hide();
-                    $("#categorySelect").show();
-                    $.ajax({
-                        url: `/api/incomecategory`,
-                        method: 'GET'
-                    }).then((response) => {
-                        $("#categorySelect").empty();
-                        for (let category of response) {
-                            if(q !== undefined && queryType == "8")
-                            {
-                                if(Number(category.id) === Number(q))
-                                {
-                                    $("#categorySelect").append(`<option selected value=${category.id}>${category.category}</option>`);
-                                }
-                                else
-                                {
-                                    $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
-                                }
-                            }
-                            else{
-                                $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
-                            }
-                        }
-                    }).catch((error) => alert(error));
-                    break;
-                default:
-                    resetNumbersForm();
-                    resetCategorySelect();
-                    $("#qInput").prop("type", "date");
-                    break;
-            }
-        }
-        //if it's a query of the amount, make it a nice loking decimal
-        $('#qInput').change(() => {
-            let selectListValue = $("#querySelect").val();
-            if (selectListValue == "4") {
-                let amount = $("#qInput").val();
-                let rounded = Math.round(amount * 100) / 100;
-                let finalNumber = rounded.toFixed(2);
-                $("#qInput").val(finalNumber);
-            }
-        });
-        //if it's a query of the income source, show a dropdown list of matching income source names
-        $("#qInput").on("input", () => {
-            let selectListValue = $("#querySelect").val();
-            if (selectListValue === "6") {
-                let searchTerm = $("#qInput").val();
-                $.ajax({
-                    url: `/api/incomesource?sourceName=${searchTerm}`,
-                    method: 'GET'
-                }).then((response) => {
-                    $("#qInput").empty();
-                    $("#qInput").autocomplete({ source: response });
-                }).catch((error) => console.log(error));
-            }
-        });
-
     });
 </script>
     }

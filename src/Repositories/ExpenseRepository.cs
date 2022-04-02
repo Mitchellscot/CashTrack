@@ -16,6 +16,7 @@ public interface IExpenseRepository : IRepository<ExpenseEntity>
 {
     Task<decimal> GetAmountOfExpenses(Expression<Func<ExpenseEntity, bool>> predicate);
     Task<ExpenseEntity[]> GetExpensesAndCategories(Expression<Func<ExpenseEntity, bool>> predicate);
+    Task<decimal> GetAmountOfExpensesByMerchantId(int id);
     Task<bool> UpdateMany(List<ExpenseEntity> entities);
 }
 public class ExpenseRepository : IExpenseRepository
@@ -174,6 +175,20 @@ public class ExpenseRepository : IExpenseRepository
             return await _ctx.Expenses
             .Where(predicate)
             .CountAsync();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+    public async Task<decimal> GetAmountOfExpensesByMerchantId(int id)
+    {
+        try
+        {
+            var amount = (decimal)await _ctx.Expenses
+            .Where(x => x.MerchantId == id)
+            .SumAsync(x => x.Amount);
+            return Decimal.Round(amount, 2);
         }
         catch (Exception)
         {
