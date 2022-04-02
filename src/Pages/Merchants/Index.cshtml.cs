@@ -12,18 +12,20 @@ namespace CashTrack.Pages.Merchants
 
         private readonly IMerchantService _merchantService;
         public IndexModel(IMerchantService merchantService) => _merchantService = merchantService;
-        [BindProperty]
         [TempData]
-        public string Message { get; set; }
+        public string InfoMessage { get; set; }
+        [TempData]
+        public string SuccessMessage { get; set; }
         public AddMerchantModal MerchantModal { get; set; }
-        public void OnGet()
+        public async Task<IActionResult> OnGet()
         {
+            return Page();
         }
         public async Task<IActionResult> OnPostAddMerchantModal()
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Error adding merchant. Please try again");
+                ModelState.AddModelError("", "Error adding Merchant. Please try again");
                 return LocalRedirect(MerchantModal.Returnurl);
             }
             try
@@ -44,7 +46,7 @@ namespace CashTrack.Pages.Merchants
                 return LocalRedirect(MerchantModal.Returnurl);
             }
 
-            TempData["Message"] = "Successfully added a new Merchant!";
+            TempData["SuccessMessage"] = "Successfully added a new Merchant!";
             return LocalRedirect(MerchantModal.Returnurl);
         }
     }

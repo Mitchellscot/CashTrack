@@ -7,11 +7,30 @@
 }
 
 <div class="container-fluid">
-    @if (Model.Message != null)
+    @if (Model.InfoMessage != null)
     {
-        @await Html.PartialAsync("_MessagePartial", Model.Message)
+        @await Html.PartialAsync("_MessagePartial",
+        new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info })
         ;
     }
+    @if (Model.SuccessMessage != null)
+    {
+        @await Html.PartialAsync("_MessagePartial",
+        new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success })
+        ;
+    }
+    @if (!ViewData.ModelState.IsValid)
+    {
+        @await Html.PartialAsync("_MessagePartial",
+        new _MessagePartial() {MessageType = MessageType.Danger });
+    }
+    @if (Model.ExpenseResponse != null && Model.ExpenseResponse.TotalCount == 0)
+    {
+        @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = "No Expenses Found!", MessageType = MessageType.Info })
+        ;
+    }
+
     <div class="row mb-1">
         <div class="col-xl-6 col-12 mb-1 mr-auto">
             <form method="get">
@@ -150,18 +169,8 @@
         </div>
     </div>
     @*End Add Expense Modal*@
-    @if (!ViewData.ModelState.IsValid)
-    {
-        <div style="position: relative;">
-            <div class="toast fade show mt-3 bg-danger" role="alert" id="modelStateToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
-                <div class="toast-body d-flex align-items-center" asp-validation-summary="All">
-                    <i class="bi bi-x-circle text-white mx-3" role="img"
-                   style="font-size: 1.5rem;"></i>
-                </div>
-            </div>
-        </div>
-    }
-    else if (Model.ExpenseResponse != null && Model.ExpenseResponse.TotalCount > 0)
+
+@if (Model.ExpenseResponse != null && Model.ExpenseResponse.TotalCount > 0)
     {
         <div class="row">
             <div class="table-responsive">
@@ -521,18 +530,6 @@
             </div>
         </div>
     }
-    else
-    {
-        <div style="position: relative;">
-            <div class="toast fade show mt-3 bg-info" role="alert" id="noExpensesToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
-                <div class="toast-body  d-flex justify-content-between align-items-center">
-                    <i class="bi bi-exclamation-circle text-white mx-3" role="img"
-                   style="font-size: 1.5rem;"></i>
-                    <span style="font-size: 1.25rem;">No Expenses Found!</span><button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-                </div>
-            </div>
-        </div>
-    }
 </div>
 
 @section Scripts {
@@ -544,18 +541,22 @@
 
     $(document).ready(() => {
 
-        //super easy toast notification
-        @if(Model.Message != null)
+        //toast notification
+        @if(Model.InfoMessage != null)
         {
-            @:$("#toast").show().delay(2000).fadeOut();
+            @:$("#info-toast").show().delay(2000).fadeOut();
+        }
+        @if(Model.SuccessMessage != null)
+        {
+            @:$("#success-toast").show().delay(2000).fadeOut();
         }
         @if(Model.ExpenseResponse == null || Model.ExpenseResponse.TotalCount == 0)
         {
-            @:$("#noExpensesToast").show().delay(2000).fadeOut();
+            @:$("#info-toast").show().delay(2000).fadeOut();
         }
         @if(!ModelState.IsValid)
         {
-            @:$("#modelStateToast").show().delay(4000).fadeOut();
+            @:$("#danger-toast").show().delay(4000).fadeOut();
         }
         //get query values for dropdown lists
         let q = getQueryValue();

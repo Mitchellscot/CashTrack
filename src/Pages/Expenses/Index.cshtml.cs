@@ -32,7 +32,9 @@ namespace CashTrack.Pages.Expenses
         [BindProperty(SupportsGet = true)]
         public int PageNumber { get; set; } = 1;
         [TempData]
-        public string Message { get; set; }
+        public string InfoMessage { get; set; }
+        [TempData]
+        public string SuccessMessage { get; set; }
         [BindProperty]
         public Expense Expense { get; set; }
 
@@ -146,7 +148,7 @@ namespace CashTrack.Pages.Expenses
                 ModelState.AddModelError("", "Unable to delete the expense");
                 return Page();
             }
-            TempData["Message"] = "Sucessfully deleted expense!";
+            TempData["SuccessMessage"] = "Sucessfully deleted expense!";
             return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
         }
         public async Task<IActionResult> OnPostAddEdit()
@@ -165,7 +167,7 @@ namespace CashTrack.Pages.Expenses
 
                 var success = IsEdit ? await _expenseService.CreateExpenseAsync(Expense) : await _expenseService.CreateExpenseAsync(Expense);
 
-                TempData["Message"] = IsEdit ? "Sucessfully added a new Expense!" : "Sucessfully updated the Expense!";
+                TempData["SuccessMessage"] = IsEdit ? "Sucessfully added a new Expense!" : "Sucessfully updated the Expense!";
                 return RedirectToPage("./Index", new { query = Query, q = Q, q2 = Q2, pageNumber = PageNumber });
             }
             catch (CategoryNotFoundException)
