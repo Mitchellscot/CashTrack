@@ -25,7 +25,7 @@ namespace CashTrack.Pages.Merchants
         public int PageNumber { get; set; } = 1;
         public MerchantResponse MerchantResponse { get; set; }
         [BindProperty(SupportsGet = true)]
-        public MerchantOrder Query { get; set; }
+        public MerchantOrderBy Query { get; set; }
         [BindProperty(SupportsGet = true)]
         public bool Q2 { get; set; }
 

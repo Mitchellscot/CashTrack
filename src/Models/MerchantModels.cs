@@ -10,7 +10,7 @@ namespace CashTrack.Models.MerchantModels;
 public class MerchantRequest : PaginationRequest
 {
     public bool Reversed { get; set; }
-    public MerchantOrder Order { get; set; }
+    public MerchantOrderBy Order { get; set; }
 }
 public class MerchantResponse : PaginationResponse<MerchantListItem>
 {

@@ -1,6 +1,6 @@
 namespace CashTrack.Models.Common
 {
-    public enum MerchantOrder
+    public enum MerchantOrderBy
     {
         Name,
         Location,

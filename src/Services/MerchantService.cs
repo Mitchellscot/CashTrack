@@ -54,7 +54,7 @@ public class MerchantService : IMerchantService
         var merchantViewModels = new List<MerchantListItem>();
         switch (request.Order)
         {
-            case MerchantOrder.Name:
+            case MerchantOrderBy.Name:
                 var merchantsByName = await _merchantRepo.FindWithPaginationReversable(x => true, request.PageNumber, request.PageSize, request.Reversed);
                 foreach (var entity in merchantsByName)
                 {
@@ -75,7 +75,8 @@ public class MerchantService : IMerchantService
                     merchantViewModels.Add(merchant);
                 }
                 break;
-            case MerchantOrder.Location:
+            case MerchantOrderBy.Location:
+                //TODO:
                 var merchantsByLocation = await _merchantRepo.FindWithPaginationReversable(x => true, request.PageNumber, request.PageSize, request.Reversed);
                 foreach (var entity in merchantsByLocation)
                 {
