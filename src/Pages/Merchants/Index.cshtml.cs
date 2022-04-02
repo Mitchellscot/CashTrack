@@ -9,9 +9,12 @@ namespace CashTrack.Pages.Merchants
 {
     public class IndexModel : PageModel
     {
+
         private readonly IMerchantService _merchantService;
         public IndexModel(IMerchantService merchantService) => _merchantService = merchantService;
         [BindProperty]
+        [TempData]
+        public string Message { get; set; }
         public AddMerchantModal MerchantModal { get; set; }
         public void OnGet()
         {

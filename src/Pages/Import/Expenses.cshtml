@@ -6,18 +6,10 @@
     Layout = "_Layout";
 }
 <div class="container-fluid mb-0">
-        @if (Model.Message != null)
+    @if (Model.Message != null)
     {
-        <div style="position: relative;">
-            <div class="toast fade show bg-success" role="alert" id="toast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
-                <div class="toast-body d-flex justify-content-between align-items-center">
-                    <i class="bi bi-hand-thumbs-up text-white mx-3" role="img"
-                   style="font-size: 1.5rem;"></i>
-                    @Model.Message
-                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-                </div>
-            </div>
-        </div>
+        @await Html.PartialAsync("_MessagePartial", Model.Message)
+        ;
     }
         @if (!ViewData.ModelState.IsValid)
     {
@@ -269,9 +261,9 @@
                 $("#addMerchantState").prop("disabled", false);
             }});
 
-        //creates a waiting affect while import script runs
+        //creates a waiting effect while import script runs
         $('#importButton').click(()=>{
-            $("#importButton").prepend("<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> ");
+            $("#importButton").prepend("<span class='spinner-border spinner-border-sm'></span> ");
             $("#importButton").append("ing...");
             $("#importButton").css('pointer-events', 'none');
             $("#importButton").removeClass('btn-primary');

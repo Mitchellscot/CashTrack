@@ -1,5 +1,168 @@
 ﻿@page
 @model CashTrack.Pages.Merchants.IndexModel
 @{
-
+    Layout = "_Layout";
 }
+<div class="container-fluid">
+    @if (Model.Message != null)
+    {
+        @await Html.PartialAsync("_MessagePartial", Model.Message)
+        ;
+    }
+</div>
+@section Scripts {
+<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true">
+</script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
+<partial name="_ValidationScriptsPartial" />
+<script type="text/javascript">
+
+    $(document).ready(() => {
+
+        //super easy toast notification
+        @if(Model.Message != null)
+        {
+            @:$("#toast").show().delay(2000).fadeOut();
+        }
+        @if(!ModelState.IsValid)
+        {
+            @:$("#modelStateToast").show().delay(4000).fadeOut();
+        }
+        //get query values for dropdown lists
+        let q = getQueryValue();
+        let queryType = getQueryType();
+        //fires on load
+        let selectListValue = $("#querySelect").val();
+        handleQuerySelectChange(selectListValue);
+
+        //GET REQUEST METHODS
+        //When the query selection option changes, change the input type box
+        $("#querySelect").change(() => {
+            let selectListValue = $("#querySelect").val();
+            handleQuerySelectChange(selectListValue);
+        });
+        //massive switch statement handling qet requests
+        function handleQuerySelectChange(selectListValue) {
+            switch (selectListValue) {
+                //date
+                case "0":
+                    resetCategorySelect();
+                    resetNumbersForm();
+                    $("#qInput").prop("type", "date");
+                    break;
+                //month
+                case "1":
+                    resetCategorySelect();
+                    resetNumbersForm();
+                    $("#qInput").prop("type", "month");
+                    break;
+                //quarter
+                case "2":
+                    resetCategorySelect();
+                    resetNumbersForm();
+                    $("#qInput").prop("type", "month");
+                    break;
+                //year
+                case "3":
+                    resetCategorySelect();
+                    $("#qInput").prop("type", "number");
+                    $("#qInput").prop('min', "2012");
+                    let currentYear = new Date().getFullYear();
+                    $("#qInput").prop('max', currentYear);
+                    if(q !== undefined && queryType === "4"){
+                        console.log(q)
+                        $("#qInput").val(q);
+                    }
+                    else{
+                        $("#qInput").val(parseInt(new Date().getFullYear()));
+                    }
+                    break;
+                //amount
+                case "4":
+                    resetCategorySelect();
+                    $("#qInput").val('');
+                    $("#qInput").prop("type", "number");
+                    $("#qInput").prop('step', "any");
+                    $("#qInput").prop('min', "0.00");
+                    if(q !== undefined && queryType === "5"){
+                        $("#qInput").val(q);
+                    }
+                    break;
+                //notes
+                case "5":
+                    resetCategorySelect();
+                    resetNumbersForm();
+                    $("#qInput").prop("type", "text");
+                    if(q !== undefined && queryType === "6"){
+                        $("#qInput").val(q);
+                    }
+                    break;
+                //source
+                case "6":
+                    resetCategorySelect();
+                    resetNumbersForm();
+                    $("#qInput").prop("type", "text");
+                    break;
+                //category
+                case "7":
+                    resetNumbersForm();
+                    $("#qInput").hide();
+                    $("#categorySelect").show();
+                    $.ajax({
+                        url: `/api/incomecategory`,
+                        method: 'GET'
+                    }).then((response) => {
+                        $("#categorySelect").empty();
+                        for (let category of response) {
+                            if(q !== undefined && queryType == "8")
+                            {
+                                if(Number(category.id) === Number(q))
+                                {
+                                    $("#categorySelect").append(`<option selected value=${category.id}>${category.category}</option>`);
+                                }
+                                else
+                                {
+                                    $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
+                                }
+                            }
+                            else{
+                                $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
+                            }
+                        }
+                    }).catch((error) => alert(error));
+                    break;
+                default:
+                    resetNumbersForm();
+                    resetCategorySelect();
+                    $("#qInput").prop("type", "date");
+                    break;
+            }
+        }
+        //if it's a query of the amount, make it a nice loking decimal
+        $('#qInput').change(() => {
+            let selectListValue = $("#querySelect").val();
+            if (selectListValue == "4") {
+                let amount = $("#qInput").val();
+                let rounded = Math.round(amount * 100) / 100;
+                let finalNumber = rounded.toFixed(2);
+                $("#qInput").val(finalNumber);
+            }
+        });
+        //if it's a query of the income source, show a dropdown list of matching income source names
+        $("#qInput").on("input", () => {
+            let selectListValue = $("#querySelect").val();
+            if (selectListValue === "6") {
+                let searchTerm = $("#qInput").val();
+                $.ajax({
+                    url: `/api/incomesource?sourceName=${searchTerm}`,
+                    method: 'GET'
+                }).then((response) => {
+                    $("#qInput").empty();
+                    $("#qInput").autocomplete({ source: response });
+                }).catch((error) => console.log(error));
+            }
+        });
+
+    });
+</script>
+    }
