@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CashTrack.Pages.Shared
 {
-    public class _PaginationPartialModel : PageModel
+    public class _PaginationPartialModel
     {
         public string PathLink { get; set; }
         public int PageNumber { get; set; }

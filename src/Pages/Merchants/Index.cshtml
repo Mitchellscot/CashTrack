@@ -1,14 +1,29 @@
 ﻿@page
+@using CashTrack.Pages.Shared
 @model CashTrack.Pages.Merchants.IndexModel
 @{
     Layout = "_Layout";
 }
 <div class="container-fluid">
-    @if (Model.Message != null)
+    @if (Model.InfoMessage != null)
     {
-        @await Html.PartialAsync("_MessagePartial", Model.Message)
+        @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info })
         ;
     }
+    @if (Model.SuccessMessage != null)
+    {
+        @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success })
+        ;
+    }
+    @if (!ViewData.ModelState.IsValid)
+    {
+        @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger })
+        ;
+    }
+
 </div>
 @section Scripts {
 <script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true">
@@ -19,14 +34,18 @@
 
     $(document).ready(() => {
 
-        //super easy toast notification
-        @if(Model.Message != null)
+        //toast notification
+        @if(Model.InfoMessage != null)
         {
-            @:$("#toast").show().delay(2000).fadeOut();
+            @:$("#info-toast").show().delay(2000).fadeOut();
+        }
+        @if(Model.SuccessMessage != null)
+        {
+            @:$("#success-toast").show().delay(2000).fadeOut();
         }
         @if(!ModelState.IsValid)
         {
-            @:$("#modelStateToast").show().delay(4000).fadeOut();
+            @:$("#danger-toast").show().delay(4000).fadeOut();
         }
         //get query values for dropdown lists
         let q = getQueryValue();

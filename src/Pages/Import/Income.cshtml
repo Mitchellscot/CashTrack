@@ -6,34 +6,21 @@
     Layout = "_Layout";
 }
 <div class="container-fluid mb-0">
-    @if (Model.Message != null)
+    @if (Model.SuccessMessage != null)
     {
-        @await Html.PartialAsync("_MessagePartial", Model.Message)
+        @await Html.PartialAsync("_MessagePartial", new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success });
+        ;
+    }
+    @if (Model.InfoMessage != null)
+    {
+        @await Html.PartialAsync("_MessagePartial", new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info });
         ;
     }
     @if (!ViewData.ModelState.IsValid)
     {
-        <div style="position: relative;">
-            <div class="toast fade show bg-danger" role="alert" id="modelStateToast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
-                <div class="toast-body d-flex align-items-center" asp-validation-summary="All">
-                    <i class="bi bi-x-circle text-white mx-3" role="img"
-                   style="font-size: 1.5rem;"></i>
-                </div>
-            </div>
-        </div>
-    }
-    @if (Model.ScriptResults != null)
-    {
-        <div style="position: relative;">
-            <div class="toast fade show mt-3 bg-info" role="alert" id="scriptResultsToast" style="position: absolute; right: 0; top: 0; z-index:1200;">
-                <div class="toast-body d-flex justify-content-between align-items-center">
-                    <i class="bi bi-hand-thumbs-up text-white mx-3" role="img"
-                   style="font-size: 1.5rem;"></i>
-                    @Model.ScriptResults
-                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-                </div>
-            </div>
-        </div>
+        @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger })
+        ;
     }
     <form method="post" asp-page-handler="RunScript">
         <div style="position: absolute; right: 4%; top: 8%; z-index:1;"><button class="btn btn-primary" type="submit" id="importButton">Import</button></div>
@@ -234,20 +221,21 @@
 <partial name="_ValidationScriptsPartial" />
 <script type="text/javascript">
 
-    @if(Model.ScriptResults != null)
-    {
-        @:$("#scriptResultsToast").show().delay(4000).fadeOut();
-    }
-    @if(!ModelState.IsValid)
-    {
-        @:$("#modelStateToast").show().delay(4000).fadeOut();
-    }
-    @if(Model.Message != null)
-    {
-        @:$("#toast").show().delay(2000).fadeOut();
-    }
-
     $(document).ready(() => {
+        //toast notification
+        @if(Model.InfoMessage != null)
+        {
+            @:$("#info-toast").show().delay(2000).fadeOut();
+        }
+        @if(Model.SuccessMessage != null)
+        {
+            @:$("#success-toast").show().delay(2000).fadeOut();
+        }
+        @if(!ModelState.IsValid)
+        {
+            @:$("#danger-toast").show().delay(4000).fadeOut();
+        }
+        
         //creates a waiting effect while import script runs
         $('#importButton').click(()=>{
             $("#importButton").prepend("<span class='spinner-border spinner-border-sm'></span> ");

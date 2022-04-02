@@ -1,12 +1,46 @@
-﻿@model string
-
+﻿@model CashTrack.Pages.Shared._MessagePartial
+@{
+    var cssClass = Model.MessageType switch
+    {
+        MessageType.Info => "bg-info",
+        MessageType.Success => "bg-success",
+        MessageType.Danger => "bg-danger",
+        _ => "bg-info"
+    };
+    var id = Model.MessageType switch
+    {
+        MessageType.Info => "info-toast",
+        MessageType.Success => "success-toast",
+        MessageType.Danger => "danger-toast",
+        _ => "info-toast"
+    };
+    var icon = Model.MessageType switch
+    {
+        MessageType.Info => "bi-info-circle",
+        MessageType.Success => "bi-hand-thumbs-up",
+        MessageType.Danger => "bi-exclamation-circle",
+        _ => "info-circle"
+    };
+}
 <div style="position: relative;">
-    <div class="toast fade show mt-3 bg-info" role="alert" id="toast" style="position: absolute; right: 40%; top: 0; z-index:1200;">
-        <div class="toast-body d-flex justify-content-between align-items-center">
-            <i class="bi bi-hand-thumbs-up text-white mx-3" role="img"
+    <div class="toast fade show mt-3 @cssClass bg-gradient" role="alert" id="@id" style="position: absolute; right: 40%; top: 0; z-index:1200;">
+        @if (Model.MessageType == MessageType.Danger)
+        {
+            <div class="toast-body d-flex justify-content-between align-items-center text-center">
+                <i class="bi @icon text-white mx-3" role="img"
                style="font-size: 1.5rem;"></i>
-            @Model
-            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-        </div>
+                <div asp-validation-summary="All"></div>
+                <button type="button" class="btn-lg btn-close btn-close-white mx-3" data-bs-dismiss="toast"></button>
+            </div>
+        }
+        else
+        {
+            <div class="toast-body d-flex justify-content-between align-items-center text-center" >
+                <i class="bi @icon text-white mx-3" role="img"
+               style="font-size: 1.5rem;"></i>
+                @Model.Message
+                <button type="button" class="btn-lg btn-close btn-close-white mx-3" data-bs-dismiss="toast"></button>
+            </div>
+        }
     </div>
 </div>

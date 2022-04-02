@@ -31,7 +31,9 @@ namespace CashTrack.Pages.Import
             _expenseReviewService = expenseReviewService;
         }
         [TempData]
-        public string ScriptResults { get; set; }
+        public string InfoMessage { get; set; }
+        [TempData]
+        public string SuccessMessage { get; set; }
         [TempData]
         public string Message { get; set; }
         public ExpenseReviewResponse ExpenseReviewResponse { get; set; }
@@ -61,7 +63,9 @@ namespace CashTrack.Pages.Import
                 {
                     var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
                     var currentStreamRecord = streamObjectsReceived[e.Index];
-                    ScriptResults += $"{currentStreamRecord.MessageData.ToString()} ";
+                    var scriptMessage = currentStreamRecord.MessageData.ToString().Contains("Added") ? SuccessMessage += $"{currentStreamRecord.MessageData.ToString()}. " :
+                    InfoMessage += $"{currentStreamRecord.MessageData.ToString()}. ";
+
                 };
                 ps.Commands.AddScript(@". C:\Users\Mitch\Code\CashTrack\ct-data\Scripts\Run-Transactions.ps1");
                 var result = await ps.InvokeAsync().ConfigureAwait(false);
@@ -95,8 +99,8 @@ namespace CashTrack.Pages.Import
                 await PrepareData();
                 return Page();
             }
-            TempData["Message"] = "Sucessfully Added A New Expense!";
-            return LocalRedirect("~/Review/Expenses");
+            TempData["SuccessMessage"] = "Sucessfully Added A New Expense!";
+            return LocalRedirect("~/Import/Expenses");
         }
         public async Task<IActionResult> OnPostRemoveExpense()
         {
@@ -109,8 +113,8 @@ namespace CashTrack.Pages.Import
                 ModelState.AddModelError("", ex.Message);
                 return Page();
             }
-            TempData["Message"] = "Successfully Removed the Expense!";
-            return LocalRedirect("~/Review/Expenses");
+            TempData["SuccessMessage"] = "Successfully Removed the Expense!";
+            return LocalRedirect("~/Import/Expenses");
         }
         public async Task<IActionResult> OnPostSplitExpense()
         {

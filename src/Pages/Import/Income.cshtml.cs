@@ -30,9 +30,9 @@ namespace CashTrack.Pages.Import
         }
 
         [TempData]
-        public string ScriptResults { get; set; }
+        public string InfoMessage { get; set; }
         [TempData]
-        public string Message { get; set; }
+        public string SuccessMessage { get; set; }
         public IncomeReviewResponse IncomeReviewResponse { get; set; }
         [BindProperty]
         public int PageNumber { get; set; } = 1;
@@ -76,7 +76,7 @@ namespace CashTrack.Pages.Import
             if (IsRefund || SelectedIncome.Category == "Refund")
                 return RedirectToPage("../Income/Refund", new { id = incomeId });
 
-            TempData["Message"] = "Sucessfully Added New Income!";
+            TempData["SuccessMessage"] = "Sucessfully Added New Income!";
             return LocalRedirect("~/Import/Income");
         }
         public async Task<IActionResult> OnPostRemoveIncome()
@@ -90,7 +90,7 @@ namespace CashTrack.Pages.Import
                 ModelState.AddModelError("", ex.Message);
                 return Page();
             }
-            TempData["Message"] = "Successfully Removed the Income!";
+            TempData["SuccessMessage"] = "Successfully Removed the Income!";
             return LocalRedirect("~/Import/Income");
         }
         public async Task<IActionResult> OnPostRunScript()
@@ -106,7 +106,8 @@ namespace CashTrack.Pages.Import
                 {
                     var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
                     var currentStreamRecord = streamObjectsReceived[e.Index];
-                    ScriptResults += $"{currentStreamRecord.MessageData.ToString()} ";
+                    var scriptMessage = currentStreamRecord.MessageData.ToString().Contains("Added") ? SuccessMessage += $"{currentStreamRecord.MessageData.ToString()}. " :
+                     InfoMessage += $"{currentStreamRecord.MessageData.ToString()}. ";
                 };
                 ps.Commands.AddScript(@". C:\Users\Mitch\Code\CashTrack\ct-data\Scripts\Run-Transactions.ps1");
                 var result = await ps.InvokeAsync().ConfigureAwait(false);
