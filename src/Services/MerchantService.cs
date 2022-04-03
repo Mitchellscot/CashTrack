@@ -58,55 +58,95 @@ public class MerchantService : IMerchantService
                 var merchantsByName = await _merchantRepo.FindWithPaginationReversable(x => true, request.PageNumber, request.PageSize, request.Reversed);
                 foreach (var entity in merchantsByName)
                 {
-                    var location = entity.IsOnline ? "Online" : entity.City != null && entity.State != null ? $"{entity.City}, {entity.State}"
-                        : entity.City == "Multiple" ? "Multiple:" : null;
-                    var totalSpent = await _expenseRepo.GetAmountOfExpensesByMerchantId(entity.Id);
-
-                    var merchant = new MerchantListItem
-                    {
-                        Id = entity.Id,
-                        Name = entity.Name,
-                        Location = location,
-                        NumberOfExpenses = await _expenseRepo.GetCount(x => x.MerchantId == entity.Id),
-                        TotalSpent = totalSpent,
-                        LastPurchase = DateTime.Now,
-                        Category = "Unknown"
-                    };
+                    var merchant = await GetDataForAMerchantListItem(entity);
                     merchantViewModels.Add(merchant);
                 }
                 break;
             case MerchantOrderBy.Location:
-                //TODO:
-                var merchantsByLocation = await _merchantRepo.FindWithPaginationReversable(x => true, request.PageNumber, request.PageSize, request.Reversed);
+                var merchantsByLocation = await _merchantRepo.FindWithPaginationOrderedByLocation(x => true, request.PageNumber, request.PageSize, request.Reversed);
                 foreach (var entity in merchantsByLocation)
                 {
-                    var location = entity.IsOnline ? "Online" : entity.City != null && entity.State != null ? $"{entity.City}, {entity.State}"
-                        : entity.City == "Multiple" ? "Multiple:" : null;
-                    var totalSpent = await _expenseRepo.GetAmountOfExpensesByMerchantId(entity.Id);
-
-                    var merchant = new MerchantListItem
-                    {
-                        Id = entity.Id,
-                        Name = entity.Name,
-                        Location = location,
-                        NumberOfExpenses = await _expenseRepo.GetCount(x => x.MerchantId == entity.Id),
-                        TotalSpent = totalSpent,
-                        LastPurchase = DateTime.Now,
-                        Category = "Unknown"
-                    };
+                    var merchant = await GetDataForAMerchantListItem(entity);
                     merchantViewModels.Add(merchant);
                 }
                 break;
-
+            case MerchantOrderBy.Purchases:
+                var allMerchants = await _merchantRepo.Find(x => true);
+                var merchantExpenseCounts = allMerchants.Select(async x => new MerchantCounts()
+                {
+                    Merchant = x,
+                    ExpenseCount = await _expenseRepo.GetCount(x => x.MerchantId == x.Id)
+                }).Select(x => x.Result).OrderBy(x => x.ExpenseCount).ToArray();
+                var sortedMerchants = request.Reversed ? merchantExpenseCounts.OrderBy(x => x.ExpenseCount).Skip((request.PageNumber - 1) * request.PageSize)
+                    .Take(request.PageSize)
+                    .ToArray() :
+                    merchantExpenseCounts.OrderByDescending(x => x.ExpenseCount).Skip((request.PageNumber - 1) * request.PageSize)
+                    .Take(request.PageSize)
+                    .ToArray();
+                foreach (var entity in sortedMerchants)
+                {
+                    var merchant = await GetDataForAMerchantListItem(entity.Merchant);
+                    merchantViewModels.Add(merchant);
+                }
+                break;
         }
         return merchantViewModels;
+    }
+    public record MerchantCounts
+    {
+        public MerchantEntity Merchant { get; set; }
+        public int ExpenseCount { get; set; }
+    }
+    private async Task<MerchantListItem> GetDataForAMerchantListItem(MerchantEntity entity)
+    {
+        var merchantExpenses = await _expenseRepo.GetExpensesAndCategoriesByMerchantId(x => x.MerchantId == entity.Id);
+        var totalSpent = merchantExpenses.Sum(x => x.Amount);
+
+        var location = entity.IsOnline ? "Online" : entity.City != null && entity.State != null ? $"{entity.City}, {entity.State}"
+            : entity.City == "Multiple" ? "Multiple:" : null;
+        if (!merchantExpenses.Any())
+        {
+            return new MerchantListItem
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                Location = location,
+                NumberOfExpenses = await _expenseRepo.GetCount(x => x.MerchantId == entity.Id),
+                TotalSpent = 0,
+                LastPurchase = DateTime.MinValue,
+                Category = "N/A"
+            };
+        }
+        var lastPurchaseDate = merchantExpenses.MaxBy(x => x.Date).Date.DateTime;
+        var subCategories = await _subCategoryRepo.Find(x => true);
+        var mostUsedCategoryIds = subCategories.GroupJoin(merchantExpenses,
+            c => c.Id, e => e.Category.Id, (c, g) => new
+            {
+                Category = c.Name,
+                Expenses = g
+            }).Select(x => new
+            {
+                Category = x.Category,
+                Count = x.Expenses.Count()
+            }).Where(x => x.Count > 0).OrderByDescending(x => x.Count).FirstOrDefault();
+
+        return new MerchantListItem
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            Location = location,
+            NumberOfExpenses = await _expenseRepo.GetCount(x => x.MerchantId == entity.Id),
+            TotalSpent = totalSpent,
+            LastPurchase = lastPurchaseDate,
+            Category = mostUsedCategoryIds.Category
+        };
     }
 
     public async Task<MerchantDetail> GetMerchantDetailAsync(int id)
     {
         var merchantEntity = await _merchantRepo.FindById(id);
 
-        var merchantExpenses = await _expenseRepo.GetExpensesAndCategories(x => x.MerchantId == id);
+        var merchantExpenses = await _expenseRepo.GetExpensesAndCategoriesByMerchantId(x => x.MerchantId == id);
 
         var recentExpenses = merchantExpenses.OrderByDescending(e => e.Date)
             .Take(10)

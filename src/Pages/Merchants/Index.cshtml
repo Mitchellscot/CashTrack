@@ -130,7 +130,14 @@
                                     @item.TotalSpent
                                 </td>
                                 <td>
-                                    @item.LastPurchase.Date.ToShortDateString()
+                                    @if (item.LastPurchase != DateTime.MinValue)
+                                    {
+                                        @item.LastPurchase.Date.ToShortDateString()
+                                    }
+                                    else
+                                    {
+                                        <span>N/A</span>
+                                    }
                                 </td>
                                 <td>
                                     @item.Category
