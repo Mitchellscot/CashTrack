@@ -15,7 +15,7 @@ namespace CashTrack.Repositories.ExpenseRepository;
 public interface IExpenseRepository : IRepository<ExpenseEntity>
 {
     Task<decimal> GetAmountOfExpenses(Expression<Func<ExpenseEntity, bool>> predicate);
-    Task<ExpenseEntity[]> GetExpensesAndCategories(Expression<Func<ExpenseEntity, bool>> predicate);
+    Task<ExpenseEntity[]> GetExpensesAndCategoriesByMerchantId(Expression<Func<ExpenseEntity, bool>> predicate);
     Task<decimal> GetAmountOfExpensesByMerchantId(int id);
     Task<bool> UpdateMany(List<ExpenseEntity> entities);
 }
@@ -153,7 +153,7 @@ public class ExpenseRepository : IExpenseRepository
             throw;
         }
     }
-    public async Task<ExpenseEntity[]> GetExpensesAndCategories(Expression<Func<ExpenseEntity, bool>> predicate)
+    public async Task<ExpenseEntity[]> GetExpensesAndCategoriesByMerchantId(Expression<Func<ExpenseEntity, bool>> predicate)
     {
         try
         {

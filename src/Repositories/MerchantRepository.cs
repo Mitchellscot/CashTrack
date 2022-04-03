@@ -12,6 +12,7 @@ namespace CashTrack.Repositories.MerchantRepository;
 public interface IMerchantRepository : IRepository<MerchantEntity>
 {
     Task<MerchantEntity[]> FindWithPaginationReversable(Expression<Func<MerchantEntity, bool>> predicate, int pageNumber, int pageSize, bool reversed = false);
+    Task<MerchantEntity[]> FindWithPaginationOrderedByLocation(Expression<Func<MerchantEntity, bool>> predicate, int pageNumber, int pageSize, bool reversed = false);
 }
 public class MerchantRepository : IMerchantRepository
 {
@@ -59,6 +60,39 @@ public class MerchantRepository : IMerchantRepository
                 .OrderBy(x => x.Name)
                 .ToArrayAsync();
             return merchants;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<MerchantEntity[]> FindWithPaginationOrderedByLocation(Expression<Func<MerchantEntity, bool>> predicate, int pageNumber, int pageSize, bool reversed)
+    {
+        try
+        {
+            if (reversed)
+            {
+                return await _context.Merchants
+                    .OrderByDescending(x => x.IsOnline)
+                    .ThenByDescending(x => x.City)
+                    .ThenBy(x => x.Name)
+                    .Where(predicate)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToArrayAsync();
+            }
+            else
+            {
+                return await _context.Merchants
+                    .OrderBy(x => x.IsOnline)
+                    .ThenBy(x => x.City)
+                    .ThenBy(x => x.Name)
+                    .Where(predicate)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToArrayAsync();
+            }
         }
         catch (Exception)
         {
