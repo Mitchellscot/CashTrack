@@ -55,91 +55,73 @@ public class MerchantService : IMerchantService
         switch (request.Order)
         {
             case MerchantOrderBy.Name:
-                var merchantsByName = await _merchantRepo.FindWithPaginationReversable(x => true, request.PageNumber, request.PageSize, request.Reversed);
-                foreach (var entity in merchantsByName)
-                {
-                    var merchant = await GetDataForAMerchantListItem(entity);
-                    merchantViewModels.Add(merchant);
-                }
+                var allMerchantsListByName = await GetMerchantListItems();
+
+                merchantViewModels = request.Reversed ?
+                    allMerchantsListByName.OrderByDescending(x => x.Name).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                    allMerchantsListByName.OrderBy(x => x.Name).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
                 break;
             case MerchantOrderBy.Location:
-                var merchantsByLocation = await _merchantRepo.FindWithPaginationOrderedByLocation(x => true, request.PageNumber, request.PageSize, request.Reversed);
-                foreach (var entity in merchantsByLocation)
-                {
-                    var merchant = await GetDataForAMerchantListItem(entity);
-                    merchantViewModels.Add(merchant);
-                }
+                var allMerchantsListByLocation = await GetMerchantListItems();
+
+                merchantViewModels = request.Reversed ?
+                    allMerchantsListByLocation.OrderByDescending(x => x.Location).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                    allMerchantsListByLocation.OrderBy(x => x.Location).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
                 break;
             case MerchantOrderBy.Purchases:
-                var allMerchants = await _merchantRepo.Find(x => true);
-                var merchantExpenseCounts = allMerchants.Select(async x => new MerchantCounts()
-                {
-                    Merchant = x,
-                    ExpenseCount = await _expenseRepo.GetCount(x => x.MerchantId == x.Id)
-                }).Select(x => x.Result).OrderBy(x => x.ExpenseCount).ToArray();
-                var sortedMerchants = request.Reversed ? merchantExpenseCounts.OrderBy(x => x.ExpenseCount).Skip((request.PageNumber - 1) * request.PageSize)
-                    .Take(request.PageSize)
-                    .ToArray() :
-                    merchantExpenseCounts.OrderByDescending(x => x.ExpenseCount).Skip((request.PageNumber - 1) * request.PageSize)
-                    .Take(request.PageSize)
-                    .ToArray();
-                foreach (var entity in sortedMerchants)
-                {
-                    var merchant = await GetDataForAMerchantListItem(entity.Merchant);
-                    merchantViewModels.Add(merchant);
-                }
+                var allMerchantsListByPurchases = await GetMerchantListItems();
+
+                merchantViewModels = request.Reversed ?
+                    allMerchantsListByPurchases.OrderByDescending(x => x.NumberOfExpenses).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                    allMerchantsListByPurchases.OrderBy(x => x.NumberOfExpenses).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                break;
+            case MerchantOrderBy.Amount:
+                var allMerchantsListByTotal = await GetMerchantListItems();
+
+                merchantViewModels = request.Reversed ?
+                    allMerchantsListByTotal.OrderByDescending(x => x.TotalSpent).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                    allMerchantsListByTotal.OrderBy(x => x.TotalSpent).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                break;
+            case MerchantOrderBy.LastPurchase:
+                var allMerchantsListByDate = await GetMerchantListItems();
+
+                merchantViewModels = request.Reversed ?
+                    allMerchantsListByDate.OrderByDescending(x => x.LastPurchase).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                    allMerchantsListByDate.OrderBy(x => x.LastPurchase).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                break;
+            case MerchantOrderBy.Category:
+                var allMerchantsListByCategory = await GetMerchantListItems();
+
+                merchantViewModels = request.Reversed ?
+                    allMerchantsListByCategory.OrderByDescending(x => x.Category).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                    allMerchantsListByCategory.OrderBy(x => x.Category).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
                 break;
         }
         return merchantViewModels;
     }
-    public record MerchantCounts
+    private async Task<List<MerchantListItem>> GetMerchantListItems()
     {
-        public MerchantEntity Merchant { get; set; }
-        public int ExpenseCount { get; set; }
-    }
-    private async Task<MerchantListItem> GetDataForAMerchantListItem(MerchantEntity entity)
-    {
-        var merchantExpenses = await _expenseRepo.GetExpensesAndCategoriesByMerchantId(x => x.MerchantId == entity.Id);
-        var totalSpent = merchantExpenses.Sum(x => x.Amount);
-
-        var location = entity.IsOnline ? "Online" : entity.City != null && entity.State != null ? $"{entity.City}, {entity.State}"
-            : entity.City == "Multiple" ? "Multiple:" : null;
-        if (!merchantExpenses.Any())
-        {
-            return new MerchantListItem
-            {
-                Id = entity.Id,
-                Name = entity.Name,
-                Location = location,
-                NumberOfExpenses = await _expenseRepo.GetCount(x => x.MerchantId == entity.Id),
-                TotalSpent = 0,
-                LastPurchase = DateTime.MinValue,
-                Category = "N/A"
-            };
-        }
-        var lastPurchaseDate = merchantExpenses.MaxBy(x => x.Date).Date.DateTime;
-        var subCategories = await _subCategoryRepo.Find(x => true);
-        var mostUsedCategoryIds = subCategories.GroupJoin(merchantExpenses,
-            c => c.Id, e => e.Category.Id, (c, g) => new
-            {
-                Category = c.Name,
-                Expenses = g
-            }).Select(x => new
-            {
-                Category = x.Category,
-                Count = x.Expenses.Count()
-            }).Where(x => x.Count > 0).OrderByDescending(x => x.Count).FirstOrDefault();
-
-        return new MerchantListItem
-        {
-            Id = entity.Id,
-            Name = entity.Name,
-            Location = location,
-            NumberOfExpenses = await _expenseRepo.GetCount(x => x.MerchantId == entity.Id),
-            TotalSpent = totalSpent,
-            LastPurchase = lastPurchaseDate,
-            Category = mostUsedCategoryIds.Category
-        };
+        var expenses = await _expenseRepo.Find(x => true);
+        var merchants = await _merchantRepo.Find(x => true);
+        var categories = await _subCategoryRepo.Find(x => true);
+        return expenses.GroupBy(e => e.MerchantId)
+                    .Select(g =>
+                    {
+                        var results = g.Aggregate(new MerchantListItemAccumulator(g.Key, merchants, categories), (acc, e) => acc.Accumulate(e), acc => acc.Compute());
+                        return new MerchantListItem()
+                        {
+                            //since I'm sorting through expenses here, there is one grouping that 
+                            //will be null, and that accounts for every expense that does not 
+                            //have a merchant assigned to it. So we account for it, than filter it out in the list.
+                            Id = g.Key.HasValue ? g.Key.Value : 0,
+                            Name = results.Merchant != null ? results.Merchant.Name : null,
+                            NumberOfExpenses = results.Purchases,
+                            TotalSpent = results.Amount,
+                            LastPurchase = results.LastPurchase,
+                            Category = results.MostUsedCategory,
+                            Location = results.Location
+                        };
+                    }).Where(x => x.Id > 0).ToList();
     }
 
     public async Task<MerchantDetail> GetMerchantDetailAsync(int id)

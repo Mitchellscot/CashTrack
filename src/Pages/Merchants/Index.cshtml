@@ -1,4 +1,5 @@
 ﻿@page
+@using CashTrack.Models.Common
 @using CashTrack.Models.MerchantModels
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Merchants.IndexModel
@@ -59,56 +60,74 @@
                         <tr class="text-center table-primary">
                             <th>
                                 Name
+                                @{
+                                    var currentFilter1 = Model.Query == 0 && Model.Q2 == true ? "text-success" : "text-white";
+                                }
                                 <a asp-page="./Index" asp-route-Query="0" asp-route-Q2="true" class="iconButton float-end orderIcon">
-                                    <i class="bi bi-arrow-up text-white" style="font-size: 1rem;"></i>
+                                    <i class="bi bi-arrow-up @currentFilter1" style="font-size: 1rem;"></i>
                                 </a>
+                                @{
+                                    var currentFilter2 = Model.Query == 0 && Model.Q2 == false ? "text-success" : "text-white";
+                                }
                                 <a asp-page="./Index" asp-route-Query="0" asp-route-Q2="false" class="iconButton float-end orderIcon">
-                                    <i class="bi bi-arrow-down text-white" style="font-size: 1rem;"></i>
+                                    <i class="bi bi-arrow-down @currentFilter2" style="font-size: 1rem;"></i>
                                 </a>
                             </th>
                             <th>
                                 Location
+                                @{
+                                    var currentFilter3 = Model.Query == MerchantOrderBy.Location && Model.Q2 == true ? "text-success" : "text-white";
+                                }
                                 <a asp-page="./Index" asp-route-Query="1" asp-route-Q2="true" class="iconButton float-end orderIcon">
-                                    <i class="bi bi-arrow-up text-white" style="font-size: 1rem;"></i>
+                                    <i class="bi bi-arrow-up @currentFilter3" style="font-size: 1rem;"></i>
                                 </a>
+                                @{var currentFilter4 = Model.Query == MerchantOrderBy.Location && Model.Q2 == false ? "text-success" : "text-white";}
                                 <a asp-page="./Index" asp-route-Query="1" asp-route-Q2="false" class="iconButton float-end orderIcon">
-                                    <i class="bi bi-arrow-down text-white" style="font-size: 1rem;"></i>
+                                    <i class="bi bi-arrow-down @currentFilter4" style="font-size: 1rem;"></i>
                                 </a>
                             </th>
                             <th>
                                 Purchases
+                                @{var currentFilter5 = Model.Query == MerchantOrderBy.Purchases && Model.Q2 == true ? "text-success" : "text-white";}
                                 <a asp-page="./Index" asp-route-Query="2" asp-route-Q2="true" class="iconButton float-end orderIcon">
-                                    <i class="bi bi-arrow-up text-white" style="font-size: 1rem;"></i>
+                                    <i class="bi bi-arrow-up @currentFilter5" style="font-size: 1rem;"></i>
                                 </a>
+                                @{var currentFilter6 = Model.Query == MerchantOrderBy.Purchases && Model.Q2 == false ? "text-success" : "text-white";}
                                 <a asp-page="./Index" asp-route-Query="2" asp-route-Q2="false" class="iconButton float-end orderIcon">
-                                    <i class="bi bi-arrow-down text-white" style="font-size: 1rem;"></i>
+                                    <i class="bi bi-arrow-down @currentFilter6" style="font-size: 1rem;"></i>
                                 </a>
                             </th>
                             <th>
                                 Amount
+                                @{var currentFilter7 = Model.Query == MerchantOrderBy.Amount && Model.Q2 == true ? "text-success" : "text-white";}
                                 <a asp-page="./Index" asp-route-Query="3" asp-route-Q2="true" class="iconButton float-end orderIcon">
-                                    <i class="bi bi-arrow-up text-white" style="font-size: 1rem;"></i>
+                                    <i class="bi bi-arrow-up @currentFilter7" style="font-size: 1rem;"></i>
                                 </a>
+                                @{var currentFilter8 = Model.Query == MerchantOrderBy.Amount && Model.Q2 == false ? "text-success" : "text-white";}
                                 <a asp-page="./Index" asp-route-Query="3" asp-route-Q2="false" class="iconButton float-end orderIcon">
-                                    <i class="bi bi-arrow-down text-white" style="font-size: 1rem;"></i>
+                                    <i class="bi bi-arrow-down @currentFilter8" style="font-size: 1rem;"></i>
                                 </a>
                             </th>
                             <th>
                                 Last Purchase
+                                @{var currentFilter9 = Model.Query == MerchantOrderBy.LastPurchase && Model.Q2 == true ? "text-success" : "text-white";}
                                 <a asp-page="./Index" asp-route-Query="4" asp-route-Q2="true" class="iconButton float-end orderIcon">
-                                    <i class="bi bi-arrow-up text-white" style="font-size: 1rem;"></i>
+                                    <i class="bi bi-arrow-up @currentFilter9" style="font-size: 1rem;"></i>
                                 </a>
+                                @{var currentFilter10 = Model.Query == MerchantOrderBy.LastPurchase && Model.Q2 == false ? "text-success" : "text-white";}
                                 <a asp-page="./Index" asp-route-Query="4" asp-route-Q2="false" class="iconButton float-end orderIcon">
-                                    <i class="bi bi-arrow-down text-white" style="font-size: 1rem;"></i>
+                                    <i class="bi bi-arrow-down @currentFilter10" style="font-size: 1rem;"></i>
                                 </a>
                             </th>
                             <th>
                                 Category
+                                @{var currentFilter11 = Model.Query == MerchantOrderBy.Category && Model.Q2 == true ? "text-success" : "text-white";}
                                 <a asp-page="./Index" asp-route-Query="5" asp-route-Q2="true" class="iconButton float-end orderIcon">
-                                    <i class="bi bi-arrow-up text-white" style="font-size: 1rem;"></i>
+                                    <i class="bi bi-arrow-up @currentFilter11" style="font-size: 1rem;"></i>
                                 </a>
+                                @{var currentFilter12 = Model.Query == MerchantOrderBy.Category && Model.Q2 == false ? "text-success" : "text-white";}
                                 <a asp-page="./Index" asp-route-Query="5" asp-route-Q2="false" class="iconButton float-end orderIcon">
-                                    <i class="bi bi-arrow-down text-white" style="font-size: 1rem;"></i>
+                                    <i class="bi bi-arrow-down @currentFilter12" style="font-size: 1rem;"></i>
                                 </a>
                             </th>
                         </tr>
