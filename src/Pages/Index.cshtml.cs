@@ -15,6 +15,10 @@ namespace CashTrack.Pages
         {
             _logger = logger;
         }
+        [TempData]
+        public string InfoMessage { get; set; }
+        [TempData]
+        public string SuccessMessage { get; set; }
 
         public ActionResult OnGetAsync()
         {
