@@ -143,10 +143,7 @@ ul.ui-autocomplete {
     border: none;
 }
 
-input[type="text"]:disabled {
-    background: transparent !important;
-}
-textarea[type="text"]:disabled {
+.whiteBackgroundOnDisabled:disabled {
     background: transparent !important;
 }
 

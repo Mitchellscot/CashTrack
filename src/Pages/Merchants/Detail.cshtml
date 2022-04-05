@@ -1,4 +1,5 @@
 ﻿@page "{id}"
+@using CashTrack.Models.MerchantModels
 @model CashTrack.Pages.Merchants.DetailModel
 @{
     Layout = "_Layout";
@@ -6,53 +7,145 @@
 
 <div class="container">
     <div class="row align-items-center">
-        <div class="order-1 col-10 col-md-5 d-flex align-content-center">
+        <div class="order-1 col-10 col-lg-4 d-flex align-content-center">
             <h3 class="fw-bold">@Model.Merchant.Name</h3>
             <div class="text-muted align-self-center ms-2 fst-italic">@Model.Merchant.MostUsedCategory</div>
         </div>
-        <div class="order-3 order-md-2 col-4 col-md-2 d-flex justify-content-center text-decoration-underline">
+        <div class="order-3 order-lg-2 col-4 col-lg-2 d-flex justify-content-center">
             Month: &nbsp;<span class="fw-bold text-success">@Model.Merchant.ExpenseTotals.TotalSpentThisMonth</span>
         </div>
-        <div class="order-4 order-md-3 col-4 col-md-2 d-flex justify-content-center text-decoration-underline">
+        <div class="order-4 order-lg-3 col-4 col-lg-2 d-flex justify-content-center">
             Year: &nbsp;<span class="fw-bold text-success">@Model.Merchant.ExpenseTotals.TotalSpentThisYear</span>
         </div>
-        <div class="order-5 order-md-4 col-4 col-md-2 d-flex justify-content-center text-decoration-underline">
+        <div class="order-5 order-lg-4 col-4 col-lg-2 d-flex justify-content-center">
             Total: &nbsp;<span class="fw-bold text-success">@Model.Merchant.ExpenseTotals.TotalSpentAllTime</span>
         </div>
-        <div class="col-2 col-md-1 order-2 order-md-5">
-            @* TODO:Setup Edit Merchant Modal*@
-            <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#editMerchantModal">
-                Edit
-            </button>
+        <div class="col-2 col-lg-2 order-2 order-lg-5">
+            <div class="btn-group float-end">
+                <button type="button" class="btn btn-outline-primary px-0" data-bs-toggle="modal" data-bs-target="#editMerchantModal">
+                    <i class="bi bi-pencil text-black mx-3" role="img" style="font-size: 1rem;"></i>
+                </button>
+                <button type="button" class="btn btn-outline-danger px-0" data-bs-toggle="modal" data-bs-target="#deleteMerchantModal">
+                    <i class="bi bi-trash text-black mx-3" role="img" style="font-size: 1rem;"></i>
+                </button>
+            </div>
         </div>
+    </div>
+    @*Delete Model*@
+    <div class="modal fade" id="deleteMerchantModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h5 class="modal-title text-center">
+                        <strong>Are you sure you want to Delete this Merchant?</strong>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-footer d-flex justify-content-evenly">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <form method="post">
+                        <button name="MerchantId" value="@Model.Merchant.Id" type="submit" class="btn btn-danger" asp-page-handler="Delete">DELETE</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*End Delete Modal*@
+    <div class="modal fade" id="editMerchantModal">
+        @await Html.PartialAsync("_AddMerchantPartial", new AddEditMerchantModal() {
+        Name = Model.Merchant.Name,
+        City = Model.Merchant.City,
+        State = Model.Merchant.State,
+        IsOnline = Model.Merchant.IsOnline,
+        Notes = Model.Merchant.Notes,
+        SuggestOnLookup = Model.Merchant.SuggestOnLookup,
+        IsEdit = true,
+        Returnurl="~/Merchants/Index"
+        })
     </div>
     <hr />
     <div class="container border">
         <div class="row">
             <div class="col-6">
                 <div class="input-group mx-auto mt-3 w-75">
-                <span class="input-group-text">Name</span>
-                    <input type="text" class="form-control text-center" asp-for="@Model.Merchant.Name" disabled />
+                    <span class="input-group-text d-none d-md-block">Name</span>
+                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center" asp-for="@Model.Merchant.Name" disabled />
                 </div>
                 <div class="input-group mx-auto w-75">
-                <span class="input-group-text">City &nbsp;&nbsp;&nbsp;</span>
-                    <input type="text" class="form-control text-center" asp-for="@Model.Merchant.City" disabled />
+                    <span class="input-group-text d-none d-md-block">City &nbsp;&nbsp;&nbsp;</span>
+                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center" asp-for="@Model.Merchant.City" disabled />
                 </div>
                 <div class="input-group mx-auto w-75">
-                <span class="input-group-text">State&nbsp;</span>
-                    <input type="text" class="form-control text-center" asp-for="@Model.Merchant.State" disabled />
-                </div>
-                <div class="input-group mx-auto w-75">
-                <span class="input-group-text px-2">Online</span>
-                @{var isOnlineText = Model.Merchant.IsOnline ? "Yes" : "No";}
-                    <input type="text" class="form-control text-center" asp-for="@Model.Merchant.IsOnline" disabled value="@isOnlineText"/>
+                    <span class="input-group-text d-none d-md-block">State&nbsp;</span>
+                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center" asp-for="@Model.Merchant.State" disabled />
                 </div>
             </div>
             <div class="col-6 mt-3 m-auto">
-                <label asp-for="@Model.Merchant.Notes" class="form-label">Description</label>
-                <textarea type="text" class="form-control" asp-for="@Model.Merchant.Notes" disabled rows="4"></textarea>
+                <div class="form-floating mb-3">
+                    <textarea type="text" class="form-control whiteBackgroundOnDisabled py-0" id="merchantNotes" asp-for="@Model.Merchant.Notes" disabled rows="2"></textarea>
+                    @if (string.IsNullOrEmpty(Model.Merchant.Notes))
+                    {
+                        <label for="merchantNotes">Description</label>
+                    }
+                </div>
+                
+                
+                <div class="input-group mx-auto">
+                    
+                    @{
+                        var isOnlineText = Model.Merchant.IsOnline ? "Online" : "Not Online";
+                        var isActiveText = Model.Merchant.SuggestOnLookup ? "Active" : "Inactive";
+                    }
+                    <span class="input-group-text d-none d-lg-block">Online</span>
+                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center" 
+                    asp-for="@Model.Merchant.IsOnline" disabled value="@isOnlineText" />
+                    <span class="input-group-text d-none d-lg-block">Active</span>
+                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center" 
+                    asp-for="@Model.Merchant.IsOnline" disabled value="@isActiveText" />
+                </div>
+                
             </div>
-            </div>
-            <hr />
+        </div>
+        <hr />
     </div>
 </div>
+@section Scripts {
+<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true">
+</script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
+<partial name="_ValidationScriptsPartial" />
+<script type="text/javascript">
+
+    $(document).ready(() => {
+        //toast notification
+        @if(Model.InfoMessage != null)
+        {
+            @:$("#info-toast").show().delay(2000).fadeOut();
+        }
+        @if(Model.SuccessMessage != null)
+        {
+            @:$("#success-toast").show().delay(2000).fadeOut();
+        }
+        @if(!ModelState.IsValid)
+        {
+            @:$("#danger-toast").show().delay(4000).fadeOut();
+        }
+
+        //disables city and state inputs if merchant is online - for add merchant modal
+        $("#addEditMerchantIsOnline").click(() => {
+            console.log('hi');
+            if($("#addEditMerchantIsOnline").is(":checked")){
+                $("#addEditMerchantCity").prop("disabled", true);
+                $("#addEditMerchantState").prop("disabled", true);
+            }
+            else{
+                $("#addEditMerchantCity").prop("disabled", false);
+                $("#addEditMerchantState").prop("disabled", false);
+            }});
+    });
+</script>
+    }

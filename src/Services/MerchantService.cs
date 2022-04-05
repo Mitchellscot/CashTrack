@@ -221,7 +221,7 @@ public class MerchantService : IMerchantService
     public async Task<int> UpdateMerchantAsync(Merchant request)
     {
         var merchants = await _merchantRepo.Find(x => x.Name == request.Name);
-        if (merchants.Any())
+        if (merchants.Any(x => x.Id != request.Id))
             throw new DuplicateNameException(nameof(MerchantEntity), request.Name);
 
         var merchant = _mapper.Map<MerchantEntity>(request);

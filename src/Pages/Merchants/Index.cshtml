@@ -46,7 +46,7 @@
             <span style="color: red;" asp-validation-for="@Model.SearchTerm"></span>
             <button class="btn btn-primary float-end" id="addMerchantButton" data-bs-toggle="modal" data-bs-target="#addMerchantModal">Add Merchant</button>
             <div class="modal fade" id="addMerchantModal">
-                @await Html.PartialAsync("_AddMerchantPartial", new AddMerchantModal() { Returnurl = "~/Merchants/Index", SuggestOnLookup = true })
+                @await Html.PartialAsync("_AddMerchantPartial", new AddEditMerchantModal() { Returnurl = "~/Merchants/Index", SuggestOnLookup = true, IsEdit = false })
             </div>
         </div>
 
@@ -250,6 +250,18 @@
         {
             @:$("#danger-toast").show().delay(4000).fadeOut();
         }
+
+        //disables city and state inputs if merchant is online - for add merchant modal
+        $("#addEditMerchantIsOnline").click(() => {
+            console.log('hi');
+            if($("#addEditMerchantIsOnline").is(":checked")){
+                $("#addEditMerchantCity").prop("disabled", true);
+                $("#addEditMerchantState").prop("disabled", true);
+            }
+            else{
+                $("#addEditMerchantCity").prop("disabled", false);
+                $("#addEditMerchantState").prop("disabled", false);
+            }});
 
         //show a dropdown list of matching merchant names
         $("#QueryInput").on("input", () => {

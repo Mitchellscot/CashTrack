@@ -14,7 +14,7 @@ namespace CashTrack.Pages.Merchants
         private readonly IMerchantService _merchantService;
         public IndexModel(IMerchantService merchantService) => _merchantService = merchantService;
         [BindProperty]
-        public AddMerchantModal MerchantModal { get; set; }
+        public AddEditMerchantModal MerchantModal { get; set; }
         [BindProperty(SupportsGet = true)]
         public string SearchTerm { get; set; }
         [BindProperty(SupportsGet = true)]
@@ -45,7 +45,7 @@ namespace CashTrack.Pages.Merchants
             MerchantResponse = await _merchantService.GetMerchantsAsync(new MerchantRequest() { Reversed = Q2, Order = Query, PageNumber = this.PageNumber });
             return Page();
         }
-        public async Task<IActionResult> OnPostAddMerchantModal()
+        public async Task<IActionResult> OnPostAddEditMerchantModal()
         {
             if (!ModelState.IsValid)
             {
@@ -54,7 +54,7 @@ namespace CashTrack.Pages.Merchants
             }
             try
             {
-                var merchantSuccess = await _merchantService.CreateMerchantAsync(new Merchant()
+                var newMerchant = new Merchant()
                 {
                     Name = MerchantModal.Name,
                     City = MerchantModal.City,
@@ -62,7 +62,18 @@ namespace CashTrack.Pages.Merchants
                     IsOnline = MerchantModal.IsOnline,
                     SuggestOnLookup = MerchantModal.SuggestOnLookup,
                     Notes = MerchantModal.Notes
-                });
+                };
+                if (MerchantModal.IsEdit)
+                {
+                    newMerchant.Id = MerchantModal.Id;
+                }
+                if (MerchantModal.IsOnline)
+                {
+                    newMerchant.City = null;
+                    newMerchant.State = null;
+                }
+
+                var merchantSuccess = MerchantModal.IsEdit ? await _merchantService.UpdateMerchantAsync(newMerchant) : await _merchantService.CreateMerchantAsync(newMerchant);
             }
             catch (Exception ex)
             {
@@ -70,8 +81,9 @@ namespace CashTrack.Pages.Merchants
                 return LocalRedirect(MerchantModal.Returnurl);
             }
 
-            TempData["SuccessMessage"] = "Successfully added a new Merchant!";
+            TempData["SuccessMessage"] = MerchantModal.IsEdit ? "Successfully edited a Merchant!" : "Successfully added a new Merchant!";
             return LocalRedirect(MerchantModal.Returnurl);
         }
+
     }
 }
