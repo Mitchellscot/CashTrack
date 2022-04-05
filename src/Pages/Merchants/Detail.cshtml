@@ -3,8 +3,28 @@
 @{
     Layout = "_Layout";
 }
+
 <div class="container">
-    <div class="row">
-        <h3></h3>
+    <div class="row align-items-center">
+        <div class="order-1 col-10 col-md-5 d-flex align-content-center">
+            <h3 class="fw-bold">@Model.Merchant.Name</h3>
+            <div class="text-muted align-self-center ms-2 fst-italic">@Model.Merchant.MostUsedCategory</div>
+        </div>
+        <div class="order-3 order-md-2 col-4 col-md-2 d-flex justify-content-center text-decoration-underline">
+            Month: &nbsp;<span class="fw-bold text-success">@Model.Merchant.ExpenseTotals.TotalSpentThisMonth</span>
+        </div>
+        <div class="order-4 order-md-3 col-4 col-md-2 d-flex justify-content-center text-decoration-underline">
+            Year: &nbsp;<span class="fw-bold text-success">@Model.Merchant.ExpenseTotals.TotalSpentThisYear</span>
+        </div>
+        <div class="order-5 order-md-4 col-4 col-md-2 d-flex justify-content-center text-decoration-underline">
+            Total: &nbsp;<span class="fw-bold text-success">@Model.Merchant.ExpenseTotals.TotalSpentAllTime</span>
+        </div>
+        <div class="col-2 col-md-1 order-2 order-md-5">
+            @* TODO:Setup Edit Merchant Modal*@
+            <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#editMerchantModal">
+                Edit
+            </button>
+        </div>
     </div>
+    <hr />
 </div>
