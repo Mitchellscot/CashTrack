@@ -27,4 +27,32 @@
         </div>
     </div>
     <hr />
+    <div class="container border">
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group mx-auto mt-3 w-75">
+                <span class="input-group-text">Name</span>
+                    <input type="text" class="form-control text-center" asp-for="@Model.Merchant.Name" disabled />
+                </div>
+                <div class="input-group mx-auto w-75">
+                <span class="input-group-text">City &nbsp;&nbsp;&nbsp;</span>
+                    <input type="text" class="form-control text-center" asp-for="@Model.Merchant.City" disabled />
+                </div>
+                <div class="input-group mx-auto w-75">
+                <span class="input-group-text">State&nbsp;</span>
+                    <input type="text" class="form-control text-center" asp-for="@Model.Merchant.State" disabled />
+                </div>
+                <div class="input-group mx-auto w-75">
+                <span class="input-group-text px-2">Online</span>
+                @{var isOnlineText = Model.Merchant.IsOnline ? "Yes" : "No";}
+                    <input type="text" class="form-control text-center" asp-for="@Model.Merchant.IsOnline" disabled value="@isOnlineText"/>
+                </div>
+            </div>
+            <div class="col-6 mt-3 m-auto">
+                <label asp-for="@Model.Merchant.Notes" class="form-label">Description</label>
+                <textarea type="text" class="form-control" asp-for="@Model.Merchant.Notes" disabled rows="4"></textarea>
+            </div>
+            </div>
+            <hr />
+    </div>
 </div>
