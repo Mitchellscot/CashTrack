@@ -1,6 +1,7 @@
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.ExpenseReviewModels;
 using CashTrack.Models.SubCategoryModels;
+using CashTrack.Pages.Shared;
 using CashTrack.Services.ExpenseReviewService;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.MerchantService;
@@ -16,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Import
 {
-    public class ExpensesModel : PageModel
+    public class ExpensesModel : PageModelBase
     {
         private readonly IMerchantService _merchantService;
         private readonly IExpenseService _expenseService;
@@ -30,12 +31,6 @@ namespace CashTrack.Pages.Import
             _subCategoryService = subCategoryService;
             _expenseReviewService = expenseReviewService;
         }
-        [TempData]
-        public string InfoMessage { get; set; }
-        [TempData]
-        public string SuccessMessage { get; set; }
-        [TempData]
-        public string Message { get; set; }
         public ExpenseReviewResponse ExpenseReviewResponse { get; set; }
         [BindProperty(SupportsGet = true)]
         public int PageNumber { get; set; } = 1;
@@ -44,7 +39,6 @@ namespace CashTrack.Pages.Import
         public Expense SelectedExpense { get; set; }
         [BindProperty]
         public int SelectedExpenseId { get; set; }
-
         public async Task<IActionResult> OnGet()
         {
             await PrepareData();

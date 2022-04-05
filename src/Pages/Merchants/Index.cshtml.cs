@@ -1,22 +1,18 @@
 using CashTrack.Common.Exceptions;
 using CashTrack.Models.Common;
 using CashTrack.Models.MerchantModels;
+using CashTrack.Pages.Shared;
 using CashTrack.Services.MerchantService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Merchants
 {
-    public class IndexModel : PageModel
+    public class IndexModel : PageModelBase
     {
         private readonly IMerchantService _merchantService;
         public IndexModel(IMerchantService merchantService) => _merchantService = merchantService;
-        [TempData]
-        public string InfoMessage { get; set; }
-        [TempData]
-        public string SuccessMessage { get; set; }
         [BindProperty]
         public AddMerchantModal MerchantModal { get; set; }
         [BindProperty(SupportsGet = true)]

@@ -2,6 +2,7 @@ using CashTrack.Common.Exceptions;
 using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.MerchantModels;
+using CashTrack.Pages.Shared;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.MerchantService;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Expenses
 {
-    public class Index : PageModel
+    public class Index : PageModelBase
     {
         private readonly IExpenseService _expenseService;
         private readonly IMerchantService _merchantService;
@@ -31,10 +32,6 @@ namespace CashTrack.Pages.Expenses
         public string InputType { get; set; }
         [BindProperty(SupportsGet = true)]
         public int PageNumber { get; set; } = 1;
-        [TempData]
-        public string InfoMessage { get; set; }
-        [TempData]
-        public string SuccessMessage { get; set; }
         [BindProperty]
         public Expense Expense { get; set; }
 

@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using CashTrack.Pages.Shared;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace CashTrack.Pages
 {
 
-    public class IndexModel : PageModel
+    public class IndexModel : PageModelBase
     {
         private readonly ILogger<IndexModel> _logger;
 
@@ -15,10 +13,6 @@ namespace CashTrack.Pages
         {
             _logger = logger;
         }
-        [TempData]
-        public string InfoMessage { get; set; }
-        [TempData]
-        public string SuccessMessage { get; set; }
 
         public ActionResult OnGetAsync()
         {

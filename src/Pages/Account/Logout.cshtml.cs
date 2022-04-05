@@ -1,13 +1,12 @@
 ﻿using CashTrack.Data.Entities;
-using Microsoft.AspNetCore.Authentication;
+using CashTrack.Pages.Shared;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Account
 {
-    public class Logout : PageModel
+    public class Logout : PageModelBase
     {
         private readonly SignInManager<UserEntity> _signInManager;
 
