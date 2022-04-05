@@ -92,25 +92,34 @@
                         <label for="merchantNotes">Description</label>
                     }
                 </div>
-                
-                
                 <div class="input-group mx-auto">
-                    
+
                     @{
                         var isOnlineText = Model.Merchant.IsOnline ? "Online" : "Not Online";
                         var isActiveText = Model.Merchant.SuggestOnLookup ? "Active" : "Inactive";
                     }
                     <span class="input-group-text d-none d-lg-block">Online</span>
-                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center" 
-                    asp-for="@Model.Merchant.IsOnline" disabled value="@isOnlineText" />
+                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center"
+                           asp-for="@Model.Merchant.IsOnline" disabled value="@isOnlineText" />
                     <span class="input-group-text d-none d-lg-block">Active</span>
-                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center" 
-                    asp-for="@Model.Merchant.IsOnline" disabled value="@isActiveText" />
+                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center"
+                           asp-for="@Model.Merchant.IsOnline" disabled value="@isActiveText" />
                 </div>
-                
+
             </div>
         </div>
         <hr />
+        <div class="row">
+            @*Annual Graph goes here*@
+        </div>
+        <div class="row">
+            <div class="col-6">
+                @*Pie graph goes here*@
+            </div>
+            <div class="col-6">
+                @*Recent Expense Table goes here*@
+            </div>
+        </div>
     </div>
 </div>
 @section Scripts {
