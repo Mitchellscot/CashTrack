@@ -40,8 +40,11 @@ namespace CashTrack.Services.Common
             MostUsedCategoryId = Categories.GroupBy(x => x).OrderByDescending(x => x.Count()).FirstOrDefault().Key;
             MostUsedCategory = _categories.Where(x => x.Id == MostUsedCategoryId).FirstOrDefault().Name;
             Merchant = _merchants.Where(x => x.Id == MerchantId).FirstOrDefault();
-            Location = Merchant != null ? Merchant.IsOnline ? "Online" : Merchant.City != null && Merchant.State != null ? $"{Merchant.City}, {Merchant.State}"
-            : Merchant.City == "Multiple" ? "Multiple:" : "" : null;
+            Location = Merchant != null ?
+                Merchant.IsOnline ? "Online" :
+                Merchant.City == "Various" ? "Various" :
+                Merchant.City != null && Merchant.State != null ? $"{Merchant.City}, {Merchant.State}"
+            : null : null;
             return this;
         }
     }

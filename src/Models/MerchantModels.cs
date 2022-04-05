@@ -27,8 +27,9 @@ public record Merchant
     public bool IsOnline { get; set; }
     public string Notes { get; set; }
 }
-public record AddMerchantModal : Merchant
+public record AddEditMerchantModal : Merchant
 {
+    public bool IsEdit { get; set; }
     public string Returnurl { get; set; }
 }
 public record MerchantListItem
