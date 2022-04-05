@@ -1,8 +1,8 @@
 using CashTrack.Models.ExpenseModels;
+using CashTrack.Pages.Shared;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.IncomeService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Incomes
 {
-    public class RefundModel : PageModel
+    public class RefundModel : PageModelBase
     {
         private readonly IIncomeService _incomeService;
         private readonly IExpenseService _expenseService;
@@ -91,7 +91,7 @@ namespace CashTrack.Pages.Incomes
                 ModelState.AddModelError("", ex.Message);
                 return Page();
             }
-            TempData["Message"] = "Sucessfully Applied the Refund!";
+            TempData["SuccessMessage"] = "Sucessfully Applied the Refund!";
             return LocalRedirect("~/Income/Index");
         }
         public async Task<IActionResult> OnPostDelete(int incomeId)
@@ -102,7 +102,7 @@ namespace CashTrack.Pages.Incomes
                 ModelState.AddModelError("", "Unable to delete the Refund");
                 return Page();
             }
-            TempData["Message"] = "Sucessfully deleted Refund!";
+            TempData["SuccessMessage"] = "Sucessfully deleted Refund!";
             return LocalRedirect("~/Income/Index");
         }
         private async Task GetExpenseRefundsFromSelectedIds()

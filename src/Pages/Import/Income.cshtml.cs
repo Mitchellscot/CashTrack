@@ -1,4 +1,5 @@
 using CashTrack.Models.IncomeReviewModels;
+using CashTrack.Pages.Shared;
 using CashTrack.Services.IncomeCategoryService;
 using CashTrack.Services.IncomeReviewService;
 using CashTrack.Services.IncomeService;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Import
 {
-    public class IncomeModel : PageModel
+    public class IncomeModel : PageModelBase
     {
         private readonly IIncomeReviewService _incomeReviewService;
         private readonly IIncomeSourceService _incomeSourceService;
@@ -28,11 +29,6 @@ namespace CashTrack.Pages.Import
             _incomeCategoryService = incomeCategoryService;
             _incomeService = incomeService;
         }
-
-        [TempData]
-        public string InfoMessage { get; set; }
-        [TempData]
-        public string SuccessMessage { get; set; }
         public IncomeReviewResponse IncomeReviewResponse { get; set; }
         [BindProperty]
         public int PageNumber { get; set; } = 1;

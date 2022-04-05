@@ -3,18 +3,17 @@ using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.IncomeModels;
 using CashTrack.Models.IncomeSourceModels;
+using CashTrack.Pages.Shared;
 using CashTrack.Services.IncomeService;
 using CashTrack.Services.IncomeSourceService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Incomes
 {
-    public class IndexModel : PageModel
+    public class IndexModel : PageModelBase
     {
         private readonly IIncomeSourceService _sourceService;
         private readonly IIncomeService _incomeService;
@@ -24,10 +23,6 @@ namespace CashTrack.Pages.Incomes
             _sourceService = sourceService;
             _incomeService = incomeService;
         }
-        [TempData]
-        public string InfoMessage { get; set; }
-        [TempData]
-        public string SuccessMessage { get; set; }
         [BindProperty(SupportsGet = true)]
         public string Q { get; set; }
         [BindProperty(SupportsGet = true)]
