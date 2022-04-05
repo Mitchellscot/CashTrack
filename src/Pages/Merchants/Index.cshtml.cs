@@ -17,6 +17,7 @@ namespace CashTrack.Pages.Merchants
         public string InfoMessage { get; set; }
         [TempData]
         public string SuccessMessage { get; set; }
+        [BindProperty]
         public AddMerchantModal MerchantModal { get; set; }
         [BindProperty(SupportsGet = true)]
         public string SearchTerm { get; set; }
@@ -40,6 +41,7 @@ namespace CashTrack.Pages.Merchants
                 catch (MerchantNotFoundException)
                 {
                     InfoMessage = "No merchant found with the name " + SearchTerm;
+                    MerchantResponse = await _merchantService.GetMerchantsAsync(new MerchantRequest() { Reversed = Q2, Order = Query, PageNumber = this.PageNumber });
                     return Page();
                 }
             }
