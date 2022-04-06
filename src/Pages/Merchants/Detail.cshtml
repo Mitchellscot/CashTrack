@@ -105,12 +105,12 @@
                     <input type="text" class="whiteBackgroundOnDisabled form-control text-center"
                            asp-for="@Model.Merchant.IsOnline" disabled value="@isActiveText" />
                 </div>
-
             </div>
         </div>
         <hr />
         <div class="row">
             @*Annual Graph goes here*@
+            <canvas id="myChart"></canvas>
         </div>
         <div class="row">
             <div class="col-6">
@@ -123,38 +123,98 @@
     </div>
 </div>
 @section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true">
 </script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
 <partial name="_ValidationScriptsPartial" />
 <script type="text/javascript">
-
-    $(document).ready(() => {
-        //toast notification
-        @if(Model.InfoMessage != null)
-        {
-            @:$("#info-toast").show().delay(2000).fadeOut();
+        let jsLabels = [];
+        let jsData = [];
+        @{
+            var labels = Model.Merchant.AnnualExpenseStatistics.Select(x => x.Year).ToArray();
+            var totals = Model.Merchant.AnnualExpenseStatistics.Select(x => x.Total).ToArray();
         }
-        @if(Model.SuccessMessage != null)
+        @foreach(var label in labels)
         {
-            @:$("#success-toast").show().delay(2000).fadeOut();
+            @:jsLabels.push(@label)
         }
-        @if(!ModelState.IsValid)
+        @foreach(var total in totals)
         {
-            @:$("#danger-toast").show().delay(4000).fadeOut();
+            @:jsData.push(@total)
         }
-
-        //disables city and state inputs if merchant is online - for add merchant modal
-        $("#addEditMerchantIsOnline").click(() => {
-            console.log('hi');
-            if($("#addEditMerchantIsOnline").is(":checked")){
-                $("#addEditMerchantCity").prop("disabled", true);
-                $("#addEditMerchantState").prop("disabled", true);
-            }
-            else{
-                $("#addEditMerchantCity").prop("disabled", false);
-                $("#addEditMerchantState").prop("disabled", false);
-            }});
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: jsLabels,
+            datasets: [{
+                label: 'Total',
+                data: jsData,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.9)',
+                    'rgba(54, 162, 235, 0.9)',
+                    'rgba(255, 206, 86, 0.9)',
+                    'rgba(75, 192, 192, 0.9)',
+                    'rgba(153, 102, 255, 0.9)',
+                    'rgba(255, 159, 64, 0.9)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Annual Expenses'
+      }
+    }
+        }
     });
+        $(document).ready(() => {
+            //toast notification
+            @if(Model.InfoMessage != null)
+            {
+                @:$("#info-toast").show().delay(2000).fadeOut();
+            }
+            @if(Model.SuccessMessage != null)
+            {
+                @:$("#success-toast").show().delay(2000).fadeOut();
+            }
+            @if(!ModelState.IsValid)
+            {
+                @:$("#danger-toast").show().delay(4000).fadeOut();
+            }
+
+            //disables city and state inputs if merchant is online - for add merchant modal
+            $("#addEditMerchantIsOnline").click(() => {
+                console.log('hi');
+                if($("#addEditMerchantIsOnline").is(":checked")){
+                    $("#addEditMerchantCity").prop("disabled", true);
+                    $("#addEditMerchantState").prop("disabled", true);
+                }
+                else{
+                    $("#addEditMerchantCity").prop("disabled", false);
+                    $("#addEditMerchantState").prop("disabled", false);
+                }});
+        });
 </script>
     }
