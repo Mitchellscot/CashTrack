@@ -7,9 +7,7 @@ using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.MerchantRepository;
 using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Services.Common;
-using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using CashTrack.Models.Common;
@@ -110,9 +108,6 @@ public class MerchantService : IMerchantService
                         var results = g.Aggregate(new MerchantListItemAccumulator(g.Key, merchants, categories), (acc, e) => acc.Accumulate(e), acc => acc.Compute());
                         return new MerchantListItem()
                         {
-                            //since I'm sorting through expenses here, there is one grouping that 
-                            //will be null, and that accounts for every expense that does not 
-                            //have a merchant assigned to it. So we account for it, than filter it out in the list.
                             Id = g.Key.HasValue ? g.Key.Value : 0,
                             Name = results.Merchant != null ? results.Merchant.Name : null,
                             NumberOfExpenses = results.Purchases,

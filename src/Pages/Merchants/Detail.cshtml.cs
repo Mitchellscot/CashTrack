@@ -3,6 +3,8 @@ using CashTrack.Pages.Shared;
 using CashTrack.Services.MerchantService;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Merchants
@@ -17,10 +19,11 @@ namespace CashTrack.Pages.Merchants
         public MerchantDetail Merchant { get; set; }
         [BindProperty]
         public int MerchantId { get; set; }
+        public string occuranceLabels { get; set; }
+        public string occuranceTotals { get; set; }
         public async Task<IActionResult> OnGet()
         {
             Merchant = await _merchantService.GetMerchantDetailAsync(id);
-
             return Page();
         }
         public async Task<IActionResult> OnPostDelete()
