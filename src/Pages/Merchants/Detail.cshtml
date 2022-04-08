@@ -2,6 +2,7 @@
 @using CashTrack.Models.MerchantModels
 @using System.Text.Json
 @using System.Web
+@using CashTrack.Pages.Shared
 @model CashTrack.Pages.Merchants.DetailModel
 @{
     Layout = "_Layout";
@@ -117,11 +118,11 @@
         <div class="row">
             <div class="col-6">
                 @*Pie graph goes here*@
-                <canvas id="categoryTotalsPie" height="300"></canvas>
+                <canvas id="categoryTotalsPie" height="200"></canvas>
             </div>
             <div class="col-6">
                 @*Recent Expense Table goes here*@
-                <canvas id="categoryOccurancesPie" height="300"></canvas>
+                <canvas id="categoryOccurancesPie" height="200"></canvas>
             </div>
         </div>
     </div>
@@ -131,160 +132,135 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
 <partial name="_ValidationScriptsPartial" />
-<script type="text/javascript">
-            @{
-                var labels = Json.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Year).ToArray());
-                var totals = Json.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Total).ToArray());
-            }
-            const ctx = document.getElementById('annualStatisticsChart').getContext('2d');
-            const annualStatisticsChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: @labels,
-                datasets: [{
-                    label: 'Total',
-                    data: @totals,
-                    color: 'rgba(0, 0, 0, 0)',
-                    backgroundColor: [
-                        'rgba(24, 188, 156, .8)'
-                    ],
-                    borderColor: [
-                        'rgba(24, 188, 156, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-          legend: {
-            display: true,
-            position: 'top',
-          },
-          title: {
-            display: false
-          }
-        }
-            }
-        });
-        @{
-            var categoryLabels = Html.Raw(Json.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Key).ToArray()));
-            var categoryTotals = Json.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Value).ToArray());
-        }
-            const cop = document.getElementById('categoryOccurancesPie').getContext('2d');
-            const categoryOccurancePie = new Chart(cop, {
-            type: 'pie',
-            data: {
-                labels: @categoryLabels,
-                datasets: [{
-                    label: 'Total',
-                    data: @categoryTotals,
-                    color: 'rgba(0, 0, 0, 0)',
-                    backgroundColor: [
-                        'rgba(44, 62, 88, .8)',
-                        'rgba(149, 165, 166, .8)',
-                        'rgba(24, 188, 156, .8)',
-                        'rgba(52, 152, 219, .8)',
-                        'rgba(243, 156, 18, .8)',
-                        'rgba(231, 76, 60, .8)',
-                        'rgba(123, 138, 139, .8)'
-                    ],
-                    borderColor: [
-                        'rgba(44, 62, 88, .8)',
-                        'rgba(149, 165, 166, .8)',
-                        'rgba(24, 188, 156, .8)',
-                        'rgba(52, 152, 219, .8)',
-                        'rgba(243, 156, 18, .8)',
-                        'rgba(231, 76, 60, .8)',
-                        'rgba(123, 138, 139, .8)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'left',
-                    },
-                    title: {
-                        display: false
-                    }
-                }
-            }
-        });
-            @{
-                var occuranceLabels = Html.Raw(Json.Serialize(Model.Merchant.PurchaseCategoryOccurances.Select(x => x.Key).ToArray()));
-                var occuranceTotals = Json.Serialize(Model.Merchant.PurchaseCategoryOccurances.Select(x => x.Value).ToArray());
-        }
-            const ctp = document.getElementById('categoryTotalsPie').getContext('2d');
-            const categoryTotalsPie = new Chart(ctp, {
-            type: 'pie',
-            data: {
-                labels: @occuranceLabels,
-                datasets: [{
-                    data: @occuranceTotals,
-                    color: 'rgba(0, 0, 0, 0)',
-                    backgroundColor: [
-                        'rgba(44, 62, 88, .8)',
-                        'rgba(149, 165, 166, .8)',
-                        'rgba(24, 188, 156, .8)',
-                        'rgba(52, 152, 219, .8)',
-                        'rgba(243, 156, 18, .8)',
-                        'rgba(231, 76, 60, .8)',
-                        'rgba(123, 138, 139, .8)'
-                    ],
-                    borderColor: [
-                        'rgba(44, 62, 88, .8)',
-                        'rgba(149, 165, 166, .8)',
-                        'rgba(24, 188, 156, .8)',
-                        'rgba(52, 152, 219, .8)',
-                        'rgba(243, 156, 18, .8)',
-                        'rgba(231, 76, 60, .8)',
-                        'rgba(123, 138, 139, .8)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'left',
-                    },
-                    title: {
-                        display: false
-                    }
-                }
-            }
-        });
-            $(document).ready(() => {
-                //toast notification
-                @if(Model.InfoMessage != null)
-                {
-                    @:$("#info-toast").show().delay(2000).fadeOut();
-                }
-                @if(Model.SuccessMessage != null)
-                {
-                    @:$("#success-toast").show().delay(2000).fadeOut();
-                }
-                @if(!ModelState.IsValid)
-                {
-                    @:$("#danger-toast").show().delay(4000).fadeOut();
-                }
+@await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+{
+    ChartType = ChartType.Bar,
+    UseDefaultColor = false,
+    ElementId = "annualStatisticsChart",
+    Labels = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Year).ToArray()),
+    Values = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Total).ToArray()),
+    Responsive = false
 
-                //disables city and state inputs if merchant is online - for add merchant modal
-                $("#addEditMerchantIsOnline").click(() => {
-                    if($("#addEditMerchantIsOnline").is(":checked")){
-                        $("#addEditMerchantCity").prop("disabled", true);
-                        $("#addEditMerchantState").prop("disabled", true);
-                    }
-                    else{
-                        $("#addEditMerchantCity").prop("disabled", false);
-                        $("#addEditMerchantState").prop("disabled", false);
-                    }});
-            });
+})
+<script type="text/javascript">
+    @{
+        var categoryLabels = Html.Raw(Json.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Key).ToArray()));
+        var categoryTotals = Json.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Value).ToArray());
+    }
+        const cop = document.getElementById('categoryOccurancesPie').getContext('2d');
+        const categoryOccurancePie = new Chart(cop, {
+        type: 'pie',
+        data: {
+            labels: @categoryLabels,
+            datasets: [{
+                label: 'Total',
+                data: @categoryTotals,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: [
+                    'rgba(44, 62, 88, .8)',
+                    'rgba(149, 165, 166, .8)',
+                    'rgba(24, 188, 156, .8)',
+                    'rgba(52, 152, 219, .8)',
+                    'rgba(243, 156, 18, .8)',
+                    'rgba(231, 76, 60, .8)',
+                    'rgba(123, 138, 139, .8)'
+                ],
+                borderColor: [
+                    'rgba(44, 62, 88, .8)',
+                    'rgba(149, 165, 166, .8)',
+                    'rgba(24, 188, 156, .8)',
+                    'rgba(52, 152, 219, .8)',
+                    'rgba(243, 156, 18, .8)',
+                    'rgba(231, 76, 60, .8)',
+                    'rgba(123, 138, 139, .8)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                },
+                title: {
+                    display: false
+                }
+            }
+        }
+    });
+        @{
+            var occuranceLabels = Html.Raw(Json.Serialize(Model.Merchant.PurchaseCategoryOccurances.Select(x => x.Key).ToArray()));
+            var occuranceTotals = Json.Serialize(Model.Merchant.PurchaseCategoryOccurances.Select(x => x.Value).ToArray());
+    }
+        const ctp = document.getElementById('categoryTotalsPie').getContext('2d');
+        const categoryTotalsPie = new Chart(ctp, {
+        type: 'pie',
+        data: {
+            labels: @occuranceLabels,
+            datasets: [{
+                data: @occuranceTotals,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: [
+                    'rgba(44, 62, 88, .8)',
+                    'rgba(149, 165, 166, .8)',
+                    'rgba(24, 188, 156, .8)',
+                    'rgba(52, 152, 219, .8)',
+                    'rgba(243, 156, 18, .8)',
+                    'rgba(231, 76, 60, .8)',
+                    'rgba(123, 138, 139, .8)'
+                ],
+                borderColor: [
+                    'rgba(44, 62, 88, .8)',
+                    'rgba(149, 165, 166, .8)',
+                    'rgba(24, 188, 156, .8)',
+                    'rgba(52, 152, 219, .8)',
+                    'rgba(243, 156, 18, .8)',
+                    'rgba(231, 76, 60, .8)',
+                    'rgba(123, 138, 139, .8)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                },
+                title: {
+                    display: false
+                }
+            }
+        }
+    });
+        $(document).ready(() => {
+            //toast notification
+            @if(Model.InfoMessage != null)
+            {
+                @:$("#info-toast").show().delay(2000).fadeOut();
+            }
+            @if(Model.SuccessMessage != null)
+            {
+                @:$("#success-toast").show().delay(2000).fadeOut();
+            }
+            @if(!ModelState.IsValid)
+            {
+                @:$("#danger-toast").show().delay(4000).fadeOut();
+            }
+
+            //disables city and state inputs if merchant is online - for add merchant modal
+            $("#addEditMerchantIsOnline").click(() => {
+                if($("#addEditMerchantIsOnline").is(":checked")){
+                    $("#addEditMerchantCity").prop("disabled", true);
+                    $("#addEditMerchantState").prop("disabled", true);
+                }
+                else{
+                    $("#addEditMerchantCity").prop("disabled", false);
+                    $("#addEditMerchantState").prop("disabled", false);
+                }});
+        });
 </script>
     }

@@ -1,0 +1,41 @@
+﻿@using System.Text.Json
+@model CashTrack.Pages.Shared._ChartPartial
+@{
+    var color = Model.UseDefaultColor ? Model.DefaultColor : Model.ColorArray;
+}
+@if (Model.ChartType == ChartType.Bar)
+{
+    <script>
+            const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+            const @Model.ElementId = new Chart(@Model.VariableName, {
+            type: 'bar',
+            data: {
+                labels: @Model.Labels,
+                datasets: [{
+                    label: 'Total',
+                    data: @Model.Values,
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: 
+        @Html.Raw(color)
+                    ,
+                    borderColor: 
+        @Html.Raw(color)
+                    ,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: @Model.Responsive.ToString().ToLower(),
+                plugins: {
+          legend: {
+            display: false,
+            position: 'top',
+          },
+          title: {
+            display: false
+          }
+        }
+            }
+        });
+    </script>
+}
