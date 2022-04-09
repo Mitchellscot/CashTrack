@@ -122,7 +122,7 @@
             </div>
             <div class="col-6">
                 @*Recent Expense Table goes here*@
-                <canvas id="categoryOccurancesPie" height="200"></canvas>
+                <canvas id="categoryOccurancesDonut" height="200"></canvas>
             </div>
         </div>
     </div>
@@ -132,110 +132,44 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
 <partial name="_ValidationScriptsPartial" />
+
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
     ChartType = ChartType.Bar,
-    UseDefaultColor = false,
+    UseDefaultColor = true,
     ElementId = "annualStatisticsChart",
     Labels = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Year).ToArray()),
-    Values = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Total).ToArray()),
+    Dataset = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Total).ToArray()),
+    Title = "Expenses",
     Responsive = false
+})
+@if(Model.Merchant.PurchaseCategoryTotals.Count() > 1){
+@await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+{
+    ChartType = ChartType.Pie,
+    UseDefaultColor = false,
+    ElementId = "categoryTotalsPie",
+    Labels = JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Key).ToArray()),
+    Dataset = JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Value).ToArray()),
+    Title = "Amount By Category",
+    Responsive = true
 
 })
+}
+@if(Model.Merchant.PurchaseCategoryOccurances.Count() > 1){
+@await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+{
+    ChartType = ChartType.Donut,
+    UseDefaultColor = false,
+    ElementId = "categoryOccurancesDonut",
+    Labels = JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryOccurances.Select(x => x.Key).ToArray()),
+    Dataset = JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryOccurances.Select(x => x.Value).ToArray()),
+    Title = "Purchase Frequency By Category",
+    Responsive = true
+})
+}
 <script type="text/javascript">
-    @{
-        var categoryLabels = Html.Raw(Json.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Key).ToArray()));
-        var categoryTotals = Json.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Value).ToArray());
-    }
-        const cop = document.getElementById('categoryOccurancesPie').getContext('2d');
-        const categoryOccurancePie = new Chart(cop, {
-        type: 'pie',
-        data: {
-            labels: @categoryLabels,
-            datasets: [{
-                label: 'Total',
-                data: @categoryTotals,
-                color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: [
-                    'rgba(44, 62, 88, .8)',
-                    'rgba(149, 165, 166, .8)',
-                    'rgba(24, 188, 156, .8)',
-                    'rgba(52, 152, 219, .8)',
-                    'rgba(243, 156, 18, .8)',
-                    'rgba(231, 76, 60, .8)',
-                    'rgba(123, 138, 139, .8)'
-                ],
-                borderColor: [
-                    'rgba(44, 62, 88, .8)',
-                    'rgba(149, 165, 166, .8)',
-                    'rgba(24, 188, 156, .8)',
-                    'rgba(52, 152, 219, .8)',
-                    'rgba(243, 156, 18, .8)',
-                    'rgba(231, 76, 60, .8)',
-                    'rgba(123, 138, 139, .8)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'bottom',
-                },
-                title: {
-                    display: false
-                }
-            }
-        }
-    });
-        @{
-            var occuranceLabels = Html.Raw(Json.Serialize(Model.Merchant.PurchaseCategoryOccurances.Select(x => x.Key).ToArray()));
-            var occuranceTotals = Json.Serialize(Model.Merchant.PurchaseCategoryOccurances.Select(x => x.Value).ToArray());
-    }
-        const ctp = document.getElementById('categoryTotalsPie').getContext('2d');
-        const categoryTotalsPie = new Chart(ctp, {
-        type: 'pie',
-        data: {
-            labels: @occuranceLabels,
-            datasets: [{
-                data: @occuranceTotals,
-                color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: [
-                    'rgba(44, 62, 88, .8)',
-                    'rgba(149, 165, 166, .8)',
-                    'rgba(24, 188, 156, .8)',
-                    'rgba(52, 152, 219, .8)',
-                    'rgba(243, 156, 18, .8)',
-                    'rgba(231, 76, 60, .8)',
-                    'rgba(123, 138, 139, .8)'
-                ],
-                borderColor: [
-                    'rgba(44, 62, 88, .8)',
-                    'rgba(149, 165, 166, .8)',
-                    'rgba(24, 188, 156, .8)',
-                    'rgba(52, 152, 219, .8)',
-                    'rgba(243, 156, 18, .8)',
-                    'rgba(231, 76, 60, .8)',
-                    'rgba(123, 138, 139, .8)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'bottom',
-                },
-                title: {
-                    display: false
-                }
-            }
-        }
-    });
+
         $(document).ready(() => {
             //toast notification
             @if(Model.InfoMessage != null)
