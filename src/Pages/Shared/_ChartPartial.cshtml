@@ -2,6 +2,7 @@
 @model CashTrack.Pages.Shared._ChartPartial
 @{
     var color = Model.UseDefaultColor ? Model.DefaultColor : Model.ColorArray;
+    var titleExists = string.IsNullOrEmpty(Model.Title) ? false : true;
 }
 @if (Model.ChartType == ChartType.Bar)
 {
@@ -13,12 +14,12 @@
                 labels: @Model.Labels,
                 datasets: [{
                     label: 'Total',
-                    data: @Model.Values,
+                    data: @Model.Dataset,
                     color: 'rgba(0, 0, 0, 0)',
-                    backgroundColor: 
+                    backgroundColor:
         @Html.Raw(color)
                     ,
-                    borderColor: 
+                    borderColor:
         @Html.Raw(color)
                     ,
                     borderWidth: 1
@@ -32,7 +33,82 @@
             position: 'top',
           },
           title: {
-            display: false
+            display: @titleExists.ToString().ToLower(),
+            text: '@Model.Title'
+          }
+        }
+            }
+        });
+    </script>
+}
+@if (Model.ChartType == ChartType.Pie)
+{
+    <script>
+            const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+            const @Model.ElementId = new Chart(@Model.VariableName, {
+            type: 'pie',
+            data: {
+                labels: @Html.Raw(@Model.Labels),
+                datasets: [{
+                    label: 'Total',
+                    data: @Model.Dataset,
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor:
+        @Html.Raw(color)
+                    ,
+                    borderColor:
+        @Html.Raw(color)
+                    ,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: @Model.Responsive.ToString().ToLower(),
+                plugins: {
+          legend: {
+            display: true,
+            position: 'bottom',
+          },
+          title: {
+            display: @titleExists.ToString().ToLower(),
+            text: '@Model.Title'
+          }
+        }
+            }
+        });
+    </script>
+}
+@if (Model.ChartType == ChartType.Donut)
+{
+    <script>
+            const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+            const @Model.ElementId = new Chart(@Model.VariableName, {
+            type: 'doughnut',
+            data: {
+                labels: @Html.Raw(@Model.Labels),
+                datasets: [{
+                    label: 'Total',
+                    data: @Model.Dataset,
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor:
+        @Html.Raw(color)
+                    ,
+                    borderColor:
+        @Html.Raw(color)
+                    ,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: @Model.Responsive.ToString().ToLower(),
+                plugins: {
+          legend: {
+            display: true,
+            position: 'bottom',
+          },
+          title: {
+            display: @titleExists.ToString().ToLower(),
+            text: '@Model.Title'
           }
         }
             }
