@@ -10,29 +10,10 @@
 
 <div class="container">
     @await Html.PartialAsync("_LoadingSpinner")
-    <div class="row align-items-center">
-        <div class="order-1 col-10 col-lg-4 d-flex align-content-center">
+    <div class="row d-flex align-content-center justify-content-center">
+        <div class="col-12 d-flex align-content-center justify-content-center">
             <h3 class="fw-bold">@Model.Merchant.Name</h3>
             <div class="text-muted align-self-center ms-2 fst-italic">@Model.Merchant.MostUsedCategory</div>
-        </div>
-        <div class="order-3 order-lg-2 col-4 col-lg-2 d-flex justify-content-center">
-            Month: &nbsp;<span class="fw-bold text-success">@Model.Merchant.ExpenseTotals.TotalSpentThisMonth</span>
-        </div>
-        <div class="order-4 order-lg-3 col-4 col-lg-2 d-flex justify-content-center">
-            Year: &nbsp;<span class="fw-bold text-success">@Model.Merchant.ExpenseTotals.TotalSpentThisYear</span>
-        </div>
-        <div class="order-5 order-lg-4 col-4 col-lg-2 d-flex justify-content-center">
-            Total: &nbsp;<span class="fw-bold text-success">@Model.Merchant.ExpenseTotals.TotalSpentAllTime</span>
-        </div>
-        <div class="col-2 col-lg-2 order-2 order-lg-5">
-            <div class="btn-group float-end">
-                <button type="button" class="btn btn-outline-primary px-0" data-bs-toggle="modal" data-bs-target="#editMerchantModal">
-                    <i class="bi bi-pencil text-black mx-3" role="img" style="font-size: 1rem;"></i>
-                </button>
-                <button type="button" class="btn btn-outline-danger px-0" data-bs-toggle="modal" data-bs-target="#deleteMerchantModal">
-                    <i class="bi bi-trash text-black mx-3" role="img" style="font-size: 1rem;"></i>
-                </button>
-            </div>
         </div>
     </div>
     @*Delete Model*@
@@ -74,30 +55,32 @@
     <hr />
     <div class="container border">
         <div class="row">
-            <div class="col-6">
-                <div class="input-group mx-auto mt-3 w-75">
+            <div class="col-4 mt-3">
+                <ul class="list-group text-center">
+                    <li class="list-group-item">Month: &nbsp;<span class="fw-bold text-success">@Model.Merchant.ExpenseTotals.TotalSpentThisMonth</span></li>
+                    <li class="list-group-item">Year: &nbsp;<span class="fw-bold text-success">@Model.Merchant.ExpenseTotals.TotalSpentThisYear</span></li>
+                    <li class="list-group-item">Total: &nbsp;<span class="fw-bold text-success">@Model.Merchant.ExpenseTotals.TotalSpentAllTime</span></li>
+                    <li class="list-group-item">Min</li>
+                    <li class="list-group-item">Max</li>
+                    <li class="list-group-item">Average</li>
+                    <li class="list-group-item">Count</li>
+                    <li class="list-group-item">Most Used Category</li>
+                </ul>
+            </div>
+            <div class="col-4">
+                <div class="input-group mx-auto m-3">
                     <span class="input-group-text d-none d-md-block">Name</span>
                     <input type="text" class="whiteBackgroundOnDisabled form-control text-center" asp-for="@Model.Merchant.Name" disabled />
                 </div>
-                <div class="input-group mx-auto w-75">
+                <div class="input-group mx-auto m-3">
                     <span class="input-group-text d-none d-md-block">City &nbsp;&nbsp;&nbsp;</span>
                     <input type="text" class="whiteBackgroundOnDisabled form-control text-center" asp-for="@Model.Merchant.City" disabled />
                 </div>
-                <div class="input-group mx-auto w-75">
+                <div class="input-group mx-auto m-3">
                     <span class="input-group-text d-none d-md-block">State&nbsp;</span>
                     <input type="text" class="whiteBackgroundOnDisabled form-control text-center" asp-for="@Model.Merchant.State" disabled />
                 </div>
-            </div>
-            <div class="col-6 mt-3 m-auto">
-                <div class="form-floating mb-3">
-                    <textarea type="text" class="form-control whiteBackgroundOnDisabled py-0" id="merchantNotes" asp-for="@Model.Merchant.Notes" disabled rows="2"></textarea>
-                    @if (string.IsNullOrEmpty(Model.Merchant.Notes))
-                    {
-                        <label for="merchantNotes">Description</label>
-                    }
-                </div>
-                <div class="input-group mx-auto">
-
+                <div class="input-group mx-auto m-3">
                     @{
                         var isOnlineText = Model.Merchant.IsOnline ? "Online" : "Not Online";
                         var isActiveText = Model.Merchant.SuggestOnLookup ? "Active" : "Inactive";
@@ -109,28 +92,83 @@
                     <input type="text" class="whiteBackgroundOnDisabled form-control text-center"
                            asp-for="@Model.Merchant.IsOnline" disabled value="@isActiveText" />
                 </div>
+                <div class="form-floating mx-auto m-3">
+                    <textarea type="text" class="form-control whiteBackgroundOnDisabled py-0" id="merchantNotes" asp-for="@Model.Merchant.Notes" disabled rows="2"></textarea>
+                    @if (string.IsNullOrEmpty(Model.Merchant.Notes))
+                    {
+                        <label for="merchantNotes">Description</label>
+                    }
+                </div>
+                <div class="row">
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-primary px-0" data-bs-toggle="modal" data-bs-target="#editMerchantModal">
+                    Edit <i class="bi bi-pencil text-black mx-3" role="img" style="font-size: 1rem;"></i>
+                </button>
+                <button type="button" class="btn btn-outline-danger px-0" data-bs-toggle="modal" data-bs-target="#deleteMerchantModal">
+                    Delete<i class="bi bi-trash text-black mx-3" role="img" style="font-size: 1rem;"></i>
+                </button>
+                <button type="button" class="btn btn-outline-success px-0">
+                    Expenses<i class="bi bi-search text-black mx-3" role="img" style="font-size: 1rem;"></i>
+                </button>
+            </div>
+        </div>
+            </div>
+            <div class="col-4 text-center ">
+                <div class="table-responsive-lg">
+                    <table class="table table-sm align-middle text-center mb-0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    Amount
+                                </th>
+                                <th>
+                                    Category
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var expense in @Model.Merchant.RecentExpenses)
+                            {
+                                <tr>
+                                    <td>
+                                        @expense.Date
+                                    </td>
+                                    <td>
+                                        @expense.Amount
+                                    </td>
+                                    <td>
+                                        @expense.SubCategory
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <hr />
         <div class="row">
             @*Annual Graph goes here*@
             <div class="col-12 col-xl-6">
-            <canvas id="expensesChart" height="400" style="max-height: 400px;"></canvas>
+                <canvas id="expensesChart" height="400" style="max-height: 400px;"></canvas>
             </div>
             <div class="col-12 col-xl-6">
-            @*Annual Graph goes here*@
-            <canvas id="statisticsChart" height="400" style="max-height: 400px;"></canvas>
+                @*Annual Graph goes here*@
+                <canvas id="statisticsChart" height="400" style="max-height: 400px;"></canvas>
             </div>
         </div>
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6">
                 @*Pie graph goes here*@
-                <canvas id="categoryTotalsPie" height="200"></canvas>
+                <canvas id="categoryTotalsPie" height="400" style="max-height: 400px;"></canvas>
             </div>
-            <div class="col-6">
-                @*Recent Expense Table goes here*@
-                <canvas id="categoryOccurancesDonut" height="200"></canvas>
+            <div class="col-12 col-md-6">
+                <canvas id="categoryOccurancesDonut" height="400" style="max-height: 400px;"></canvas>
             </div>
+
         </div>
     </div>
 </div>
@@ -174,7 +212,20 @@
     Labels = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Date.ToString("MM/yyyy")).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Total).ToArray()),
     Title = "Expense Totals",
-    Responsive = false
+    Responsive = true
+})
+@await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+{
+    ChartType = ChartType.LineMultiAxis,
+    UseDefaultColor = true,
+    ElementId = "statisticsChart",
+    Labels = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Date.ToString("MM/yyyy")).ToArray()),
+    Dataset = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Count).ToArray()),
+    Dataset2 = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Average).ToArray()),
+    Dataset3 = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Min).ToArray()),
+    Dataset4 = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Max).ToArray()),
+    Title = "Expense Statistics",
+    Responsive = true
 })
 }
 @if(Model.Merchant.PurchaseCategoryTotals.Count() > 1){
