@@ -127,7 +127,7 @@ public class MerchantService : IMerchantService
         var merchantExpenses = await _expenseRepo.GetExpensesAndCategoriesByMerchantId(id);
 
         var recentExpenses = merchantExpenses.OrderByDescending(e => e.Date)
-            .Take(10)
+            .Take(9)
             .Select(x => new ExpenseQuickView()
             {
                 Id = x.Id,
