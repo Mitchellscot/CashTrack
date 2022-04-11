@@ -133,6 +133,7 @@
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
 <partial name="_ValidationScriptsPartial" />
 
+@if(Model.Merchant.AnnualExpenseStatistics.Any()){
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
     ChartType = ChartType.BarAndLine,
@@ -144,6 +145,19 @@
     Title = "Expenses",
     Responsive = true
 })
+}
+@if(Model.Merchant.MonthlyExpenseStatistics.Any()){
+@await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+{
+    ChartType = ChartType.Bar,
+    UseDefaultColor = true,
+    ElementId = "annualStatisticsChart",
+    Labels = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Date.ToString("MM/yyyy")).ToArray()),
+    Dataset = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Total).ToArray()),
+    Title = "Expenses",
+    Responsive = false
+})
+}
 @if(Model.Merchant.PurchaseCategoryTotals.Count() > 1){
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
@@ -154,7 +168,6 @@
     Dataset = JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Value).ToArray()),
     Title = "Amount By Category",
     Responsive = true
-
 })
 }
 @if(Model.Merchant.PurchaseCategoryOccurances.Count() > 1){
@@ -171,31 +184,31 @@
 }
 <script type="text/javascript">
 
-        $(document).ready(() => {
-            //toast notification
-            @if(Model.InfoMessage != null)
-            {
-                @:$("#info-toast").show().delay(2000).fadeOut();
-            }
-            @if(Model.SuccessMessage != null)
-            {
-                @:$("#success-toast").show().delay(2000).fadeOut();
-            }
-            @if(!ModelState.IsValid)
-            {
-                @:$("#danger-toast").show().delay(4000).fadeOut();
-            }
+    $(document).ready(() => {
+        //toast notification
+        @if(Model.InfoMessage != null)
+        {
+            @:$("#info-toast").show().delay(2000).fadeOut();
+        }
+        @if(Model.SuccessMessage != null)
+        {
+            @:$("#success-toast").show().delay(2000).fadeOut();
+        }
+        @if(!ModelState.IsValid)
+        {
+            @:$("#danger-toast").show().delay(4000).fadeOut();
+        }
 
-            //disables city and state inputs if merchant is online - for add merchant modal
-            $("#addEditMerchantIsOnline").click(() => {
-                if($("#addEditMerchantIsOnline").is(":checked")){
-                    $("#addEditMerchantCity").prop("disabled", true);
-                    $("#addEditMerchantState").prop("disabled", true);
-                }
-                else{
-                    $("#addEditMerchantCity").prop("disabled", false);
-                    $("#addEditMerchantState").prop("disabled", false);
-                }});
-        });
+        //disables city and state inputs if merchant is online - for add merchant modal
+        $("#addEditMerchantIsOnline").click(() => {
+            if($("#addEditMerchantIsOnline").is(":checked")){
+                $("#addEditMerchantCity").prop("disabled", true);
+                $("#addEditMerchantState").prop("disabled", true);
+            }
+            else{
+                $("#addEditMerchantCity").prop("disabled", false);
+                $("#addEditMerchantState").prop("disabled", false);
+            }});
+    });
 </script>
     }
