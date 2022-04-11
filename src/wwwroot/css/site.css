@@ -77,6 +77,10 @@ div.nav-sub-link:hover * {
     text-decoration: none;
     overflow: hidden;
 }
+.responsive-text {
+    font-size: calc(100% + .05vw + .05vh);
+    overflow: hidden;
+}
 
 .orderIcon:hover * {
     color: #18bc9c !important;
@@ -142,6 +146,11 @@ ul.ui-autocomplete {
     padding: 0px;
     border: none;
 }
+
+.whiteBackgroundOnDisabled:disabled {
+    background: transparent !important;
+}
+
 /*Code for the loading spinner */
 .lds-spinner {
     color: #18bc9c;

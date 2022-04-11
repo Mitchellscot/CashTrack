@@ -5,8 +5,6 @@ using CashTrack.Models.ExpenseModels;
 using CashTrack.Services.Common;
 
 namespace CashTrack.Models.MerchantModels;
-
-
 public class MerchantRequest : PaginationRequest
 {
     public bool Reversed { get; set; }
@@ -27,8 +25,9 @@ public record Merchant
     public bool IsOnline { get; set; }
     public string Notes { get; set; }
 }
-public record AddMerchantModal : Merchant
+public record AddEditMerchantModal : Merchant
 {
+    public bool IsEdit { get; set; }
     public string Returnurl { get; set; }
 }
 public record MerchantListItem
@@ -45,7 +44,8 @@ public record MerchantDetail : Merchant
 {
     public ExpenseTotals ExpenseTotals { get; set; }
     public string MostUsedCategory { get; set; }
-    public List<AnnualExpenseStatistics> AnnualExpenseStatistics { get; set; }
+    public List<ExpenseStatistics> AnnualExpenseStatistics { get; set; }
+    public List<MonthlyExpenseStatistics> MonthlyExpenseStatistics { get; set; }
     public Dictionary<string, int> PurchaseCategoryOccurances { get; set; }
     public Dictionary<string, decimal> PurchaseCategoryTotals { get; set; }
     public List<ExpenseQuickView> RecentExpenses { get; set; }

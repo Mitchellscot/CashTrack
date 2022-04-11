@@ -29,9 +29,18 @@ namespace CashTrack.Services.Common
             return this;
         }
     }
-    public record AnnualExpenseStatistics
+    public record ExpenseStatistics
     {
         public int Year { get; set; }
+        public int Count { get; set; }
+        public decimal Average { get; set; }
+        public decimal Min { get; set; }
+        public decimal Max { get; set; }
+        public decimal Total { get; set; }
+    }
+    public record MonthlyExpenseStatistics
+    {
+        public DateTime Date { get; set; }
         public int Count { get; set; }
         public decimal Average { get; set; }
         public decimal Min { get; set; }

@@ -1,21 +1,19 @@
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.SubCategoryModels;
+using CashTrack.Pages.Shared;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Expenses
 {
-    public class SplitModel : PageModel
+    public class SplitModel : PageModelBase
     {
         private readonly IExpenseService _expenseService;
         private readonly ISubCategoryService _subCategoryService;
