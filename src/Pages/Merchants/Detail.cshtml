@@ -9,6 +9,7 @@
 }
 
 <div class="container">
+    @await Html.PartialAsync("_LoadingSpinner")
     <div class="row align-items-center">
         <div class="order-1 col-10 col-lg-4 d-flex align-content-center">
             <h3 class="fw-bold">@Model.Merchant.Name</h3>
@@ -113,7 +114,13 @@
         <hr />
         <div class="row">
             @*Annual Graph goes here*@
-            <canvas id="annualStatisticsChart" height="400"></canvas>
+            <div class="col-12 col-xl-6">
+            <canvas id="expensesChart" height="400" style="max-height: 400px;"></canvas>
+            </div>
+            <div class="col-12 col-xl-6">
+            @*Annual Graph goes here*@
+            <canvas id="statisticsChart" height="400" style="max-height: 400px;"></canvas>
+            </div>
         </div>
         <div class="row">
             <div class="col-6">
@@ -136,13 +143,25 @@
 @if(Model.Merchant.AnnualExpenseStatistics.Any()){
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
-    ChartType = ChartType.BarAndLine,
+    ChartType = ChartType.Bar,
     UseDefaultColor = true,
-    ElementId = "annualStatisticsChart",
+    ElementId = "expensesChart",
     Labels = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Year).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Total).ToArray()),
-    Dataset2 = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Count).ToArray()),
-    Title = "Expenses",
+    Title = "Expense Totals",
+    Responsive = true
+})
+@await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+{
+    ChartType = ChartType.LineMultiAxis,
+    UseDefaultColor = true,
+    ElementId = "statisticsChart",
+    Labels = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Year).ToArray()),
+    Dataset = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Count).ToArray()),
+    Dataset2 = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Average).ToArray()),
+    Dataset3 = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Min).ToArray()),
+    Dataset4 = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Max).ToArray()),
+    Title = "Expense Statistics",
     Responsive = true
 })
 }
@@ -151,10 +170,10 @@
 {
     ChartType = ChartType.Bar,
     UseDefaultColor = true,
-    ElementId = "annualStatisticsChart",
+    ElementId = "expensesChart",
     Labels = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Date.ToString("MM/yyyy")).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Total).ToArray()),
-    Title = "Expenses",
+    Title = "Expense Totals",
     Responsive = false
 })
 }
@@ -185,6 +204,14 @@
 <script type="text/javascript">
 
     $(document).ready(() => {
+        $('#loadingSpinner').hide();
+        $("a").click(() => {
+            $('#loadingSpinner').show();
+        });
+        $(".page-link").click(() => {
+            $('#loadingSpinner').show();
+        });
+
         //toast notification
         @if(Model.InfoMessage != null)
         {
