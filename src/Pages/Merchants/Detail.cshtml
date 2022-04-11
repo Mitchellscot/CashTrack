@@ -135,13 +135,14 @@
 
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
-    ChartType = ChartType.Bar,
+    ChartType = ChartType.BarAndLine,
     UseDefaultColor = true,
     ElementId = "annualStatisticsChart",
     Labels = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Year).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Total).ToArray()),
+    Dataset2 = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Count).ToArray()),
     Title = "Expenses",
-    Responsive = false
+    Responsive = true
 })
 @if(Model.Merchant.PurchaseCategoryTotals.Count() > 1){
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
