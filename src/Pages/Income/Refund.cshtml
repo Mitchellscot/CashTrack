@@ -1,4 +1,5 @@
 ﻿@page "{id}"
+@using CashTrack.Pages.Shared
 @model CashTrack.Pages.Incomes.RefundModel
 @{
     Layout = "_Layout";
@@ -6,26 +7,13 @@
 <div class="container">
         @if (!ViewData.ModelState.IsValid)
     {
-                    <div style="position: relative;">
-                        <div class="toast fade show mt-3 bg-danger" role="alert" id="modelStateToast" style="position: absolute; right: auto; top: 0; z-index:1200;">
-                            <div class="toast-body d-flex align-items-center" asp-validation-summary="All">
-                                <i class="bi bi-x-circle text-white mx-3" role="img"
-                   style="font-size: 1.5rem;"></i>
-                            </div>
-                        </div>
-                    </div>
+        @await Html.PartialAsync("_MessagePartial", new _MessagePartial() { MessageType = MessageType.Danger });
     }
     @if (Model.ExpenseSearch != null && !Model.ExpenseSearch.Any())
     {
-            <div style="position: relative;">
-                <div class="mt-0 toast fade show bg-info" role="alert" id="noExpensesToast" style="position: absolute; right: 0; top: 0; z-index:1200;">
-                    <div class="toast-body  d-flex justify-content-center align-items-center">
-                        <i class="bi bi-exclamation-circle text-white mx-3" role="button" data-bs-dismiss="toast"
-                   style="font-size: 1.5rem;"></i>
-                        <span style="font-size: 1.25rem;">No Expenses Found!</span>
-                    </div>
-                </div>
-            </div>
+        @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = "No Expenses Found!", MessageType = MessageType.Info })
+        ;
     }
     <div class="d-flex justify-content-between align-items-center">
         <h3>Refund an Expense</h3>
@@ -272,11 +260,11 @@
 
         @if(!ModelState.IsValid)
         {
-            @:$("#modelStateToast").show().delay(4000).fadeOut();
+            @:$("#danger-toast").show().delay(4000).fadeOut();
         }
         @if(Model.ExpenseSearch != null && !Model.ExpenseSearch.Any())
         {
-            @:$("#noExpensesToast").show().delay(2000).fadeOut();
+            @:$("#info-toast").show().delay(2000).fadeOut();
         }
         @if(Model.SelectedExpenses != null && Model.SelectedExpenses.Count() > 0)
         {

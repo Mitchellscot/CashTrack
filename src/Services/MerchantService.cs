@@ -7,12 +7,11 @@ using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.MerchantRepository;
 using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Services.Common;
-using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using CashTrack.Models.Common;
+using System;
 
 namespace CashTrack.Services.MerchantService;
 public interface IMerchantService
@@ -110,9 +109,6 @@ public class MerchantService : IMerchantService
                         var results = g.Aggregate(new MerchantListItemAccumulator(g.Key, merchants, categories), (acc, e) => acc.Accumulate(e), acc => acc.Compute());
                         return new MerchantListItem()
                         {
-                            //since I'm sorting through expenses here, there is one grouping that 
-                            //will be null, and that accounts for every expense that does not 
-                            //have a merchant assigned to it. So we account for it, than filter it out in the list.
                             Id = g.Key.HasValue ? g.Key.Value : 0,
                             Name = results.Merchant != null ? results.Merchant.Name : null,
                             NumberOfExpenses = results.Purchases,
@@ -128,10 +124,10 @@ public class MerchantService : IMerchantService
     {
         var merchantEntity = await _merchantRepo.FindById(id);
 
-        var merchantExpenses = await _expenseRepo.GetExpensesAndCategoriesByMerchantId(x => x.MerchantId == id);
+        var merchantExpenses = await _expenseRepo.GetExpensesAndCategoriesByMerchantId(id);
 
         var recentExpenses = merchantExpenses.OrderByDescending(e => e.Date)
-            .Take(10)
+            .Take(9)
             .Select(x => new ExpenseQuickView()
             {
                 Id = x.Id,
@@ -144,23 +140,71 @@ public class MerchantService : IMerchantService
                 (acc, e) => acc.Accumulate(e),
                 acc => acc.Compute());
 
-        var expenseStatistics = merchantExpenses.GroupBy(e => e.Date.Year)
-                .Select(g =>
-                {
-                    var results = g.Aggregate(new ExpenseStatisticsAggregator(),
-                        (acc, e) => acc.Accumulate(e),
-                        acc => acc.Compute());
-
-                    return new AnnualExpenseStatistics()
+        var expenseStatisticsByYear = merchantExpenses.GroupBy(e => e.Date.Year).ToList();
+        var annualExpenseStatistics = new List<ExpenseStatistics>();
+        var monthlyExpenseStatistics = new List<MonthlyExpenseStatistics>();
+        //If more than one year is present, organize expense statistics by year
+        if (expenseStatisticsByYear.Count() > 1)
+        {
+            annualExpenseStatistics = expenseStatisticsByYear
+                    .Select(g =>
                     {
-                        Year = g.Key,
-                        Average = results.Average,
-                        Min = results.Min,
-                        Max = results.Max,
-                        Total = results.Total,
-                        Count = results.Count
-                    };
-                }).OrderBy(x => x.Year).ToList();
+                        var results = g.Aggregate(new ExpenseStatisticsAggregator(),
+                            (acc, e) => acc.Accumulate(e),
+                            acc => acc.Compute());
+
+                        return new ExpenseStatistics()
+                        {
+                            Year = g.Key,
+                            Average = results.Average,
+                            Min = results.Min,
+                            Max = results.Max,
+                            Total = results.Total,
+                            Count = results.Count
+                        };
+                    }).OrderBy(x => x.Year).ToList();
+        }
+        //If expenses are only within one given year, organize expense statistics by month
+        else
+        {
+            var monthlyStats = merchantExpenses.GroupBy(e => e.Date.DateTime)
+            .Select(g =>
+            {
+                var results = g.Aggregate(new ExpenseStatisticsAggregator(),
+                    (acc, e) => acc.Accumulate(e),
+                    acc => acc.Compute());
+
+                return new MonthlyExpenseStatistics()
+                {
+                    Date = g.Key,
+                    Average = results.Average,
+                    Min = results.Min,
+                    Max = results.Max,
+                    Total = results.Total,
+                    Count = results.Count
+                };
+            }).OrderBy(x => x.Date).ToList();
+            var year = merchantExpenses.FirstOrDefault().Date.Year;
+            for (var i = 1; i <= 12; i++)
+            {
+                if (monthlyStats.Any(x => x.Date.Month == i))
+                {
+                    monthlyExpenseStatistics.Add(monthlyStats.Where(x => x.Date.Month == i).FirstOrDefault());
+                }
+                else
+                {
+                    monthlyExpenseStatistics.Add(new MonthlyExpenseStatistics()
+                    {
+                        Date = new DateTime(year, i, 1),
+                        Average = 0,
+                        Min = 0,
+                        Max = 0,
+                        Total = 0,
+                        Count = 0
+                    });
+                }
+            }
+        }
 
         var subCategories = await _subCategoryRepo.Find(x => true);
 
@@ -199,7 +243,8 @@ public class MerchantService : IMerchantService
             IsOnline = merchantEntity.IsOnline,
             ExpenseTotals = expenseTotals,
             MostUsedCategory = mostUsedCategory,
-            AnnualExpenseStatistics = expenseStatistics,
+            AnnualExpenseStatistics = annualExpenseStatistics,
+            MonthlyExpenseStatistics = monthlyExpenseStatistics,
             PurchaseCategoryOccurances = merchantExpenseCategories,
             PurchaseCategoryTotals = merchantExpenseAmounts,
             RecentExpenses = recentExpenses
@@ -221,7 +266,7 @@ public class MerchantService : IMerchantService
     public async Task<int> UpdateMerchantAsync(Merchant request)
     {
         var merchants = await _merchantRepo.Find(x => x.Name == request.Name);
-        if (merchants.Any())
+        if (merchants.Any(x => x.Id != request.Id))
             throw new DuplicateNameException(nameof(MerchantEntity), request.Name);
 
         var merchant = _mapper.Map<MerchantEntity>(request);

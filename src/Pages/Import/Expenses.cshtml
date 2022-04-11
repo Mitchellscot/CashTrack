@@ -46,7 +46,7 @@
               </ul>
 
               <div class="modal fade" id="addMerchantModal">
-                  @await Html.PartialAsync("_AddMerchantPartial", new AddMerchantModal() { Returnurl = "~/Import/Expenses", SuggestOnLookup = true })
+                  @await Html.PartialAsync("_AddMerchantPartial", new AddEditMerchantModal() { Returnurl = "~/Import/Expenses", SuggestOnLookup = true, IsEdit = false })
                   </div>
 
     @if(Model.ExpenseReviewResponse != null && Model.ExpenseReviewResponse.ListItems.Count() > 0)
@@ -237,15 +237,15 @@
         }
         
         //disables city and state inputs if merchant is online - for add merchant modal
-        $("#addMerchantIsOnline").click(() => {
+        $("#addEditMerchantIsOnline").click(() => {
             console.log('hi');
-            if($("#addMerchantIsOnline").is(":checked")){
-                $("#addMerchantCity").prop("disabled", true);
-                $("#addMerchantState").prop("disabled", true);
+            if($("#addEditMerchantIsOnline").is(":checked")){
+                $("#addEditMerchantCity").prop("disabled", true);
+                $("#addEditMerchantState").prop("disabled", true);
             }
             else{
-                $("#addMerchantCity").prop("disabled", false);
-                $("#addMerchantState").prop("disabled", false);
+                $("#addEditMerchantCity").prop("disabled", false);
+                $("#addEditMerchantState").prop("disabled", false);
             }});
 
         //creates a waiting effect while import script runs

@@ -10,11 +10,12 @@ using System.Collections.Generic;
 using CashTrack.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using CashTrack.Pages.Shared;
 
 namespace CashTrack.Pages
 {
     [AllowAnonymous]
-    public class LoginModel : PageModel
+    public class LoginModel : PageModelBase
     {
         private readonly SignInManager<UserEntity> _signInManager;
         private readonly UserManager<UserEntity> _userManager;
