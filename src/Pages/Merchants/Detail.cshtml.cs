@@ -1,7 +1,9 @@
+using CashTrack.Common.Exceptions;
 using CashTrack.Models.MerchantModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.MerchantService;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
 
@@ -19,9 +21,27 @@ namespace CashTrack.Pages.Merchants
         public int MerchantId { get; set; }
         public string occuranceLabels { get; set; }
         public string occuranceTotals { get; set; }
+        public SelectList MerchantSelectList { get; set; }
+        [BindProperty(SupportsGet =true)]
+        public string SearchTerm { get; set; }
         public async Task<IActionResult> OnGet()
         {
+            if (SearchTerm != null)
+            {
+                try
+                {
+                    var merchantId = (await _merchantService.GetMerchantByNameAsync(SearchTerm)).Id;
+                    return RedirectToPage("./Detail", new { id = merchantId });
+                }
+                catch (MerchantNotFoundException)
+                {
+                    InfoMessage = "No merchant found with the name " + SearchTerm;
+                    return Page();
+                }
+            }
+            var merchantNames = await _merchantService.GetAllMerchantNames();
             Merchant = await _merchantService.GetMerchantDetailAsync(id);
+            MerchantSelectList = new SelectList(merchantNames, Merchant.Name);
             return Page();
         }
         public async Task<IActionResult> OnPostDelete()

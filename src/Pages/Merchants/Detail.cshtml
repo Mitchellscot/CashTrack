@@ -58,20 +58,26 @@
             <div class="col-4 mt-3">
                 <ul class="list-group text-center">
                     <li class="list-group-item">Month: &nbsp;<span class="fw-bold text-success">@Model.Merchant.ExpenseTotals.TotalSpentThisMonth</span></li>
-                    <li class="list-group-item">Year: &nbsp;<span class="fw-bold text-success">@Model.Merchant.ExpenseTotals.TotalSpentThisYear</span></li>
-                    <li class="list-group-item">Total: &nbsp;<span class="fw-bold text-success">@Model.Merchant.ExpenseTotals.TotalSpentAllTime</span></li>
-                    <li class="list-group-item">Min</li>
-                    <li class="list-group-item">Max</li>
-                    <li class="list-group-item">Average</li>
-                    <li class="list-group-item">Count</li>
-                    <li class="list-group-item">Most Used Category</li>
+                    <li class="list-group-item">Year: &nbsp;<span class="fw-bold text-success responsive-text">@Model.Merchant.ExpenseTotals.TotalSpentThisYear</span></li>
+                    <li class="list-group-item">Total: &nbsp;<span class="fw-bold text-success responsive-text">@String.Format("{0:n}", Model.Merchant.ExpenseTotals.TotalSpentAllTime)</span></li>
+                    <li class="list-group-item">Min: &nbsp;<span class="fw-bold text-success responsive-text">@String.Format("{0:n}", Model.Merchant.ExpenseTotals.Min)</span></li>
+                    <li class="list-group-item">Max: &nbsp;<span class="fw-bold text-success responsive-text">@String.Format("{0:n}", Model.Merchant.ExpenseTotals.Max)</span></li>
+                    <li class="list-group-item">Average: &nbsp;<span class="fw-bold text-success responsive-text">@String.Format("{0:n}", Model.Merchant.ExpenseTotals.Average)</span></li>
+                    <li class="list-group-item">Count: &nbsp;<span class="fw-bold text-success responsive-text">@Model.Merchant.ExpenseTotals.Count</span></li>
+                    <li class="list-group-item d-none d-md-block">Category: &nbsp;<span class="fw-bold text-success responsive-text">@Model.Merchant.MostUsedCategory</span></li>
                 </ul>
             </div>
             <div class="col-4">
+                <form method="get">
                 <div class="input-group mx-auto m-3">
                     <span class="input-group-text d-none d-md-block">Name</span>
-                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center" asp-for="@Model.Merchant.Name" disabled />
+                    @*<input type="text" class="whiteBackgroundOnDisabled form-control text-center" asp-for="@Model.Merchant.Name" disabled />*@
+                    
+                    <select data-val="true" onchange="this.form.submit()" asp-for=@Model.SearchTerm asp-items="@Model.MerchantSelectList" class="form-select text-center w-auto" id="addEditMerchantState">
+        <option value="@Model.Merchant.Name" selected disabled hidden></option>
+    </select>
                 </div>
+                </form>
                 <div class="input-group mx-auto m-3">
                     <span class="input-group-text d-none d-md-block">City &nbsp;&nbsp;&nbsp;</span>
                     <input type="text" class="whiteBackgroundOnDisabled form-control text-center" asp-for="@Model.Merchant.City" disabled />
@@ -93,38 +99,38 @@
                            asp-for="@Model.Merchant.IsOnline" disabled value="@isActiveText" />
                 </div>
                 <div class="form-floating mx-auto m-3">
-                    <textarea type="text" class="form-control whiteBackgroundOnDisabled py-0" id="merchantNotes" asp-for="@Model.Merchant.Notes" disabled rows="2"></textarea>
+                    <textarea type="text" class="form-control whiteBackgroundOnDisabled py-0" id="merchantNotes" asp-for="@Model.Merchant.Notes" disabled rows="4"></textarea>
                     @if (string.IsNullOrEmpty(Model.Merchant.Notes))
                     {
                         <label for="merchantNotes">Description</label>
                     }
                 </div>
-                <div class="row">
-            <div class="btn-group">
-                <button type="button" class="btn btn-outline-primary px-0" data-bs-toggle="modal" data-bs-target="#editMerchantModal">
-                    Edit <i class="bi bi-pencil text-black mx-3" role="img" style="font-size: 1rem;"></i>
-                </button>
-                <button type="button" class="btn btn-outline-danger px-0" data-bs-toggle="modal" data-bs-target="#deleteMerchantModal">
-                    Delete<i class="bi bi-trash text-black mx-3" role="img" style="font-size: 1rem;"></i>
-                </button>
-                <button type="button" class="btn btn-outline-success px-0">
-                    Expenses<i class="bi bi-search text-black mx-3" role="img" style="font-size: 1rem;"></i>
-                </button>
+                <div class="d-flex align-content-center justify-content-center mb-0 mt-4">
+                    <a class="link-primary text-decoration-underline" href="#" data-bs-toggle="modal" data-bs-target="#editMerchantModal">
+                        Edit
+                    </a>&nbsp; | &nbsp;
+                    <a class="link-danger text-decoration-underline" href="#" data-bs-toggle="modal" data-bs-target="#deleteMerchantModal">
+                        Delete
+                    </a>
+                </div>
             </div>
-        </div>
-            </div>
-            <div class="col-4 text-center ">
+            <div class="col-4">
+                <div class="d-flex justify-content-center">
+                    <span class="mb-0 fw-bold d-none d-lg-block">Expenses</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="../Expenses/Index" asp-route-Query="7" asp-route-Q="@Model.Merchant.Name" asp-route-PageNumber="1">
+                        View All
+                    </a>
+                </div>
                 <div class="table-responsive-lg">
                     <table class="table table-sm align-middle text-center mb-0">
-                        <thead>
+                        <thead class="p-0 m-0">
                             <tr>
-                                <th>
+                                <th class="p-0 m-0">
                                     Date
                                 </th>
-                                <th>
+                                <th class="p-0 m-0">
                                     Amount
                                 </th>
-                                <th>
+                                <th class="p-0 m-0">
                                     Category
                                 </th>
                             </tr>
@@ -137,7 +143,7 @@
                                         @expense.Date
                                     </td>
                                     <td>
-                                        @expense.Amount
+                                        @String.Format("{0:n}", expense.Amount)
                                     </td>
                                     <td>
                                         @expense.SubCategory
@@ -151,18 +157,15 @@
         </div>
         <hr />
         <div class="row">
-            @*Annual Graph goes here*@
             <div class="col-12 col-xl-6">
                 <canvas id="expensesChart" height="400" style="max-height: 400px;"></canvas>
             </div>
             <div class="col-12 col-xl-6">
-                @*Annual Graph goes here*@
                 <canvas id="statisticsChart" height="400" style="max-height: 400px;"></canvas>
             </div>
         </div>
         <div class="row">
             <div class="col-12 col-md-6">
-                @*Pie graph goes here*@
                 <canvas id="categoryTotalsPie" height="400" style="max-height: 400px;"></canvas>
             </div>
             <div class="col-12 col-md-6">
@@ -256,9 +259,6 @@
 
     $(document).ready(() => {
         $('#loadingSpinner').hide();
-        $("a").click(() => {
-            $('#loadingSpinner').show();
-        });
         $(".page-link").click(() => {
             $('#loadingSpinner').show();
         });
