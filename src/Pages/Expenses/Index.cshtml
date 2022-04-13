@@ -206,7 +206,7 @@
                                     @expense.Date.Date.ToShortDateString()
                                 </td>
                                 <td>
-                                    @expense.Amount
+                                    @String.Format("{0:n}", expense.Amount)
                                 </td>
                                 <td>
                                     @expense.Merchant

@@ -46,6 +46,7 @@ namespace CashTrack.Pages.Merchants
         }
         public async Task<IActionResult> OnPostDelete()
         {
+            //TODO: need to grab every expense associated with this merchant and set the merchantId to null if successfully deleted.
             try
             {
                 var deleteSuccess = await _merchantService.DeleteMerchantAsync(MerchantId);

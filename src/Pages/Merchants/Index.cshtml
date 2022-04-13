@@ -169,7 +169,7 @@
                                     @item.NumberOfExpenses
                                 </td>
                                 <td width="20%">
-                                    @item.TotalSpent
+                                    @String.Format("{0:n}", item.TotalSpent)
                                 </td>
                                 <td width="15%">
                                     @if (item.LastPurchase != DateTime.MinValue)
