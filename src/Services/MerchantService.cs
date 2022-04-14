@@ -276,6 +276,16 @@ public class MerchantService : IMerchantService
     public async Task<bool> DeleteMerchantAsync(int id)
     {
         var merchant = await _merchantRepo.FindById(id);
+        var expenses = await _expenseRepo.Find(x => x.MerchantId == id);
+        if (!expenses.Any())
+            return await _merchantRepo.Delete(merchant);
+
+        foreach (var expense in expenses)
+        {
+            expense.MerchantId = null;
+            expense.Merchant = null;
+        }
+        var success = await _expenseRepo.UpdateMany(expenses.ToList());
 
         return await _merchantRepo.Delete(merchant);
     }
