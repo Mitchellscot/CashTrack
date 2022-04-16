@@ -1,4 +1,5 @@
 ﻿using CashTrack.Models.Common;
+using System;
 
 namespace CashTrack.Models.IncomeSourceModels;
 
@@ -27,6 +28,10 @@ public record IncomeSourceListItem
 {
     public int Id { get; set; }
     public string Name { get; set; }
+    public int Payments { get; set; }
+    public decimal Amount { get; set; }
+    public DateTime LastPayment { get; set; }
+    public string Category { get; set; }
 }
 public record IncomeSourceDetail : IncomeSource
 {

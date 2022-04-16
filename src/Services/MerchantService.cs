@@ -106,7 +106,7 @@ public class MerchantService : IMerchantService
         return expenses.GroupBy(e => e.MerchantId)
                     .Select(g =>
                     {
-                        var results = g.Aggregate(new MerchantListItemAccumulator(g.Key, merchants, categories), (acc, e) => acc.Accumulate(e), acc => acc.Compute());
+                        var results = g.Aggregate(new MerchantListItemAggregator(g.Key, merchants, categories), (acc, e) => acc.Accumulate(e), acc => acc.Compute());
                         return new MerchantListItem()
                         {
                             Id = g.Key.HasValue ? g.Key.Value : 0,

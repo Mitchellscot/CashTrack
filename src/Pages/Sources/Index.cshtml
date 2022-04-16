@@ -53,7 +53,7 @@
     @if (Model.SourceResponse != null && Model.SourceResponse.ListItems.Count() > 0)
     {
         <div class="row mt-2">
-            <div class="table-responsive">
+            <div class="table-responsive table-sm">
                 <table class="table table-bordered table-sm table-hover mb-0">
                     <thead>
                         <tr class="text-center table-primary" style="height: 34px; overflow: hidden; text-overflow: ellipsis; max-height: 34px; white-space: nowrap;">
@@ -85,24 +85,23 @@
                                     <a asp-page="./Detail" asp-route-id="@item.Id" style="text-decoration: none;" class="text-black">@item.Name</a>
                                 </td>
                                 <td width="10%">
-                                    @*                                    Count Goes Here*@
+                                    @item.Payments
                                 </td>
                                 <td width="20%">
-                                    @*                                    Amount Goes Here
-                                        @String.Format("{0:n}", item.TotalSpent)*@
+                                        @String.Format("{0:n}", item.Amount)
                                 </td>
                                 <td width="15%">
-                                    @*                                    @if (item.LastPayment != DateTime.MinValue)
+                                        @if (item.LastPayment != DateTime.MinValue)
                                         {
                                         @item.LastPayment.Date.ToShortDateString()
                                         }
                                         else
                                         {
                                         <span>N/A</span>
-                                        }*@
+                                        }
                                 </td>
                                 <td width="15%">
-                                    @*                                    @item.Category*@
+                                    @item.Category
                                 </td>
                                 <td width="5%">
                                     <a asp-page="./Detail" asp-route-id="@item.Id" class="text-primary">

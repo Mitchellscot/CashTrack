@@ -6,11 +6,11 @@ using System.Linq;
 namespace CashTrack.Services.Common
 {
 
-    public class MerchantListItemAccumulator
+    public class MerchantListItemAggregator
     {
         private readonly SubCategoryEntity[] _categories;
         private readonly MerchantEntity[] _merchants;
-        public MerchantListItemAccumulator(int? merchantId, MerchantEntity[] merchants, SubCategoryEntity[] categories)
+        public MerchantListItemAggregator(int? merchantId, MerchantEntity[] merchants, SubCategoryEntity[] categories)
         {
             _categories = categories;
             _merchants = merchants;
@@ -27,7 +27,7 @@ namespace CashTrack.Services.Common
         public string Location { get; private set; }
         public MerchantEntity Merchant { get; private set; }
         public int? MerchantId { get; private set; }
-        public MerchantListItemAccumulator Accumulate(ExpenseEntity e)
+        public MerchantListItemAggregator Accumulate(ExpenseEntity e)
         {
             Amount += e.Amount;
             LastPurchase = e.Date > this.LastPurchase ? e.Date.DateTime : this.LastPurchase;
@@ -35,7 +35,7 @@ namespace CashTrack.Services.Common
             Categories.Add(e.CategoryId.Value);
             return this;
         }
-        public MerchantListItemAccumulator Compute()
+        public MerchantListItemAggregator Compute()
         {
             MostUsedCategoryId = Categories.GroupBy(x => x).OrderByDescending(x => x.Count()).FirstOrDefault().Key;
             MostUsedCategory = _categories.Where(x => x.Id == MostUsedCategoryId).FirstOrDefault().Name;

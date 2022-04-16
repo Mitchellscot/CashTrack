@@ -7,6 +7,9 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using CashTrack.Repositories.IncomeRepository;
+using CashTrack.Services.Common;
 
 namespace CashTrack.Services.IncomeSourceService;
 
@@ -24,8 +27,9 @@ public class IncomeSourceService : IIncomeSourceService
 {
     private readonly IIncomeSourceRepository _repo;
     private readonly IMapper _mapper;
+    private readonly IIncomeRepository _incomeRepo;
 
-    public IncomeSourceService(IIncomeSourceRepository repo, IMapper mapper) => (_repo, _mapper) = (repo, mapper);
+    public IncomeSourceService(IIncomeSourceRepository repo, IIncomeRepository incomeRepo, IMapper mapper) => (_repo, _incomeRepo, _mapper) = (repo, incomeRepo, mapper);
 
     public async Task<int> CreateIncomeSourceAsync(IncomeSource request)
     {
@@ -62,17 +66,25 @@ public class IncomeSourceService : IIncomeSourceService
 
     public async Task<IncomeSourceResponse> GetIncomeSourcesAsync(IncomeSourceRequest request)
     {
-        Expression<Func<IncomeSourceEntity, bool>> returnAll = (IncomeSourceEntity x) => true;
-        Expression<Func<IncomeSourceEntity, bool>> searchSources = (IncomeSourceEntity x) => x.Name.ToLower().Contains(request.Query.ToLower());
+        var sources = await _repo.FindWithPagination(x => true, request.PageNumber, request.PageSize);
+        var income = await _incomeRepo.Find(x => true);
+        var categories = income.Select(x => x.Category).ToArray();
+        var count = await _repo.GetCount(x => true);
+        var sourceListItems = income.GroupBy(i => i.SourceId).Select(g =>
+            {
+                var results = g.Aggregate(new SourceListItemAggregator(g.Key, categories, sources), (acc, i) => acc.Accumulate(i), acc => acc.Compute());
+                return new IncomeSourceListItem()
+                {
+                    Id = g.Key.HasValue ? g.Key.Value : 0,
+                    Name = results.Source != null ? results.Source.Name : null,
+                    Payments = results.Payments,
+                    Amount = results.Amount,
+                    LastPayment = results.LastPayment,
+                    Category = results.MostUsedCategory
+                };
+            }).Where(x => x.Id > 0).OrderByDescending(x => x.LastPayment).ToArray();
 
-        var predicate = request.Query == null ? returnAll : searchSources;
-
-        var sources = await _repo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
-        var count = await _repo.GetCount(predicate);
-
-        var response = new IncomeSourceResponse(request.PageNumber, request.PageSize, count, _mapper.Map<IncomeSourceListItem[]>(sources));
-
-        return response;
+        return new IncomeSourceResponse(request.PageNumber, request.PageSize, count, sourceListItems);
     }
 
     public async Task<string[]> GetMatchingIncomeSourcesAsync(string name)

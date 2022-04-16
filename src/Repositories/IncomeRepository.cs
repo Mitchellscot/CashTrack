@@ -13,6 +13,7 @@ public interface IIncomeRepository : IRepository<IncomeEntity>
 {
     Task<decimal> GetAmountOfIncome(Expression<Func<IncomeEntity, bool>> predicate);
     Task<decimal> GetAmountOfIncomeNoRefunds(Expression<Func<IncomeEntity, bool>> predicate);
+    Task<IncomeEntity[]> GetIncomeAndCategoriesBySourceId(int id);
 }
 public class IncomeRepository : IIncomeRepository
 {
@@ -137,6 +138,22 @@ public class IncomeRepository : IIncomeRepository
             return await _ctx.Incomes
             .Where(predicate)
             .CountAsync();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<IncomeEntity[]> GetIncomeAndCategoriesBySourceId(int id)
+    {
+        try
+        {
+            var expenses = await _ctx.Incomes
+                .Where(x => x.SourceId == id)
+                .Include(x => x.Category)
+                .ToArrayAsync();
+            return expenses;
         }
         catch (Exception)
         {
