@@ -60,6 +60,9 @@
                             <th>
                                 Name
                             </th>
+                            <th>
+                                Description
+                            </th>
                             <th style="min-width: 117px;">
                                 Payments
                             </th>
@@ -84,21 +87,24 @@
                                 <td width="20%">
                                     <a asp-page="./Detail" asp-route-id="@item.Id" style="text-decoration: none;" class="text-black">@item.Name</a>
                                 </td>
+                                <td width="20%">
+                                    @item.Description
+                                </td>
                                 <td width="10%">
                                     @item.Payments
                                 </td>
-                                <td width="20%">
-                                        @String.Format("{0:n}", item.Amount)
+                                <td width="15%">
+                                    @String.Format("{0:n}", item.Amount)
                                 </td>
                                 <td width="15%">
-                                        @if (item.LastPayment != DateTime.MinValue)
-                                        {
+                                    @if (item.LastPayment != DateTime.MinValue)
+                                    {
                                         @item.LastPayment.Date.ToShortDateString()
-                                        }
-                                        else
-                                        {
+                                    }
+                                    else
+                                    {
                                         <span>N/A</span>
-                                        }
+                                    }
                                 </td>
                                 <td width="15%">
                                     @item.Category
