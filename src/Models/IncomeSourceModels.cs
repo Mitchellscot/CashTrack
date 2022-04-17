@@ -24,10 +24,9 @@ public record AddEditIncomeSourceModal : IncomeSource
     public bool SuggestOnLookup { get; set; }
     public bool IsEdit { get; set; }
 }
-public record IncomeSourceListItem
+public record IncomeSourceListItem : IncomeSource
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
+    new public int Id { get; set; }
     public int Payments { get; set; }
     public decimal Amount { get; set; }
     public DateTime LastPayment { get; set; }

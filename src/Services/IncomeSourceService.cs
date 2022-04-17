@@ -66,9 +66,9 @@ public class IncomeSourceService : IIncomeSourceService
 
     public async Task<IncomeSourceResponse> GetIncomeSourcesAsync(IncomeSourceRequest request)
     {
-        var sources = await _repo.FindWithPagination(x => true, request.PageNumber, request.PageSize);
+        var sources = await _repo.Find(x => true);
         var income = await _incomeRepo.Find(x => true);
-        var categories = income.Select(x => x.Category).ToArray();
+        var categories = income.Select(x => x.Category).Distinct().ToArray();
         var count = await _repo.GetCount(x => true);
         var sourceListItems = income.GroupBy(i => i.SourceId).Select(g =>
             {
@@ -80,9 +80,10 @@ public class IncomeSourceService : IIncomeSourceService
                     Payments = results.Payments,
                     Amount = results.Amount,
                     LastPayment = results.LastPayment,
-                    Category = results.MostUsedCategory
+                    Category = results.MostUsedCategory,
+                    Description = results.Source != null ? results.Source.Description : null,
                 };
-            }).Where(x => x.Id > 0).OrderByDescending(x => x.LastPayment).ToArray();
+            }).Where(x => x.Id > 0).OrderByDescending(x => x.LastPayment).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
 
         return new IncomeSourceResponse(request.PageNumber, request.PageSize, count, sourceListItems);
     }

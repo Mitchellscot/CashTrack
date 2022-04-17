@@ -55,9 +55,9 @@ public class MerchantRepository : IMerchantRepository
         {
             var merchants = await _context.Merchants
                 .Where(predicate)
+                .OrderBy(x => x.Name)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .OrderBy(x => x.Name)
                 .ToArrayAsync();
             return merchants;
         }
