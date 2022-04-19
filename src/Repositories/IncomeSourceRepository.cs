@@ -109,9 +109,6 @@ public class IncomeSourceRepository : IIncomeSourceRepository
     {
         try
         {
-            _ctx.ChangeTracker.Clear();
-            var contextAttachedEntity = _ctx.IncomeSources.Attach(entity);
-            contextAttachedEntity.State = EntityState.Modified;
             return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception();
         }
         catch (Exception)

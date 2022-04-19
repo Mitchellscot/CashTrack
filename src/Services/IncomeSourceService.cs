@@ -80,8 +80,7 @@ public class IncomeSourceService : IIncomeSourceService
                     Payments = results.Payments,
                     Amount = results.Amount,
                     LastPayment = results.LastPayment,
-                    Category = results.MostUsedCategory,
-                    Description = results.Source != null ? results.Source.Description : null,
+                    Category = results.MostUsedCategory
                 };
             }).Where(x => x.Id > 0).OrderByDescending(x => x.LastPayment).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
 
@@ -95,15 +94,20 @@ public class IncomeSourceService : IIncomeSourceService
 
     public async Task<int> UpdateIncomeSourceAsync(IncomeSource request)
     {
-        var checkId = await _repo.FindById(request.Id.Value);
-        if (checkId == null)
+        var source = await _repo.FindById(request.Id.Value);
+        if (source == null)
             throw new IncomeSourceNotFoundException(request.Id.Value.ToString());
 
         var nameCheck = await _repo.Find(x => x.Name == request.Name);
         if (nameCheck.Any())
             throw new DuplicateNameException(nameof(IncomeSourceEntity), request.Name);
 
-        var source = _mapper.Map<IncomeSourceEntity>(request);
+        source.Id = request.Id.Value;
+        source.Name = request.Name;
+        source.InUse = true;
+        source.Description = request.Description;
+
+
         return await _repo.Update(source);
     }
 }
