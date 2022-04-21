@@ -1,5 +1,8 @@
 ﻿using CashTrack.Models.Common;
+using CashTrack.Models.IncomeModels;
+using CashTrack.Services.Common;
 using System;
+using System.Collections.Generic;
 
 namespace CashTrack.Models.IncomeSourceModels;
 
@@ -35,5 +38,11 @@ public record IncomeSourceListItem
 }
 public record IncomeSourceDetail : IncomeSource
 {
-    //some other stuff goes here
+    public Totals IncomeTotals { get; set; }
+    public string MostUsedCategory { get; set; }
+    public List<AnnualStatistics> AnnualIncomeStatistcis { get; set; }
+    public List<MonthlyStatistics> MonthlyIncomeStatistcis { get; set; }
+    public Dictionary<string, int> PaymentCategoryOcurances { get; set; }
+    public Dictionary<string, decimal> PaymentCategoryTotals { get; set; }
+    public List<IncomeQuickView> RecentIncomes { get; set; }
 }
