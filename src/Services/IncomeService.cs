@@ -87,13 +87,12 @@ public class IncomeService : IIncomeService
     }
     public async Task<Income> GetIncomeByIdAsync(int id)
     {
-        //Change this to income detail in the future, once you know what you want it to look like.
         var singleExpense = await _incomeRespository.FindById(id);
         return _mapper.Map<Income>(singleExpense);
     }
     public async Task<int> CreateIncomeAsync(Income request)
     {
-        if(request.Category == "Refund")
+        if (request.Category == "Refund")
             request.IsRefund = true;
 
         var sourceId = 0;

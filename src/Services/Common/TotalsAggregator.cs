@@ -1,9 +1,9 @@
-﻿using CashTrack.Data.Entities;
+﻿using CashTrack.Data.Entities.Common;
 using System;
 
 namespace CashTrack.Services.Common
 {
-    public record ExpenseTotalsAggregator
+    public record TotalsAggregator<T> where T : Transactions
     {
         public decimal TotalSpentThisMonth { get; set; }
         public decimal TotalSpentThisYear { get; set; }
@@ -12,7 +12,7 @@ namespace CashTrack.Services.Common
         public decimal Max { get; set; }
         public decimal Average { get; set; }
         public int Count { get; set; }
-        public ExpenseTotalsAggregator()
+        public TotalsAggregator()
         {
             this.TotalSpentThisMonth = 0;
             this.TotalSpentThisYear = 0;
@@ -22,7 +22,7 @@ namespace CashTrack.Services.Common
             this.Average = 0;
             this.Count = 0;
         }
-        public ExpenseTotalsAggregator Accumulate(ExpenseEntity e)
+        public TotalsAggregator<T> Accumulate(T e)
         {
             if (e.Date.Month == DateTimeOffset.UtcNow.Month && e.Date.Year == DateTimeOffset.UtcNow.Year)
             {
@@ -38,9 +38,9 @@ namespace CashTrack.Services.Common
             Count++;
             return this;
         }
-        public ExpenseTotals Compute()
+        public Totals Compute()
         {
-            return new ExpenseTotals()
+            return new Totals()
             {
                 TotalSpentThisMonth = this.TotalSpentThisMonth,
                 TotalSpentThisYear = this.TotalSpentThisYear,
@@ -49,10 +49,10 @@ namespace CashTrack.Services.Common
                 Count = this.Count,
                 Min = this.Min,
                 Max = this.Max,
-        };
+            };
         }
     }
-    public record ExpenseTotals
+    public record Totals
     {
         public decimal TotalSpentThisMonth { get; set; }
         public decimal TotalSpentThisYear { get; set; }

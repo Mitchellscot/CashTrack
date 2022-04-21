@@ -27,5 +27,6 @@ public class Income : Transaction
 
 public class IncomeQuickView : Transaction
 {
+    new public string Date { get; set; }
     public string Category { get; set; }
 }

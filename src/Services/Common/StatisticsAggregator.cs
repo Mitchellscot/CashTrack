@@ -1,21 +1,22 @@
-﻿using CashTrack.Data.Entities;
+﻿using CashTrack.Data.Entities.Common;
 using System;
+
 
 namespace CashTrack.Services.Common
 {
-    public class ExpenseStatisticsAggregator
+    public class StatisticsAggregator<T> where T : Transactions
     {
         public decimal Max { get; set; }
         public decimal Min { get; set; }
         public decimal Total { get; set; }
         public int Count { get; set; }
         public decimal Average { get; set; }
-        public ExpenseStatisticsAggregator()
+        public StatisticsAggregator()
         {
             Max = decimal.MinValue;
             Min = decimal.MaxValue;
         }
-        public ExpenseStatisticsAggregator Accumulate(ExpenseEntity e)
+        public StatisticsAggregator<T> Accumulate(T e)
         {
             Total += e.Amount;
             Count++;
@@ -23,13 +24,13 @@ namespace CashTrack.Services.Common
             Min = Math.Min(Min, e.Amount);
             return this;
         }
-        public ExpenseStatisticsAggregator Compute()
+        public StatisticsAggregator<T> Compute()
         {
             Average = Math.Round(Total / Count, 2);
             return this;
         }
     }
-    public record ExpenseStatistics
+    public record AnnualStatistics
     {
         public int Year { get; set; }
         public int Count { get; set; }
@@ -38,7 +39,7 @@ namespace CashTrack.Services.Common
         public decimal Max { get; set; }
         public decimal Total { get; set; }
     }
-    public record MonthlyExpenseStatistics
+    public record MonthlyStatistics
     {
         public DateTime Date { get; set; }
         public int Count { get; set; }

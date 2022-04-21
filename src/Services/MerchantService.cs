@@ -138,17 +138,17 @@ public class MerchantService : IMerchantService
             Notes = merchant.Notes,
             IsOnline = merchant.IsOnline,
 
-            ExpenseTotals = expenses.Aggregate(new ExpenseTotalsAggregator(),
+            ExpenseTotals = expenses.Aggregate(new TotalsAggregator<ExpenseEntity>(),
                 (acc, e) => acc.Accumulate(e),
                 acc => acc.Compute()),
 
             MostUsedCategory = GetExpenseCategoryOccurances(subCategories, expenses).FirstOrDefault().Key,
 
             AnnualExpenseStatistics = expensesSpanMultipleYears ?
-            GetAnnualExpenseStatistics(expenses) : new List<ExpenseStatistics>(),
+            AggregateUtilities<ExpenseEntity>.GetAnnualStatistics(expenses) : new List<AnnualStatistics>(),
 
             MonthlyExpenseStatistics = expensesSpanMultipleYears ?
-            new List<MonthlyExpenseStatistics>() : GetMonthlyExpenseStatistics(expenses),
+            new List<MonthlyStatistics>() : AggregateUtilities<ExpenseEntity>.GetMonthlyStatistics(expenses),
 
             PurchaseCategoryOccurances = GetExpenseCategoryOccurances(subCategories, expenses),
             PurchaseCategoryTotals = GetExpenseCategoryTotals(subCategories, expenses),
@@ -189,68 +189,6 @@ public class MerchantService : IMerchantService
                 Category = x.Category,
                 Sum = x.Expenses.Sum(e => e.Amount)
             }).Where(x => x.Sum > 0).OrderByDescending(x => x.Sum).ToDictionary(k => k.Category, v => v.Sum);
-    }
-    private List<ExpenseStatistics> GetAnnualExpenseStatistics(ExpenseEntity[] expenses)
-    {
-        return expenses.GroupBy(e => e.Date.Year)
-                        .Select(g =>
-                        {
-                            var results = g.Aggregate(new ExpenseStatisticsAggregator(),
-                                (acc, e) => acc.Accumulate(e),
-                                acc => acc.Compute());
-                            return new ExpenseStatistics()
-                            {
-                                Year = g.Key,
-                                Average = results.Average,
-                                Min = results.Min,
-                                Max = results.Max,
-                                Total = results.Total,
-                                Count = results.Count
-                            };
-                        }).OrderBy(x => x.Year).ToList();
-    }
-    private List<MonthlyExpenseStatistics> GetMonthlyExpenseStatistics(ExpenseEntity[] expenses)
-    {
-        var monthlyExpenseStatistics = new List<MonthlyExpenseStatistics>();
-
-        var monthlyStats = expenses.GroupBy(e => e.Date.DateTime)
-        .Select(g =>
-        {
-            var results = g.Aggregate(new ExpenseStatisticsAggregator(),
-                (acc, e) => acc.Accumulate(e),
-                acc => acc.Compute());
-
-            return new MonthlyExpenseStatistics()
-            {
-                Date = g.Key,
-                Average = results.Average,
-                Min = results.Min,
-                Max = results.Max,
-                Total = results.Total,
-                Count = results.Count
-            };
-        }).OrderBy(x => x.Date).ToList();
-        var year = expenses.FirstOrDefault().Date.Year;
-        for (var i = 1; i <= 12; i++)
-        {
-            if (monthlyStats.Any(x => x.Date.Month == i))
-            {
-                monthlyExpenseStatistics.Add(monthlyStats.Where(x => x.Date.Month == i).FirstOrDefault());
-            }
-            else
-            {
-                monthlyExpenseStatistics.Add(new MonthlyExpenseStatistics()
-                {
-                    Date = new DateTime(year, i, 1),
-                    Average = 0,
-                    Min = 0,
-                    Max = 0,
-                    Total = 0,
-                    Count = 0
-                });
-            }
-        }
-        return monthlyExpenseStatistics;
     }
 
     public async Task<int> CreateMerchantAsync(Merchant request)
