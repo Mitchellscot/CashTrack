@@ -3,6 +3,7 @@ using CashTrack.Models.IncomeSourceModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.IncomeSourceService;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Sources
@@ -16,6 +17,8 @@ namespace CashTrack.Pages.Sources
         [BindProperty(SupportsGet = true)]
         public int PageNumber { get; set; } = 1;
         public IncomeSourceResponse SourceResponse { get; set; }
+        [BindProperty]
+        public AddEditIncomeSourceModal SourceModal { get; set; }
 
         public async Task<IActionResult> OnGet()
         {
@@ -37,5 +40,37 @@ namespace CashTrack.Pages.Sources
             SourceResponse = await _sourceService.GetIncomeSourcesAsync(new IncomeSourceRequest() { PageNumber = this.PageNumber });
             return Page();
         }
+        public async Task<IActionResult> OnPostAddEditIncomeSourceModal()
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Error adding Income Source. Please try again");
+                return LocalRedirect(SourceModal.ReturnUrl);
+            }
+            try
+            {
+                var newSource = new IncomeSource()
+                {
+                    Name = SourceModal.Name,
+                    Description = SourceModal.Description,
+                    InUse = SourceModal.InUse
+                };
+                if (SourceModal.IsEdit)
+                {
+                    newSource.Id = SourceModal.Id;
+                }
+
+                var sourceId = SourceModal.IsEdit ? await _sourceService.UpdateIncomeSourceAsync(newSource) : await _sourceService.CreateIncomeSourceAsync(newSource);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return LocalRedirect(SourceModal.ReturnUrl);
+            }
+
+            TempData["SuccessMessage"] = SourceModal.IsEdit ? "Successfully edited an Income Source!" : "Successfully added a new Income Source!";
+            return LocalRedirect(SourceModal.ReturnUrl);
+        }
+
     }
 }

@@ -24,7 +24,6 @@ public record IncomeSource
 public record AddEditIncomeSourceModal : IncomeSource
 {
     public string ReturnUrl { get; set; }
-    public bool SuggestOnLookup { get; set; }
     public bool IsEdit { get; set; }
 }
 public record IncomeSourceListItem
