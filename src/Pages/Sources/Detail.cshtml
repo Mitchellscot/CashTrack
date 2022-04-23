@@ -10,27 +10,45 @@
 
 <div class="container">
     @await Html.PartialAsync("_LoadingSpinner")
+    @if (Model.InfoMessage != null)
+    {
+        @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info })
+        ;
+    }
+    @if (Model.SuccessMessage != null)
+    {
+        @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success })
+        ;
+    }
+    @if (!ViewData.ModelState.IsValid)
+    {
+        @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger })
+        ;
+    }
     <div class="row mb-0">
         <div class="d-flex align-content-center justify-content-center col ms-5 ps-5">
-            <h3 class="fw-bold">@Model.SourceModal.Name</h3>
-            <div class="text-muted align-self-center ms-2 fst-italic">@Model.Merchant.MostUsedCategory</div>
+            <h3 class="fw-bold">@Model.Source.Name</h3>
+            <div class="text-muted align-self-center ms-2 fst-italic">@Model.Source.MostUsedCategory</div>
         </div>
         <div class="col-auto d-flex align-content-center justify-content-center mb-0 mt-2">
-            <a class="link-primary text-decoration-underline" href="#" data-bs-toggle="modal" data-bs-target="#editMerchantModal">
+            <a class="link-primary text-decoration-underline" href="#" data-bs-toggle="modal" data-bs-target="#editSourceModal">
                 Edit
             </a>&nbsp; | &nbsp;
-            <a class="link-danger text-decoration-underline" href="#" data-bs-toggle="modal" data-bs-target="#deleteMerchantModal">
+            <a class="link-danger text-decoration-underline" href="#" data-bs-toggle="modal" data-bs-target="#deleteSourceModal">
                 Delete
             </a>
         </div>
     </div>
     @*Delete Model*@
-    <div class="modal fade" id="deleteMerchantModal">
+    <div class="modal fade" id="deleteSourceModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header text-center">
                     <h5 class="modal-title text-center">
-                        <strong>Are you sure you want to Delete this Merchant?</strong>
+                        <strong>Are you sure you want to Delete this Income Source?</strong>
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true"></span>
@@ -41,23 +59,20 @@
                         Cancel
                     </button>
                     <form method="post">
-                        <button name="MerchantId" value="@Model.Merchant.Id" type="submit" class="btn btn-danger" asp-page-handler="Delete">DELETE</button>
+                        <button name="SourceId" value="@Model.Source.Id" type="submit" class="btn btn-danger" asp-page-handler="Delete">DELETE</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
     @*End Delete Modal*@
-    <div class="modal fade" id="editMerchantModal">
-        @await Html.PartialAsync("_AddMerchantPartial", new AddEditMerchantModal() {
-        Name = Model.Merchant.Name,
-        City = Model.Merchant.City,
-        State = Model.Merchant.State,
-        IsOnline = Model.Merchant.IsOnline,
-        Notes = Model.Merchant.Notes,
-        SuggestOnLookup = Model.Merchant.SuggestOnLookup,
+    <div class="modal fade" id="editSourceModal">
+        @await Html.PartialAsync("_AddIncomeSourcePartial", new AddEditIncomeSourceModal() {
+        Name = Model.Source.Name,
+        InUse = Model.Source.InUse,
+        Description = Model.Source.Description,
         IsEdit = true,
-        Returnurl="~/Merchants/Index"
+        ReturnUrl="~/Sources/Index"
         })
     </div>
     <hr />
@@ -65,58 +80,37 @@
         <div class="row">
             <div class="col-4 col-lg-3 mt-3">
                 <ul class="list-group text-center">
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Month: &nbsp;</span><span class="fw-bold text-primary">@Model.Merchant.ExpenseTotals.TotalSpentThisMonth</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Year: &nbsp;</span><span class="fw-bold text-primary responsive-text">@Model.Merchant.ExpenseTotals.TotalSpentThisYear</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Total: &nbsp;</span><span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Merchant.ExpenseTotals.TotalSpentAllTime)</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Min: &nbsp;</span><span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Merchant.ExpenseTotals.Min)</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Max: &nbsp;</span><span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Merchant.ExpenseTotals.Max)</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Average: &nbsp;</span><span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Merchant.ExpenseTotals.Average)</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Count: &nbsp;</span><span class="fw-bold text-primary responsive-text">@Model.Merchant.ExpenseTotals.Count</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Category: &nbsp;</span><span class="fw-bold text-primary responsive-text">@Model.Merchant.MostUsedCategory</span></li>
+                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Month: &nbsp;</span><span class="fw-bold text-primary">@Model.Source.IncomeTotals.TotalSpentThisMonth</span></li>
+                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Year: &nbsp;</span><span class="fw-bold text-primary responsive-text">@Model.Source.IncomeTotals.TotalSpentThisYear</span></li>
+                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Total: &nbsp;</span><span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Source.IncomeTotals.TotalSpentAllTime)</span></li>
+                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Min: &nbsp;</span><span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Source.IncomeTotals.Min)</span></li>
+                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Max: &nbsp;</span><span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Source.IncomeTotals.Max)</span></li>
+                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Average: &nbsp;</span><span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Source.IncomeTotals.Average)</span></li>
+                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Count: &nbsp;</span><span class="fw-bold text-primary responsive-text">@Model.Source.IncomeTotals.Count</span></li>
+                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Category: &nbsp;</span><span class="fw-bold text-primary responsive-text">@Model.Source.MostUsedCategory</span></li>
                 </ul>
             </div>
             <div class="col-4 col-lg-5">
                 <form method="get">
                     <div class="input-group mx-auto m-3">
                         <span class="input-group-text d-none d-lg-block">Name</span>
-                        <select data-val="true" onchange="this.form.submit()" asp-for=@Model.SearchTerm asp-items="@Model.MerchantSelectList" class="form-select text-center" id="addEditMerchantState">
-                            <option value="@Model.Merchant.Name" selected disabled hidden></option>
+                        <select data-val="true" onchange="this.form.submit()" asp-for=@Model.SearchTerm asp-items="@Model.SourceSelectList" class="form-select text-center" id="addEditSourceState">
+                            <option value="@Model.Source.Name" selected disabled hidden></option>
                         </select>
                     </div>
                 </form>
-                <div class="input-group mx-auto m-3">
-                    <span class="input-group-text d-none d-lg-block">City &nbsp;&nbsp;&nbsp;</span>
-                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center" asp-for="@Model.Merchant.City" disabled />
-                </div>
-                <div class="input-group mx-auto m-3">
-                    <span class="input-group-text d-none d-lg-block">State&nbsp;</span>
-                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center" asp-for="@Model.Merchant.State" disabled />
-                </div>
-                <div class="input-group mx-auto m-3">
-                    @{
-                        var isOnlineText = Model.Merchant.IsOnline ? "Online" : "Not Online";
-                        var isActiveText = Model.Merchant.SuggestOnLookup ? "Active" : "Inactive";
-                    }
-                    <span class="input-group-text d-none d-lg-block">Online</span>
-                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center"
-                           asp-for="@Model.Merchant.IsOnline" disabled value="@isOnlineText" />
-                </div>
-                <div class="input-group mx-auto m-3">
-                    <span class="input-group-text d-none d-lg-block">Active</span>
-                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center"
-                           asp-for="@Model.Merchant.IsOnline" disabled value="@isActiveText" />
-                </div>
                 <div class="form-floating mx-auto">
-                    <textarea type="text" class="form-control whiteBackgroundOnDisabled py-0" id="merchantNotes" asp-for="@Model.Merchant.Notes" disabled style="height: 75px"></textarea>
-                    @if (string.IsNullOrEmpty(Model.Merchant.Notes))
+                    <textarea type="text" class="form-control whiteBackgroundOnDisabled py-0" id="sourceDescription" asp-for="@Model.Source.Description" disabled style="height: 75px"></textarea>
+                    @if (string.IsNullOrEmpty(Model.Source.Description))
                     {
-                        <label for="merchantNotes">Description</label>
+                        <label asp-for="@Model.Source.Description">Description</label>
                     }
                 </div>
             </div>
             <div class="col-4">
                 <div class="d-flex justify-content-center">
-                    <span class="mb-0 fw-bold d-none d-lg-block">Recent Expenses</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="../Expenses/Index" asp-route-Query="7" asp-route-Q="@Model.Merchant.Name" asp-route-PageNumber="1">
+                    @*TODO: Make sure this redirects correctly*@
+                    <span class="mb-0 fw-bold d-none d-lg-block">Recent Expenses</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="../Income/Index" asp-route-Query="7" asp-route-Q="@Model.Source.Name" asp-route-PageNumber="1">
                         View All
                     </a>
                 </div>
@@ -136,17 +130,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var expense in @Model.Merchant.RecentExpenses)
+                            @foreach (var income in @Model.Source.RecentIncomes)
                             {
                                 <tr>
                                     <td>
-                                        @expense.Date
+                                        @income.Date
                                     </td>
                                     <td>
-                                        @String.Format("{0:n}", expense.Amount)
+                                        @String.Format("{0:n}", income.Amount)
                                     </td>
                                     <td>
-                                        @expense.SubCategory
+                                        @income.Category
                                     </td>
                                 </tr>
                             }
@@ -181,14 +175,14 @@
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
 <partial name="_ValidationScriptsPartial" />
 
-@if(Model.Merchant.AnnualExpenseStatistics.Any()){
+@if(Model.Source.AnnualIncomeStatistcis.Any()){
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
     ChartType = ChartType.Bar,
     UseDefaultColor = true,
     ElementId = "expensesChart",
-    Labels = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Year).ToArray()),
-    Dataset = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Total).ToArray()),
+    Labels = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Year).ToArray()),
+    Dataset = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Total).ToArray()),
     Title = "Expense Totals",
     Responsive = true
 })
@@ -197,23 +191,23 @@
     ChartType = ChartType.LineMultiAxis,
     UseDefaultColor = true,
     ElementId = "statisticsChart",
-    Labels = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Year).ToArray()),
-    Dataset = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Count).ToArray()),
-    Dataset2 = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Average).ToArray()),
-    Dataset3 = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Min).ToArray()),
-    Dataset4 = JsonSerializer.Serialize(Model.Merchant.AnnualExpenseStatistics.Select(x => x.Max).ToArray()),
+    Labels = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Year).ToArray()),
+    Dataset = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Count).ToArray()),
+    Dataset2 = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Average).ToArray()),
+    Dataset3 = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Min).ToArray()),
+    Dataset4 = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Max).ToArray()),
     Title = "Expense Statistics",
     Responsive = true
 })
 }
-@if(Model.Merchant.MonthlyExpenseStatistics.Any()){
+@if(Model.Source.MonthlyIncomeStatistcis.Any()){
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
     ChartType = ChartType.Bar,
     UseDefaultColor = true,
     ElementId = "expensesChart",
-    Labels = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Date.ToString("MM/yyyy")).ToArray()),
-    Dataset = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Total).ToArray()),
+    Labels = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Date.ToString("MM/yyyy")).ToArray()),
+    Dataset = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Total).ToArray()),
     Title = "Expense Totals",
     Responsive = true
 })
@@ -222,35 +216,35 @@
     ChartType = ChartType.LineMultiAxis,
     UseDefaultColor = true,
     ElementId = "statisticsChart",
-    Labels = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Date.ToString("MM/yyyy")).ToArray()),
-    Dataset = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Count).ToArray()),
-    Dataset2 = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Average).ToArray()),
-    Dataset3 = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Min).ToArray()),
-    Dataset4 = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Max).ToArray()),
+    Labels = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Date.ToString("MM/yyyy")).ToArray()),
+    Dataset = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Count).ToArray()),
+    Dataset2 = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Average).ToArray()),
+    Dataset3 = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Min).ToArray()),
+    Dataset4 = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Max).ToArray()),
     Title = "Expense Statistics",
     Responsive = true
 })
 }
-@if(Model.Merchant.PurchaseCategoryTotals.Count() > 1){
+@if(Model.Source.PaymentCategoryTotals.Count() > 1){
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
     ChartType = ChartType.Pie,
     UseDefaultColor = false,
     ElementId = "categoryTotalsPie",
-    Labels = JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Key).ToArray()),
-    Dataset = JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Value).ToArray()),
+    Labels = JsonSerializer.Serialize(Model.Source.PaymentCategoryTotals.Select(x => x.Key).ToArray()),
+    Dataset = JsonSerializer.Serialize(Model.Source.PaymentCategoryTotals.Select(x => x.Value).ToArray()),
     Title = "Amount By Category",
     Responsive = true
 })
 }
-@if(Model.Merchant.PurchaseCategoryOccurances.Count() > 1){
+@if(Model.Source.PaymentCategoryOcurances.Count() > 1){
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
     ChartType = ChartType.Donut,
     UseDefaultColor = false,
     ElementId = "categoryOccurancesDonut",
-    Labels = JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryOccurances.Select(x => x.Key).ToArray()),
-    Dataset = JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryOccurances.Select(x => x.Value).ToArray()),
+    Labels = JsonSerializer.Serialize(Model.Source.PaymentCategoryOcurances.Select(x => x.Key).ToArray()),
+    Dataset = JsonSerializer.Serialize(Model.Source.PaymentCategoryOcurances.Select(x => x.Value).ToArray()),
     Title = "Purchase Frequency By Category",
     Responsive = true
 })
@@ -277,16 +271,6 @@
             @:$("#danger-toast").show().delay(4000).fadeOut();
         }
 
-        //disables city and state inputs if merchant is online - for add merchant modal
-        $("#addEditMerchantIsOnline").click(() => {
-            if($("#addEditMerchantIsOnline").is(":checked")){
-                $("#addEditMerchantCity").prop("disabled", true);
-                $("#addEditMerchantState").prop("disabled", true);
-            }
-            else{
-                $("#addEditMerchantCity").prop("disabled", false);
-                $("#addEditMerchantState").prop("disabled", false);
-            }});
     });
 </script>
     }

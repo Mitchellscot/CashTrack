@@ -109,7 +109,7 @@ public class IncomeSourceRepository : IIncomeSourceRepository
     {
         try
         {
-            return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception();
+            return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("An error occured while trying to save the income source.");
         }
         catch (Exception)
         {

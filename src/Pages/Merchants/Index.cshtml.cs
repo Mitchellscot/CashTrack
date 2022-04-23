@@ -50,7 +50,8 @@ namespace CashTrack.Pages.Merchants
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Error adding Merchant. Please try again");
-                return LocalRedirect(MerchantModal.Returnurl);
+                MerchantResponse = await _merchantService.GetMerchantsAsync(new MerchantRequest() { Reversed = Q2, Order = Query, PageNumber = this.PageNumber });
+                return Page();
             }
             try
             {
@@ -67,18 +68,14 @@ namespace CashTrack.Pages.Merchants
                 {
                     newMerchant.Id = MerchantModal.Id;
                 }
-                if (MerchantModal.IsOnline)
-                {
-                    newMerchant.City = null;
-                    newMerchant.State = null;
-                }
 
                 var merchantSuccess = MerchantModal.IsEdit ? await _merchantService.UpdateMerchantAsync(newMerchant) : await _merchantService.CreateMerchantAsync(newMerchant);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                return LocalRedirect(MerchantModal.Returnurl);
+                MerchantResponse = await _merchantService.GetMerchantsAsync(new MerchantRequest() { Reversed = Q2, Order = Query, PageNumber = this.PageNumber });
+                return Page();
             }
 
             TempData["SuccessMessage"] = MerchantModal.IsEdit ? "Successfully edited a Merchant!" : "Successfully added a new Merchant!";

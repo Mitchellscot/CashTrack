@@ -125,6 +125,9 @@ public class IncomeService : IIncomeService
             throw new CategoryNotFoundException("null");
 
         var currentIncome = await _incomeRespository.FindById(request.Id.Value);
+        if (currentIncome == null)
+            throw new IncomeNotFoundException(request.Id.Value.ToString());
+
         var categoryId = (await _categoryRepository.Find(x => x.Name == request.Category)).FirstOrDefault().Id;
 
         currentIncome.Amount = request.Amount;
