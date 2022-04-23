@@ -87,13 +87,12 @@ public class IncomeService : IIncomeService
     }
     public async Task<Income> GetIncomeByIdAsync(int id)
     {
-        //Change this to income detail in the future, once you know what you want it to look like.
         var singleExpense = await _incomeRespository.FindById(id);
         return _mapper.Map<Income>(singleExpense);
     }
     public async Task<int> CreateIncomeAsync(Income request)
     {
-        if(request.Category == "Refund")
+        if (request.Category == "Refund")
             request.IsRefund = true;
 
         var sourceId = 0;
@@ -126,6 +125,9 @@ public class IncomeService : IIncomeService
             throw new CategoryNotFoundException("null");
 
         var currentIncome = await _incomeRespository.FindById(request.Id.Value);
+        if (currentIncome == null)
+            throw new IncomeNotFoundException(request.Id.Value.ToString());
+
         var categoryId = (await _categoryRepository.Find(x => x.Name == request.Category)).FirstOrDefault().Id;
 
         currentIncome.Amount = request.Amount;
@@ -152,6 +154,7 @@ public class IncomeMapperProfile : Profile
             .ForMember(x => x.Amount, o => o.MapFrom(x => x.Amount))
             .ForMember(x => x.Category, o => o.MapFrom(x => x.Category.Name))
             .ForMember(x => x.Source, o => o.MapFrom(x => x.Source.Name))
+            .ForMember(x => x.SourceId, o => o.NullSubstitute(null))
             .ForMember(x => x.Notes, o => o.MapFrom(x => x.Notes))
             .ForMember(x => x.IsRefund, o => o.MapFrom(x => x.IsRefund))
             .ForMember(x => x.RefundNotes, o => o.MapFrom(x => x.RefundNotes));

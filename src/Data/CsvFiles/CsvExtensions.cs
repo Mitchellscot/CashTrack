@@ -62,10 +62,10 @@ namespace CashTrack.Data.CsvFiles
                     Id = Convert.ToInt32(columns[0]),
                     Name = columns[1],
                     SuggestOnLookup = ParseBoolean(columns[2]),
-                    City = null,
-                    State = null,
+                    City = columns[3] == "" ? null : columns[3],
+                    State = columns[4] == "" ? null : columns[4],
                     IsOnline = ParseBoolean(columns[5]),
-                    Notes = null
+                    Notes = columns[6] == "" ? null : columns[6]
                 };
             }
         }
@@ -78,8 +78,8 @@ namespace CashTrack.Data.CsvFiles
                 {
                     Id = Convert.ToInt32(columns[0]),
                     Name = columns[1],
-                    Description = columns[2],
-                    InUse = true
+                    Description = columns[2] == "" ? null : columns[2],
+                    InUse = ParseBoolean(columns[3])
                 };
             }
         }
@@ -92,8 +92,11 @@ namespace CashTrack.Data.CsvFiles
                 {
                     Id = Convert.ToInt32(columns[0]),
                     Name = columns[1],
-                    Description = columns[2],
-                    InUse = true
+                    Notes = columns[2] == "" ? null : columns[2],
+                    SuggestOnLookup = ParseBoolean(columns[3]),
+                    City = columns[4] == "" ? null : columns[4],
+                    State = columns[5] == "" ? null : columns[5],
+                    IsOnline = ParseBoolean(columns[6]),
                 };
             }
         }

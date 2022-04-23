@@ -146,24 +146,30 @@ public class ExpenseService : IExpenseService
     {
         if (request.Id == null)
             throw new ArgumentException("Need an id to update an expense");
-        //try to just update the properties here and then save it without clearing the context
-        var currentExpense = await _expenseRepo.Find(x => x.Id == request.Id.Value);
+
+        if (string.IsNullOrEmpty(request.SubCategory))
+            throw new CategoryNotFoundException("null");
+
+        var currentExpense = await _expenseRepo.FindById(request.Id.Value);
         if (currentExpense == null)
             throw new ExpenseNotFoundException(request.Id.Value.ToString());
 
-        var expenseEntity = new ExpenseEntity()
-        {
-            Id = request.Id.Value,
-            Amount = request.Amount,
-            Date = request.Date,
-            CategoryId = request.SubCategoryId,
-            ExcludeFromStatistics = request.ExcludeFromStatistics,
-            Notes = request.Notes,
-            MerchantId = string.IsNullOrEmpty(request.Merchant) ? null : int.Parse(request.Merchant)
-            //add expense_tags in the future
-        };
+        var categoryId = (await _subCategoryRepo.Find(x => x.Name == request.SubCategory)).FirstOrDefault().Id;
 
-        return await _expenseRepo.Update(expenseEntity);
+        currentExpense.Amount = request.Amount;
+        currentExpense.Date = request.Date;
+        currentExpense.Notes = request.Notes;
+        currentExpense.CategoryId = categoryId;
+        currentExpense.ExcludeFromStatistics = request.ExcludeFromStatistics;
+        currentExpense.RefundNotes = request.RefundNotes;
+
+        if (request.Merchant != null)
+            currentExpense.MerchantId = (await _merchantRepo.Find(x => x.Name == request.Merchant)).FirstOrDefault().Id;
+
+        //TODO: Setup up tags in the future
+        //currentExpense.ExpenseTags
+
+        return await _expenseRepo.Update(currentExpense);
     }
     public async Task<bool> DeleteExpenseAsync(int id)
     {
@@ -231,6 +237,7 @@ public class ExpenseMapperProfile : Profile
             .ForMember(e => e.Amount, o => o.MapFrom(src => src.Amount))
             .ForMember(e => e.Notes, o => o.MapFrom(src => src.Notes))
             .ForMember(e => e.Merchant, o => o.MapFrom(src => src.Merchant.Name))
+            .ForMember(e => e.MerchantId, o => o.NullSubstitute(null))
             .ForMember(e => e.SubCategory, o => o.MapFrom(src => src.Category.Name))
             .ForMember(e => e.SubCategoryId, o => o.MapFrom(src => src.Category.Id))
             .ForMember(e => e.MainCategory, o => o.MapFrom(src => src.Category.MainCategory.Name))

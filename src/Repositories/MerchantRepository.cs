@@ -55,9 +55,9 @@ public class MerchantRepository : IMerchantRepository
         {
             var merchants = await _context.Merchants
                 .Where(predicate)
+                .OrderBy(x => x.Name)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .OrderBy(x => x.Name)
                 .ToArrayAsync();
             return merchants;
         }
@@ -144,10 +144,7 @@ public class MerchantRepository : IMerchantRepository
     {
         try
         {
-            _context.ChangeTracker.Clear();
-            var contextAttachedEntity = _context.Merchants.Attach(entity);
-            contextAttachedEntity.State = EntityState.Modified;
-            return await _context.SaveChangesAsync() > 0 ? entity.Id : throw new Exception();
+            return await _context.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("An error occured while trying to save the merchant.");
         }
         catch (Exception)
         {

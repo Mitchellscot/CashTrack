@@ -4,6 +4,7 @@ using CashTrack.Data.Entities;
 using CashTrack.Repositories.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -13,6 +14,8 @@ public interface IIncomeRepository : IRepository<IncomeEntity>
 {
     Task<decimal> GetAmountOfIncome(Expression<Func<IncomeEntity, bool>> predicate);
     Task<decimal> GetAmountOfIncomeNoRefunds(Expression<Func<IncomeEntity, bool>> predicate);
+    Task<IncomeEntity[]> GetIncomeAndCategoriesBySourceId(int id);
+    Task<bool> UpdateMany(List<IncomeEntity> entities);
 }
 public class IncomeRepository : IIncomeRepository
 {
@@ -144,12 +147,39 @@ public class IncomeRepository : IIncomeRepository
         }
     }
 
+    public async Task<IncomeEntity[]> GetIncomeAndCategoriesBySourceId(int id)
+    {
+        try
+        {
+            var expenses = await _ctx.Incomes
+                .Where(x => x.SourceId == id)
+                .Include(x => x.Category)
+                .ToArrayAsync();
+            return expenses;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
     public async Task<int> Update(IncomeEntity entity)
     {
         try
         {
-
-            return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception();
+            return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("An error occured while trying to save the income.");
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+    public async Task<bool> UpdateMany(List<IncomeEntity> entities)
+    {
+        try
+        {
+            _ctx.Incomes.UpdateRange(entities);
+            return await (_ctx.SaveChangesAsync()) > 0;
         }
         catch (Exception)
         {

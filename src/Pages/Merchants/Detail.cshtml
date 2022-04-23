@@ -41,7 +41,8 @@
                         Cancel
                     </button>
                     <form method="post">
-                        <button name="MerchantId" value="@Model.Merchant.Id" type="submit" class="btn btn-danger" asp-page-handler="Delete">DELETE</button>
+                        @*This might not work, need to test this. If it doesn't you need to create a new page property of MerchantId instead of just using the curent id*@
+                        <button name="id" value="@Model.Merchant.Id" type="submit" class="btn btn-danger" asp-page-handler="Delete">DELETE</button>
                     </form>
                 </div>
             </div>
@@ -102,7 +103,7 @@
                            asp-for="@Model.Merchant.IsOnline" disabled value="@isOnlineText" />
                 </div>
                 <div class="input-group mx-auto m-3">
-                                        <span class="input-group-text d-none d-lg-block">Active</span>
+                    <span class="input-group-text d-none d-lg-block">Active</span>
                     <input type="text" class="whiteBackgroundOnDisabled form-control text-center"
                            asp-for="@Model.Merchant.IsOnline" disabled value="@isActiveText" />
                 </div>

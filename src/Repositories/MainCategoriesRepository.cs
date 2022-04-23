@@ -99,10 +99,7 @@ namespace CashTrack.Repositories.MainCategoriesRepository
         {
             try
             {
-                _context.ChangeTracker.Clear();
-                var contextAttachedEntity = _context.MainCategories.Attach(entity);
-                contextAttachedEntity.State = EntityState.Modified;
-                return await _context.SaveChangesAsync() > 0 ? entity.Id : throw new Exception();
+                return await _context.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("An error occured while trying to save the main category.");
             }
             catch (Exception)
             {

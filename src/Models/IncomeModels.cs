@@ -18,6 +18,7 @@ public class Income : Transaction
 {
     new public int? Id { get; set; }
     public string Source { get; set; }
+    public int? SourceId { get; set; }
     public string Category { get; set; }
     public string Notes { get; set; }
     public bool CreateNewSource { get; set; }
@@ -27,5 +28,6 @@ public class Income : Transaction
 
 public class IncomeQuickView : Transaction
 {
+    new public string Date { get; set; }
     public string Category { get; set; }
 }
