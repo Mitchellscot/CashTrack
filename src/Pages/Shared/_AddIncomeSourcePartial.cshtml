@@ -3,17 +3,23 @@
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
         <div class="modal-header text-center">
-            <h5 class="modal-title w-100">Add a New Income Source</h5>
+            @{var addOrEdit = Model.IsEdit ? "Edit" : "Add";}
+            <h5 class="modal-title w-100">@addOrEdit Income Source</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal">
             </button>
         </div>
         <div class="modal-body">
             <div class="container-fluid">
                 <form method="post"
-                      asp-page="../IncomeSource/Index"
-                      asp-page-handler="AddIncomeSourceModal"
+                      asp-page="../Sources/Index"
+                      asp-page-handler="AddEditIncomeSourceModal"
                       id="addIncomeSourceForm">
+                      <input asp-for="@Model.IsEdit" type="hidden" />
                     <input asp-for="@Model.ReturnUrl" type="hidden" />
+                    @if (Model.IsEdit)
+                    {
+                        <input asp-for="@Model.Id" type="hidden" />
+                    }
                     <div class="row mb-3">
                         <div class="col-8">
                             <label class="visually-hidden" asp-for="@Model.Name">Name</label>
@@ -43,7 +49,7 @@
         <div class="modal-footer d-flex justify-content-evenly">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <form>
-                <button type="submit" class="btn btn-primary" form="addIncomeSourceForm">Add New Income Source</button>
+                <button type="submit" class="btn btn-primary" form="addIncomeSourceForm">@addOrEdit Income Source</button>
             </form>
         </div>
     </div>

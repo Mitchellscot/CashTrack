@@ -45,10 +45,9 @@
             <span style="color: red;" asp-validation-for="@Model.SearchTerm"></span>
             <button class="btn btn-primary float-end" id="addSourceButton" data-bs-toggle="modal" data-bs-target="#addSourceModal">Add Income Source</button>
             <div class="modal fade" id="addSourceModal">
-                @await Html.PartialAsync("_AddIncomeSourcePartial", new AddEditIncomeSourceModal() { ReturnUrl = "~/Sources/Index", SuggestOnLookup = true, IsEdit = false })
+                @await Html.PartialAsync("_AddIncomeSourcePartial", new AddEditIncomeSourceModal() { ReturnUrl = "~/Sources/Index", IsEdit = false, InUse = true })
             </div>
         </div>
-
     </div>
     @if (Model.SourceResponse != null && Model.SourceResponse.ListItems.Count() > 0)
     {
