@@ -209,8 +209,7 @@
                                     @String.Format("{0:n}", expense.Amount)
                                 </td>
                                 <td>
-                                    @expense.Merchant
-
+                                    <a class="text-black" asp-page="../Merchants/Detail" asp-route-id="@expense.MerchantId">@expense.Merchant</a>
                                 </td>
                                 <td>
                                     @expense.SubCategory
