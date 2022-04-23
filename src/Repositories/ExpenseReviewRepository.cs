@@ -110,10 +110,7 @@ public class ExpenseReviewRepository : IExpenseReviewRepository
     {
         try
         {
-            _ctx.ChangeTracker.Clear();
-            var Entity = _ctx.ExpensesToReview.Attach(entity);
-            Entity.State = EntityState.Modified;
-            return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception();
+            return await _context.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("An error occured while trying to update the expense review.");
         }
         catch (Exception)
         {

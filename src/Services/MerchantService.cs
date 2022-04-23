@@ -205,9 +205,17 @@ public class MerchantService : IMerchantService
     {
         var merchants = await _merchantRepo.Find(x => x.Name == request.Name);
         if (merchants.Any(x => x.Id != request.Id))
-            throw new DuplicateNameException(nameof(MerchantEntity), request.Name);
+            throw new DuplicateNameException(request.Name, nameof(MerchantEntity));
 
-        var merchant = _mapper.Map<MerchantEntity>(request);
+        var merchant = merchants.FirstOrDefault(x => x.Id == request.Id.Value);
+
+        merchant.Name = request.Name;
+        merchant.City = request.IsOnline ? null : request.City;
+        merchant.State = request.IsOnline ? null: request.State;
+        merchant.Notes = request.Notes;
+        merchant.IsOnline = request.IsOnline;
+        merchant.SuggestOnLookup = request.SuggestOnLookup;
+        
         return await _merchantRepo.Update(merchant);
     }
 

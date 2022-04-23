@@ -105,10 +105,7 @@ public class ExpenseRepository : IExpenseRepository
     {
         try
         {
-            _ctx.ChangeTracker.Clear();
-            var Entity = _ctx.Expenses.Attach(entity);
-            Entity.State = EntityState.Modified;
-            return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception();
+            return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("An error occured while trying to save the expense.");
         }
         catch (Exception)
         {

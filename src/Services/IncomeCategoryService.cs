@@ -80,15 +80,18 @@ public class IncomeCategoryService : IIncomeCategoryService
 
     public async Task<int> UpdateIncomeCategoryAsync(AddEditIncomeCategory request)
     {
-        var checkId = await _repo.FindById(request.Id.Value);
-        if (checkId == null)
+        var categories = await _repo.Find(x => x.Name == request.Name);
+        if (categories.Any(x => x.Id != request.Id))
+            throw new DuplicateNameException(request.Name, nameof(IncomeCategoryEntity));
+
+        var category = categories.First(x => x.Id == request.Id.Value);
+        if (category == null)
             throw new CategoryNotFoundException(request.Id.Value.ToString());
 
-        var nameCheck = await _repo.Find(x => x.Name == request.Name);
-        if (nameCheck.Any())
-            throw new DuplicateNameException(nameof(IncomeCategoryEntity), request.Name);
-
-        var category = _mapper.Map<IncomeCategoryEntity>(request);
+        category.Name = request.Name;
+        category.Description = request.Description;
+        category.InUse = request.InUse;
+        
         return await _repo.Update(category);
     }
 }

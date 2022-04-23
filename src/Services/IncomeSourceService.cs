@@ -88,21 +88,17 @@ public class IncomeSourceService : IIncomeSourceService
     public async Task<string[]> GetMatchingIncomeSourcesAsync(string name)
     {
         return (await _sourceRepo.Find(x => x.Name.StartsWith(name) && x.InUse == true)).Select(x => x.Name).Take(10).ToArray();
-    }
+    } 
 
     public async Task<int> UpdateIncomeSourceAsync(IncomeSource request)
     {
-        var source = await _sourceRepo.FindById(request.Id.Value);
-        if (source == null)
-            throw new IncomeSourceNotFoundException(request.Id.Value.ToString());
-
-        var nameCheck = await _sourceRepo.Find(x => x.Name == request.Name);
-        if (nameCheck.Any())
-            throw new DuplicateNameException(nameof(IncomeSourceEntity), request.Name);
-
-        source.Id = request.Id.Value;
+        var sources = await _sourceRepo.Find(x => x.Name == request.Name);
+        if (sources.Any(x => x.Id != request.Id))
+            throw new DuplicateNameException(request.Name, nameof(IncomeSourceEntity));
+        var source = sources.First(x => x.Id == request.Id.Value);
+        
         source.Name = request.Name;
-        source.InUse = true;
+        source.InUse = request.InUse;
         source.Description = request.Description;
 
         return await _sourceRepo.Update(source);

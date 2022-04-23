@@ -38,8 +38,6 @@ public class IncomeReviewService : IIncomeReviewService
 
     public async Task<int> SetIncomeReviewToIgnoreAsync(int id)
     {
-        //only sets it to reviewed... nothing else
-        //might have bugs here... if so take off change tracker in repo
         var income = await _repo.FindById(id);
         if (income == null)
             throw new IncomeNotFoundException(id.ToString());

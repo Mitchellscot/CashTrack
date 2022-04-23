@@ -64,15 +64,19 @@ public class SubCategoryService : ISubCategoryService
     }
     public async Task<int> UpdateSubCategoryAsync(AddEditSubCategory request)
     {
-        var checkId = await _subCategoryRepo.FindById(request.Id.Value);
-        if (checkId == null)
+        var categories = await _subCategoryRepo.Find(x => x.Name == request.Name);
+        if (categories.Any(x => x.Id != request.Id))
+            throw new DuplicateNameException(request.Name, nameof(SubCategoryEntity));
+
+        var category = categories.First(x => x.Id == request.Id.Value);
+        if (category == null)
             throw new CategoryNotFoundException(request.Id.Value.ToString());
 
-        var nameCheck = await _subCategoryRepo.Find(x => x.Name == request.Name);
-        if (nameCheck.Any())
-            throw new DuplicateNameException(nameof(SubCategoryEntity), request.Name);
+        category.Name = request.Name;
+        category.Notes = request.Notes;
+        category.InUse = request.InUse;
+        category.MainCategoryId = request.MainCategoryId;
 
-        var category = _mapper.Map<SubCategoryEntity>(request);
         return await _subCategoryRepo.Update(category);
     }
     public async Task<bool> DeleteSubCategoryAsync(int id)

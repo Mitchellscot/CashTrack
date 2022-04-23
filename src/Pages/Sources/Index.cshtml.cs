@@ -45,7 +45,8 @@ namespace CashTrack.Pages.Sources
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Error adding Income Source. Please try again");
-                return LocalRedirect(SourceModal.ReturnUrl);
+                SourceResponse = await _sourceService.GetIncomeSourcesAsync(new IncomeSourceRequest() { PageNumber = this.PageNumber });
+                return Page();
             }
             try
             {
@@ -65,7 +66,8 @@ namespace CashTrack.Pages.Sources
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                return LocalRedirect(SourceModal.ReturnUrl);
+                SourceResponse = await _sourceService.GetIncomeSourcesAsync(new IncomeSourceRequest() { PageNumber = this.PageNumber });
+                return Page();
             }
 
             TempData["SuccessMessage"] = SourceModal.IsEdit ? "Successfully edited an Income Source!" : "Successfully added a new Income Source!";
