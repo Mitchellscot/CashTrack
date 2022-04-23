@@ -3,7 +3,9 @@
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
         <div class="modal-header text-center">
-            @{var addOrEdit = Model.IsEdit ? "Edit" : "Add";}
+            @{
+                var addOrEdit = Model.IsEdit ? "Edit" : "Add";
+            }
             <h5 class="modal-title w-100">@addOrEdit Income Source</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal">
             </button>
@@ -14,11 +16,11 @@
                       asp-page="../Sources/Index"
                       asp-page-handler="AddEditIncomeSourceModal"
                       id="addIncomeSourceForm">
-                      <input asp-for="@Model.IsEdit" type="hidden" />
+                    <input asp-for="@Model.IsEdit" type="hidden" />
                     <input asp-for="@Model.ReturnUrl" type="hidden" />
                     @if (Model.IsEdit)
                     {
-                        <input asp-for="@Model.Id" type="hidden" />
+                            <input asp-for="@Model.Id" type="hidden" />
                     }
                     <div class="row mb-3">
                         <div class="col-8">
@@ -31,18 +33,49 @@
                         </div>
                         <div class="col-4 align-self-center border rounded py-1">
                             <div class="form-check form-switch ">
-                                <label class="form-check-label" asp-for="@Model.InUse">Suggest On Lookup</label>
-                                <input class="form-check-input" type="checkbox" role="switch" id="addIncomeSourceInUse" data-val="true"
-                                       asp-for="@Model.InUse" />
-                                <span asp-validation-for="@Model.InUse"></span>
+                                <label class="form-check-label" asp-for="@Model.SuggestOnLookup">Suggest On Lookup</label>
+                                <input class="form-check-input" type="checkbox" role="switch" id="addIncomeSourceSuggestOnLookup" data-val="true"
+                                       asp-for="@Model.SuggestOnLookup" />
+                                <span asp-validation-for="@Model.SuggestOnLookup"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-4">
+                            <label class="visually-hidden" asp-for="@Model.City">City</label>
+                            <div class="input-group">
+                                <div class="input-group-text">City</div>
+                                <input data-val="true" asp-for=@Model.City type="text" class="form-control text-center" id="addEditSourceCity">
+                                <span asp-validation-for="@Model.City"></span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <label class="visually-hidden" asp-for="@Model.State">State</label>
+                            <div class="input-group">
+                                <div class="input-group-text">State</div>
+                                @{
+                                    var states = new List<string> { "MN", "CA", "VA", "Various" };
+                                    var dropdownList = new SelectList(states);
+                                }
+                                <select data-val="true" asp-for=@Model.State asp-items="dropdownList" data-width="100%" class="form-control text-center" id="addEditSourceState">
+                                    <option value="" selected disabled hidden></option>
+                                </select>
+                                <span asp-validation-for="@Model.State"></span>
+                            </div>
+                        </div>
+                        <div class="col-4 align-self-center border rounded py-1">
+                            <div class="form-check form-switch ">
+                                <label class="form-check-label" asp-for="@Model.IsOnline">Online Source</label>
+                                <input class="form-check-input" type="checkbox" role="switch" id="addEditSourceIsOnline" data-val="true" asp-for="@Model.IsOnline" />
+                                <span asp-validation-for="@Model.IsOnline"></span>
                             </div>
                         </div>
                     </div>
                     <div class="row mb-3 px-1">
-                        <label class="visually-hidden" asp-for="@Model.Description"></label>
-                        <textarea class="form-control" asp-for="@Model.Description" id="addIncomeSourceDescription" rows="3" placeholder="Description"></textarea>
+                        <label class="visually-hidden" asp-for="@Model.Notes"></label>
+                        <textarea class="form-control" asp-for="@Model.Notes" id="addIncomeSourceNotes" rows="3" placeholder="Notes"></textarea>
                     </div>
-                    <span style="color: red;" asp-validation-for="@Model.Description"></span>
+                    <span style="color: red;" asp-validation-for="@Model.Notes"></span>
                 </form>
             </div>
         </div>

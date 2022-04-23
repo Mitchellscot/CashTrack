@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CashTrack.Data.Entities
@@ -10,7 +11,11 @@ namespace CashTrack.Data.Entities
         [StringLength(100)]
         [Required]
         public string Name { get; set; }
-        public string Description { get; set; }
-        public bool InUse { get; set; }
+        public string Notes { get; set; }
+        public bool SuggestOnLookup { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public bool IsOnline { get; set; }
+        public ICollection<IncomeEntity> Incomes { get; set; }
     }
 }

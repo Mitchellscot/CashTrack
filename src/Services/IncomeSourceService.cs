@@ -97,7 +97,7 @@ public class IncomeSourceService : IIncomeSourceService
 
     public async Task<string[]> GetMatchingIncomeSourcesAsync(string name)
     {
-        return (await _sourceRepo.Find(x => x.Name.StartsWith(name) && x.InUse == true)).Select(x => x.Name).Take(10).ToArray();
+        return (await _sourceRepo.Find(x => x.Name.StartsWith(name) && x.SuggestOnLookup == true)).Select(x => x.Name).Take(10).ToArray();
     }
 
     public async Task<int> UpdateIncomeSourceAsync(IncomeSource request)
@@ -108,8 +108,11 @@ public class IncomeSourceService : IIncomeSourceService
         var source = sources.First(x => x.Id == request.Id.Value);
 
         source.Name = request.Name;
-        source.InUse = request.InUse;
-        source.Description = request.Description;
+        source.SuggestOnLookup = request.SuggestOnLookup;
+        source.Notes = request.Notes;
+        source.City = request.City;
+        source.State = request.State;
+        source.IsOnline = request.IsOnline;
 
         return await _sourceRepo.Update(source);
     }
@@ -125,8 +128,11 @@ public class IncomeSourceService : IIncomeSourceService
         {
             Id = source.Id,
             Name = source.Name,
-            InUse = source.InUse,
-            Description = source.Description,
+            SuggestOnLookup = source.SuggestOnLookup,
+            Notes = source.Notes,
+            City = source.City,
+            State = source.State,
+            IsOnline = source.IsOnline,
 
             IncomeTotals = incomes.Aggregate(new TotalsAggregator<IncomeEntity>(),
                 (acc, i) => acc.Accumulate(i),
@@ -189,8 +195,11 @@ public class IncomeSourcesProfile : Profile
         CreateMap<IncomeSource, IncomeSourceEntity>()
             .ForMember(x => x.Id, o => o.MapFrom(src => src.Id))
             .ForMember(x => x.Name, o => o.MapFrom(src => src.Name))
-            .ForMember(x => x.Description, o => o.MapFrom(src => src.Description))
-            .ForMember(x => x.InUse, o => o.MapFrom(src => src.InUse))
+            .ForMember(x => x.Notes, o => o.MapFrom(src => src.Notes))
+            .ForMember(x => x.SuggestOnLookup, o => o.MapFrom(src => src.SuggestOnLookup))
+            .ForMember(x => x.City, o => o.MapFrom(src => src.City))
+            .ForMember(x => x.State, o => o.MapFrom(src => src.State))
+            .ForMember(x => x.IsOnline, o => o.MapFrom(src => src.IsOnline))
             .ReverseMap();
     }
 }
