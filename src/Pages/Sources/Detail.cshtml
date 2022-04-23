@@ -69,8 +69,8 @@
     <div class="modal fade" id="editSourceModal">
         @await Html.PartialAsync("_AddIncomeSourcePartial", new AddEditIncomeSourceModal() {
         Name = Model.Source.Name,
-        InUse = Model.Source.InUse,
-        Description = Model.Source.Description,
+        SuggestOnLookup = Model.Source.SuggestOnLookup,
+        Notes = Model.Source.Notes,
         IsEdit = true,
         ReturnUrl="~/Sources/Index"
         })
@@ -99,11 +99,33 @@
                         </select>
                     </div>
                 </form>
+                <div class="input-group mx-auto m-3">
+                    <span class="input-group-text d-none d-lg-block">City &nbsp;&nbsp;&nbsp;</span>
+                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center" asp-for="@Model.Source.City" disabled />
+                </div>
+                <div class="input-group mx-auto m-3">
+                    <span class="input-group-text d-none d-lg-block">State&nbsp;</span>
+                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center" asp-for="@Model.Source.State" disabled />
+                </div>
+                <div class="input-group mx-auto m-3">
+                    @{
+                        var isOnlineText = Model.Source.IsOnline ? "Online" : "Not Online";
+                        var isActiveText = Model.Source.SuggestOnLookup ? "Active" : "Inactive";
+                    }
+                    <span class="input-group-text d-none d-lg-block">Online</span>
+                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center"
+                           asp-for="@Model.Source.IsOnline" disabled value="@isOnlineText" />
+                </div>
+                <div class="input-group mx-auto m-3">
+                    <span class="input-group-text d-none d-lg-block">Active</span>
+                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center"
+                           asp-for="@Model.Source.IsOnline" disabled value="@isActiveText" />
+                </div>
                 <div class="form-floating mx-auto">
-                    <textarea type="text" class="form-control whiteBackgroundOnDisabled py-0" id="sourceDescription" asp-for="@Model.Source.Description" disabled style="height: 75px"></textarea>
-                    @if (string.IsNullOrEmpty(Model.Source.Description))
+                    <textarea type="text" class="form-control whiteBackgroundOnDisabled py-0" id="sourceDescription" asp-for="@Model.Source.Notes" disabled style="height: 75px"></textarea>
+                    @if (string.IsNullOrEmpty(Model.Source.Notes))
                     {
-                        <label asp-for="@Model.Source.Description">Description</label>
+                            <label asp-for="@Model.Source.Notes">Description</label>
                     }
                 </div>
             </div>
@@ -131,17 +153,17 @@
                         <tbody>
                             @foreach (var income in @Model.Source.RecentIncomes)
                             {
-                                <tr>
-                                    <td>
+                                    <tr>
+                                        <td>
                                         @income.Date
-                                    </td>
-                                    <td>
+                                        </td>
+                                        <td>
                                         @String.Format("{0:n}", income.Amount)
-                                    </td>
-                                    <td>
+                                        </td>
+                                        <td>
                                         @income.Category
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
                             }
                         </tbody>
                     </table>

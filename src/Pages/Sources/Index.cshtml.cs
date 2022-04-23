@@ -53,8 +53,11 @@ namespace CashTrack.Pages.Sources
                 var newSource = new IncomeSource()
                 {
                     Name = SourceModal.Name,
-                    Description = SourceModal.Description,
-                    InUse = SourceModal.InUse
+                    Notes = SourceModal.Notes,
+                    SuggestOnLookup = SourceModal.SuggestOnLookup,
+                    City = SourceModal.City,
+                    State = SourceModal.State,
+                    IsOnline = SourceModal.IsOnline,
                 };
                 if (SourceModal.IsEdit)
                 {

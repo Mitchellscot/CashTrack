@@ -45,7 +45,7 @@
         </li>
     </ul>
     <div class="modal fade" id="addSourceModal">
-        @await Html.PartialAsync("_AddIncomeSourcePartial", new AddEditIncomeSourceModal() { ReturnUrl = "~/Import/Income", InUse = true })
+        @await Html.PartialAsync("_AddIncomeSourcePartial", new AddEditIncomeSourceModal() { ReturnUrl = "~/Import/Income", SuggestOnLookup = true })
     </div>
 
     @if (Model.IncomeReviewResponse != null && Model.IncomeReviewResponse.ListItems.Count() > 0)
