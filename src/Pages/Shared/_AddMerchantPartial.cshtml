@@ -30,11 +30,12 @@
                             </div>
                         </div>
                         <div class="col-4 align-self-center border rounded py-1">
-                            <div class="form-check form-switch ">
-                                <label class="form-check-label" asp-for="@Model.IsOnline">Online Merchant</label>
-                                <input class="form-check-input" type="checkbox" role="switch" id="addEditMerchantIsOnline" data-val="true"
-                                       asp-for="@Model.IsOnline" />
-                                <span asp-validation-for="@Model.IsOnline"></span>
+
+                                                        <div class="form-check form-switch ">
+                                <label class="form-check-label" asp-for="@Model.SuggestOnLookup">Suggest on Lookup</label>
+                                <input class="form-check-input" type="checkbox" role="switch" id="addEditMerchantSuggestOnLookup" data-val="true"
+                                       asp-for="@Model.SuggestOnLookup" />
+                                <span asp-validation-for="@Model.SuggestOnLookup"></span>
                             </div>
                         </div>
                     </div>
@@ -43,8 +44,7 @@
                             <label class="visually-hidden" asp-for="@Model.City">City</label>
                             <div class="input-group">
                                 <div class="input-group-text">City</div>
-                                <input data-val="true"
-                                       asp-for=@Model.City type="text" class="form-control text-center" id="addEditMerchantCity">
+                                <input data-val="true" asp-for=@Model.City type="text" class="form-control text-center" id="addEditMerchantCity">
                                 <span asp-validation-for="@Model.City"></span>
                             </div>
                         </div>
@@ -64,10 +64,9 @@
                         </div>
                         <div class="col-4 align-self-center border rounded py-1">
                             <div class="form-check form-switch ">
-                                <label class="form-check-label" asp-for="@Model.SuggestOnLookup">Suggest on Lookup</label>
-                                <input class="form-check-input" type="checkbox" role="switch" id="addEditMerchantSuggestOnLookup" data-val="true"
-                                       asp-for="@Model.SuggestOnLookup" />
-                                <span asp-validation-for="@Model.SuggestOnLookup"></span>
+                                <label class="form-check-label" asp-for="@Model.IsOnline">Online Merchant</label>
+                                <input class="form-check-input" type="checkbox" role="switch" id="addEditMerchantIsOnline" data-val="true" asp-for="@Model.IsOnline" />
+                                <span asp-validation-for="@Model.IsOnline"></span>
                             </div>
                         </div>
                     </div>

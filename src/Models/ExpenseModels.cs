@@ -29,6 +29,7 @@ public class Expense : Transaction
     new public int? Id { get; set; }
     public string Notes { get; set; }
     public string Merchant { get; set; }
+    public int? MerchantId { get; set; }
     public ICollection<TagModel> Tags { get; set; }
     public string SubCategory { get; set; }
     public int SubCategoryId { get; set; }

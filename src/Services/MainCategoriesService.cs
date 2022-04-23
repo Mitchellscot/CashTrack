@@ -106,15 +106,16 @@ namespace CashTrack.Services.MainCategoriesService
 
         public async Task<int> UpdateMainCategoryAsync(AddEditMainCategory request)
         {
-            var checkId = await _mainCategoryRepo.FindById(request.Id.Value);
-            if (checkId == null)
+            var categories = await _mainCategoryRepo.Find(x => x.Name == request.Name);
+            if (categories.Any(x => x.Id != request.Id))
+                throw new DuplicateNameException(request.Name, nameof(MainCategoryEntity));
+
+            var category = categories.First(x => x.Id == request.Id.Value);
+            if (category == null)
                 throw new CategoryNotFoundException(request.Id.Value.ToString());
 
-            var nameCheck = await _mainCategoryRepo.Find(x => x.Name == request.Name);
-            if (nameCheck.Any())
-                throw new DuplicateNameException(nameof(MainCategoryEntity), request.Name);
-
-            var category = _mapper.Map<MainCategoryEntity>(request);
+            category.Name = request.Name;
+            //TODO: Figure out how you will edit sub category relationships, from Main category or from Sub Category?
             return await _mainCategoryRepo.Update(category);
         }
     }

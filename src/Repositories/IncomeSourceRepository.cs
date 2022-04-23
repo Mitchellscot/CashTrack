@@ -109,10 +109,7 @@ public class IncomeSourceRepository : IIncomeSourceRepository
     {
         try
         {
-            _ctx.ChangeTracker.Clear();
-            var contextAttachedEntity = _ctx.IncomeSources.Attach(entity);
-            contextAttachedEntity.State = EntityState.Modified;
-            return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception();
+            return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("An error occured while trying to save the income source.");
         }
         catch (Exception)
         {

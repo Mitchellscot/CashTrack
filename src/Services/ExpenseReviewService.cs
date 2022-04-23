@@ -37,8 +37,6 @@ public class ExpenseReviewService : IExpenseReviewService
 
     public async Task<int> SetExpenseReviewToIgnoreAsync(int id)
     {
-        //only sets it to reviewed... nothing else
-        //might have bugs here... if so take off change tracker in repo
         var expense = await _repo.FindById(id);
         if (expense == null)
             throw new ExpenseNotFoundException(id.ToString());

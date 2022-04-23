@@ -42,10 +42,10 @@ public record MerchantListItem
 }
 public record MerchantDetail : Merchant
 {
-    public ExpenseTotals ExpenseTotals { get; set; }
+    public Totals ExpenseTotals { get; set; }
     public string MostUsedCategory { get; set; }
-    public List<ExpenseStatistics> AnnualExpenseStatistics { get; set; }
-    public List<MonthlyExpenseStatistics> MonthlyExpenseStatistics { get; set; }
+    public List<AnnualStatistics> AnnualExpenseStatistics { get; set; }
+    public List<MonthlyStatistics> MonthlyExpenseStatistics { get; set; }
     public Dictionary<string, int> PurchaseCategoryOccurances { get; set; }
     public Dictionary<string, decimal> PurchaseCategoryTotals { get; set; }
     public List<ExpenseQuickView> RecentExpenses { get; set; }

@@ -1,0 +1,180 @@
+﻿@page
+@using CashTrack.Models.IncomeSourceModels
+@using CashTrack.Pages.Shared
+@model CashTrack.Pages.Sources.IndexModel
+@{
+    Layout = "_Layout";
+}
+<div class="container-fluid">
+    @await Html.PartialAsync("_LoadingSpinner")
+    @if (Model.InfoMessage != null)
+    {
+        @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info })
+        ;
+    }
+    @if (Model.SuccessMessage != null)
+    {
+        @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success })
+        ;
+    }
+    @if (!ViewData.ModelState.IsValid)
+    {
+        @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger })
+        ;
+    }
+    <div class="row mb-1">
+        <div class="col-xs-9 order-2 order-md-1 col-md-6 col-xxl-4">
+            <form method="get">
+                <div class="input-group">
+                    <div class="input-group-prepend d-none d-sm-block">
+                        <div class="input-group-text">Search</div>
+                    </div>
+                    <input id="QueryInput" data-val="true" asp-for="@Model.SearchTerm" type="text" class="form-control">
+                    <button class="btn btn-secondary rounded-end" type="submit" asp-route-pageNumber="1">
+                        <i class="bi bi-search text-white mx-3" role="img"
+                           style="font-size: 1rem;"></i>
+                    </button>
+                    <input type="hidden" asp-for="@Model.PageNumber" value="1" />
+                </div>
+            </form>
+        </div>
+        <div class="col-xs-3 order-1 order-md-2 col-md-6 col-xxl-8 mb-1 mb-md-0">
+            <span style="color: red;" asp-validation-for="@Model.SearchTerm"></span>
+            <button class="btn btn-primary float-end" id="addSourceButton" data-bs-toggle="modal" data-bs-target="#addSourceModal">Add Income Source</button>
+            <div class="modal fade" id="addSourceModal">
+                @await Html.PartialAsync("_AddIncomeSourcePartial", new AddEditIncomeSourceModal() { ReturnUrl = "~/Sources/Index", IsEdit = false, SuggestOnLookup = true })
+            </div>
+        </div>
+    </div>
+    @if (Model.SourceResponse != null && Model.SourceResponse.ListItems.Count() > 0)
+    {
+        <div class="row mt-2">
+            <div class="table-responsive table-sm">
+                <table class="table table-bordered table-sm table-hover mb-0">
+                    <thead>
+                        <tr class="text-center table-primary" style="height: 34px; overflow: hidden; text-overflow: ellipsis; max-height: 34px; white-space: nowrap;">
+                            <th>
+                                Name
+                            </th>
+                            <th style="min-width: 117px;">
+                                Payments
+                            </th>
+                            <th style="min-width: 100px;">
+                                Amount
+                            </th>
+                            <th style="min-width: 142px;">
+                                Last Payment
+                            </th>
+                            <th style="min-width: 108px;">
+                                Category
+                            </th>
+                            <th>
+                                Details
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.SourceResponse.ListItems)
+                        {
+                            <tr class="text-center">
+                                <td width="20%">
+                                    <a asp-page="./Detail" asp-route-id="@item.Id" style="text-decoration: none;" class="text-black">@item.Name</a>
+                                </td>
+                                <td width="10%">
+                                    @item.Payments
+                                </td>
+                                <td width="15%">
+                                    @String.Format("{0:n}", item.Amount)
+                                </td>
+                                <td width="15%">
+                                    @if (item.LastPayment != DateTime.MinValue)
+                                    {
+                                        @item.LastPayment.Date.ToShortDateString()
+                                    }
+                                    else
+                                    {
+                                        <span>N/A</span>
+                                    }
+                                </td>
+                                <td width="15%">
+                                    @item.Category
+                                </td>
+                                <td width="5%">
+                                    <a asp-page="./Detail" asp-route-id="@item.Id" class="text-primary">
+                                        <i class="bi bi-zoom-in" style="font-size: 1.2rem; font-weight: 500"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="row my-1">
+                    <div class="col-sm-6 col-lg-2 col-xl-2 m-auto">
+                        @if (@Model.SourceResponse.TotalCount > 0)
+                        {
+                            var currentCount = Model.SourceResponse.PageNumber * @Model.SourceResponse.PageSize;
+                            <span class="text-muted">@(Math.Min(currentCount, Model.SourceResponse.TotalCount)) of @Model.SourceResponse.TotalCount</span>
+                        }
+                    </div>
+                    <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
+                    </div>
+                    <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
+                        @await Html.PartialAsync("_PaginationPartial",
+                    new _PaginationPartialModel {
+                    PathLink = "../Sources/Index",
+                    IsExpensePage = false,
+                    PageNumber = Model.SourceResponse.PageNumber,
+                    TotalPages = Model.SourceResponse.TotalPages
+                    })
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@section Scripts {
+<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
+<partial name="_ValidationScriptsPartial" />
+<script type="text/javascript">
+
+    $(document).ready(() => {
+        $('#loadingSpinner').hide();
+
+        $(".iconButton").click(() => {
+            $('#loadingSpinner').show();
+        });
+        $(".page-link").click(() => {
+            $('#loadingSpinner').show();
+        });
+        //toast notification
+        @if(Model.InfoMessage != null)
+        {
+            @:$("#info-toast").show().delay(2000).fadeOut();
+        }
+        @if(Model.SuccessMessage != null)
+        {
+            @:$("#success-toast").show().delay(2000).fadeOut();
+        }
+        @if(!ModelState.IsValid)
+        {
+            @:$("#danger-toast").show().delay(4000).fadeOut();
+        }
+
+        //show a dropdown list of matching income source names
+        $("#QueryInput").on("input", () => {
+            let searchTerm = $("#QueryInput").val();
+            $.ajax({
+                url: `/api/incomesource?sourceName=${searchTerm}`,
+                method: 'GET'
+            }).then((response) => {
+                $("#QueryInput").empty();
+                $("#QueryInput").autocomplete({ source: response });
+            }).catch((error) => console.log(error));
+        });
+    });
+</script>
+}
