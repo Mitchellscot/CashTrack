@@ -211,17 +211,19 @@ public class MerchantService : IMerchantService
 
         merchant.Name = request.Name;
         merchant.City = request.IsOnline ? null : request.City;
-        merchant.State = request.IsOnline ? null: request.State;
+        merchant.State = request.IsOnline ? null : request.State;
         merchant.Notes = request.Notes;
         merchant.IsOnline = request.IsOnline;
         merchant.SuggestOnLookup = request.SuggestOnLookup;
-        
+
         return await _merchantRepo.Update(merchant);
     }
 
     public async Task<bool> DeleteMerchantAsync(int id)
     {
         var merchant = await _merchantRepo.FindById(id);
+        if (merchant == null)
+            throw new MerchantNotFoundException(id.ToString());
         var expenses = await _expenseRepo.Find(x => x.MerchantId == id);
         if (!expenses.Any())
             return await _merchantRepo.Delete(merchant);

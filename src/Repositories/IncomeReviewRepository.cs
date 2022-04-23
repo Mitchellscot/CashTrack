@@ -101,7 +101,7 @@ public class IncomeReviewRepository : IIncomeReviewRepository
     {
         try
         {
-            return await _context.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("An error occured while trying to update the income review.");
+            return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("An error occured while trying to update the income review.");
         }
         catch (Exception)
         {
