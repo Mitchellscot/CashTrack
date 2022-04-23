@@ -116,7 +116,6 @@ public class ExpenseRepository : IExpenseRepository
     {
         try
         {
-            //_ctx.ChangeTracker.Clear();
             _ctx.Expenses.UpdateRange(entities);
             return await (_ctx.SaveChangesAsync()) > 0;
         }

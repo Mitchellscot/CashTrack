@@ -110,7 +110,7 @@
             <div class="col-4">
                 <div class="d-flex justify-content-center">
                     @*TODO: Make sure this redirects correctly*@
-                    <span class="mb-0 fw-bold d-none d-lg-block">Recent Expenses</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="../Income/Index" asp-route-Query="7" asp-route-Q="@Model.Source.Name" asp-route-PageNumber="1">
+                    <span class="mb-0 fw-bold d-none d-lg-block">Recent Income</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="../Income/Index" asp-route-Query="7" asp-route-Q="@Model.Source.Name" asp-route-PageNumber="1">
                         View All
                     </a>
                 </div>
@@ -152,7 +152,7 @@
         <hr />
         <div class="row">
             <div class="col-12 col-xl-6">
-                <canvas id="expensesChart" height="400" style="max-height: 400px;"></canvas>
+                <canvas id="incomeChart" height="400" style="max-height: 400px;"></canvas>
             </div>
             <div class="col-12 col-xl-6">
                 <canvas id="statisticsChart" height="400" style="max-height: 400px;"></canvas>
@@ -180,10 +180,10 @@
 {
     ChartType = ChartType.Bar,
     UseDefaultColor = true,
-    ElementId = "expensesChart",
+    ElementId = "incomeChart",
     Labels = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Year).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Total).ToArray()),
-    Title = "Expense Totals",
+    Title = "Income Totals",
     Responsive = true
 })
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
@@ -196,7 +196,7 @@
     Dataset2 = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Average).ToArray()),
     Dataset3 = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Min).ToArray()),
     Dataset4 = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Max).ToArray()),
-    Title = "Expense Statistics",
+    Title = "Income Statistics",
     Responsive = true
 })
 }
@@ -205,10 +205,10 @@
 {
     ChartType = ChartType.Bar,
     UseDefaultColor = true,
-    ElementId = "expensesChart",
+    ElementId = "incomeChart",
     Labels = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Date.ToString("MM/yyyy")).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Total).ToArray()),
-    Title = "Expense Totals",
+    Title = "Income Totals",
     Responsive = true
 })
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
@@ -221,7 +221,7 @@
     Dataset2 = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Average).ToArray()),
     Dataset3 = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Min).ToArray()),
     Dataset4 = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Max).ToArray()),
-    Title = "Expense Statistics",
+    Title = "Income Statistics",
     Responsive = true
 })
 }
@@ -245,7 +245,7 @@
     ElementId = "categoryOccurancesDonut",
     Labels = JsonSerializer.Serialize(Model.Source.PaymentCategoryOcurances.Select(x => x.Key).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Source.PaymentCategoryOcurances.Select(x => x.Value).ToArray()),
-    Title = "Purchase Frequency By Category",
+    Title = "Category Frequency",
     Responsive = true
 })
 }

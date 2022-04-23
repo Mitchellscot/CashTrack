@@ -47,6 +47,16 @@ public class IncomeSourceService : IIncomeSourceService
         var source = await _sourceRepo.FindById(id);
         if (source == null)
             throw new IncomeSourceNotFoundException(id.ToString());
+        var incomes = await _incomeRepo.Find(x => x.SourceId == id);
+        if (!incomes.Any())
+            return await _sourceRepo.Delete(source);
+
+        foreach (var income in incomes)
+        {
+            income.SourceId = null;
+            income.Source = null;
+        }
+        var success = await _incomeRepo.UpdateMany(incomes.ToList());
 
         return await _sourceRepo.Delete(source);
     }
@@ -88,7 +98,7 @@ public class IncomeSourceService : IIncomeSourceService
     public async Task<string[]> GetMatchingIncomeSourcesAsync(string name)
     {
         return (await _sourceRepo.Find(x => x.Name.StartsWith(name) && x.InUse == true)).Select(x => x.Name).Take(10).ToArray();
-    } 
+    }
 
     public async Task<int> UpdateIncomeSourceAsync(IncomeSource request)
     {
@@ -96,7 +106,7 @@ public class IncomeSourceService : IIncomeSourceService
         if (sources.Any(x => x.Id != request.Id))
             throw new DuplicateNameException(request.Name, nameof(IncomeSourceEntity));
         var source = sources.First(x => x.Id == request.Id.Value);
-        
+
         source.Name = request.Name;
         source.InUse = request.InUse;
         source.Description = request.Description;
@@ -159,7 +169,7 @@ public class IncomeSourceService : IIncomeSourceService
     private Dictionary<string, int> GetIncomeCategoryOccurances(IncomeCategoryEntity[] categories, IncomeEntity[] incomes)
     {
         return categories.GroupJoin(incomes,
-            c => c.Id, i => i.SourceId, (c, g) => new
+            c => c.Id, i => i.Category.Id, (c, g) => new
             {
                 Category = c.Name,
                 Incomes = g
