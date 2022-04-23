@@ -17,12 +17,8 @@ namespace CashTrack.Pages.Merchants
         [BindProperty(SupportsGet = true)]
         public int id { get; set; }
         public MerchantDetail Merchant { get; set; }
-        [BindProperty]
-        public int MerchantId { get; set; }
-        public string occuranceLabels { get; set; }
-        public string occuranceTotals { get; set; }
         public SelectList MerchantSelectList { get; set; }
-        [BindProperty(SupportsGet =true)]
+        [BindProperty(SupportsGet = true)]
         public string SearchTerm { get; set; }
         public async Task<IActionResult> OnGet()
         {
@@ -46,10 +42,9 @@ namespace CashTrack.Pages.Merchants
         }
         public async Task<IActionResult> OnPostDelete()
         {
-            //TODO: need to grab every expense associated with this merchant and set the merchantId to null if successfully deleted.
             try
             {
-                var deleteSuccess = await _merchantService.DeleteMerchantAsync(MerchantId);
+                var deleteSuccess = await _merchantService.DeleteMerchantAsync(id);
             }
             catch (Exception ex)
             {
