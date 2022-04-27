@@ -21,6 +21,7 @@ namespace CashTrack.Data
         public DbSet<IncomeCategoryEntity> IncomeCategories { get; set; }
         public DbSet<ExpenseReviewEntity> ExpensesToReview { get; set; }
         public DbSet<IncomeReviewEntity> IncomeToReview { get; set; }
+        public DbSet<ImportRuleEntity> ImportRules { get; set; }
 
         private IConfiguration _config;
 
@@ -94,6 +95,7 @@ namespace CashTrack.Data
             mb.Entity<IncomeCategoryEntity>().HasData(CsvParser.ProcessIncomeCategoryFile(csvFileDirectory + "IncomeCategories.csv"));
             mb.Entity<IncomeSourceEntity>().HasData(CsvParser.ProcessIncomeSourceFile(csvFileDirectory + "IncomeSources.csv"));
             mb.Entity<IncomeEntity>().HasData(CsvParser.ProcessIncomeFile(csvFileDirectory + "Income.csv"));
+            mb.Entity<ImportRuleEntity>().HasData(CsvParser.ProcessImportRuleFile(csvFileDirectory + "ImportRules.csv"));
         }
     }
 }

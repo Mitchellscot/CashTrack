@@ -96,5 +96,13 @@ namespace CashTrack.Data.CsvFiles
             public string? Email { get; set; }
             public string? PasswordHash { get; set; }
         }
+        public class CsvImportRule
+        {
+            public int Id { get; set; }
+            public string? Transaction { get; set; }
+            public string? Rule { get; set; }
+            public int? MerchantSourceId { get; set; }
+            public int? CategoryId { get; set; }
+        }
     }
 }

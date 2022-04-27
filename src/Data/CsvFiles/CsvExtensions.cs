@@ -135,6 +135,21 @@ namespace CashTrack.Data.CsvFiles
                 };
             }
         }
+        public static IEnumerable<CsvModels.CsvImportRule> ToImportRule(this IEnumerable<string> source)
+        {
+            foreach (var line in source)
+            {
+                var columns = line.Split(',');
+                yield return new CsvModels.CsvImportRule()
+                {
+                    Id = Convert.ToInt32(columns[0]),
+                    Transaction = columns[1],
+                    Rule = columns[2],
+                    MerchantSourceId = columns[3] == "" ? null : Convert.ToInt32(columns[3]),
+                    CategoryId = columns[4] == "" ? null : Convert.ToInt32(columns[4])
+                };
+            }
+        }
         private static bool ParseBoolean(string s) => s == "1";
     }
 }
