@@ -1,4 +1,5 @@
 ﻿@page
+@using CashTrack.Models.ImportCsvModels
 @using CashTrack.Models.MerchantModels
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Import.ExpensesModel
@@ -22,9 +23,10 @@
     new _MessagePartial() {MessageType = MessageType.Danger })
         ;
     }
-    <form method="post" asp-page-handler="RunScript">
-        <div style="position: absolute; right: 4%; top: 8%; z-index:1;"><button class="btn btn-primary" type="submit" id="importButton">Import</button></div>
-    </form>
+
+        <div style="position: absolute; right: 4%; top: 8%; z-index:1;"><button class="btn btn-primary" type="submit" id="importButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">Import</button>
+            </div>
+
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a asp-page="./Expenses" class="nav-link active">Expenses</a>
@@ -47,6 +49,9 @@
 
               <div class="modal fade" id="addMerchantModal">
                   @await Html.PartialAsync("_AddMerchantPartial", new AddEditMerchantModal() { Returnurl = "~/Import/Expenses", SuggestOnLookup = true, IsEdit = false })
+                  </div>
+                  <div class="modal fade" id="importCsvModal">
+                  @await Html.PartialAsync("_ImportTransactionsModal", new ImportCsvModel() { ReturnUrl = "~/Import/Expenses" })
                   </div>
 
     @if(Model.ExpenseReviewResponse != null && Model.ExpenseReviewResponse.ListItems.Count() > 0)

@@ -1,5 +1,6 @@
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.ExpenseReviewModels;
+using CashTrack.Models.ImportCsvModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.ExpenseReviewService;
@@ -7,7 +8,6 @@ using CashTrack.Services.ExpenseService;
 using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.PowerShell;
 using System;
 using System.Linq;
@@ -39,6 +39,8 @@ namespace CashTrack.Pages.Import
         public Expense SelectedExpense { get; set; }
         [BindProperty]
         public int SelectedExpenseId { get; set; }
+        [BindProperty]
+        public ImportCsvModel CsvImport { get; set; }
         public async Task<IActionResult> OnGet()
         {
             await PrepareData();
@@ -66,6 +68,13 @@ namespace CashTrack.Pages.Import
             }
             await PrepareData();
             return LocalRedirect("~/Import/Expenses");
+        }
+        public async Task<IActionResult> OnPostImportCsv()
+        {
+            //check if the file type is correct (validate on front end as well)
+            //call service methods to import csv
+            await PrepareData();
+            return LocalRedirect(CsvImport.ReturnUrl);
         }
         public async Task<IActionResult> OnPostExpenseAdd()
         {

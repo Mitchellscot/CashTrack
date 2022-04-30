@@ -1,0 +1,54 @@
+﻿@model CashTrack.Models.ImportCsvModels.ImportCsvModel
+@{
+}
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header text-center">
+            <h5 class="modal-title w-100">Import Transactions From CSV</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal">
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <form method="post" enctype="multipart/form-data"
+                      asp-page="../Import/Expenses"
+                      asp-page-handler="ImportCsv"
+                      id="ImportCsvForm">
+                    <input type="hidden" asp-for="@Model.ReturnUrl" />
+                    <div class="row mb-3">
+                        <div class="col-8">
+                            <div>
+                                <label class="form-label" asp-for="@Model.CsvFile">Upload a CSV file of Transactions</label>
+                                <input asp-for=@Model.CsvFile type="file"
+                                       class="form-control form-control-lg" id="importCsvUpload">
+                            </div>
+                        </div>
+                        <div class="col-4 align-self-end border rounded py-1">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio"
+                                       asp-for="@Model.IsBankFile" id="isBankFile" value="true"/>
+                                <label class="form-check-label" asp-for="@Model.IsBankFile">
+                                    Bank File
+                                </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio"
+                                       asp-for="@Model.IsBankFile" id="isCreditFile" value="false"/>
+                                <label class="form-check-label" asp-for="@Model.IsBankFile">
+                                    Credit Card File
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-evenly">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <form>
+                <button type="submit" class="btn btn-primary" form="ImportCsvForm">Upload</button>
+            </form>
+        </div>
+    </div>
+</div>
