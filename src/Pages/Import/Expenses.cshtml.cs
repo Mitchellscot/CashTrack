@@ -7,9 +7,11 @@ using CashTrack.Services.ExpenseReviewService;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.PowerShell;
 using System;
+using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
@@ -19,13 +21,15 @@ namespace CashTrack.Pages.Import
 {
     public class ExpensesModel : PageModelBase
     {
+        private readonly IWebHostEnvironment _env;
         private readonly IMerchantService _merchantService;
         private readonly IExpenseService _expenseService;
         private readonly ISubCategoryService _subCategoryService;
         private readonly IExpenseReviewService _expenseReviewService;
 
-        public ExpensesModel(IExpenseReviewService expenseReviewService, ISubCategoryService subCategoryService, IExpenseService expenseService, IMerchantService merchantService)
+        public ExpensesModel(IExpenseReviewService expenseReviewService, ISubCategoryService subCategoryService, IExpenseService expenseService, IMerchantService merchantService, IWebHostEnvironment env)
         {
+            _env = env;
             _merchantService = merchantService;
             _expenseService = expenseService;
             _subCategoryService = subCategoryService;
@@ -40,7 +44,7 @@ namespace CashTrack.Pages.Import
         [BindProperty]
         public int SelectedExpenseId { get; set; }
         [BindProperty]
-        public ImportCsvModel CsvImport { get; set; }
+        public ImportModel Import { get; set; }
         public async Task<IActionResult> OnGet()
         {
             await PrepareData();
@@ -71,10 +75,20 @@ namespace CashTrack.Pages.Import
         }
         public async Task<IActionResult> OnPostImportCsv()
         {
-            //check if the file type is correct (validate on front end as well)
-            //call service methods to import csv
+            if (Import.File.ContentType != "text/csv")
+            {
+                ModelState.AddModelError("", "File must be a CSV file.");
+                await PrepareData();
+                return Page();
+            }
+            var result = await _expenseReviewService.ImportTransactions(Import);
+            if (result.ToString().Contains("Added"))
+                SuccessMessage += result;
+            else
+                InfoMessage += result;
+
             await PrepareData();
-            return LocalRedirect(CsvImport.ReturnUrl);
+            return LocalRedirect(Import.ReturnUrl);
         }
         public async Task<IActionResult> OnPostExpenseAdd()
         {

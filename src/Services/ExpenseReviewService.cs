@@ -2,7 +2,10 @@
 using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.ExpenseReviewModels;
+using CashTrack.Models.ImportCsvModels;
 using CashTrack.Repositories.Common;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace CashTrack.Services.ExpenseReviewService;
@@ -12,14 +15,16 @@ public interface IExpenseReviewService
     Task<ExpenseReviewListItem> GetExpenseReviewByIdAsync(int id);
     Task<ExpenseReviewResponse> GetExpenseReviewsAsync(ExpenseReviewRequest request);
     Task<int> SetExpenseReviewToIgnoreAsync(int id);
+    Task<string> ImportTransactions(ImportModel request);
 }
 
 public class ExpenseReviewService : IExpenseReviewService
 {
     private readonly IRepository<ExpenseReviewEntity> _repo;
     private readonly IMapper _mapper;
+    private readonly IWebHostEnvironment _env;
 
-    public ExpenseReviewService(IRepository<ExpenseReviewEntity> repo, IMapper mapper) => (_repo, _mapper) = (repo, mapper);
+    public ExpenseReviewService(IRepository<ExpenseReviewEntity> repo, IMapper mapper, IWebHostEnvironment env) => (_repo, _mapper, _env) = (repo, mapper, env);
 
     public async Task<ExpenseReviewListItem> GetExpenseReviewByIdAsync(int id)
     {
@@ -35,6 +40,16 @@ public class ExpenseReviewService : IExpenseReviewService
         return new ExpenseReviewResponse(request.PageNumber, request.PageSize, count, _mapper.Map<ExpenseReviewListItem[]>(expenses));
     }
 
+    public async Task<string> ImportTransactions(ImportModel request)
+    {
+        var file = Path.Combine(_env.ContentRootPath, request.File.FileName);
+        using (var fileStream = new FileStream(file, FileMode.Create))
+        {
+            await request.File.CopyToAsync(fileStream);
+        }
+
+    }
+
     public async Task<int> SetExpenseReviewToIgnoreAsync(int id)
     {
         var expense = await _repo.FindById(id);
@@ -44,6 +59,8 @@ public class ExpenseReviewService : IExpenseReviewService
         expense.IsReviewed = true;
         return await _repo.Update(expense);
     }
+
+
 }
 
 public class ExpenseReviewMapper : Profile

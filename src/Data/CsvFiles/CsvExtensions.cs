@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CashTrack.Models.ImportCsvModels;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -147,6 +148,24 @@ namespace CashTrack.Data.CsvFiles
                     Rule = columns[2],
                     MerchantSourceId = columns[3] == "" ? null : Convert.ToInt32(columns[3]),
                     CategoryId = columns[4] == "" ? null : Convert.ToInt32(columns[4])
+                };
+            }
+        }
+        public static IEnumerable<TransactionImport> ToTransactionImport(this IEnumerable<string> source)
+        {
+            //change this out for a csvhelper library
+            foreach (var line in source)
+            {
+                var columns = line.Split(',');
+                yield return new TransactionImport()
+                {
+                    Id = Convert.ToInt32(columns[0]),
+                    Amount = Convert.ToInt32(columns[1]),
+                    Date = DateTimeOffset.Parse(columns[2], null
+                    , DateTimeStyles.AdjustToUniversal),
+                    MerchantSourceId = columns[3] == "" ? 0 : Convert.ToInt32(columns[3]),
+                    CategoryId = columns[4] == "" ? 0 : Convert.ToInt32(columns[4]),
+                    Notes = columns[5]
                 };
             }
         }

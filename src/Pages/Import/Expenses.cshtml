@@ -51,7 +51,7 @@
                   @await Html.PartialAsync("_AddMerchantPartial", new AddEditMerchantModal() { Returnurl = "~/Import/Expenses", SuggestOnLookup = true, IsEdit = false })
                   </div>
                   <div class="modal fade" id="importCsvModal">
-                  @await Html.PartialAsync("_ImportTransactionsModal", new ImportCsvModel() { ReturnUrl = "~/Import/Expenses" })
+                  @await Html.PartialAsync("_ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Import/Expenses" })
                   </div>
 
     @if(Model.ExpenseReviewResponse != null && Model.ExpenseReviewResponse.ListItems.Count() > 0)
