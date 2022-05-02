@@ -21,6 +21,7 @@ namespace CashTrack.Models.ImportCsvModels
             get => _amount;
             set
             {
+                IsIncome = value > 0;
                 _amount = Decimal.Round(Math.Abs(value), 2);
             }
         }
@@ -29,11 +30,9 @@ namespace CashTrack.Models.ImportCsvModels
             get => _notes;
             set => _notes = !string.IsNullOrEmpty(value) ? value.ToLower() : "";
         }
-        [BooleanTrueValues("Credit")]
-        [BooleanFalseValues("Debit", "Check")]
-        public bool IsIncome { get; set; }
-        public int MerchantSourceId { get; set; }
-        public int CategoryId { get; set; }
+        public bool IsIncome { get; private set; }
+        public int? MerchantSourceId { get; set; }
+        public int? CategoryId { get; set; }
     }
     public class CreditImport
     {

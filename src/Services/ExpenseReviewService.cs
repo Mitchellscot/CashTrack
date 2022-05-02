@@ -55,6 +55,7 @@ public class ExpenseReviewService : IExpenseReviewService
         {
             await request.File.CopyToAsync(fileStream);
         }
+
         using var reader = new StreamReader(filePath);
         var bankImports = new List<BankImport>();
         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
@@ -63,17 +64,42 @@ public class ExpenseReviewService : IExpenseReviewService
             {
                 csv.Context.RegisterClassMap<BankTransactionMap>();
                 bankImports = csv.GetRecords<BankImport>().ToList();
-                foreach (var rule in rules)
-                {
-                    if (bankImports.Any(x => x.Notes.ToLower().Contains(rule.Rule.ToLower())))
-                    {
-                        bankImports.SingleOrDefault(x => x.Notes.ToLower().Contains(rule.Rule) && rule.MerchantSourceId.HasValue).MerchantSourceId = rule.MerchantSourceId.Value;
-                        bankImports.SingleOrDefault(x => x.Notes.Contains(rule.Rule) && rule.CategoryId.HasValue).CategoryId = rule.CategoryId.Value;
-                    }
-                }
             }
         }
-        var x = bankImports;
+        //seperate method
+        var expenseBankImports = bankImports.Where(x => !x.IsIncome).ToList();
+        var expenseRules = rules.Where(x => x.Transaction == "Expense").ToList();
+        foreach (var import in expenseBankImports)
+        {
+            var rule = expenseRules.FirstOrDefault(x => import.Notes.ToLower().Contains(x.Rule.ToLower()));
+
+            if (rule != null && rule.MerchantSourceId.HasValue)
+            {
+                import.MerchantSourceId = rule.MerchantSourceId.Value;
+            }
+            if (rule != null && rule.CategoryId.HasValue)
+            {
+                import.CategoryId = rule.CategoryId.Value;
+            }
+        }
+        //seperate method
+        var incomeBankImports = bankImports.Where(x => x.IsIncome).ToList();
+        var incomeRules = rules.Where(x => x.Transaction == "Income").ToList();
+        foreach (var import in incomeBankImports)
+        {
+            var rule = expenseRules.FirstOrDefault(x => import.Notes.ToLower().Contains(x.Rule.ToLower()));
+
+            if (rule != null && rule.MerchantSourceId.HasValue)
+            {
+                import.MerchantSourceId = rule.MerchantSourceId.Value;
+            }
+            if (rule != null && rule.CategoryId.HasValue)
+            {
+                import.CategoryId = rule.CategoryId.Value;
+            }
+        }
+
+        var x = expenseBankImports;
         return "ya";
     }
 
@@ -96,6 +122,7 @@ public sealed class BankTransactionMap : ClassMap<BankImport>
         Map(x => x.Date).Name("Posting Date");
         Map(x => x.Amount).Name("Amount");
         Map(x => x.Notes).Name("Description");
+        Map(x => x.IsIncome).Name("Transaction Type");
     }
 }
 public sealed class CreditTransactionMap : ClassMap<CreditImport>
