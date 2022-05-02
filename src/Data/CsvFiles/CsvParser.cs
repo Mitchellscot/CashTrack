@@ -43,7 +43,7 @@ namespace CashTrack.Data.CsvFiles
         {
             return File.ReadAllLines(path).Skip(1).Where(l => l.Length > 1).ToImportRule().ToList();
         }
-        public static List<TransactionImport> ProcessImportRuleFile(string path)
+        public static List<OtherTransactionImport> ProcessCsvImport(string path)
         {
             return File.ReadAllLines(path).Skip(1).Where(l => l.Length > 1).ToTransactionImport().ToList();
         }

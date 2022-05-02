@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.PowerShell;
 using System;
-using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
@@ -75,6 +74,9 @@ namespace CashTrack.Pages.Import
         }
         public async Task<IActionResult> OnPostImportCsv()
         {
+            //For Bank and file types I have hardcoded objects to match the csv files and use a library just to make the process quicker, however it's tightly coupled to my bank and credit card file formats.
+            //If for any reason I wanted to import a csv file from another institution I have a third option, but the csv
+            //file has to be in a specific format.
             if (Import.File.ContentType != "text/csv")
             {
                 ModelState.AddModelError("", "File must be a CSV file.");

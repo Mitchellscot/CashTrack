@@ -4,8 +4,14 @@ using CashTrack.Data.Entities;
 using CashTrack.Models.ExpenseReviewModels;
 using CashTrack.Models.ImportCsvModels;
 using CashTrack.Repositories.Common;
+using CashTrack.Repositories.ImportRuleRepository;
+using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Hosting;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CashTrack.Services.ExpenseReviewService;
@@ -23,8 +29,9 @@ public class ExpenseReviewService : IExpenseReviewService
     private readonly IRepository<ExpenseReviewEntity> _repo;
     private readonly IMapper _mapper;
     private readonly IWebHostEnvironment _env;
+    private readonly IImportRulesRepository _rulesRepo;
 
-    public ExpenseReviewService(IRepository<ExpenseReviewEntity> repo, IMapper mapper, IWebHostEnvironment env) => (_repo, _mapper, _env) = (repo, mapper, env);
+    public ExpenseReviewService(IRepository<ExpenseReviewEntity> repo, IMapper mapper, IWebHostEnvironment env, IImportRulesRepository rulesRepo) => (_repo, _mapper, _env, _rulesRepo) = (repo, mapper, env, rulesRepo);
 
     public async Task<ExpenseReviewListItem> GetExpenseReviewByIdAsync(int id)
     {
@@ -42,12 +49,32 @@ public class ExpenseReviewService : IExpenseReviewService
 
     public async Task<string> ImportTransactions(ImportModel request)
     {
-        var file = Path.Combine(_env.ContentRootPath, request.File.FileName);
-        using (var fileStream = new FileStream(file, FileMode.Create))
+        var rules = await _rulesRepo.Find(x => true);
+        var filePath = Path.Combine(_env.ContentRootPath, request.File.FileName);
+        using (var fileStream = new FileStream(filePath, FileMode.Create))
         {
             await request.File.CopyToAsync(fileStream);
         }
-
+        using var reader = new StreamReader(filePath);
+        var bankImports = new List<BankImport>();
+        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+        {
+            if (request.FileType == CsvFileType.Bank)
+            {
+                csv.Context.RegisterClassMap<BankTransactionMap>();
+                bankImports = csv.GetRecords<BankImport>().ToList();
+                foreach (var rule in rules)
+                {
+                    if (bankImports.Any(x => x.Notes.ToLower().Contains(rule.Rule.ToLower())))
+                    {
+                        bankImports.SingleOrDefault(x => x.Notes.ToLower().Contains(rule.Rule) && rule.MerchantSourceId.HasValue).MerchantSourceId = rule.MerchantSourceId.Value;
+                        bankImports.SingleOrDefault(x => x.Notes.Contains(rule.Rule) && rule.CategoryId.HasValue).CategoryId = rule.CategoryId.Value;
+                    }
+                }
+            }
+        }
+        var x = bankImports;
+        return "ya";
     }
 
     public async Task<int> SetExpenseReviewToIgnoreAsync(int id)
@@ -61,6 +88,25 @@ public class ExpenseReviewService : IExpenseReviewService
     }
 
 
+}
+public sealed class BankTransactionMap : ClassMap<BankImport>
+{
+    public BankTransactionMap()
+    {
+        Map(x => x.Date).Name("Posting Date");
+        Map(x => x.Amount).Name("Amount");
+        Map(x => x.Notes).Name("Description");
+    }
+}
+public sealed class CreditTransactionMap : ClassMap<CreditImport>
+{
+    public CreditTransactionMap()
+    {
+        Map(x => x.Date).Name("Date");
+        Map(x => x.Credit).Name("Credit").Optional();
+        Map(x => x.Credit).Name("Debit").Optional();
+        Map(x => x.Notes).Name("Description");
+    }
 }
 
 public class ExpenseReviewMapper : Profile
