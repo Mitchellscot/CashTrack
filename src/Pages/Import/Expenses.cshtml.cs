@@ -74,10 +74,16 @@ namespace CashTrack.Pages.Import
         }
         public async Task<IActionResult> OnPostImportCsv()
         {
+            if (Import.File == null)
+            {
+                ModelState.AddModelError("", "Please choose a csv file and try again.");
+                await PrepareData();
+                return Page();
+            }
             //For Bank and file types I have hardcoded objects to match the csv files and use a library just to make the process quicker, however it's tightly coupled to my bank and credit card file formats.
             //If for any reason I wanted to import a csv file from another institution I have a third option, but the csv
             //file has to be in a specific format.
-            if (Import.File.ContentType != "text/csv")
+            if (string.IsNullOrEmpty(Import.File.ContentType) || Import.File.ContentType != "text/csv")
             {
                 ModelState.AddModelError("", "File must be a CSV file.");
                 await PrepareData();

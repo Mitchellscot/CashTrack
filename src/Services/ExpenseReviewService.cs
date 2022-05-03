@@ -1,10 +1,15 @@
 ﻿using AutoMapper;
 using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
+using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseReviewModels;
 using CashTrack.Models.ImportCsvModels;
 using CashTrack.Repositories.Common;
+using CashTrack.Repositories.ExpenseRepository;
+using CashTrack.Repositories.ExpenseReviewRepository;
 using CashTrack.Repositories.ImportRuleRepository;
+using CashTrack.Repositories.IncomeRepository;
+using CashTrack.Repositories.IncomeReviewRepository;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Hosting;
@@ -26,50 +31,138 @@ public interface IExpenseReviewService
 
 public class ExpenseReviewService : IExpenseReviewService
 {
-    private readonly IRepository<ExpenseReviewEntity> _repo;
+    private readonly IIncomeReviewRepository _incomeReviewRepo;
+    private readonly IExpenseReviewRepository _expenseReviewRepo;
+    private readonly IExpenseRepository _expenseRepo;
+    private readonly IIncomeRepository _incomeRepo;
     private readonly IMapper _mapper;
     private readonly IWebHostEnvironment _env;
     private readonly IImportRulesRepository _rulesRepo;
 
-    public ExpenseReviewService(IRepository<ExpenseReviewEntity> repo, IMapper mapper, IWebHostEnvironment env, IImportRulesRepository rulesRepo) => (_repo, _mapper, _env, _rulesRepo) = (repo, mapper, env, rulesRepo);
+    public ExpenseReviewService(IExpenseReviewRepository expenseReviewRepo, IIncomeReviewRepository incomeReviewRepo, IExpenseRepository expenseRepo, IIncomeRepository incomeRepo, IMapper mapper, IWebHostEnvironment env, IImportRulesRepository rulesRepo)
+    {
+        _incomeReviewRepo = incomeReviewRepo;
+        _expenseReviewRepo = expenseReviewRepo;
+        _expenseRepo = expenseRepo;
+        _incomeRepo = incomeRepo;
+        _mapper = mapper;
+        _env = env;
+        _rulesRepo = rulesRepo;
+    }
 
     public async Task<ExpenseReviewListItem> GetExpenseReviewByIdAsync(int id)
     {
-        var singleExpense = await _repo.FindById(id);
+        var singleExpense = await _expenseReviewRepo.FindById(id);
         return _mapper.Map<ExpenseReviewListItem>(singleExpense);
     }
 
     public async Task<ExpenseReviewResponse> GetExpenseReviewsAsync(ExpenseReviewRequest request)
     {
-        var expenses = await _repo.FindWithPagination(x => true, request.PageNumber, request.PageSize);
-        var count = await _repo.GetCount(x => x.IsReviewed == false);
+        var expenses = await _expenseReviewRepo.FindWithPagination(x => true, request.PageNumber, request.PageSize);
+        var count = await _expenseReviewRepo.GetCount(x => x.IsReviewed == false);
 
         return new ExpenseReviewResponse(request.PageNumber, request.PageSize, count, _mapper.Map<ExpenseReviewListItem[]>(expenses));
     }
 
     public async Task<string> ImportTransactions(ImportModel request)
     {
-        var rules = await _rulesRepo.Find(x => true);
+
         var filePath = Path.Combine(_env.ContentRootPath, request.File.FileName);
         using (var fileStream = new FileStream(filePath, FileMode.Create))
         {
             await request.File.CopyToAsync(fileStream);
         }
+        IEnumerable<ImportTransaction> imports = GetTransactionsFromFile(filePath, request.FileType);
 
+        if (!imports.Any())
+            return "No transactions imported";
+
+        IEnumerable<ImportTransaction> filteredImports = await FilterTransactions(imports);
+
+        if (!filteredImports.Any())
+            return "Transactions have already been imported.";
+
+        var rules = await _rulesRepo.Find(x => true);
+        IEnumerable<ImportTransaction> importRulesApplied = SetImportRules(filteredImports, rules);
+
+        var expensesToImport = importRulesApplied.Where(x => !x.IsIncome).ToList();
+        var incomeToImport = importRulesApplied.Where(x => x.IsIncome).ToList();
+
+        //filter transactions in review tables
+        //than convert to expenseReviewEntities
+        //than insert into database
+        //then delete the file... maybe do that earlier in all this, like after you read it.
+        //and send a string saying how many were added!
+
+        var stopHere = "ok";
+
+        return stopHere;
+    }
+
+    private async Task<IEnumerable<ImportTransaction>> FilterTransactions(IEnumerable<ImportTransaction> imports)
+    {
+        var oldestExpenseDate = imports.OrderBy(x => x.Date).FirstOrDefault().Date;
+        var expenseImports = imports.Where(x => !x.IsIncome).ToList();
+        var expenses = await _expenseRepo.Find(x => x.Date >= oldestExpenseDate);
+        var expenseImportsNotAlreadyinDatabase = new List<ImportTransaction>();
+        foreach (var import in expenseImports)
+        {
+            if (!expenses.Any(x => x.Date == import.Date && x.Amount == import.Amount))
+            {
+                expenseImportsNotAlreadyinDatabase.Add(import);
+            }
+        }
+        var oldestIncomeDate = imports.OrderBy(x => x.Date).FirstOrDefault().Date;
+        var incomeImports = imports.Where(x => x.IsIncome).ToList();
+        var income = await _incomeRepo.Find(x => x.Date >= oldestIncomeDate);
+        var incomeImportsNotAlreadyinDatabase = new List<ImportTransaction>();
+        foreach (var import in incomeImports)
+        {
+            if (!income.Any(x => x.Date == import.Date && x.Amount == import.Amount))
+            {
+                incomeImportsNotAlreadyinDatabase.Add(import);
+            }
+        }
+        var importsNotInDatabase = new List<ImportTransaction>();
+        importsNotInDatabase.AddRange(incomeImportsNotAlreadyinDatabase);
+        importsNotInDatabase.AddRange(expenseImportsNotAlreadyinDatabase);
+        return importsNotInDatabase;
+    }
+
+    private IEnumerable<ImportTransaction> GetTransactionsFromFile(string filePath, CsvFileType fileType)
+    {
         using var reader = new StreamReader(filePath);
         var bankImports = new List<BankImport>();
+        var creditImports = new List<CreditImport>();
+        var otherImports = new List<OtherTransactionImport>();
         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
-            if (request.FileType == CsvFileType.Bank)
+            if (fileType == CsvFileType.Bank)
             {
                 csv.Context.RegisterClassMap<BankTransactionMap>();
                 bankImports = csv.GetRecords<BankImport>().ToList();
             }
+            else if (fileType == CsvFileType.Credit)
+            {
+                csv.Context.RegisterClassMap<CreditTransactionMap>();
+                creditImports = csv.GetRecords<CreditImport>().ToList();
+            }
+            else if (fileType == CsvFileType.Other)
+            {
+                otherImports = csv.GetRecords<OtherTransactionImport>().ToList();
+            }
         }
-        //seperate method
-        var expenseBankImports = bankImports.Where(x => !x.IsIncome).ToList();
+        IEnumerable<ImportTransaction> imports = bankImports.Any() ? bankImports :
+            creditImports.Any() ? creditImports : otherImports.Any() ? otherImports : new List<ImportTransaction>();
+        return imports;
+
+    }
+
+    private IEnumerable<ImportTransaction> SetImportRules(IEnumerable<ImportTransaction> imports, ImportRuleEntity[] rules)
+    {
+        var expenseImports = imports.Where(x => !x.IsIncome).ToList();
         var expenseRules = rules.Where(x => x.Transaction == "Expense").ToList();
-        foreach (var import in expenseBankImports)
+        foreach (var import in expenseImports)
         {
             var rule = expenseRules.FirstOrDefault(x => import.Notes.ToLower().Contains(x.Rule.ToLower()));
 
@@ -82,12 +175,11 @@ public class ExpenseReviewService : IExpenseReviewService
                 import.CategoryId = rule.CategoryId.Value;
             }
         }
-        //seperate method
-        var incomeBankImports = bankImports.Where(x => x.IsIncome).ToList();
+        var incomeImports = imports.Where(x => x.IsIncome).ToList();
         var incomeRules = rules.Where(x => x.Transaction == "Income").ToList();
-        foreach (var import in incomeBankImports)
+        foreach (var import in incomeImports)
         {
-            var rule = expenseRules.FirstOrDefault(x => import.Notes.ToLower().Contains(x.Rule.ToLower()));
+            var rule = incomeRules.FirstOrDefault(x => import.Notes.ToLower().Contains(x.Rule.ToLower()));
 
             if (rule != null && rule.MerchantSourceId.HasValue)
             {
@@ -98,19 +190,20 @@ public class ExpenseReviewService : IExpenseReviewService
                 import.CategoryId = rule.CategoryId.Value;
             }
         }
-
-        var x = expenseBankImports;
-        return "ya";
+        var setImports = new List<ImportTransaction>();
+        setImports.AddRange(incomeImports);
+        setImports.AddRange(expenseImports);
+        return setImports;
     }
 
     public async Task<int> SetExpenseReviewToIgnoreAsync(int id)
     {
-        var expense = await _repo.FindById(id);
+        var expense = await _expenseReviewRepo.FindById(id);
         if (expense == null)
             throw new ExpenseNotFoundException(id.ToString());
 
         expense.IsReviewed = true;
-        return await _repo.Update(expense);
+        return await _expenseReviewRepo.Update(expense);
     }
 
 
@@ -122,7 +215,6 @@ public sealed class BankTransactionMap : ClassMap<BankImport>
         Map(x => x.Date).Name("Posting Date");
         Map(x => x.Amount).Name("Amount");
         Map(x => x.Notes).Name("Description");
-        Map(x => x.IsIncome).Name("Transaction Type");
     }
 }
 public sealed class CreditTransactionMap : ClassMap<CreditImport>
@@ -131,7 +223,7 @@ public sealed class CreditTransactionMap : ClassMap<CreditImport>
     {
         Map(x => x.Date).Name("Date");
         Map(x => x.Credit).Name("Credit").Optional();
-        Map(x => x.Credit).Name("Debit").Optional();
+        Map(x => x.Debit).Name("Debit").Optional();
         Map(x => x.Notes).Name("Description");
     }
 }

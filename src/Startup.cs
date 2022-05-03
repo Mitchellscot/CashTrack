@@ -123,7 +123,8 @@ namespace CashTrack
             services.AddScoped<IRepository<ExpenseReviewEntity>, ExpenseReviewRepository>();
             services.AddScoped<IExpenseReviewService, ExpenseReviewService>();
             services.AddScoped<IIncomeReviewService, IncomeReviewService>();
-            services.AddScoped<IRepository<IncomeReviewEntity>, IncomeReviewRepository>();
+            services.AddScoped<IIncomeReviewRepository, IncomeReviewRepository>();
+            services.AddScoped<IExpenseReviewRepository, ExpenseReviewRepository>();
         }
 
         public void Configure(IApplicationBuilder app)
