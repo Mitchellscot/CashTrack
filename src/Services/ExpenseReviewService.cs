@@ -85,11 +85,27 @@ public class ExpenseReviewService : IExpenseReviewService
         var rules = await _rulesRepo.Find(x => true);
         IEnumerable<ImportTransaction> importRulesApplied = SetImportRules(filteredImports, rules);
 
-        var expensesToImport = importRulesApplied.Where(x => !x.IsIncome).ToList();
-        var incomeToImport = importRulesApplied.Where(x => x.IsIncome).ToList();
+        var expensesToImport = importRulesApplied.Where(x => !x.IsIncome).Select(x => new ExpenseReviewEntity()
+        {
+            Date = x.Date,
+            Amount = x.Amount,
+            Notes = x.Notes,
+            SuggestedMerchantId = x.MerchantSourceId.Value,
+            SuggestedCategoryId = x.CategoryId.Value,
+            IsReviewed = false
+        }).ToList();
+        var incomeToImport = importRulesApplied.Where(x => x.IsIncome).Select(x => new IncomeReviewEntity() 
+        {
+            Date = x.Date,
+            Amount = x.Amount,
+            Notes = x.Notes,
+            SuggestedSourceId = x.MerchantSourceId.Value,
+            SuggestedCategoryId = x.CategoryId.Value,
+            IsReviewed = false
+        }).ToList();
 
-        //filter transactions in review tables
-        //than convert to expenseReviewEntities
+
+
         //than insert into database
         //then delete the file... maybe do that earlier in all this, like after you read it.
         //and send a string saying how many were added!
@@ -104,6 +120,7 @@ public class ExpenseReviewService : IExpenseReviewService
         var oldestExpenseDate = imports.OrderBy(x => x.Date).FirstOrDefault().Date;
         var expenseImports = imports.Where(x => !x.IsIncome).ToList();
         var expenses = await _expenseRepo.Find(x => x.Date >= oldestExpenseDate);
+        var expenseReviews = await _expenseReviewRepo.Find(x => x.Date >= oldestExpenseDate);
         var expenseImportsNotAlreadyinDatabase = new List<ImportTransaction>();
         foreach (var import in expenseImports)
         {
@@ -111,14 +128,23 @@ public class ExpenseReviewService : IExpenseReviewService
             {
                 expenseImportsNotAlreadyinDatabase.Add(import);
             }
+            if (!expenseReviews.Any(x => x.Date == import.Date && x.Amount == import.Amount))
+            {
+                expenseImportsNotAlreadyinDatabase.Add(import);
+            }
         }
         var oldestIncomeDate = imports.OrderBy(x => x.Date).FirstOrDefault().Date;
         var incomeImports = imports.Where(x => x.IsIncome).ToList();
         var income = await _incomeRepo.Find(x => x.Date >= oldestIncomeDate);
+        var incomeReviews = await _incomeReviewRepo.Find(x => x.Date >= oldestIncomeDate);
         var incomeImportsNotAlreadyinDatabase = new List<ImportTransaction>();
         foreach (var import in incomeImports)
         {
             if (!income.Any(x => x.Date == import.Date && x.Amount == import.Amount))
+            {
+                incomeImportsNotAlreadyinDatabase.Add(import);
+            }
+            if (!incomeReviews.Any(x => x.Date == import.Date && x.Amount == import.Amount))
             {
                 incomeImportsNotAlreadyinDatabase.Add(import);
             }
