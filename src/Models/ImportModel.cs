@@ -12,6 +12,16 @@ namespace CashTrack.Models.ImportCsvModels
     }
     public class ImportTransaction : Transaction
     {
+        private decimal _amount;
+        new public decimal Amount
+        {
+            get => _amount;
+            set
+            {
+                IsIncome = value > 0;
+                _amount = Decimal.Round(Math.Abs(value), 2);
+            }
+        }
         private string _notes;
         public bool IsIncome { get; set; }
         public int? MerchantSourceId { get; set; }
@@ -24,16 +34,7 @@ namespace CashTrack.Models.ImportCsvModels
     }
     public class BankImport : ImportTransaction
     {
-        private decimal _amount;
-        new public decimal Amount
-        {
-            get => _amount;
-            set
-            {
-                IsIncome = value > 0;
-                _amount = Decimal.Round(Math.Abs(value), 2);
-            }
-        }
+
     }
     public class CreditImport : ImportTransaction
     {
@@ -64,16 +65,7 @@ namespace CashTrack.Models.ImportCsvModels
     }
     public class OtherTransactionImport : ImportTransaction
     {
-        private decimal _amount;
-        new public decimal Amount
-        {
-            get => _amount;
-            set
-            {
-                IsIncome = value > 0;
-                _amount = Decimal.Round(Math.Abs(value), 2);
-            }
-        }
+
     }
     public enum CsvFileType
     {

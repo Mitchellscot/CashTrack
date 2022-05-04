@@ -72,7 +72,16 @@ public class ExpenseReviewService : IExpenseReviewService
         {
             await request.File.CopyToAsync(fileStream);
         }
-        IEnumerable<ImportTransaction> imports = GetTransactionsFromFile(filePath, request.FileType);
+        IEnumerable<ImportTransaction> imports = new List<ImportTransaction>();
+        try
+        {
+            imports = GetTransactionsFromFile(filePath, request.FileType);
+        }
+        catch (HeaderValidationException)
+        {
+            return "Please check the file and make sure it matches the file type (Bank, Credit, etc.)";
+        }
+
 
         if (!imports.Any())
             return "No transactions imported";
@@ -88,31 +97,36 @@ public class ExpenseReviewService : IExpenseReviewService
         var expensesToImport = importRulesApplied.Where(x => !x.IsIncome).Select(x => new ExpenseReviewEntity()
         {
             Date = x.Date,
-            Amount = x.Amount,
+            Amount = decimal.Round(x.Amount, 2),
             Notes = x.Notes,
-            SuggestedMerchantId = x.MerchantSourceId.Value,
-            SuggestedCategoryId = x.CategoryId.Value,
+            SuggestedMerchantId = x.MerchantSourceId,
+            SuggestedCategoryId = x.CategoryId,
             IsReviewed = false
         }).ToList();
-        var incomeToImport = importRulesApplied.Where(x => x.IsIncome).Select(x => new IncomeReviewEntity() 
+        var incomeToImport = importRulesApplied.Where(x => x.IsIncome).Select(x => new IncomeReviewEntity()
         {
             Date = x.Date,
-            Amount = x.Amount,
+            Amount = decimal.Round(x.Amount, 2),
             Notes = x.Notes,
-            SuggestedSourceId = x.MerchantSourceId.Value,
-            SuggestedCategoryId = x.CategoryId.Value,
+            SuggestedSourceId = x.MerchantSourceId,
+            SuggestedCategoryId = x.CategoryId,
             IsReviewed = false
         }).ToList();
+        var expensesAdded = await _expenseReviewRepo.AddMany(expensesToImport);
+        var incomeAdded = await _incomeReviewRepo.AddMany(incomeToImport);
 
+        var results = "";
 
+        if (expensesAdded > 0)
+            results += $"Added {expensesAdded} Expenses";
 
-        //than insert into database
-        //then delete the file... maybe do that earlier in all this, like after you read it.
-        //and send a string saying how many were added!
+        if (expensesAdded > 0 && incomeAdded > 0)
+            results += " And ";
 
-        var stopHere = "ok";
+        if (incomeAdded > 0)
+            results += $"Added {incomeAdded} Income";
 
-        return stopHere;
+        return results;
     }
 
     private async Task<IEnumerable<ImportTransaction>> FilterTransactions(IEnumerable<ImportTransaction> imports)
@@ -124,11 +138,7 @@ public class ExpenseReviewService : IExpenseReviewService
         var expenseImportsNotAlreadyinDatabase = new List<ImportTransaction>();
         foreach (var import in expenseImports)
         {
-            if (!expenses.Any(x => x.Date == import.Date && x.Amount == import.Amount))
-            {
-                expenseImportsNotAlreadyinDatabase.Add(import);
-            }
-            if (!expenseReviews.Any(x => x.Date == import.Date && x.Amount == import.Amount))
+            if (!expenses.Any(x => x.Date == import.Date && x.Amount == import.Amount) || !expenseReviews.Any(x => x.Date == import.Date && x.Amount == import.Amount))
             {
                 expenseImportsNotAlreadyinDatabase.Add(import);
             }
@@ -140,11 +150,7 @@ public class ExpenseReviewService : IExpenseReviewService
         var incomeImportsNotAlreadyinDatabase = new List<ImportTransaction>();
         foreach (var import in incomeImports)
         {
-            if (!income.Any(x => x.Date == import.Date && x.Amount == import.Amount))
-            {
-                incomeImportsNotAlreadyinDatabase.Add(import);
-            }
-            if (!incomeReviews.Any(x => x.Date == import.Date && x.Amount == import.Amount))
+            if (!income.Any(x => x.Date == import.Date && x.Amount == import.Amount) || !incomeReviews.Any(x => x.Date == import.Date && x.Amount == import.Amount))
             {
                 incomeImportsNotAlreadyinDatabase.Add(import);
             }
@@ -180,6 +186,7 @@ public class ExpenseReviewService : IExpenseReviewService
         }
         IEnumerable<ImportTransaction> imports = bankImports.Any() ? bankImports :
             creditImports.Any() ? creditImports : otherImports.Any() ? otherImports : new List<ImportTransaction>();
+        File.Delete(filePath);
         return imports;
 
     }
