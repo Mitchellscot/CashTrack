@@ -1,5 +1,4 @@
 ﻿using CashTrack.Models.Common;
-using CsvHelper.Configuration.Attributes;
 using Microsoft.AspNetCore.Http;
 using System;
 
@@ -45,7 +44,7 @@ namespace CashTrack.Models.ImportCsvModels
             get => _debit;
             set
             {
-                
+
                 _debit = value.HasValue ? Decimal.Round(Math.Abs(value.Value), 2) : 0;
                 this.IsIncome = _debit.HasValue ? false : true;
                 this.Amount = _debit.HasValue ? _debit.Value : 0;
@@ -56,7 +55,7 @@ namespace CashTrack.Models.ImportCsvModels
             get => _credit;
             set
             {
-                
+
                 _credit = value.HasValue ? Decimal.Round(Math.Abs(value.Value), 2) : 0;
                 this.IsIncome = this.Credit.HasValue;
                 this.Amount = _credit.HasValue ? _credit.Value : 0;

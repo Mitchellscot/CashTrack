@@ -13,7 +13,7 @@ namespace CashTrack.Repositories.ExpenseReviewRepository;
 
 public interface IExpenseReviewRepository : IRepository<ExpenseReviewEntity>
 {
-    Task<bool> UpdateMany(List<ExpenseReviewEntity> entities);
+    Task<int> UpdateMany(List<ExpenseReviewEntity> entities);
 }
 public class ExpenseReviewRepository : IExpenseReviewRepository
 {
@@ -131,12 +131,12 @@ public class ExpenseReviewRepository : IExpenseReviewRepository
         }
     }
 
-    public async Task<bool> UpdateMany(List<ExpenseReviewEntity> entities)
+    public async Task<int> UpdateMany(List<ExpenseReviewEntity> entities)
     {
         try
         {
             _ctx.ExpensesToReview.UpdateRange(entities);
-            return await (_ctx.SaveChangesAsync()) > 0;
+            return await _ctx.SaveChangesAsync();
         }
         catch (Exception)
         {
