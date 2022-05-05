@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CashTrack.Models.ImportCsvModels;
 
 namespace CashTrack.Data.CsvFiles
 {
@@ -41,6 +42,10 @@ namespace CashTrack.Data.CsvFiles
         public static List<CsvModels.CsvImportRule> ProcessImportRuleFile(string path)
         {
             return File.ReadAllLines(path).Skip(1).Where(l => l.Length > 1).ToImportRule().ToList();
+        }
+        public static List<OtherTransactionImport> ProcessCsvImport(string path)
+        {
+            return File.ReadAllLines(path).Skip(1).Where(l => l.Length > 1).ToTransactionImport().ToList();
         }
     }
 }

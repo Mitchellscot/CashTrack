@@ -3,6 +3,7 @@ using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.IncomeReviewModels;
 using CashTrack.Repositories.Common;
+using CashTrack.Repositories.IncomeReviewRepository;
 using System.Threading.Tasks;
 
 namespace CashTrack.Services.IncomeReviewService;
@@ -17,10 +18,10 @@ public interface IIncomeReviewService
 
 public class IncomeReviewService : IIncomeReviewService
 {
-    private readonly IRepository<IncomeReviewEntity> _repo;
+    private readonly IIncomeReviewRepository _repo;
     private readonly IMapper _mapper;
 
-    public IncomeReviewService(IRepository<IncomeReviewEntity> repo, IMapper mapper) => (_repo, _mapper) = (repo, mapper);
+    public IncomeReviewService(IIncomeReviewRepository repo, IMapper mapper) => (_repo, _mapper) = (repo, mapper);
 
     public async Task<IncomeReviewListItem> GetIncomeReviewByIdAsync(int id)
     {

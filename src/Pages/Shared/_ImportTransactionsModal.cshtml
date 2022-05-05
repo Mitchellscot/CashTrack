@@ -1,0 +1,53 @@
+﻿@using CashTrack.Models.ImportCsvModels
+@model CashTrack.Models.ImportCsvModels.ImportModel
+@{
+}
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header text-center">
+            <h5 class="modal-title w-100">Import Transactions From CSV</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal">
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <form method="post" enctype="multipart/form-data"
+                      asp-page="../Import/Expenses"
+                      asp-page-handler="ImportCsv"
+                      id="ImportCsvForm">
+                    <input type="hidden" asp-for="@Model.ReturnUrl" />
+                    <div class="row mb-3">
+                        <div class="col-7">
+                            <div>
+                                <input asp-for=@Model.File type="file"
+                                       accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                       class="form-control" id="importCsvUpload">
+                            </div>
+                        </div>
+                        <div class="col-5 align-self-end border rounded py-1">
+                            @foreach (var fileType in Enum.GetValues(typeof(CsvFileType)))
+                            {
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio"
+                                       asp-for="FileType" value="@(fileType)" checked="@(fileType.ToString() == CsvFileType.Bank.ToString())" />
+                                    <label class="form-check-label" asp-for="@Model.FileType">
+                                        @fileType
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-evenly">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <form>
+                <button type="submit" class="btn btn-primary" form="ImportCsvForm">Upload</button>
+            </form>
+        </div>
+    </div>
+</div> 
