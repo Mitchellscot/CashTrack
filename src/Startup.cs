@@ -141,7 +141,6 @@ namespace CashTrack
             }
 
             app.UseStaticFiles();
-
             app.UseRouting();
 
             app.UseAuthentication();
