@@ -1,11 +1,15 @@
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.ExpenseReviewModels;
+
+using CashTrack.Models.ImportCsvModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.ExpenseReviewService;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
+
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.PowerShell;
@@ -19,13 +23,17 @@ namespace CashTrack.Pages.Import
 {
     public class ExpensesModel : PageModelBase
     {
+
+        private readonly IWebHostEnvironment _env;
         private readonly IMerchantService _merchantService;
         private readonly IExpenseService _expenseService;
         private readonly ISubCategoryService _subCategoryService;
         private readonly IExpenseReviewService _expenseReviewService;
 
-        public ExpensesModel(IExpenseReviewService expenseReviewService, ISubCategoryService subCategoryService, IExpenseService expenseService, IMerchantService merchantService)
+
+        public ExpensesModel(IExpenseReviewService expenseReviewService, ISubCategoryService subCategoryService, IExpenseService expenseService, IMerchantService merchantService, IWebHostEnvironment env)
         {
+            _env = env;
             _merchantService = merchantService;
             _expenseService = expenseService;
             _subCategoryService = subCategoryService;
@@ -39,6 +47,9 @@ namespace CashTrack.Pages.Import
         public Expense SelectedExpense { get; set; }
         [BindProperty]
         public int SelectedExpenseId { get; set; }
+
+        [BindProperty]
+        public ImportModel Import { get; set; }
         public async Task<IActionResult> OnGet()
         {
             await PrepareData();
@@ -66,6 +77,32 @@ namespace CashTrack.Pages.Import
             }
             await PrepareData();
             return LocalRedirect("~/Import/Expenses");
+        }
+        public async Task<IActionResult> OnPostImportCsv()
+        {
+            if (Import.File == null)
+            {
+                ModelState.AddModelError("", "Please choose a csv file and try again.");
+                await PrepareData();
+                return Page();
+            }
+            //For Bank and file types I have hardcoded objects to match the csv files and use a library just to make the process quicker, however it's tightly coupled to my bank and credit card file formats.
+            //If for any reason I wanted to import a csv file from another institution I have a third option, but the csv
+            //file has to be in a specific format.
+            if (string.IsNullOrEmpty(Import.File.ContentType) || Import.File.ContentType != "text/csv")
+            {
+                ModelState.AddModelError("", "File must be a CSV file.");
+                await PrepareData();
+                return Page();
+            }
+            var result = await _expenseReviewService.ImportTransactions(Import);
+            if (result.ToString().Contains("Added"))
+                SuccessMessage += result;
+            else
+                InfoMessage += result;
+
+            await PrepareData();
+            return LocalRedirect(Import.ReturnUrl);
         }
         public async Task<IActionResult> OnPostExpenseAdd()
         {
