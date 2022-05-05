@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
-using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseReviewModels;
 using CashTrack.Models.ImportCsvModels;
-using CashTrack.Repositories.Common;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.ExpenseReviewRepository;
 using CashTrack.Repositories.ImportRuleRepository;
@@ -79,7 +77,7 @@ public class ExpenseReviewService : IExpenseReviewService
         }
         catch (HeaderValidationException)
         {
-            return "Please check the file and make sure it matches the file type (Bank, Credit, etc.)";
+            return "CSV File does not match file type.";
         }
 
 
@@ -186,6 +184,11 @@ public class ExpenseReviewService : IExpenseReviewService
         }
         IEnumerable<ImportTransaction> imports = bankImports.Any() ? bankImports :
             creditImports.Any() ? creditImports : otherImports.Any() ? otherImports : new List<ImportTransaction>();
+
+        //remove unnecessary credit transactions
+        imports = imports.Where(x => !x.Notes.Contains("thank you"));
+
+
         File.Delete(filePath);
         return imports;
 
