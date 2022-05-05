@@ -131,8 +131,8 @@ public class ExpenseReviewRepository : IExpenseReviewRepository
             throw;
         }
     }
-
     public async Task<int> UpdateMany(IEnumerable<ExpenseReviewEntity> entities)
+
     {
         try
         {

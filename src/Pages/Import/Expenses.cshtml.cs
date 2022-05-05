@@ -1,5 +1,6 @@
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.ExpenseReviewModels;
+
 using CashTrack.Models.ImportCsvModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Pages.Shared;
@@ -7,6 +8,7 @@ using CashTrack.Services.ExpenseReviewService;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -21,11 +23,13 @@ namespace CashTrack.Pages.Import
 {
     public class ExpensesModel : PageModelBase
     {
+
         private readonly IWebHostEnvironment _env;
         private readonly IMerchantService _merchantService;
         private readonly IExpenseService _expenseService;
         private readonly ISubCategoryService _subCategoryService;
         private readonly IExpenseReviewService _expenseReviewService;
+
 
         public ExpensesModel(IExpenseReviewService expenseReviewService, ISubCategoryService subCategoryService, IExpenseService expenseService, IMerchantService merchantService, IWebHostEnvironment env)
         {
@@ -43,6 +47,7 @@ namespace CashTrack.Pages.Import
         public Expense SelectedExpense { get; set; }
         [BindProperty]
         public int SelectedExpenseId { get; set; }
+
         [BindProperty]
         public ImportModel Import { get; set; }
         public async Task<IActionResult> OnGet()
@@ -72,7 +77,6 @@ namespace CashTrack.Pages.Import
             }
             await PrepareData();
             return LocalRedirect("~/Import/Expenses");
-
         }
         public async Task<IActionResult> OnPostImportCsv()
         {

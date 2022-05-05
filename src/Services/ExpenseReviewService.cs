@@ -49,6 +49,7 @@ public class ExpenseReviewService : IExpenseReviewService
         _rulesRepo = rulesRepo;
     }
 
+
     public async Task<ExpenseReviewListItem> GetExpenseReviewByIdAsync(int id)
     {
         var singleExpense = await _expenseReviewRepo.FindById(id);
@@ -235,6 +236,7 @@ public class ExpenseReviewService : IExpenseReviewService
 
     public async Task<int> SetExpenseReviewToIgnoreAsync(int id)
     {
+
         var expense = await _expenseReviewRepo.FindById(id);
         if (expense == null)
             throw new ExpenseNotFoundException(id.ToString());
