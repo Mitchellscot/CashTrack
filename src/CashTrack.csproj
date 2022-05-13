@@ -36,6 +36,12 @@
 		<None Remove="Migrations\**" />
 	</ItemGroup>
 	<ItemGroup>
+	  <None Remove="Scripts\Expenses\expenses.ts" />
+	  <None Remove="Scripts\Expenses\split.ts" />
+	</ItemGroup>
+	<ItemGroup>
+	  <TypeScriptCompile Include="Scripts\Expenses\expenses.ts" />
+	  <TypeScriptCompile Include="Scripts\Expenses\split.ts" />
 	</ItemGroup>
 	<ItemGroup>
 		<Content Update="appsettings.json">

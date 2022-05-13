@@ -6,7 +6,8 @@ const config = {
         site: './Scripts/Site/site.ts',
         home: './Scripts/home/home.ts',
         utils: './Scripts/Utility/utils.ts',
-        expenses: './Pages/Expenses/expenses.ts'
+        expenses: './Scripts/Expenses/expenses.ts',
+        split: './Scripts/Expenses/split.ts'
     },
     devtool: 'inline-source-map',
     output: {
