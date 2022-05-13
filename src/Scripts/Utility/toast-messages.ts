@@ -1,30 +1,25 @@
-﻿
-export const getToastInfoMessage = (): void => {
-    const infoMessage: HTMLElement | null = document.querySelector("#info-toast");
-    if (infoMessage)
+﻿/* eslint-disable  @typescript-eslint/no-non-null-assertion */
+
+const shorOrHideToast = (messages: HTMLElement) => {
+    if (messages?.dataset.show?.toLowerCase() === "true")
     {
-        if (infoMessage.dataset.show && infoMessage.dataset.show.toLowerCase() === "true")
-        {
-            infoMessage.style.display = '';
-            infoMessage.classList.add('hide');
-            infoMessage.classList.add('show');
-            console.log(infoMessage.innerText);
-            console.log(infoMessage.dataset.show);
-        }
+        messages.classList.add('show');
+        setTimeout(() => {
+            messages.classList.add('hide');
+        }, 2500);
+        setTimeout(() => {
+            messages.style.display = 'none';
+        }, 3000);
+    }
+    else
+    {
+        messages!.style.display = 'none';
     }
 }
-export const getSuccessMessage = (): void => {
-    const successMessage: HTMLElement | null = document.querySelector("#success-toast");
-    if (successMessage)
-    {
-        if (successMessage.dataset.show && successMessage.dataset.show.toLowerCase() === "true")
-        {
-            /*START HERE - display:none is still on the style list when show=true*/
-            successMessage.style.display='';
-            successMessage.classList.add('hide');
-            successMessage.classList.add('show');
-            console.log(successMessage.innerText);
-            console.log(successMessage.dataset.show);
-        }
-    }
+
+const getToastMessages = (): void => {
+    const messages: NodeListOf<HTMLElement> = document.querySelectorAll("#success-toast, #info-toast, #danger-toast");
+    messages.forEach(x => shorOrHideToast(x));
 }
+
+export default getToastMessages;

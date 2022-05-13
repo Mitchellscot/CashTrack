@@ -11,15 +11,12 @@
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
 
-        @await Html.PartialAsync("_MessagePartial",
+    @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
 
-    @if (!ViewData.ModelState.IsValid)
-    {
-        @await Html.PartialAsync("_MessagePartial",
-    new _MessagePartial() {MessageType = MessageType.Danger })
-        ;
-    }
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+
     <div class="row mb-1">
         <div class="col-xs-9 order-2 order-md-1 col-md-6 col-xxl-4">
             <form method="get">

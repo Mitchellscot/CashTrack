@@ -8,6 +8,5 @@
     "outDir": "./wwwroot/js/",
     "sourceMap": true,
     "strict": true
-  },
-  "include": [ "Scripts/**/*" ]
+  }
 }

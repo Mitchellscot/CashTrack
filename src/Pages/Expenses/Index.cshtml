@@ -7,29 +7,19 @@
 }
 
 <div class="container-fluid">
-    @if (Model.InfoMessage != null)
-    {
-        @await Html.PartialAsync("_MessagePartial",
-        new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info })
-        ;
-    }
-    @if (Model.SuccessMessage != null)
-    {
-        @await Html.PartialAsync("_MessagePartial",
-        new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success })
-        ;
-    }
-    @if (!ViewData.ModelState.IsValid)
-    {
-        @await Html.PartialAsync("_MessagePartial",
-        new _MessagePartial() {MessageType = MessageType.Danger });
-    }
-    @if (Model.ExpenseResponse != null && Model.ExpenseResponse.TotalCount == 0)
-    {
-        @await Html.PartialAsync("_MessagePartial",
-    new _MessagePartial() { Message = "No Expenses Found!", MessageType = MessageType.Info })
-        ;
-    }
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
+
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
+
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+
+
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = "No Expenses Found!", MessageType = MessageType.Info, Show = Model.ExpenseResponse != null && Model.ExpenseResponse.TotalCount == 0 })
+
 
     <div class="row mb-1">
         <div class="col-xl-6 col-12 mb-1 mr-auto">
@@ -170,7 +160,7 @@
     </div>
     @*End Add Expense Modal*@
 
-@if (Model.ExpenseResponse != null && Model.ExpenseResponse.TotalCount > 0)
+    @if (Model.ExpenseResponse != null && Model.ExpenseResponse.TotalCount > 0)
     {
         <div class="row">
             <div class="table-responsive">
@@ -534,23 +524,6 @@
 
     $(document).ready(() => {
 
-        //toast notification
-        @if(Model.InfoMessage != null)
-        {
-            @:$("#info-toast").show().delay(2000).fadeOut();
-        }
-        @if(Model.SuccessMessage != null)
-        {
-            @:$("#success-toast").show().delay(2000).fadeOut();
-        }
-        @if(Model.ExpenseResponse == null || Model.ExpenseResponse.TotalCount == 0)
-        {
-            @:$("#info-toast").show().delay(2000).fadeOut();
-        }
-        @if(!ModelState.IsValid)
-        {
-            @:$("#danger-toast").show().delay(4000).fadeOut();
-        }
         //get query values for dropdown lists
         let q = getQueryValue();
         let queryType = getQueryType();

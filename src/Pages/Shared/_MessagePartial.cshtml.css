@@ -1,0 +1,12 @@
+﻿.main-container {
+    position: relative;
+}
+.message-partial {
+    position: absolute; 
+    right: 40%; 
+    top: 0; 
+    z-index: 1200;
+}
+.icon-size {
+    font-size: 1.5rem;
+}
