@@ -253,3 +253,14 @@ ul.ui-autocomplete {
     }
 }
 /*end Code for the loading spinner */
+
+/*for sure universal*/
+.search-icon-size {
+    font-size: 1rem;
+}
+.icon-size {
+    font-size: 1rem;
+}
+.no-hyperlink-underline {
+    text-decoration: none;
+}

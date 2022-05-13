@@ -1,2 +1,12 @@
-﻿body {
+﻿.expense-split-amount {
+    width: 100px;
+}
+
+.expense-split-amount-validation * {
+    color: red;
+    white-space: normal;
+}
+#amount-0-error {
+    color: red;
+    white-space: normal;
 }

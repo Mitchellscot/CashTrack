@@ -15,13 +15,12 @@
     new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
-    <div class="col-lg-8 offset-lg-0 border rounded bg-light">
 
+    <div class="col-lg-8 offset-lg-0 border rounded bg-light">
         <div class="d-flex justify-content-center mt-3">
             <img src="\images\cash-track.png" height="200" width="200" alt="Cash Track Logo" />
         </div>
         <div class="container pt-3">
-
             <form method="post">
                 <div class="input-group mb-3">
                     <input type="text" class="text-center form-control" asp-for=@Model.UserName placeholder="Name" required />
