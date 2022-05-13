@@ -131,25 +131,28 @@
 
     $(document).ready(() => {
 
-        @for(int i = 0; i <= Model.Split; i++)
+        @for(int i = 0; i < Model.Split; i++)
         {
             //load the main category on page load
-            <text>let category_@i = $("#subCategory-@i").val();
+            <text>
+            let categoryId_@i = $("#subCategory-@i").val();
                 $.ajax({
-                    url: `/api/maincategory/sub-category/${category_@i}`,
+                    url: `/api/maincategory/sub-category/${categoryId_@i}`,
                     method: 'GET'
                 }).then((response) => {
                     $("#mainCategory-@i").text(`${response}`);
                 }).catch((error) => console.log(error));
                 </text>
             //load the main category when select list changes
-            <text>$("#subCategory-@i").change(()=>{
+            <text>
+            $("#subCategory-@i").change(()=>{
                 let categoryId_@i = $("#subCategory-@i").val();
+                if(typeof categoryId_@i === undefined)
+                    return;
                 $.ajax({
                     url: `/api/maincategory/sub-category/${categoryId_@i}`,
                     method: 'GET'
                 }).then((response) => {
-                    console.log(response);
                     $("#mainCategory-@i").text(`${response}`);
                 }).catch((error) => console.log(error));
             });</text>

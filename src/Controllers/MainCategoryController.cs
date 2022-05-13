@@ -5,9 +5,11 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using CashTrack.Common.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CashTrack.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
     [Route("api/[controller]")]
     public class MainCategoryController : ControllerBase
