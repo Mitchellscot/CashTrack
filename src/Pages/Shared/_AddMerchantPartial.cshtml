@@ -3,7 +3,9 @@
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
         <div class="modal-header text-center">
-            @{var addOrEdit = Model.IsEdit ? "Edit" : "Add";}
+            @{
+                var addOrEdit = Model.IsEdit ? "Edit" : "Add";
+            }
             <h5 class="modal-title w-100">@addOrEdit a Merchant</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal">
             </button>
@@ -31,7 +33,7 @@
                         </div>
                         <div class="col-4 align-self-center border rounded py-1">
 
-                                                        <div class="form-check form-switch ">
+                            <div class="form-check form-switch ">
                                 <label class="form-check-label" asp-for="@Model.SuggestOnLookup">Suggest on Lookup</label>
                                 <input class="form-check-input" type="checkbox" role="switch" id="addEditMerchantSuggestOnLookup" data-val="true"
                                        asp-for="@Model.SuggestOnLookup" />
@@ -74,7 +76,7 @@
                         <label class="visually-hidden" asp-for="@Model.Notes"></label>
                         <textarea class="form-control" asp-for="@Model.Notes" id="addEditMerchantNotes" rows="3" placeholder="Notes"></textarea>
                     </div>
-                    <span style="color: red;" asp-validation-for="@Model.Notes"></span>
+                    <span asp-validation-for="@Model.Notes"></span>
                 </form>
             </div>
         </div>

@@ -11,6 +11,12 @@ const config = {
         split: './Scripts/Expenses/split.ts',
         importExpenses: './Scripts/Import/importExpenses.ts',
         importIncome: './Scripts/Import/importIncome.ts',
+        income: './Scripts/Income/income.ts',
+        refund: './Scripts/Income/refund.ts',
+        merchantDetail: './Scripts/Merchants/merchantDetail.ts',
+        merchants: './Scripts/Merchants/merchants.ts',
+        sources: './Scripts/Sources/sources.ts',
+        sourceDetail: './Scripts/Sources/sourceDetail.ts',
     },
     devtool: 'inline-source-map',
     output: {

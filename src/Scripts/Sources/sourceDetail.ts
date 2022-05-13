@@ -1,0 +1,1 @@
+﻿console.log('income source detail page');

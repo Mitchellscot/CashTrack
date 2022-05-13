@@ -9,6 +9,13 @@
 }
 
 <div class="container">
+        @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+
     <div class="row mb-0">
         <div class="d-flex align-content-center justify-content-center col ms-5 ps-5">
             <h3 class="fw-bold">@Model.Merchant.Name</h3>
@@ -180,7 +187,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
 <partial name="_ValidationScriptsPartial" />
-
+<script src="~/js/merchantDetail.js" asp-append-version="true"></script>
 @if(Model.Merchant.AnnualExpenseStatistics.Any()){
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
@@ -258,24 +265,6 @@
 <script type="text/javascript">
 
     $(document).ready(() => {
-        $('#loadingSpinner').hide();
-        $(".page-link").click(() => {
-            $('#loadingSpinner').show();
-        });
-
-        //toast notification
-        @if(Model.InfoMessage != null)
-        {
-            @:$("#info-toast").show().delay(2000).fadeOut();
-        }
-        @if(Model.SuccessMessage != null)
-        {
-            @:$("#success-toast").show().delay(2000).fadeOut();
-        }
-        @if(!ModelState.IsValid)
-        {
-            @:$("#danger-toast").show().delay(4000).fadeOut();
-        }
 
         //disables city and state inputs if merchant is online - for add merchant modal
         $("#addEditMerchantIsOnline").click(() => {
