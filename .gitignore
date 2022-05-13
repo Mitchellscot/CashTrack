@@ -448,3 +448,4 @@ $RECYCLE.BIN/
 appsettings*
 /src/ref
 /src/runtimes
+/src/wwwroot/js/*.js

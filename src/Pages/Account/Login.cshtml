@@ -6,8 +6,6 @@
     Layout = "_LoginLayout";
 }
 
-
-
 <div class="col-md-6 offset-md-4 mt-5">
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })

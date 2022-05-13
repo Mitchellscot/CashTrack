@@ -8,7 +8,9 @@ const config = {
         home: './Scripts/home/home.ts',
         utils: './Scripts/Utility/utils.ts',
         expenses: './Scripts/Expenses/expenses.ts',
-        split: './Scripts/Expenses/split.ts'
+        split: './Scripts/Expenses/split.ts',
+        importExpenses: './Scripts/Import/importExpenses.ts',
+        importIncome: './Scripts/Import/importIncome.ts',
     },
     devtool: 'inline-source-map',
     output: {
