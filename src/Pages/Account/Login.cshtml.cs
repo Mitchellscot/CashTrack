@@ -44,8 +44,11 @@ namespace CashTrack.Pages
             {
                 return LocalRedirect(ReturnUrl);
             }
-
-            return Page();
+            else 
+            {
+                ModelState.AddModelError("", "Invalid password");
+                return Page();
+            }
         }
         public async Task<IActionResult> LogOut()
         {

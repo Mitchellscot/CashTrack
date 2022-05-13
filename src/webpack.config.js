@@ -3,6 +3,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const config = {
     entry: {
+        login: './Scripts/Account/login.ts',
         site: './Scripts/Site/site.ts',
         home: './Scripts/home/home.ts',
         utils: './Scripts/Utility/utils.ts',
