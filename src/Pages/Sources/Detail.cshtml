@@ -9,7 +9,6 @@
 }
 
 <div class="container">
-    @await Html.PartialAsync("_LoadingSpinner")
     @if (Model.InfoMessage != null)
     {
         @await Html.PartialAsync("_MessagePartial",

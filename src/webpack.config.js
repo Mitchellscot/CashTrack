@@ -3,8 +3,10 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const config = {
     entry: {
+        site: './Scripts/Site/site.ts',
         home: './Scripts/home/home.ts',
-        utils: './Scripts/Utility/utils.ts'
+        utils: './Scripts/Utility/utils.ts',
+        expenses: './Pages/Expenses/expenses.ts'
     },
     devtool: 'inline-source-map',
     output: {

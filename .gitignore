@@ -446,3 +446,5 @@ $RECYCLE.BIN/
 /ct-data
 /src/Data/Migrations
 appsettings*
+/src/ref
+/src/runtimes

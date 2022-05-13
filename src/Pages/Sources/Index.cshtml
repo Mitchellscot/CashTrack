@@ -6,7 +6,6 @@
     Layout = "_Layout";
 }
 <div class="container-fluid">
-    @await Html.PartialAsync("_LoadingSpinner")
     @if (Model.InfoMessage != null)
     {
         @await Html.PartialAsync("_MessagePartial",
