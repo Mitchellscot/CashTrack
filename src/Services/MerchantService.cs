@@ -124,6 +124,24 @@ public class MerchantService : IMerchantService
     {
         var merchant = await _merchantRepo.FindById(id);
         var expenses = await _expenseRepo.GetExpensesAndCategoriesByMerchantId(id);
+        if (!expenses.Any())
+            return new MerchantDetail()
+            {
+                Id = merchant.Id,
+                Name = merchant.Name,
+                SuggestOnLookup = merchant.SuggestOnLookup,
+                City = merchant.City,
+                State = merchant.State,
+                Notes = merchant.Notes,
+                IsOnline = merchant.IsOnline,
+                ExpenseTotals = new Totals(),
+                MostUsedCategory = "No expenses yet.",
+                AnnualExpenseStatistics = new List<AnnualStatistics>(),
+                MonthlyExpenseStatistics = new List<MonthlyStatistics>(),
+                PurchaseCategoryOccurances = new Dictionary<string, int>(),
+                PurchaseCategoryTotals = new Dictionary<string, decimal>(),
+                RecentExpenses = new List<ExpenseQuickView>(),
+            };
         var subCategories = expenses.Select(x => x.Category).Distinct().ToArray();
 
         var expensesSpanMultipleYears = expenses.GroupBy(e => e.Date.Year).ToList().Count() > 1;

@@ -9,25 +9,13 @@
 }
 
 <div class="container">
-    @await Html.PartialAsync("_LoadingSpinner")
-    @if (Model.InfoMessage != null)
-    {
-        @await Html.PartialAsync("_MessagePartial",
-    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info })
-        ;
-    }
-    @if (Model.SuccessMessage != null)
-    {
-        @await Html.PartialAsync("_MessagePartial",
-    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success })
-        ;
-    }
-    @if (!ViewData.ModelState.IsValid)
-    {
-        @await Html.PartialAsync("_MessagePartial",
-    new _MessagePartial() {MessageType = MessageType.Danger })
-        ;
-    }
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+
     <div class="row mb-0">
         <div class="d-flex align-content-center justify-content-center col ms-5 ps-5">
             <h3 class="fw-bold">@Model.Source.Name</h3>
@@ -125,7 +113,7 @@
                     <textarea type="text" class="form-control whiteBackgroundOnDisabled py-0" id="sourceDescription" asp-for="@Model.Source.Notes" disabled style="height: 75px"></textarea>
                     @if (string.IsNullOrEmpty(Model.Source.Notes))
                     {
-                            <label asp-for="@Model.Source.Notes">Description</label>
+                        <label asp-for="@Model.Source.Notes">Description</label>
                     }
                 </div>
             </div>
@@ -153,17 +141,17 @@
                         <tbody>
                             @foreach (var income in @Model.Source.RecentIncomes)
                             {
-                                    <tr>
-                                        <td>
+                                <tr>
+                                    <td>
                                         @income.Date
-                                        </td>
-                                        <td>
+                                    </td>
+                                    <td>
                                         @String.Format("{0:n}", income.Amount)
-                                        </td>
-                                        <td>
+                                    </td>
+                                    <td>
                                         @income.Category
-                                        </td>
-                                    </tr>
+                                    </td>
+                                </tr>
                             }
                         </tbody>
                     </table>
@@ -194,6 +182,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
+<script src="~/js/sourceDetail.js" asp-append-version="true"></script>
 <partial name="_ValidationScriptsPartial" />
 
 @if(Model.Source.AnnualIncomeStatistcis.Any()){
@@ -270,28 +259,4 @@
     Responsive = true
 })
 }
-<script type="text/javascript">
-
-    $(document).ready(() => {
-        $('#loadingSpinner').hide();
-        $(".page-link").click(() => {
-            $('#loadingSpinner').show();
-        });
-
-        //toast notification
-        @if(Model.InfoMessage != null)
-        {
-            @:$("#info-toast").show().delay(2000).fadeOut();
-        }
-        @if(Model.SuccessMessage != null)
-        {
-            @:$("#success-toast").show().delay(2000).fadeOut();
-        }
-        @if(!ModelState.IsValid)
-        {
-            @:$("#danger-toast").show().delay(4000).fadeOut();
-        }
-
-    });
-</script>
-    }
+}

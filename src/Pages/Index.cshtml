@@ -5,41 +5,11 @@
     Layout = "_Layout";
 }
 <div class="container-fluid">
-    @await Html.PartialAsync("_LoadingSpinner")
     <div class="text-center">
         <h1 class="display-4">Welcome @User.Identity.Name</h1>
     </div>
 </div>
+
 @section Scripts {
-<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true">
-</script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
-<partial name="_ValidationScriptsPartial" />
-<script type="text/javascript">
-
-    $(document).ready(() => {
-        $('#loadingSpinner').hide();
-
-        $("a").click(() => {
-            $('#loadingSpinner').show();
-        });
-
-        $(".page-link").click(() => {
-            $('#loadingSpinner').show();
-        });
-        //toast notification
-        @if(Model.InfoMessage != null)
-        {
-            @:$("#info-toast").show().delay(2000).fadeOut();
-        }
-        @if(Model.SuccessMessage != null)
-        {
-            @:$("#success-toast").show().delay(2000).fadeOut();
-        }
-        @if(!ModelState.IsValid)
-        {
-            @:$("#danger-toast").show().delay(4000).fadeOut();
-        }
-    });
-</script>
-    }
+<script src="~/js/home.js"></script>
+}

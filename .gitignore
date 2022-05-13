@@ -446,3 +446,6 @@ $RECYCLE.BIN/
 /ct-data
 /src/Data/Migrations
 appsettings*
+/src/ref
+/src/runtimes
+/src/wwwroot/js/*.js

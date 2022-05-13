@@ -1,5 +1,3 @@
-/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
 
 .border {
     border-width: 2px !important;
@@ -151,9 +149,17 @@ ul.ui-autocomplete {
     background: transparent !important;
 }
 
+.show {
+    opacity: 1;
+}
+
+.hide {
+    transition: opacity 500ms;
+    opacity: 0;
+}
+
 /*Code for the loading spinner */
 .lds-spinner {
-    color: #95a5a6;
     display: inline-block;
     position: relative;
     width: 80px;
@@ -174,7 +180,7 @@ ul.ui-autocomplete {
             width: 6px;
             height: 18px;
             border-radius: 20%;
-            background: #18bc9c;
+            background: #95a5a6;
         }
 
         .lds-spinner div:nth-child(1) {
@@ -247,3 +253,14 @@ ul.ui-autocomplete {
     }
 }
 /*end Code for the loading spinner */
+
+/*for sure universal*/
+.search-icon-size {
+    font-size: 1rem;
+}
+.icon-size {
+    font-size: 1rem;
+}
+.no-hyperlink-underline {
+    text-decoration: none;
+}

@@ -22,22 +22,20 @@
         _ => "info-circle"
     };
 }
-<div style="position: relative;">
-    <div class="toast fade show mt-3 @cssClass bg-gradient" role="alert" id="@id" style="position: absolute; right: 40%; top: 0; z-index:1200;">
+<div class="main-container">
+    <div class="toast fade show mt-3 @cssClass bg-gradient message-partial" role="alert" id="@id" data-show=@Model.Show>
         @if (Model.MessageType == MessageType.Danger)
         {
             <div class="toast-body d-flex justify-content-between align-items-center text-center">
-                <i class="bi @icon text-white mx-3" role="img"
-               style="font-size: 1.5rem;"></i>
+                <i class="bi @icon text-white mx-3 icon-size" role="img"></i>
                 <div asp-validation-summary="All"></div>
                 <button type="button" class="btn-lg btn-close btn-close-white mx-3" data-bs-dismiss="toast"></button>
             </div>
         }
         else
         {
-            <div class="toast-body d-flex justify-content-between align-items-center text-center" >
-                <i class="bi @icon text-white mx-3" role="img"
-               style="font-size: 1.5rem;"></i>
+            <div class="toast-body d-flex justify-content-between align-items-center text-center">
+                <i class="bi @icon text-white mx-3 icon-size" role="img"></i>
                 @Model.Message
                 <button type="button" class="btn-lg btn-close btn-close-white mx-3" data-bs-dismiss="toast"></button>
             </div>

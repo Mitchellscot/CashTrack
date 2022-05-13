@@ -1,15 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Security.Claims;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
 using CashTrack.Data.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using CashTrack.Pages.Shared;
 
 namespace CashTrack.Pages
@@ -44,8 +38,11 @@ namespace CashTrack.Pages
             {
                 return LocalRedirect(ReturnUrl);
             }
-
-            return Page();
+            else
+            {
+                ModelState.AddModelError("", "Invalid password");
+                return Page();
+            }
         }
         public async Task<IActionResult> LogOut()
         {

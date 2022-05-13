@@ -6,22 +6,13 @@
     Layout = "_Layout";
 }
 <div class="container-fluid mb-0">
-    @if (Model.SuccessMessage != null)
-    {
-        @await Html.PartialAsync("_MessagePartial", new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success });
-        ;
-    }
-    @if (Model.InfoMessage != null)
-    {
-        @await Html.PartialAsync("_MessagePartial", new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info });
-        ;
-    }
-    @if (!ViewData.ModelState.IsValid)
-    {
-        @await Html.PartialAsync("_MessagePartial",
-    new _MessagePartial() {MessageType = MessageType.Danger })
-        ;
-    }
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+
     <form method="post" asp-page-handler="RunScript">
         <div style="position: absolute; right: 4%; top: 8%; z-index:1;"><button class="btn btn-primary" type="submit" id="importButton">Import</button></div>
     </form>
@@ -219,22 +210,10 @@
 </script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
 <partial name="_ValidationScriptsPartial" />
+<script src="~/js/importIncome.js" asp-append-version="true"></script>
 <script type="text/javascript">
 
     $(document).ready(() => {
-        //toast notification
-        @if(Model.InfoMessage != null)
-        {
-            @:$("#info-toast").show().delay(2000).fadeOut();
-        }
-        @if(Model.SuccessMessage != null)
-        {
-            @:$("#success-toast").show().delay(2000).fadeOut();
-        }
-        @if(!ModelState.IsValid)
-        {
-            @:$("#danger-toast").show().delay(4000).fadeOut();
-        }
         
         //creates a waiting effect while import script runs
         $('#importButton').click(()=>{

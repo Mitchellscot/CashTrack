@@ -5,16 +5,15 @@
     Layout = "_Layout";
 }
 <div class="container">
-        @if (!ViewData.ModelState.IsValid)
-    {
-        @await Html.PartialAsync("_MessagePartial", new _MessagePartial() { MessageType = MessageType.Danger });
-    }
-    @if (Model.ExpenseSearch != null && !Model.ExpenseSearch.Any())
-    {
-        @await Html.PartialAsync("_MessagePartial",
-    new _MessagePartial() { Message = "No Expenses Found!", MessageType = MessageType.Info })
-        ;
-    }
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = "No Expenses Found!", MessageType = MessageType.Info, Show = Model.ExpenseSearch != null && !Model.ExpenseSearch.Any() })
+
     <div class="d-flex justify-content-between align-items-center">
         <h3>Refund an Expense</h3>
         <div class="border rounded px-2 py-1" id="totalBox">
@@ -254,18 +253,11 @@
 </script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
 <partial name="_ValidationScriptsPartial" />
+<script src="~/js/refund.js" asp-append-version="true"></script>
 <script type="text/javascript">
 
     $(document).ready(() => {
 
-        @if(!ModelState.IsValid)
-        {
-            @:$("#danger-toast").show().delay(4000).fadeOut();
-        }
-        @if(Model.ExpenseSearch != null && !Model.ExpenseSearch.Any())
-        {
-            @:$("#info-toast").show().delay(2000).fadeOut();
-        }
         @if(Model.SelectedExpenses != null && Model.SelectedExpenses.Count() > 0)
         {
                 @foreach(var id in Model.SelectedExpenses.Select(x => x.Id).ToList())

@@ -1,21 +1,25 @@
 ﻿@page "/login"
+@using CashTrack.Pages.Shared
 @model CashTrack.Pages.LoginModel
 @{
     ViewData["Title"] = "Log In";
     Layout = "_LoginLayout";
 }
 
-
 <div class="col-md-6 offset-md-4 mt-5">
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+
     <div class="col-lg-8 offset-lg-0 border rounded bg-light">
         <div class="d-flex justify-content-center mt-3">
             <img src="\images\cash-track.png" height="200" width="200" alt="Cash Track Logo" />
         </div>
         <div class="container pt-3">
-
             <form method="post">
-                <div asp-validation-summary="All">
-                </div>
                 <div class="input-group mb-3">
                     <input type="text" class="text-center form-control" asp-for=@Model.UserName placeholder="Name" required />
                 </div>
@@ -32,3 +36,6 @@
 </div>
 <div className="col-lg-6 offset-lg-3 rounded mt-0">
 </div>
+@section Scripts {
+<script src="~/js/login.js" asp-append-version="true"></script>
+}
