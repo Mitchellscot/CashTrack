@@ -149,6 +149,15 @@ ul.ui-autocomplete {
     background: transparent !important;
 }
 
+.show {
+    opacity: 1;
+}
+
+.hide {
+    opacity: 0;
+    transition: opacity 4000ms;
+}
+
 /*Code for the loading spinner */
 .lds-spinner {
     display: inline-block;

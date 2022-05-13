@@ -4,6 +4,7 @@
     {
         public string Message { get; set; }
         public MessageType MessageType { get; set; }
+        public bool Show { get; set; }
 
     }
     public enum MessageType
