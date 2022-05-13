@@ -15,7 +15,6 @@
   "name": "cash-track",
   "scripts": {
     "build": "webpack --mode=production --node-env=production",
-    "dev": "webpack --mode=development --watch",
-    "build:prod": "webpack --mode=production --node-env=production"
+    "dev": "webpack --mode=development --node-env=development"
   }
 }

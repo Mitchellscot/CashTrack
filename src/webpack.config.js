@@ -18,7 +18,6 @@ const config = {
         sources: './Scripts/Sources/sources.ts',
         sourceDetail: './Scripts/Sources/sourceDetail.ts',
     },
-    devtool: 'inline-source-map',
     output: {
         filename: '[name].js',
         path: path.resolve(__dirname, "wwwroot/js/"),
@@ -40,4 +39,16 @@ const config = {
     }
 };
 
-module.exports = config;
+module.exports = (env, argv) => {
+    if (argv.mode === 'development')
+    {
+        config.devtool = 'inline-source-map';
+    }
+
+    if (argv.mode === 'production')
+    {
+        //I don't know... uglify or something?
+    }
+
+    return config;
+};
