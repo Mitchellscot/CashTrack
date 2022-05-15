@@ -3,7 +3,7 @@
 const shorOrHideToast = (messages: HTMLElement) => {
     if (messages?.dataset.show?.toLowerCase() === "true")
     {
-        messages.classList.add('show');
+        messages.style.display = 'block';
         setTimeout(() => {
             messages.classList.add('hide');
         }, 2500);
