@@ -7,13 +7,16 @@
 /*global document: false, jQuery: false */
 
 (function (factory) {
-    if (typeof define === 'function' && define.amd) {
+    if (typeof define === 'function' && define.amd)
+    {
         // AMD. Register as an anonymous module.
         define("jquery.validate.unobtrusive", ['jquery-validation'], factory);
-    } else if (typeof module === 'object' && module.exports) {
+    } else if (typeof module === 'object' && module.exports)
+    {
         // CommonJS-like environments that support module.exports     
         module.exports = factory(require('jquery-validation'));
-    } else {
+    } else
+    {
         // Browser global
         jQuery.validator.unobtrusive = factory(jQuery);
     }
@@ -24,7 +27,8 @@
 
     function setValidationValues(options, ruleName, value) {
         options.rules[ruleName] = value;
-        if (options.message) {
+        if (options.message)
+        {
             options.messages[ruleName] = options.message;
         }
     }
@@ -43,7 +47,8 @@
     }
 
     function appendModelPrefix(value, prefix) {
-        if (value.indexOf("*.") === 0) {
+        if (value.indexOf("*.") === 0)
+        {
             value = value.replace("*.", prefix);
         }
         return value;
@@ -57,11 +62,13 @@
         container.removeClass("field-validation-valid").addClass("field-validation-error");
         error.data("unobtrusiveContainer", container);
 
-        if (replace) {
+        if (replace)
+        {
             container.empty();
             error.removeClass("input-validation-error").appendTo(container);
         }
-        else {
+        else
+        {
             error.hide();
         }
     }
@@ -70,9 +77,10 @@
         var container = $(this).find("[data-valmsg-summary=true]"),
             list = container.find("ul");
 
-        if (list && list.length && validator.errorList.length) {
+        if (list && list.length && validator.errorList.length)
+        {
             list.empty();
-            container.addClass("validation-summary-errors").removeClass("validation-summary-valid");
+            container.addClass("validation-summary-errors").removeClass("display-none");
 
             $.each(validator.errorList, function () {
                 $("<li />").html(this.message).appendTo(list);
@@ -83,14 +91,16 @@
     function onSuccess(error) {  // 'this' is the form element
         var container = error.data("unobtrusiveContainer");
 
-        if (container) {
+        if (container)
+        {
             var replaceAttrValue = container.attr("data-valmsg-replace"),
                 replace = replaceAttrValue ? $.parseJSON(replaceAttrValue) : null;
 
             container.addClass("field-validation-valid").removeClass("field-validation-error");
             error.removeData("unobtrusiveContainer");
 
-            if (replace) {
+            if (replace)
+            {
                 container.empty();
             }
         }
@@ -99,19 +109,22 @@
     function onReset(event) {  // 'this' is the form element
         var $form = $(this),
             key = '__jquery_unobtrusive_validation_form_reset';
-        if ($form.data(key)) {
+        if ($form.data(key))
+        {
             return;
         }
         // Set a flag that indicates we're currently resetting the form.
         $form.data(key, true);
-        try {
+        try
+        {
             $form.data("validator").resetForm();
-        } finally {
+        } finally
+        {
             $form.removeData(key);
         }
 
         $form.find(".validation-summary-errors")
-            .addClass("validation-summary-valid")
+            .addClass("display-none")
             .removeClass("validation-summary-errors");
         $form.find(".field-validation-error")
             .addClass("field-validation-valid")
@@ -131,7 +144,8 @@
                 func && $.isFunction(func) && func.apply(form, args);
             };
 
-        if (!result) {
+        if (!result)
+        {
             result = {
                 options: {  // options structure passed to jQuery Validate's validate() method
                     errorClass: defaultOptions.errorClass || "input-validation-error",
@@ -184,7 +198,8 @@
                 form = $element.parents("form")[0],
                 valInfo, rules, messages;
 
-            if (!form) {  // Cannot do client-side validation without a form
+            if (!form)
+            {  // Cannot do client-side validation without a form
                 return;
             }
 
@@ -197,7 +212,8 @@
                     message = $element.attr(prefix),
                     paramValues = {};
 
-                if (message !== undefined) {  // Compare against undefined, because an empty message is legal (and falsy)
+                if (message !== undefined)
+                {  // Compare against undefined, because an empty message is legal (and falsy)
                     prefix += "-";
 
                     $.each(this.params, function () {
@@ -217,7 +233,8 @@
 
             $.extend(rules, { "__dummy__": true });
 
-            if (!skipAttach) {
+            if (!skipAttach)
+            {
                 valInfo.attachValidation();
             }
         },
@@ -245,7 +262,8 @@
 
             $forms.each(function () {
                 var info = validationInfo(this);
-                if (info) {
+                if (info)
+                {
                     info.attachValidation();
                 }
             });
@@ -264,7 +282,8 @@
         /// <param name="fn" type="Function">The function to call, which adapts the values from the HTML
         /// attributes into jQuery Validate rules and/or messages.</param>
         /// <returns type="jQuery.validator.unobtrusive.adapters" />
-        if (!fn) {  // Called with no params, just a function
+        if (!fn)
+        {  // Called with no params, just a function
             fn = params;
             params = [];
         }
@@ -306,13 +325,16 @@
             var min = options.params.min,
                 max = options.params.max;
 
-            if (min && max) {
+            if (min && max)
+            {
                 setValidationValues(options, minMaxRuleName, [min, max]);
             }
-            else if (min) {
+            else if (min)
+            {
                 setValidationValues(options, minRuleName, min);
             }
-            else if (max) {
+            else if (max)
+            {
                 setValidationValues(options, maxRuleName, max);
             }
         });
@@ -339,7 +361,8 @@
 
     $jQval.addMethod("regex", function (value, element, params) {
         var match;
-        if (this.optional(element)) {
+        if (this.optional(element))
+        {
             return true;
         }
 
@@ -349,17 +372,20 @@
 
     $jQval.addMethod("nonalphamin", function (value, element, nonalphamin) {
         var match;
-        if (nonalphamin) {
+        if (nonalphamin)
+        {
             match = value.match(/\W/g);
             match = match && match.length >= nonalphamin;
         }
         return match;
     });
 
-    if ($jQval.methods.extension) {
+    if ($jQval.methods.extension)
+    {
         adapters.addSingleVal("accept", "mimtype");
         adapters.addSingleVal("extension", "extension");
-    } else {
+    } else
+    {
         // for backward compatibility, when the 'extension' validation method does not exist, such as with versions
         // of JQuery Validation plugin prior to 1.10, we should use the 'accept' method for
         // validating the extension, and ignore mime-type validations as they are not supported.
@@ -380,7 +406,8 @@
     });
     adapters.add("required", function (options) {
         // jQuery Validate equates "required" with "mandatory" for checkbox elements
-        if (options.element.tagName.toUpperCase() !== "INPUT" || options.element.type.toUpperCase() !== "CHECKBOX") {
+        if (options.element.tagName.toUpperCase() !== "INPUT" || options.element.type.toUpperCase() !== "CHECKBOX")
+        {
             setValidationValues(options, "required", true);
         }
     });
@@ -397,10 +424,12 @@
             value.data[paramName] = function () {
                 var field = $(options.form).find(":input").filter("[name='" + escapeAttributeValue(paramName) + "']");
                 // For checkboxes and radio buttons, only pick up values from checked fields.
-                if (field.is(":checkbox")) {
+                if (field.is(":checkbox"))
+                {
                     return field.filter(":checked").val() || field.filter(":hidden").val() || '';
                 }
-                else if (field.is(":radio")) {
+                else if (field.is(":radio"))
+                {
                     return field.filter(":checked").val() || '';
                 }
                 return field.val();
@@ -410,13 +439,16 @@
         setValidationValues(options, "remote", value);
     });
     adapters.add("password", ["min", "nonalphamin", "regex"], function (options) {
-        if (options.params.min) {
+        if (options.params.min)
+        {
             setValidationValues(options, "minlength", options.params.min);
         }
-        if (options.params.nonalphamin) {
+        if (options.params.nonalphamin)
+        {
             setValidationValues(options, "nonalphamin", options.params.nonalphamin);
         }
-        if (options.params.regex) {
+        if (options.params.regex)
+        {
             setValidationValues(options, "regex", options.params.regex);
         }
     });

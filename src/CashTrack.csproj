@@ -36,16 +36,6 @@
 		<None Remove="Migrations\**" />
 	</ItemGroup>
 	<ItemGroup>
-		<None Remove="Scripts\Expenses\expenses.ts" />
-		<None Remove="Scripts\Expenses\split.ts" />
-		<None Remove="Scripts\Income\income.ts" />
-		<None Remove="Scripts\Income\refund.ts" />
-		<None Remove="Scripts\Merchants\merchantDetail.ts" />
-		<None Remove="Scripts\Merchants\merchants.ts" />
-		<None Remove="Scripts\Sources\sourceDetail.ts" />
-		<None Remove="Scripts\Sources\sources.ts" />
-	</ItemGroup>
-	<ItemGroup>
 		<TypeScriptCompile Include="Scripts\Expenses\expenses.ts" />
 		<TypeScriptCompile Include="Scripts\Expenses\split.ts" />
 		<TypeScriptCompile Include="Scripts\Income\income.ts" />
