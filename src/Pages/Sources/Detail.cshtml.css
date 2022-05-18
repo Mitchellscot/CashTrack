@@ -1,1 +1,6 @@
-﻿
+﻿.chart-height {
+    max-height: 400px;
+}
+.source-notes {
+    height: 75px
+}

@@ -37,8 +37,7 @@
                     </div>
                     <input id="queryInput" data-interval="true" asp-for="@Model.Query" type="date" class="form-control text-center" />
                     <button class="btn btn-secondary" type="submit">
-                        <i class="bi bi-search text-white mx-3" role="img"
-                           style="font-size: 1rem;"></i></button>
+                        <i class="bi bi-search text-white mx-3 icon-size-md"></i></button>
                 </div>
             </div>
             <div class="col-6">
@@ -212,9 +211,9 @@
                                                 @expense.OriginalAmount
                                             </td>
                                             <td class="d-flex justify-content-center px-0">
-                                                <input style="width: 100px;" 
+                                                <input 
                                                 name="SelectedExpenses[@expense.Id].RefundAmount" value="@expense.RefundAmount"
-                                                type="number" class="form-control text-center" 
+                                                type="number" class="form-control text-center width-100" 
                                                 id="refundAmount-@expense.Id" min="0.00" max="@expense.OriginalAmount" step="any" />
                                             </td>
                                             <td class="px-0" id="modifiedAmount-@expense.Id">

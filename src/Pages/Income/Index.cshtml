@@ -25,12 +25,11 @@
                     </div>
                     <select data-width="100%" asp-items="Model.QueryOptions" class="form-select text-center" id="querySelect" asp-for="Query">
                     </select>
-                    <select id="categorySelect" style="display: none;" data-width="100%" class="form-select text-center" asp-for="@Model.Q">
+                    <select id="categorySelect" data-width="100%" class="form-select text-center display-none" asp-for="@Model.Q">
                     </select>
                     <input id="qInput" data-val="true" asp-for="@Model.Q" type="Model.InputType" class="form-control w-50 text-center">
                     <button class="btn btn-secondary rounded-end" type="submit" asp-route-PageNumber="1">
-                        <i class="bi bi-search text-white mx-3" role="img"
-                           style="font-size: 1rem;"></i>
+                        <i class="bi bi-search text-white mx-3 icon-size-md"></i>
                     </button>
                     <input type="hidden" asp-for="@Model.PageNumber" value="1" />
                 </div>
@@ -44,15 +43,15 @@
                 <a asp-page="./Index" asp-route-Query="8" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary">Month</a>
                 <a asp-page="./Index" asp-route-Query="9" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary">Quarter</a>
                 <a asp-page="./Index" asp-route-Query="10" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary">Year</a>
-                <a asp-page="./Index" asp-route-Query="11" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary" style="height: 38px; overflow: hidden;">30 Days</a>
+                <a asp-page="./Index" asp-route-Query="11" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary thirty-days-button">30 Days</a>
             </div>
         </div>
         <div class="col-3 col-xl-1 d-none d-sm-block">
-            <span style="color: red;" asp-validation-for="@Model.Q"></span>
+            <span class="validation-text" asp-validation-for="@Model.Q"></span>
         </div>
         <div class="col-xs-12 col-xl-2 col-3 d-flex justify-content-md-between justify-content-xs-between me-xl-0">
-            <a type="button" asp-page="../Import/Expenses" class="btn btn-outline-primary text-wrap" style="height: 38px;" id="importLink">Import</a>
-            <button class="btn btn-primary text-wrap" style="height: 38px;" data-bs-toggle="modal" data-bs-target="#addIncomeModal" id="addIncomeButton">Add Income</button>
+            <a type="button" asp-page="../Import/Expenses" class="btn btn-outline-primary text-wrap btn-height" id="importLink">Import</a>
+            <button class="btn btn-primary text-wrap btn-height" data-bs-toggle="modal" data-bs-target="#addIncomeModal" id="addIncomeButton">Add Income</button>
         </div>
     </div>
     @* Add Income Modal *@
@@ -113,7 +112,7 @@
                                 <div class="col-4 d-flex justify-content-center">
                                     <a class="btn btn-secondary" type="button" asp-page="/IncomeCategory/Add">Add New Category</a>
                                 </div>
-                                <span style="color: red;" asp-validation-for="Income.Category"></span>
+                                <span class="validation-text" asp-validation-for="Income.Category"></span>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-8">
@@ -130,13 +129,13 @@
                                                asp-for="@Model.Income.CreateNewSource" />
                                     </div>
                                 </div>
-                                <span style="color: red;" asp-validation-for="Income.Source"></span>
+                                <span class="validation-text" asp-validation-for="Income.Source"></span>
                             </div>
                             <div class="row mb-3 px-1">
                                 <label class="visually-hidden" asp-for="@Model.Income.Notes"></label>
                                 <textarea class="form-control" asp-for="@Model.Income.Notes" id="addIncomeNotes" rows="3" placeholder="Notes"></textarea>
                             </div>
-                            <span style="color: red;" asp-validation-for="@Model.Income.Notes"></span>
+                            <span class="validation-text" asp-validation-for="@Model.Income.Notes"></span>
                         </form>
                     </div>
                 </div>
@@ -195,11 +194,10 @@
                                 <td>
                                     @if (!string.IsNullOrEmpty(income.RefundNotes) && !string.IsNullOrEmpty(income.Notes))
                                     {
-                                        <button style="background: none; padding: 0px; border: none;"
+                                        <button
                                     type="button" data-bs-toggle="modal"
-                                    data-bs-target="#refundNotes-@income.Id" class="pe-2 ps-0 ms-0">
-                                            <i class="bi bi-bootstrap-reboot text-primary" role="img"
-                                   style="font-size: 1.25rem;"></i>
+                                    data-bs-target="#refundNotes-@income.Id" class="pe-2 ps-0 ms-0 icon-button">
+                                            <i class="bi bi-bootstrap-reboot text-primary icon-size-lg"></i>
                                         </button>
                                         @*Begin Refund Notes Modal*@
                                         <div class="modal fade" id="refundNotes-@income.Id">
@@ -220,19 +218,17 @@
                                     }
                                     else if (string.IsNullOrEmpty(income.RefundNotes))
                                     {
-                                        <button style="background: none; padding: 0px; border: none;"
-                                    type="button" data-bs-toggle="modal" disabled class="pe-2 ps-0 ms-0">
-                                            <i class="bi bi-file-earmark-check text-white" role="img"
-                                   style="font-size: 1.25rem; visibility: hidden;"></i>
+                                        <button
+                                    type="button" data-bs-toggle="modal" disabled class="pe-2 ps-0 ms-0 icon-button">
+                                            <i class="bi bi-file-earmark-check text-white visibility-hidden icon-size-lg"></i>
                                         </button>
                                     }
                                     @if (!string.IsNullOrEmpty(income.Notes))
                                     {
-                                        <button style="background: none; padding: 0px; border: none;"
+                                        <button
                                     type="button" data-bs-toggle="modal"
-                                    data-bs-target="#detailModal-@income.Id" class="pe-2 ps-0 ms-0">
-                                            <i class="bi bi-file-earmark-check text-primary" role="img"
-                                   style="font-size: 1.25rem;"></i>
+                                    data-bs-target="#detailModal-@income.Id" class="pe-2 ps-0 ms-0 icon-button">
+                                            <i class="bi bi-file-earmark-check text-primary icon-size-lg"></i>
                                         </button>
                                         @*Begin Detail Modal*@
                                         <div class="modal fade" id="detailModal-@income.Id">
@@ -253,16 +249,14 @@
                                     }
                                     else if (string.IsNullOrEmpty(income.Notes) && !string.IsNullOrEmpty(income.RefundNotes))
                                     {
-                                        <button style="background: none; padding: 0px; border: none;"
-                                    type="button" data-bs-toggle="modal" disabled class="pe-2 ps-0 ms-0">
-                                            <i class="bi bi-file-earmark-check text-white" role="img"
-                                   style="font-size: 1.25rem; visibility: hidden;"></i>
+                                        <button
+                                    type="button" data-bs-toggle="modal" disabled class="pe-2 ps-0 ms-0 icon-button">
+                                            <i class="bi bi-file-earmark-check text-white visibility-hidden icon-size-lg"></i>
                                         </button>
-                                        <button style="background: none; padding: 0px; border: none;"
+                                        <button
                                     type="button" data-bs-toggle="modal"
-                                    data-bs-target="#refundNotes-@income.Id" class="pe-2 ps-0 ms-0">
-                                            <i class="bi bi-bootstrap-reboot text-primary" role="img"
-                                   style="font-size: 1.25rem;"></i>
+                                    data-bs-target="#refundNotes-@income.Id" class="pe-2 ps-0 ms-0 icon-button">
+                                            <i class="bi bi-bootstrap-reboot text-primary icon-size-lg"></i>
                                         </button>
                                         @*Begin Refund Notes Modal*@
                                         <div class="modal fade" id="refundNotes-@income.Id">
@@ -283,17 +277,15 @@
                                     }
                                     else
                                     {
-                                        <button style="background: none; padding: 0px; border: none;"
+                                        <button
                                     type="button" data-bs-toggle="modal" disabled
-                                    data-bs-target="#detailModal-@income.Id" class="pe-2 ps-0 ms-0">
-                                            <i class="bi bi-file-earmark-check text-white" role="img"
-                                   style="font-size: 1.25rem; visibility: hidden;"></i>
+                                    data-bs-target="#detailModal-@income.Id" class="pe-2 ps-0 ms-0 icon-button">
+                                            <i class="bi bi-file-earmark-check text-white icon-size-lg visibility-hidden"></i>
                                         </button>
                                     }
-                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
-                                    data-bs-target="#editIncomeModal-@income.Id" id="editIncomeButton-@income.Id" class="px-2">
-                                        <i class="bi bi-pencil text-primary" role="img"
-                                   style="font-size: 1.25rem;"></i>
+                                    <button type="button" data-bs-toggle="modal"
+                                    data-bs-target="#editIncomeModal-@income.Id" id="editIncomeButton-@income.Id" class="px-2 icon-button">
+                                        <i class="bi bi-pencil text-primary icon-size-lg"></i>
                                     </button>
                                     @* Edit Income Modal *@
                                     <div class="modal fade" id="editIncomeModal-@income.Id">
@@ -303,7 +295,7 @@
                                                     <h5 class="modal-title w-100">
                                                         @if (income.IsRefund)
                                                         {
-                                                            <span style="color: red;">You cannot edit a Refund after it's been applied</span>
+                                                            <span class="validation-text">You cannot edit a Refund after it's been applied</span>
                                                         }
                                                         else
                                                         {
@@ -381,7 +373,7 @@
                                                                     <a class="btn btn-secondary" type="button"
                                                                asp-page="/IncomeCategory/Add">Add New Category</a>
                                                                 </div>
-                                                                <span style="color: red;" asp-validation-for="@income.Category"></span>
+                                                                <span class="validation-text" asp-validation-for="@income.Category"></span>
                                                             </div>
                                                             <div class="row mb-3">
                                                                 <div class="col-8">
@@ -412,8 +404,8 @@
                                                                 <textarea class="form-control" asp-for="@income.Notes"
                                                                   id="editIncomeNotes-@income.Id" rows="3" placeholder="Notes"></textarea>
                                                             </div>
-                                                            <span style="color: red;" asp-validation-for="@income.Notes"></span>
-                                                            <span style="color: red;" asp-validation-for="@income.Source"></span>
+                                                            <span class="validation-text" asp-validation-for="@income.Notes"></span>
+                                                            <span class="validation-text" asp-validation-for="@income.Source"></span>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -421,8 +413,8 @@
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                     @if (string.IsNullOrEmpty(income.RefundNotes))
                                                     {
-                                                        <a style="display: none;" asp-page="./Refund" asp-route-id="@income.Id"
-                                               type="button" class="btn btn-info" id="refundButton-@income.Id">Refund Expenses</a>
+                                                        <a asp-page="./Refund" asp-route-id="@income.Id"
+                                               type="button" class="btn btn-info display-none" id="refundButton-@income.Id">Refund Expenses</a>
                                                     }
                                                     <form>
                                                         @{
@@ -439,10 +431,9 @@
                                     </div>
                                     @*End Edit Income Modal*@
 
-                                    <button style="background: none; padding: 0px; border: none;" type="button" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal-@income.Id" class="ps-2 ps-0 me-0">
-                                        <i class="bi bi-trash text-primary" role="img"
-                                   style="font-size: 1.25rem;"></i>
+                                    <button type="button" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal-@income.Id" class="ps-2 ps-0 me-0 icon-button">
+                                        <i class="bi bi-trash text-primary icon-size-lg"></i>
                                     </button>
                                     @*Delete Model*@
                                     <div class="modal fade" id="deleteModal-@income.Id">

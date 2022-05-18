@@ -7,7 +7,7 @@
 }
 
 const activateSpinnerOnClick = (): void => {
-    const anchorLinks: NodeListOf<HTMLAnchorElement> | null = document.querySelectorAll("a");
+    const anchorLinks: NodeListOf<HTMLAnchorElement> | null = document.querySelectorAll(".spin-it");
     const loadingSpinner: HTMLElement | null = document.querySelector("#loadingSpinner");
     anchorLinks.forEach(x => x.addEventListener('click', function () {
         if (loadingSpinner)

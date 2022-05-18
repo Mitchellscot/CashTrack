@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CashTrack</title>
+    <title>@ViewData["Title"] CashTrack</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="/@(nameof(CashTrack)).styles.css" />
@@ -15,145 +15,136 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 </head>
 <body>
-    <header>
-        <nav sticky="top" class="d-flex justify-content-between flex-md-nowrap p-0 shadow bg-primary">
-            <a href="/" class="d-flex justify-content-center navbar-brand col-md-2 col-lg-2 md-0 px-0 py-1">
-                <span class="logo text-white pt-1 text-nowrap">Cash Track</span>
-            </a>
-            <div class="p-2 mx-3">
-                <partial name=_LoginPartial />
-            </div>
-        </nav>
-    </header>
-    <div class="container-fluid" style="height: 100vh;">
-        <div class="row" style="height: 100vh;">
+            <header sticky="top" class="d-flex justify-content-between flex-md-nowrap p-0 shadow bg-primary">
+                <a href="/" class="d-flex justify-content-center brand col-md-2">
+                    <span class="logo text-white pt-1 text-nowrap">Cash Track</span>
+                </a>
+                <div class="p-2 mx-3">
+                    <partial name=_LoginPartial />
+                </div>
+            </header>
+        <div class="row d-flex">
             <!-- sidebar goes here -->
-            <nav class="sidebar col-md-2 col-lg-2 d-md-block bg-light collapse pt-3 px-4 sidebar-sticky container">
+            <nav class="sidebar col-md-2 col-lg-2 d-md-block bg-light collapse container">
                 <div class="nav bungee row sidebar-heading align-items-center">
-                    <div class="col-lg-9 col-md-6 nav-link bungee pb-0">
+                    <div class="col-lg-9 col-md-6 nav-link pb-0">
                         <button type="button" class="text-primary fakeLink">
-                            <a asp-page="/Index" class="text-primary">Dashboard</a>
+                            <a asp-page="/Index" class="text-primary spin-it">Dashboard</a>
                         </button>
                     </div>
                     <div class="col-2">
                         <button type="button" class="text-primary fakeLink" asp-page="/Index">
-                            <a asp-page="/Index"><i class="bi bi-speedometer2 text-primary d-none d-xl-block" role="img" style="font-size: 1.5rem;"></i></a>
+                            <a asp-page="/Index">
+                                <i class="bi bi-speedometer2 text-primary d-none d-xl-block icon-size-xl"></i></a>
                         </button>
                     </div>
                 </div>
                 <div class="nav bungee row sidebar-heading align-items-center">
-
                     <div class="col-lg-9 col-md-6 nav-link bungee pb-0">
-                        <button type="button" class="text-primary fakeLink" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#expenseSubLinks">
+                        <button type="button" class="text-primary fakeLink" data-bs-toggle="collapse" data-bs-target="#expenseSubLinks">
                             Expenses
                         </button>
                     </div>
                     <div class="col-2 col-md-2 pb-0">
-                        <button type="button" class="text-primary fakeLink" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#expenseSubLinks">
-                            <i class="bi bi-receipt-cutoff text-primary d-none d-xl-block" role="img" style="font-size: 1.5rem;"></i>
+                        <button type="button" class="text-primary fakeLink" data-bs-toggle="collapse" data-bs-target="#expenseSubLinks">
+                            <i class="bi bi-receipt-cutoff text-primary d-none d-xl-block icon-size-xl"></i>
                         </button>
                     </div>
                     <div class="collapse mt-0" id="expenseSubLinks">
                         <div class="mx-0 px-0">
                             <div class="ms-xl-5 ms-lg-4 ms-md-3 nav-sub-link bungee me-0 my-2 d-inline-flex align-content-center">
-                                <i class="bi bi-card-list text-dark d-none d-xl-block font-weight-bold" style="font-size: 1rem;"></i>&nbsp;
-                                <a class="text-dark" asp-page="/Expenses/Index">
+                                <i class="bi bi-card-list text-dark d-none d-xl-block font-weight-bold icon-size-md"></i>&nbsp;
+                                <a class="text-dark spin-it" asp-page="/Expenses/Index">
                                     Expense List
                                 </a>
                             </div>
                             <div class="ms-xl-5 ms-lg-4 ms-md-3 nav-sub-link bungee me-0 my-2 d-inline-flex align-content-center">
-                                <i class="bi bi-shop text-dark d-none d-xl-block font-weight-bold" style="font-size: 1rem;"></i>&nbsp;
-                                <a class="text-dark" asp-page="/Merchants/Index">
+                                <i class="bi bi-shop text-dark d-none d-xl-block font-weight-bold icon-size-md"></i>&nbsp;
+                                <a class="text-dark spin-it" asp-page="/Merchants/Index">
                                     Merchants
                                 </a>
                             </div>
                             <div class="ms-xl-5 ms-lg-4 ms-md-3 nav-sub-link bungee me-0 my-2 d-inline-flex align-content-center">
-                                <i class="bi bi-diagram-2 text-dark d-none d-xl-block font-weight-bold" style="font-size: 1rem;"></i>&nbsp;
-                                <a class="text-dark" asp-page="/SubCategories">
+                                <i class="bi bi-diagram-2 text-dark d-none d-xl-block font-weight-bold icon-size-md"></i>&nbsp;
+                                <a class="text-dark spin-it" asp-page="/SubCategories">
                                     Sub Categories
                                 </a>
                             </div>
                             <div class="ms-xl-5 ms-lg-4 ms-md-3 nav-sub-link bungee me-0 my-2 d-inline-flex align-content-center">
-                                <i class="bi bi-diagram-3 text-dark d-none d-xl-block font-weight-bold" style="font-size: 1rem;"></i>&nbsp;
-                                <a class="text-dark" asp-page="/MainCategories">
+                                <i class="bi bi-diagram-3 text-dark d-none d-xl-block font-weight-bold icon-size-md"></i>&nbsp;
+                                <a class="text-dark spin-it" asp-page="/MainCategories">
                                     Main Categories
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="nav bungee row sidebar-heading align-items-center">
                     <div class="col-lg-9 col-md-6 nav-link bungee pb-0" data-bs-toggle="collapse" data-bs-target="#incomeSubLinks">
-                        <button type="button" class="text-primary fakeLink" style="cursor: pointer;">
+                        <button type="button" class="text-primary fakeLink">
                             Income
                         </button>
                     </div>
                     <div class="col-2 pb-0" data-bs-toggle="collapse" data-bs-target="#incomeSubLinks">
-                        <button type="button" class="text-primary fakeLink" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#incomeSubLinks">
-                            <i class="bi bi-cash-coin text-primary d-none d-xl-block" role="img" style="font-size: 1.5rem;"></i>
+                        <button type="button" class="text-primary fakeLink" data-bs-toggle="collapse" data-bs-target="#incomeSubLinks">
+                            <i class="bi bi-cash-coin text-primary d-none d-xl-block icon-size-xl"></i>
                         </button>
                     </div>
                     <div class="collapse" id="incomeSubLinks">
                         <div class="mx-0 px-0">
-                            <div class="ms-xl-5 ms-lg-4 ms-md-3 nav-sub-link bungee me-0 my-2 d-inline-flex align-content-center">
-                                <i class="bi bi-card-list text-dark d-none d-xl-block font-weight-bold" style="font-size: 1rem;"></i>&nbsp;
-                                <a class="text-dark" asp-page="/Income/Index">
+                            <div class="d-xl-inline-flex ms-xl-5 ms-lg-4 ms-md-3 nav-sub-link bungee me-3 my-2  align-content-center">
+                                <i class="bi bi-card-list text-dark d-none d-xl-block font-weight-bold icon-size-md"></i>&nbsp;
+                                <a class="text-dark spin-it" asp-page="/Income/Index">
                                     Income List
                                 </a>
                             </div>
-                            <div class="ms-xl-5 ms-lg-4 ms-md-3 nav-sub-link bungee me-0 my-2 d-inline-flex align-content-center">
-                                <i class="bi bi-bank text-dark d-none d-xl-block font-weight-bold" style="font-size: 1rem;"></i>&nbsp;
-                                <a class="text-dark" asp-page="/Sources/Index">
+                            <div class="d-xl-inline-flex ms-xl-5 ms-lg-4 ms-md-3 nav-sub-link bungee me-3 my-2 align-content-center">
+                                <i class="bi bi-bank text-dark d-none d-xl-block font-weight-bold icon-size-md"></i>&nbsp;
+                                <a class="text-dark spin-it" asp-page="/Sources/Index">
                                     Sources
                                 </a>
                             </div>
-                            <div class="ms-xl-5 ms-lg-4 ms-md-3 nav-sub-link bungee me-0 my-2 d-inline-flex align-content-center">
-                                <i class="bi bi-diagram-3 text-dark d-none d-xl-block font-weight-bold" style="font-size: 1rem;"></i>&nbsp;
-                                <a class="text-dark" asp-page="/IncomeCategories">
+                            <div class="d-xl-inline-flex ms-xl-5 ms-lg-4 ms-md-3 nav-sub-link bungee me-3 my-2 align-content-center">
+                                <i class="bi bi-diagram-3 text-dark d-none d-xl-block font-weight-bold icon-size-md"></i>&nbsp;
+                                <a class="text-dark spin-it" asp-page="/IncomeCategories">
                                     Categories
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="nav bungee row sidebar-heading align-items-center">
                     <div class="col-lg-9 col-md-6 nav-link bungee pb-0">
-                        <button class="text-primary fakeLink" style="cursor: pointer;">
+                        <button class="text-primary fakeLink spin-it">
                             Budget
                         </button>
                     </div>
                     <div class="col-2">
-                        <button class="text-primary fakeLink" style="cursor: pointer;">
-                            <i class="bi bi-graph-up text-primary d-none d-xl-block" role="img" style="font-size: 1.5rem;"></i>
+                        <button class="text-primary fakeLink">
+                            <i class="bi bi-graph-up text-primary d-none d-xl-block icon-size-xl"></i>
                         </button>
                     </div>
                 </div>
-
                 <div class="nav bungee row sidebar-heading align-items-center">
                     <div class="col-lg-9 col-md-6 nav-link bungee pb-0">
-                        <button class="text-primary fakeLink" style="cursor: pointer;">
+                        <button class="text-primary fakeLink spin-it">
                             Settings
                         </button>
                     </div>
                     <div class="col-2">
-                        <button class="text-primary fakeLink" style="cursor: pointer;">
-                            <i class="bi bi-gear text-primary d-none d-xl-block" role="img" style="font-size: 1.5rem;"></i>
+                        <button class="text-primary fakeLink">
+                            <i class="bi bi-gear text-primary d-none d-xl-block icon-size-xl"></i>
                         </button>
                     </div>
                 </div>
             </nav>
-
+            <div class="sidebar-background-color col-md-2 col-lg-2 d-md-block bg-light collapse mx-1"></div>
             <!-- end -->
-            <div class="col ml-sm-auto my-1 col-md-10 col-lg-10">
-                <main role="main" class="d-flex flex-wrap flex-md-nowrap pt-2 border border-bottom-0 rounded-top">
+                <main class="col col-md-10 col-lg-10 d-flex flex-wrap flex-md-nowrap pt-2 border border-bottom-0 rounded-top">
                     @await Html.PartialAsync("_LoadingSpinner")
                     @RenderBody()
                 </main>
-            </div>
         </div>
-    </div>
 
     @await RenderSectionAsync("Scripts", required: false)
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -11,3 +11,7 @@
 .icon-size {
     font-size: 1.5rem;
 }
+.hide {
+    transition: opacity 500ms;
+    opacity: 0;
+}

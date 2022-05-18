@@ -1,1 +1,6 @@
-﻿
+﻿.merchant-notes {
+    height: 75px
+}
+.chart-height {
+    max-height: 400px;
+}

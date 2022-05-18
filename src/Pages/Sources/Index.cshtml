@@ -33,15 +33,14 @@
                     </div>
                     <input id="QueryInput" data-val="true" asp-for="@Model.SearchTerm" type="text" class="form-control">
                     <button class="btn btn-secondary rounded-end" type="submit" asp-route-pageNumber="1">
-                        <i class="bi bi-search text-white mx-3" role="img"
-                           style="font-size: 1rem;"></i>
+                        <i class="bi bi-search text-white mx-3 icon-size-md"></i>
                     </button>
                     <input type="hidden" asp-for="@Model.PageNumber" value="1" />
                 </div>
             </form>
         </div>
         <div class="col-xs-3 order-1 order-md-2 col-md-6 col-xxl-8 mb-1 mb-md-0">
-            <span style="color: red;" asp-validation-for="@Model.SearchTerm"></span>
+            <span class="validation-text" asp-validation-for="@Model.SearchTerm"></span>
             <button class="btn btn-primary float-end" id="addSourceButton" data-bs-toggle="modal" data-bs-target="#addSourceModal">Add Income Source</button>
             <div class="modal fade" id="addSourceModal">
                 @await Html.PartialAsync("_AddIncomeSourcePartial", new AddEditIncomeSourceModal() { ReturnUrl = "~/Sources/Index", IsEdit = false, SuggestOnLookup = true })
@@ -54,20 +53,20 @@
             <div class="table-responsive table-sm">
                 <table class="table table-bordered table-sm table-hover mb-0">
                     <thead>
-                        <tr class="text-center table-primary" style="height: 34px; overflow: hidden; text-overflow: ellipsis; max-height: 34px; white-space: nowrap;">
+                        <tr class="text-center table-primary">
                             <th>
                                 Name
                             </th>
-                            <th style="min-width: 117px;">
+                            <th class="payments-col">
                                 Payments
                             </th>
-                            <th style="min-width: 100px;">
+                            <th class="amount-col">
                                 Amount
                             </th>
-                            <th style="min-width: 142px;">
+                            <th class="last-payment-col">
                                 Last Payment
                             </th>
-                            <th style="min-width: 108px;">
+                            <th class="category-col">
                                 Category
                             </th>
                             <th>
@@ -80,7 +79,7 @@
                         {
                             <tr class="text-center">
                                 <td width="20%">
-                                    <a asp-page="./Detail" asp-route-id="@item.Id" style="text-decoration: none;" class="text-black">@item.Name</a>
+                                    <a asp-page="./Detail" asp-route-id="@item.Id" class="text-black text-decoration-none">@item.Name</a>
                                 </td>
                                 <td width="10%">
                                     @item.Payments
@@ -103,7 +102,7 @@
                                 </td>
                                 <td width="5%">
                                     <a asp-page="./Detail" asp-route-id="@item.Id" class="text-primary">
-                                        <i class="bi bi-zoom-in" style="font-size: 1.2rem; font-weight: 500"></i>
+                                        <i class="bi bi-zoom-in icon-size-lg fw-bold"></i>
                                     </a>
                                 </td>
                             </tr>

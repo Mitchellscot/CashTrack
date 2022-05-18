@@ -1,167 +1,50 @@
-.display-none {
-    display: none;
-}
-
-.border {
-    border-width: 2px !important;
-}
-
-html, body {
-    height: 100%;
-}
-
-.navbar-brand {
-    background-color: rgba(0, 0, 0, .25);
-    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
-    padding: 0;
-    margin: 0;
-}
-
-.navbar .form-control {
-    padding: .75rem 1rem;
-    border-width: 0;
-    border-radius: 0;
-}
-
-#logoutButton {
-    cursor: pointer;
-}
-
-.sidebar {
-    top: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 100; /* Behind the navbar */
-    padding: 100px 0 0; /* Height of navbar */
-    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-}
-
-@media (max-width: 767.98px) {
-    .sidebar {
-        top: 5rem;
-        padding: 0;
-    }
-}
-
-.sidebar-sticky {
-    position: relative;
-    top: 0;
-    padding-top: 1rem;
-}
-
-.sidebar .nav-link {
-    font-family: 'Bungee', cursive;
-    font-weight: 500;
-    font-size: calc(100% + .7vw + .7vh);
-    user-select: none;
-}
-
-.nav-sub-link {
-    font-family: 'Bungee', cursive;
-    font-weight: 300;
-    font-size: calc(100% + .5vw + .5vh);
-    user-select: none;
-}
-
-div.nav-sub-link:hover * {
-    color: #18bc9c !important;
-}
-
-.logo {
-    font-family: 'Bungee', cursive;
-    font-weight: 500;
-    font-size: calc(100% + .5vw + .7vh);
-    text-transform: uppercase;
-    text-decoration: none;
-    overflow: hidden;
-}
-
-.responsive-text {
-    font-size: calc(100% + .05vw + .05vh);
-    overflow: hidden;
-}
-
-.orderIcon:hover * {
-    color: #18bc9c !important;
-}
-
-.sidebar-heading {
-    font-size: .2rem;
-    text-transform: uppercase;
-}
-
-.sidebar-heading, a {
-    text-decoration: none;
-}
-
-.validation-summary-errors ul {
-    padding-left: 0;
-    list-style: none;
-}
-
-#addExpenseDate-error {
-    color: red;
-}
-
-#addExpenseAmount-error {
-    color: red;
-}
-
-#addExpenseSubCategory-error {
-    color: red;
-}
-
-main {
-    height: 100%;
-}
-
 body {
-    overflow-y: auto; /* Change to hidden to remove scroll bar */
+    overflow-x: hidden;
 }
-
 td {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-
-ul.ui-autocomplete {
-    z-index: 1100;
+.validation-summary-errors ul {
+    padding-left: 0;
+    list-style: none;
 }
-
+ul.ui-autocomplete {
+    z-index: 2;
+}
 .fakeLink {
     border: 0px;
     background-color: transparent;
     color: gray;
     cursor: pointer;
 }
-
-    .fakelink:hover {
-        text-decoration: none;
-    }
-
-.iconButton {
+.fakelink:hover {
+    text-decoration: none;
+}
+.icon-button {
     background: none;
     padding: 0px;
     border: none;
 }
-
-.whiteBackgroundOnDisabled:disabled {
+.white-on-disabled:disabled {
     background: transparent !important;
 }
-
-.hide {
-    transition: opacity 500ms;
-    opacity: 0;
+.btn-height {
+    max-height: 38px;
 }
 
-/*for sure universal*/
-.search-icon-size {
+.icon-size-sm {
+    font-size: .75rem;
+}
+.icon-size-md {
     font-size: 1rem;
 }
-
-.icon-size {
-    font-size: 1rem;
+.icon-size-lg {
+    font-size: 1.25rem;
+}
+.icon-size-xl {
+    font-size: 1.5rem;
 }
 
 .no-hyperlink-underline {
@@ -174,4 +57,43 @@ ul.ui-autocomplete {
 
 .visibility-hidden {
     visibility: hidden;
+}
+.display-none {
+    display: none;
+}
+.responsive-text {
+    font-size: calc(100% + .05vw + .05vh);
+    overflow: hidden;
+}
+
+
+
+/*CLASSES ON TAG HELPERS ON OTHER PAGES*/
+/*THEY NEED TO GO HERE BECAUSE THEY DON'T GET COMPILED*/
+
+/*expenses/index*/
+.thirty-days-button {
+    max-height: 38px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+#addExpenseDate-error {
+    color: red;
+}
+
+#addExpenseAmount-error {
+    color: red;
+}
+
+#addExpenseSubCategory-error {
+    color: red;
+}
+/*layout*/
+.sidebar-heading, a {
+    text-decoration: none;
+}
+.logout-button {
+    cursor: pointer;
+    font-size: 1.8rem;
 }

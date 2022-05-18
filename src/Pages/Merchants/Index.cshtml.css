@@ -24,3 +24,6 @@
 .category-column {
     min-width: 108px;
 }
+.orderIcon:hover * {
+    color: #18bc9c !important;
+}

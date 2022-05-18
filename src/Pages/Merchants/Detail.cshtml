@@ -93,11 +93,11 @@
                 </form>
                 <div class="input-group mx-auto m-3">
                     <span class="input-group-text d-none d-lg-block">City &nbsp;&nbsp;&nbsp;</span>
-                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center" asp-for="@Model.Merchant.City" disabled />
+                    <input type="text" class="white-on-disabled form-control text-center" asp-for="@Model.Merchant.City" disabled />
                 </div>
                 <div class="input-group mx-auto m-3">
                     <span class="input-group-text d-none d-lg-block">State&nbsp;</span>
-                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center" asp-for="@Model.Merchant.State" disabled />
+                    <input type="text" class="white-on-disabled form-control text-center" asp-for="@Model.Merchant.State" disabled />
                 </div>
                 <div class="input-group mx-auto m-3">
                     @{
@@ -105,16 +105,16 @@
                         var isActiveText = Model.Merchant.SuggestOnLookup ? "Active" : "Inactive";
                     }
                     <span class="input-group-text d-none d-lg-block">Online</span>
-                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center"
+                    <input type="text" class="white-on-disabled form-control text-center"
                            asp-for="@Model.Merchant.IsOnline" disabled value="@isOnlineText" />
                 </div>
                 <div class="input-group mx-auto m-3">
                     <span class="input-group-text d-none d-lg-block">Active</span>
-                    <input type="text" class="whiteBackgroundOnDisabled form-control text-center"
+                    <input type="text" class="white-on-disabled form-control text-center"
                            asp-for="@Model.Merchant.IsOnline" disabled value="@isActiveText" />
                 </div>
                 <div class="form-floating mx-auto">
-                    <textarea type="text" class="form-control whiteBackgroundOnDisabled py-0" id="merchantNotes" asp-for="@Model.Merchant.Notes" disabled style="height: 75px"></textarea>
+                    <textarea type="text" class="form-control white-on-disabled py-0 merchant-notes" id="merchantNotes" asp-for="@Model.Merchant.Notes" disabled></textarea>
                     @if (string.IsNullOrEmpty(Model.Merchant.Notes))
                     {
                         <label for="merchantNotes">Description</label>
@@ -165,18 +165,18 @@
         <hr />
         <div class="row">
             <div class="col-12 col-xl-6">
-                <canvas id="expensesChart" height="400" style="max-height: 400px;"></canvas>
+                <canvas id="expensesChart" height="400" class="chart-height"></canvas>
             </div>
             <div class="col-12 col-xl-6">
-                <canvas id="statisticsChart" height="400" style="max-height: 400px;"></canvas>
+                <canvas id="statisticsChart" height="400" class="chart-height"></canvas>
             </div>
         </div>
         <div class="row">
             <div class="col-12 col-md-6">
-                <canvas id="categoryTotalsPie" height="400" style="max-height: 400px;"></canvas>
+                <canvas id="categoryTotalsPie" height="400" class="chart-height"></canvas>
             </div>
             <div class="col-12 col-md-6">
-                <canvas id="categoryOccurancesDonut" height="400" style="max-height: 400px;"></canvas>
+                <canvas id="categoryOccurancesDonut" height="400" class="chart-height"></canvas>
             </div>
 
         </div>
