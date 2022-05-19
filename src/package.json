@@ -1,5 +1,7 @@
 {
   "devDependencies": {
+    "@types/jquery": "^3.5.14",
+    "@types/jqueryui": "^1.12.16",
     "@webpack-cli/generators": "^2.4.2",
     "clean-webpack-plugin": "^4.0.0",
     "prettier": "^2.6.2",
@@ -16,5 +18,9 @@
   "scripts": {
     "build": "webpack --mode=production --node-env=production",
     "dev": "webpack --mode=development --node-env=development"
+  },
+  "dependencies": {
+    "jquery": "^3.6.0",
+    "jquery-ui": "^1.13.1"
   }
 }

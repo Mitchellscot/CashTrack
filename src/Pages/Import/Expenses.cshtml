@@ -86,7 +86,7 @@
                                         @expense.Amount
                                         </td>
                                         <td>
-                                            <input class="form-control text-center form-control-sm" asp-for="@Model.SelectedExpense.Merchant" id="merchantName-@expense.Id" value="@expense.SuggestedMerchant" />
+                                            <input class="form-control text-center form-control-sm merchant-name-input" asp-for="@Model.SelectedExpense.Merchant" value="@expense.SuggestedMerchant" />
                                         </td>
                                         <td>
                                         @{
@@ -206,45 +206,5 @@
     }
 </div>
 @section Scripts {
-<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true">
-</script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
-<partial name="_ValidationScriptsPartial" />
 <script src="~/js/importExpenses.js" asp-append-version="true"></script>
-<script type="text/javascript">
-
-    $(document).ready(() => {
-
-        //disables city and state inputs if merchant is online - for add merchant modal
-        //$("#addEditMerchantIsOnline").click(() => {
-        //    if($("#addEditMerchantIsOnline").is(":checked")){
-        //        $("#addEditMerchantCity").prop("disabled", true);
-        //        $("#addEditMerchantState").prop("disabled", true);
-        //    }
-        //    else{
-        //        $("#addEditMerchantCity").prop("disabled", false);
-        //        $("#addEditMerchantState").prop("disabled", false);
-        //    }});
-
-        @if(@Model.ExpenseReviewResponse != null && Model.ExpenseReviewResponse.ListItems.Any())
-        {
-            var ids = Model.ExpenseReviewResponse.ListItems.Select(x => x.Id).ToList();
-            foreach(var id in ids)
-            {
-                //Autocomplete for merchant names
-                <text>$("#merchantName-@id").on("input", () => {
-                    let editSearchTerm = $("#merchantName-@id").val();
-                    $.ajax({
-                        url: `/api/merchants?merchantName=${editSearchTerm}`,
-                        method: 'GET'
-                    }).then((response) => {
-                        $("#merchantName-@id").empty();
-                        $("#merchantName-@id").autocomplete({ source: response });
-                    });
-                })
-                </text>
-            }
-        }
-    });
-</Script>
 }
