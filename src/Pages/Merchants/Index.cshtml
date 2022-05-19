@@ -221,18 +221,6 @@
 
     $(document).ready(() => {
 
-        //disables city and state inputs if merchant is online - for add merchant modal
-        $("#addEditMerchantIsOnline").click(() => {
-            console.log('hi');
-            if($("#addEditMerchantIsOnline").is(":checked")){
-                $("#addEditMerchantCity").prop("disabled", true);
-                $("#addEditMerchantState").prop("disabled", true);
-            }
-            else{
-                $("#addEditMerchantCity").prop("disabled", false);
-                $("#addEditMerchantState").prop("disabled", false);
-            }});
-
         //show a dropdown list of matching merchant names
         $("#QueryInput").on("input", () => {
             let searchTerm = $("#QueryInput").val();

@@ -14,7 +14,7 @@
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
 
-        <div><button class="btn btn-primary import-button" type="submit" id="importButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">Import</button>
+        <div><button class="btn btn-primary import-button" type="button" id="importButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">Import</button>
             </div>
     <ul class="nav nav-tabs">
         <li class="nav-item">
@@ -216,25 +216,15 @@
     $(document).ready(() => {
 
         //disables city and state inputs if merchant is online - for add merchant modal
-        $("#addEditMerchantIsOnline").click(() => {
-            console.log('hi');
-            if($("#addEditMerchantIsOnline").is(":checked")){
-                $("#addEditMerchantCity").prop("disabled", true);
-                $("#addEditMerchantState").prop("disabled", true);
-            }
-            else{
-                $("#addEditMerchantCity").prop("disabled", false);
-                $("#addEditMerchantState").prop("disabled", false);
-            }});
-
-        //creates a waiting effect while import script runs
-        $('#importButton').click(()=>{
-            $("#importButton").prepend("<span class='spinner-border spinner-border-sm'></span> ");
-            $("#importButton").append("ing...");
-            $("#importButton").css('pointer-events', 'none');
-            $("#importButton").removeClass('btn-primary');
-            $("#importButton").addClass('btn-secondary');
-        });
+        //$("#addEditMerchantIsOnline").click(() => {
+        //    if($("#addEditMerchantIsOnline").is(":checked")){
+        //        $("#addEditMerchantCity").prop("disabled", true);
+        //        $("#addEditMerchantState").prop("disabled", true);
+        //    }
+        //    else{
+        //        $("#addEditMerchantCity").prop("disabled", false);
+        //        $("#addEditMerchantState").prop("disabled", false);
+        //    }});
 
         @if(@Model.ExpenseReviewResponse != null && Model.ExpenseReviewResponse.ListItems.Any())
         {
