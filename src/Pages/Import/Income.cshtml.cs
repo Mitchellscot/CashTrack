@@ -6,11 +6,8 @@ using CashTrack.Services.IncomeService;
 using CashTrack.Services.IncomeSourceService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.PowerShell;
 using System;
 using System.Linq;
-using System.Management.Automation;
-using System.Management.Automation.Runspaces;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Import
@@ -87,28 +84,6 @@ namespace CashTrack.Pages.Import
                 return Page();
             }
             TempData["SuccessMessage"] = "Successfully Removed the Income!";
-            return LocalRedirect("~/Import/Income");
-        }
-        public async Task<IActionResult> OnPostRunScript()
-        {
-            var initialSessionState = InitialSessionState.CreateDefault();
-            initialSessionState.ExecutionPolicy = ExecutionPolicy.Unrestricted;
-            var runspace = RunspaceFactory.CreateRunspace(initialSessionState);
-            runspace.Open();
-            using (PowerShell ps = PowerShell.Create())
-            {
-                ps.Runspace = runspace;
-                ps.Streams.Information.DataAdded += delegate (object sender, DataAddedEventArgs e)
-                {
-                    var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
-                    var currentStreamRecord = streamObjectsReceived[e.Index];
-                    var scriptMessage = currentStreamRecord.MessageData.ToString().Contains("Added") ? SuccessMessage += $"{currentStreamRecord.MessageData.ToString()}. " :
-                     InfoMessage += $"{currentStreamRecord.MessageData.ToString()}. ";
-                };
-                ps.Commands.AddScript(@". C:\Users\Mitch\Code\CashTrack\ct-data\Scripts\Run-Transactions.ps1");
-                var result = await ps.InvokeAsync().ConfigureAwait(false);
-            }
-            await PrepareData();
             return LocalRedirect("~/Import/Income");
         }
         private async Task PrepareData()

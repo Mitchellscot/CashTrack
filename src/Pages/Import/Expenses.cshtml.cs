@@ -9,11 +9,8 @@ using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.PowerShell;
 using System;
 using System.Linq;
-using System.Management.Automation;
-using System.Management.Automation.Runspaces;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Import
@@ -51,29 +48,6 @@ namespace CashTrack.Pages.Import
         {
             await PrepareData();
             return Page();
-        }
-        public async Task<IActionResult> OnPostRunScript()
-        {
-            var initialSessionState = InitialSessionState.CreateDefault();
-            initialSessionState.ExecutionPolicy = ExecutionPolicy.Unrestricted;
-            var runspace = RunspaceFactory.CreateRunspace(initialSessionState);
-            runspace.Open();
-            using (PowerShell ps = PowerShell.Create())
-            {
-                ps.Runspace = runspace;
-                ps.Streams.Information.DataAdded += delegate (object sender, DataAddedEventArgs e)
-                {
-                    var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
-                    var currentStreamRecord = streamObjectsReceived[e.Index];
-                    var scriptMessage = currentStreamRecord.MessageData.ToString().Contains("Added") ? SuccessMessage += $"{currentStreamRecord.MessageData.ToString()}. " :
-                    InfoMessage += $"{currentStreamRecord.MessageData.ToString()}. ";
-
-                };
-                ps.Commands.AddScript(@". C:\Users\Mitch\Code\CashTrack\ct-data\Scripts\Run-Transactions.ps1");
-                var result = await ps.InvokeAsync().ConfigureAwait(false);
-            }
-            await PrepareData();
-            return LocalRedirect("~/Import/Expenses");
         }
         public async Task<IActionResult> OnPostImportCsv()
         {
