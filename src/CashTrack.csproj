@@ -35,8 +35,10 @@
 		<None Remove="Migrations\**" />
 	</ItemGroup>
 	<ItemGroup>
+	  <None Remove="Scripts\Utility\format-amount.ts" />
 	  <None Remove="Scripts\Utility\merchant-autocomplete.ts" />
 	  <None Remove="Scripts\Utility\online-merchant.ts" />
+	  <None Remove="Scripts\Utility\query-params.ts" />
 	</ItemGroup>
 	<ItemGroup>
 		<TypeScriptCompile Include="Scripts\Expenses\expenses.ts" />
@@ -47,8 +49,10 @@
 		<TypeScriptCompile Include="Scripts\Merchants\merchants.ts" />
 		<TypeScriptCompile Include="Scripts\Sources\sources.ts" />
 		<TypeScriptCompile Include="Scripts\Sources\sourceDetail.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\format-amount.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\merchant-autocomplete.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\online-merchant.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\query-params.ts" />
 	</ItemGroup>
 	<ItemGroup>
 		<Content Update="appsettings.json">

@@ -1,7 +1,8 @@
-﻿import 'jquery-ui/ui/widgets/autocomplete.js';
+﻿import 'jquery';
+import 'jquery-ui/ui/widgets/autocomplete.js';
 
 const autoSuggestMerchantNames = (): void => {
-    const inputs: NodeListOf<HTMLElement> | null = document.querySelectorAll(".merchant-name-input");
+    const inputs: NodeListOf<HTMLElement> | null = document.querySelectorAll(".merchant-autosuggest-js");
     inputs.forEach(x => x.addEventListener('input', x => {
         const searchTerm = (x.target as HTMLInputElement).value;
 

@@ -21,6 +21,8 @@
   },
   "dependencies": {
     "jquery": "^3.6.0",
-    "jquery-ui": "^1.13.1"
+    "jquery-ui": "^1.13.1",
+    "jquery-validation": "^1.19.4",
+    "jquery-validation-unobtrusive": "^3.2.12"
   }
 }
