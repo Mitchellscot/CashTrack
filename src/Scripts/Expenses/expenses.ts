@@ -1,172 +1,15 @@
 ﻿//jquery is loaded here:
 import autoSuggestMerchantNames from "../Utility/merchant-autocomplete";
+import { formatInputsOnSelectListChange, formatInputsOnPageLoad } from '../Utility/handle-expense-dropdown';
 import 'jquery-validation';
 import 'jquery-validation-unobtrusive';
 
 console.log('expenses page');
 
 autoSuggestMerchantNames();
+formatInputsOnPageLoad();
+formatInputsOnSelectListChange();
 
-
-////get query values for dropdown lists
-//let q = getQueryValue();
-//let queryType = getQueryType();
-////fires on load
-//let selectListValue = $("#querySelect").val();
-//handleQuerySelectChange(selectListValue);
-
-////GET REQUEST METHODS
-////When the query selection option changes, change the input type box
-//$("#querySelect").change(() => {
-//    let selectListValue = $("#querySelect").val();
-//    handleQuerySelectChange(selectListValue);
-//});
-////massive switch statement handling qet requests
-//function handleQuerySelectChange(selectListValue) {
-//    switch (selectListValue) {
-//        //date
-//        case "0":
-//            resetCategorySelect();
-//            resetNumbersForm();
-//            resetSecondInputForm();
-//            $("#qInput").prop("type", "date");
-//            break;
-//        //date range
-//        case "1":
-//            resetCategorySelect();
-//            resetNumbersForm();
-//            $("#qInput").prop("type", "date");
-//            $("#q2Input").show();
-//            $("#qInput").removeClass("w-50");
-//            $("#qInput").addClass("w-25");
-//            $("#q2Input").addClass("w-25");
-//            break;
-//        //month
-//        case "2":
-//            resetCategorySelect();
-//            resetNumbersForm();
-//            resetSecondInputForm();
-//            $("#qInput").prop("type", "month");
-//            break;
-//        //quarter
-//        case "3":
-//            resetCategorySelect();
-//            resetNumbersForm();
-//            resetSecondInputForm();
-//            $("#qInput").prop("type", "month");
-//            break;
-//        //year
-//        case "4":
-//            resetCategorySelect();
-//            resetSecondInputForm();
-//            $("#qInput").prop("type", "number");
-//            $("#qInput").prop('min', "2012");
-//            let currentYear = new Date().getFullYear();
-//            $("#qInput").prop('max', currentYear);
-//            if (q !== undefined && queryType === "4") {
-//                console.log(q)
-//                $("#qInput").val(q);
-//            }
-//            else {
-//                $("#qInput").val(parseInt(new Date().getFullYear()));
-//            }
-//            break;
-//        //amount
-//        case "5":
-//            resetCategorySelect();
-//            resetSecondInputForm();
-//            $("#qInput").val('');
-//            $("#qInput").prop("type", "number");
-//            $("#qInput").prop('step', "any");
-//            $("#qInput").prop('min', "0.00");
-//            if (q !== undefined && queryType === "5") {
-//                $("#qInput").val(q);
-//            }
-//            break;
-//        //notes
-//        case "6":
-//            resetCategorySelect();
-//            resetNumbersForm();
-//            resetSecondInputForm();
-//            $("#qInput").prop("type", "text");
-//            if (q !== undefined && queryType === "6") {
-//                $("#qInput").val(q);
-//            }
-//            break;
-//        //merchant
-//        case "7":
-//            resetCategorySelect();
-//            resetNumbersForm();
-//            resetSecondInputForm();
-//            $("#qInput").prop("type", "text");
-//            break;
-//        //sub category
-//        case "8":
-//            resetNumbersForm();
-//            resetSecondInputForm();
-//            $("#qInput").hide();
-//            $("#categorySelect").show();
-//            $.ajax({
-//                url: `/api/subcategory`,
-//                method: 'GET'
-//            }).then((response) => {
-//                $("#categorySelect").empty();
-//                for (let category of response) {
-//                    if (q !== undefined && queryType == "8") {
-//                        if (Number(category.id) === Number(q)) {
-//                            $("#categorySelect").append(`<option selected value=${category.id}>${category.category}</option>`);
-//                        }
-//                        else {
-//                            $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
-//                        }
-//                    }
-//                    else {
-//                        $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
-//                    }
-//                }
-//            }).catch((error) => alert(error));
-//            break;
-//        //main category
-//        case "9":
-//            resetNumbersForm();
-//            resetSecondInputForm();
-//            $("#qInput").hide();
-//            $("#categorySelect").show();
-//            $.ajax({
-//                url: `/api/maincategory`,
-//                method: 'GET'
-//            }).then((response) => {
-//                $("#categorySelect").empty();
-//                for (let category of response) {
-//                    if (q !== undefined && queryType == "9") {
-//                        if (Number(category.id) === Number(q)) {
-//                            $("#categorySelect").append(`<option selected value=${category.id}>${category.category}</option>`);
-//                        }
-//                        else {
-//                            $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
-//                        }
-//                    }
-//                    else {
-//                        $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
-//                    }
-//                }
-//            }).catch((error) => alert(error));
-//            break;
-//        //tags
-//        case "10":
-//            resetCategorySelect();
-//            resetNumbersForm();
-//            resetSecondInputForm();
-//            $("#qInput").prop("type", "text");
-//            break;
-//        default:
-//            resetSecondInputForm();
-//            resetNumbersForm();
-//            resetCategorySelect();
-//            $("#qInput").prop("type", "date");
-//            break;
-//    }
-//}
 
 ////loads the main category after sub category is chosen on add expense modal
 //$("#addExpenseSubCategory").change(() => {
@@ -239,20 +82,4 @@ autoSuggestMerchantNames();
 //}
 
 
-//function resetSecondInputForm() {
-//    $("#qInput").addClass("w-50");
-//    $("#q2Input").val("");
-//    $("#q2Input").removeClass("w-25");
-//    $("#q2Input").hide();
-//}
-//function resetNumbersForm() {
-//    $("#qInput").removeAttr('min');
-//    $("#qInput").removeAttr('step');
-//    $("#qInput").removeAttr('min');
-//    $("#qInput").val('');
-//}
-//function resetCategorySelect() {
-//    $("#qInput").show();
-//    $("#categorySelect").empty();
-//    $("#categorySelect").hide();
-//}
+
