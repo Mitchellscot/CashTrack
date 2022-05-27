@@ -1,85 +1,92 @@
 ﻿import getQueryParam from '../Utility/query-params';
+import { autoSuggestMerchantNames, removeAutosuggestMerchantName } from './merchant-autocomplete';
 
 const adjustFormBasedOnQueryValue = (queryValue: number) => {
+    const firstInput = <HTMLInputElement>document.getElementById('qInput');
+    const Q: string | undefined = getQueryParam('Q');
+    const Query: string | undefined = getQueryParam('Query');
+
     switch (queryValue) {
         //date
         case 0:
             resetCategorySelect();
             resetNumbersForm();
             resetSecondInputForm();
-            (<HTMLInputElement>document.getElementById('qInput')).type = 'date';
+            firstInput.type = 'date';
             break;
         //date range
         case 1:
             resetCategorySelect();
             resetNumbersForm();
             showSecondInput();
-            (<HTMLInputElement>document.getElementById('qInput')).type = 'date';
+            firstInput.type = 'date';
             break;
         //month
         case 2:
             resetCategorySelect();
             resetNumbersForm();
             resetSecondInputForm();
-            (<HTMLInputElement>document.getElementById('qInput')).type = 'month';
+            firstInput.type = 'month';
             break;
         //quarter
         case 3:
             resetCategorySelect();
             resetNumbersForm();
             resetSecondInputForm();
-            (<HTMLInputElement>document.getElementById('qInput')).type = 'month';
+            firstInput.type = 'month';
             break;
         //year
         case 4:
             resetCategorySelect();
             resetSecondInputForm();
-            const firstInput = <HTMLInputElement>document.getElementById('qInput');
             firstInput.type = 'number';
             firstInput.step = 'any';
             firstInput.min = '2012';
             const currentYear: string = (new Date().getFullYear()).toString();
             firstInput.max = currentYear;
-            const Q = getQueryParam('Q');
-            Q ? firstInput.value = Q : firstInput.value = currentYear;
-            (<HTMLInputElement>document.getElementById('qInput')).type = 'number';
+            Q && Query === '4' ? firstInput.value = Q! : firstInput.value = currentYear;
+            firstInput.type = 'number';
             break;
         //amount
         case 5:
+            firstInput.value = '';
+            firstInput.step = 'any';
+            firstInput.min = '0.00';
             resetCategorySelect();
             resetSecondInputForm();
-            //            $("#qInput").val('');
-            //            $("#qInput").prop('step', "any");
-            //            $("#qInput").prop('min', "0.00");
-            //            if (q !== undefined && queryType === "5") {
-            //                $("#qInput").val(q);
-            //            }
-            (<HTMLInputElement>document.getElementById('qInput')).type = 'number';
+            Q && Query === '5' ? firstInput.value = Q : firstInput.value = '0.00';
+            firstInput.type = 'number';
             break;
         //notes
         case 6:
+            firstInput.classList.remove('merchant-autosuggest-js');
+            firstInput.classList.remove('ui-autocomplete-input');
+            removeAutosuggestMerchantName(firstInput);
+            autoSuggestMerchantNames();
             resetCategorySelect();
             resetNumbersForm();
             resetSecondInputForm();
-            //            if (q !== undefined && queryType === "6") {
-            //                $("#qInput").val(q);
-            //            }
-            (<HTMLInputElement>document.getElementById('qInput')).type = 'text';
+            Q && Query === '6' ? firstInput.value = Q : firstInput.value = '';
+            firstInput.type = 'text';
             break;
         //merchant
         case 7:
             resetCategorySelect();
             resetNumbersForm();
             resetSecondInputForm();
-            (<HTMLInputElement>document.getElementById('qInput')).type = 'text';
+            firstInput.type = 'text';
+            firstInput.classList.add('merchant-autosuggest-js');
+            autoSuggestMerchantNames();
+            Q && Query === '7' ? firstInput.value = Q : firstInput.value = '';
             break;
         //subcategory
         case 8:
             resetNumbersForm();
             resetSecondInputForm();
             //add 'display-none' class here
-            //            $("#qInput").hide();
-            //            $("#categorySelect").show();
+            firstInput.classList.add('display-none');
+            const categorySelect = <HTMLSelectElement>document.getElementById('categorySelect');
+            categorySelect.classList.add('display-none');
             //            $.ajax({
             //                url: `/api/subcategory`,
             //                method: 'GET'
@@ -99,7 +106,7 @@ const adjustFormBasedOnQueryValue = (queryValue: number) => {
             //                    }
             //                }
             //            }).catch((error) => alert(error));
-            (<HTMLInputElement>document.getElementById('qInput')).type = 'text';
+            firstInput.type = 'text';
             break;
         //main category
         case 9:
@@ -126,21 +133,21 @@ const adjustFormBasedOnQueryValue = (queryValue: number) => {
             //                    }
             //                }
             //            }).catch((error) => alert(error));
-            (<HTMLInputElement>document.getElementById('qInput')).type = 'text';
+            firstInput.type = 'text';
             break;
         //tag
         case 10:
             resetCategorySelect();
             resetNumbersForm();
             resetSecondInputForm();
-            (<HTMLInputElement>document.getElementById('qInput')).type = 'text';
+            firstInput.type = 'text';
             console.log('not implemented yet');
             break;
         default:
             resetSecondInputForm();
             resetNumbersForm();
             resetCategorySelect();
-            (<HTMLInputElement>document.getElementById('qInput')).type = 'date';
+            firstInput.type = 'date';
             console.log('default... something went wrong');
     }
 }
