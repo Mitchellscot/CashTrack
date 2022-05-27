@@ -361,18 +361,18 @@
                                                                     <div class="input-group">
                                                                         <div class="input-group-text">Category</div>
                                                                         <label class="visually-hidden"
-                                                                       asp-for="@expense.SubCategoryId">Category</label>
+                                                                       asp-for="@expense.SubCategory">Category</label>
                                                                         <label class="visually-hidden"
-                                                                       asp-for="@Model.Expense.SubCategoryId">Category</label>
+                                                                       asp-for="@Model.Expense.SubCategory">Category</label>
                                                                         @{
                                                                             var dropdownListForEdits = new SelectList(
                                                                             Model.CategoryList,
-                                                                            "Id", "Category",
-                                                                            @expense.SubCategoryId
+                                                                            "Category", "Category",
+                                                                            @expense.SubCategory
                                                                             );
                                                                         }
                                                                         <select data-val="true"
-                                                                        asp-for=@expense.SubCategoryId
+                                                                        asp-for=@expense.SubCategory
                                                                         class="form-control text-center"
                                                                         id="editExpenseSubCategory-@expense.Id"
                                                                         asp-items=@dropdownListForEdits>

@@ -153,7 +153,6 @@ namespace CashTrack.Pages.Expenses
         }
         public async Task<IActionResult> OnPostAddEdit()
         {
-            var IsEdit = Expense.Id.HasValue ? false : true;
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -165,9 +164,9 @@ namespace CashTrack.Pages.Expenses
                     var merchantCreationSuccess = await _merchantService.CreateMerchantAsync(new Merchant() { Name = Expense.Merchant, SuggestOnLookup = true });
                 }
 
-                var success = IsEdit ? await _expenseService.CreateExpenseAsync(Expense) : await _expenseService.CreateExpenseAsync(Expense);
+                var success = Expense.Id.HasValue ? await _expenseService.UpdateExpenseAsync(Expense) : await _expenseService.CreateExpenseAsync(Expense);
 
-                TempData["SuccessMessage"] = IsEdit ? "Sucessfully added a new Expense!" : "Sucessfully updated the Expense!";
+                TempData["SuccessMessage"] = Expense.Id.HasValue ? "Sucessfully updated the Expense!" : "Sucessfully added a new Expense!";
                 return RedirectToPage("./Index", new { query = Query, q = Q, q2 = Q2, pageNumber = PageNumber });
             }
             catch (CategoryNotFoundException)
