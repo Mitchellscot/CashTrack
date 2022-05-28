@@ -1,6 +1,11 @@
 ﻿import getQueryParam from '../Utility/query-params';
 import { autoSuggestMerchantNames, removeAutosuggestMerchantName } from './merchant-autocomplete';
 
+interface SubCategory {
+    id: string;
+    category: string;
+}
+
 const adjustFormBasedOnQueryValue = (queryValue: number) => {
     const firstInput = <HTMLInputElement>document.getElementById('qInput');
     const Q: string | undefined = getQueryParam('Q');
@@ -83,10 +88,18 @@ const adjustFormBasedOnQueryValue = (queryValue: number) => {
         case 8:
             resetNumbersForm();
             resetSecondInputForm();
-            //add 'display-none' class here
             firstInput.classList.add('display-none');
             const categorySelect = <HTMLSelectElement>document.getElementById('categorySelect');
-            categorySelect.classList.add('display-none');
+            categorySelect.classList.remove('display-none');
+            fetch('/api/subcategory')
+                .then(response => response.json())
+                .then(data => data.map((key: SubCategory) => categorySelect.add(new Option(key.category, key.id))
+                ))
+                .catch(err => console.log(err));
+
+            //result.map((key) => hcList.add(new Option(key.name, JSON.stringify(key))));
+
+
             //            $.ajax({
             //                url: `/api/subcategory`,
             //                method: 'GET'
