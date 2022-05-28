@@ -84,7 +84,7 @@
                                     <div class="input-group">
                                         <div class="input-group-text">$</div>
                                         <input data-val="true"
-                                               asp-for=@Model.Expense.Amount type="number" min="0.00" step="any" class="form-control" id="addExpenseAmount" placeholder="0.00">
+                                               asp-for=@Model.Expense.Amount type="number" min="0.00" step="any" class="form-control format-amount-js" id="addExpenseAmount" placeholder="0.00">
                                         <span asp-validation-for="@Model.Expense.Amount"></span>
 
                                     </div>
@@ -106,12 +106,12 @@
                                         @{
                                             var dropdownList = new SelectList(
                                             Model.CategoryList,
-                                            "Category", "Category");
+                                            "Id", "Category");
                                         }
                                         <select data-val="true"
                                                 asp-for=@Model.Expense.SubCategoryId
                                                 asp-items=@dropdownList;
-                                                class="form-control text-center"
+                                                class="form-control text-center load-main-category-js"
                                                 id="addExpenseSubCategory">
                                             <option value="" selected disabled hidden>Select</option>
                                         </select>
@@ -337,7 +337,7 @@
                                                                         <input data-val="true"
                                                                        asp-for=@expense.Amount
                                                                        type="number" min="0.00" step="any"
-                                                                       class="form-control" id="editExpenseAmount-@expense.Id"
+                                                                       class="form-control format-amount-js" id="editExpenseAmount-@expense.Id"
                                                                        placeholder="0.00">
                                                                         <span asp-validation-for="@expense.Amount"></span>
                                                                     </div>
@@ -367,22 +367,22 @@
                                                                         @{
                                                                             var dropdownListForEdits = new SelectList(
                                                                             Model.CategoryList,
-                                                                            "Category", "Category",
-                                                                            @expense.SubCategory
+                                                                            "Id", "Category",
+                                                                            @expense.SubCategoryId
                                                                             );
                                                                         }
                                                                         <select data-val="true"
-                                                                        asp-for=@expense.SubCategory
-                                                                        class="form-control text-center"
-                                                                        id="editExpenseSubCategory-@expense.Id"
+                                                                        asp-for=@expense.SubCategoryId
+                                                                        class="form-control text-center load-main-category-js"
+                                                                        data-id=@expense.Id
                                                                         asp-items=@dropdownListForEdits>
                                                                         </select>
                                                                         <div class="input-group-text">Main Category</div>
                                                                         <input disabled type="text"
                                                                        asp-for="@expense.MainCategory"
                                                                        class="form-control text-center bg-white"
-                                                                       id="editExpenseMainCategory-@expense.Id" required />
-
+                                                                       required
+                                                                       id="editExpenseMainCategory-@expense.Id" />
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-4 d-flex justify-content-center">
@@ -397,14 +397,14 @@
                                                                         <div class="input-group-text">Merchant</div>
                                                                         <label class="visually-hidden"
                                                                        asp-for="@expense.Merchant">Merchant</label>
-                                                                        <input class="form-control"
+                                                                        <input class="form-control merchant-autosuggest-js"
                                                                        data-val="true" type="text"
                                                                        asp-for="@expense.Merchant"
                                                                        id="editExpenseMerchantName-@expense.Id" />
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-4 align-self-center border rounded py-1">
-                                                                    <div class="form-check ">
+                                                                    <div class="form-check">
                                                                         <label class="form-check-label"
                                                                        asp-for="@Model.Expense.CreateNewMerchant">Create New Merchant</label>
                                                                         <input class="form-check-input"

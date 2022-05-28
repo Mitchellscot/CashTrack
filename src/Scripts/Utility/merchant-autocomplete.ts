@@ -3,11 +3,7 @@ import 'jquery-ui/ui/widgets/autocomplete.js';
 
 const autoSuggestMerchantNames = (): void => {
     const inputs: NodeListOf<HTMLElement> | null = document.querySelectorAll(".merchant-autosuggest-js");
-    inputs.forEach(x => x.addEventListener('input', autoSuggestEventListener, false));
-}
-
-const removeAutosuggestMerchantName = (element: HTMLElement): void => {
-    element.removeEventListener('input', autoSuggestEventListener, false);
+    inputs.forEach(x => x.addEventListener('input', autoSuggestEventListener, true));
 }
 
 function autoSuggestEventListener(x: Event) {
@@ -23,4 +19,4 @@ function autoSuggestEventListener(x: Event) {
     });
 }
 
-export { autoSuggestMerchantNames, removeAutosuggestMerchantName };
+export { autoSuggestMerchantNames, autoSuggestEventListener };

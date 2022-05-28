@@ -1,20 +1,10 @@
-﻿
-////if it's a query of the amount, make it a nice loking decimal
-//$('#qInput').change(() => {
-//    let selectListValue = $("#querySelect").val();
-//    if (selectListValue == "5") {
-//        let amount = $("#qInput").val();
-//        let rounded = Math.round(amount * 100) / 100;
-//        let finalNumber = rounded.toFixed(2);
-//        $("#qInput").val(finalNumber);
-//    }
-//});
+﻿export const formatAmountOnChange = (): void => {
+    const amountInputs = <NodeListOf<HTMLInputElement>>document.querySelectorAll('.format-amount-js');
+    amountInputs.forEach(x => x.addEventListener('change', formatAmount, true));
+}
 
-////ADD EXPENSE MODAl
-////when adding a new expense amount, make it a nice loking decimal
-//$('#addExpenseAmount').change(() => {
-//    let amount = $("#addExpenseAmount").val();
-//    let rounded = Math.round(amount * 100) / 100;
-//    let finalNumber = rounded.toFixed(2);
-//    $("#addExpenseAmount").val(finalNumber);
-//});
+export const formatAmount = (e: Event): void => {
+    const input = e.target as HTMLInputElement;
+    const formattedAmount = (Math.round(parseFloat(input.value) * Math.pow(10, 2)) / Math.pow(10, 2)).toFixed(2)
+    input.value = formattedAmount;
+}

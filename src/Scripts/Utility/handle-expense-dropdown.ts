@@ -1,13 +1,11 @@
-﻿import getQueryParam from '../Utility/query-params';
-import { autoSuggestMerchantNames, removeAutosuggestMerchantName } from './merchant-autocomplete';
-
-interface SubCategory {
-    id: string;
-    category: string;
-}
+﻿import Category from '../Models/Categories';
+import getQueryParam from '../Utility/query-params';
+import { autoSuggestMerchantNames, autoSuggestEventListener } from './merchant-autocomplete';
+import { formatAmountOnChange, formatAmount } from './format-amount';
 
 const adjustFormBasedOnQueryValue = (queryValue: number) => {
     const firstInput = <HTMLInputElement>document.getElementById('qInput');
+    const categorySelect = <HTMLSelectElement>document.getElementById('categorySelect');
     const Q: string | undefined = getQueryParam('Q');
     const Query: string | undefined = getQueryParam('Query');
 
@@ -55,18 +53,20 @@ const adjustFormBasedOnQueryValue = (queryValue: number) => {
         //amount
         case 5:
             firstInput.value = '';
-            firstInput.step = 'any';
             firstInput.min = '0.00';
             resetCategorySelect();
             resetSecondInputForm();
             Q && Query === '5' ? firstInput.value = Q : firstInput.value = '0.00';
             firstInput.type = 'number';
+            firstInput.classList.add('format-amount-js');
+            formatAmountOnChange();
             break;
         //notes
         case 6:
             firstInput.classList.remove('merchant-autosuggest-js');
             firstInput.classList.remove('ui-autocomplete-input');
-            removeAutosuggestMerchantName(firstInput);
+            //this doesn't really work but whatever... works for formatAmount event listener
+            firstInput.removeEventListener('input', autoSuggestEventListener, true);
             autoSuggestMerchantNames();
             resetCategorySelect();
             resetNumbersForm();
@@ -89,63 +89,35 @@ const adjustFormBasedOnQueryValue = (queryValue: number) => {
             resetNumbersForm();
             resetSecondInputForm();
             firstInput.classList.add('display-none');
-            const categorySelect = <HTMLSelectElement>document.getElementById('categorySelect');
             categorySelect.classList.remove('display-none');
             fetch('/api/subcategory')
                 .then(response => response.json())
-                .then(data => data.map((key: SubCategory) => categorySelect.add(new Option(key.category, key.id))
-                ))
-                .catch(err => console.log(err));
-
-            //result.map((key) => hcList.add(new Option(key.name, JSON.stringify(key))));
-
-
-            //            $.ajax({
-            //                url: `/api/subcategory`,
-            //                method: 'GET'
-            //            }).then((response) => {
-            //                $("#categorySelect").empty();
-            //                for (let category of response) {
-            //                    if (q !== undefined && queryType == "8") {
-            //                        if (Number(category.id) === Number(q)) {
-            //                            $("#categorySelect").append(`<option selected value=${category.id}>${category.category}</option>`);
-            //                        }
-            //                        else {
-            //                            $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
-            //                        }
-            //                    }
-            //                    else {
-            //                        $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
-            //                    }
-            //                }
-            //            }).catch((error) => alert(error));
+                .then((data: Array<Category>) => {
+                    for (var category of data) {
+                        if (category.id.toString() === Q) {
+                            categorySelect.add(new Option(category.category, category.id.toString(), true, true))
+                        }
+                        categorySelect.add(new Option(category.category, category.id.toString()))
+                    }
+                }).catch(err => console.log(err));
             firstInput.type = 'text';
             break;
         //main category
         case 9:
             resetNumbersForm();
             resetSecondInputForm();
-            //            $("#qInput").hide();
-            //            $("#categorySelect").show();
-            //            $.ajax({
-            //                url: `/api/maincategory`,
-            //                method: 'GET'
-            //            }).then((response) => {
-            //                $("#categorySelect").empty();
-            //                for (let category of response) {
-            //                    if (q !== undefined && queryType == "9") {
-            //                        if (Number(category.id) === Number(q)) {
-            //                            $("#categorySelect").append(`<option selected value=${category.id}>${category.category}</option>`);
-            //                        }
-            //                        else {
-            //                            $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
-            //                        }
-            //                    }
-            //                    else {
-            //                        $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
-            //                    }
-            //                }
-            //            }).catch((error) => alert(error));
+            firstInput.classList.add('display-none');
+            categorySelect.classList.remove('display-none');
+            fetch('/api/maincategory')
+                .then(response => response.json())
+                .then((data: Array<Category>) => {
+                    for (var category of data) {
+                        if (category.id.toString() === Q) {
+                            categorySelect.add(new Option(category.category, category.id.toString(), true, true))
+                        }
+                        categorySelect.add(new Option(category.category, category.id.toString()))
+                    }
+                }).catch(err => console.log(err));
             firstInput.type = 'text';
             break;
         //tag
@@ -200,6 +172,8 @@ function resetNumbersForm(): void {
     firstInput.removeAttribute('min');
     firstInput.removeAttribute('step');
     firstInput.value = '';
+    firstInput.classList.remove('format-amount-js');
+    firstInput.removeEventListener('change', formatAmount, true);
 }
 function resetCategorySelect(): void {
     const firstInput = <HTMLInputElement>document.getElementById('qInput');
