@@ -36,7 +36,7 @@ namespace CashTrack.Pages.Expenses
         [BindProperty(SupportsGet = true)]
         public int PageNumber { get; set; } = 1;
         [BindProperty]
-        public Expense Expense { get; set; }
+        public AddEditExpenseModal Expense { get; set; }
 
         public async Task<ActionResult> OnGet(string q, int query, string q2, int pageNumber)
         {
@@ -151,7 +151,7 @@ namespace CashTrack.Pages.Expenses
             TempData["SuccessMessage"] = "Sucessfully deleted expense!";
             return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
         }
-        public async Task<IActionResult> OnPostAddEdit()
+        public async Task<IActionResult> OnPostAddEditExpenseModal()
         {
             if (!ModelState.IsValid)
             {
@@ -164,7 +164,7 @@ namespace CashTrack.Pages.Expenses
                     var merchantCreationSuccess = await _merchantService.CreateMerchantAsync(new Merchant() { Name = Expense.Merchant, SuggestOnLookup = true });
                 }
 
-                var success = Expense.Id.HasValue ? await _expenseService.UpdateExpenseAsync(Expense) : await _expenseService.CreateExpenseAsync(Expense);
+                var success = Expense.IsEdit ? await _expenseService.UpdateExpenseAsync(Expense) : await _expenseService.CreateExpenseAsync(Expense);
 
                 TempData["SuccessMessage"] = Expense.Id.HasValue ? "Sucessfully updated the Expense!" : "Sucessfully added a new Expense!";
                 return RedirectToPage("./Index", new { query = Query, q = Q, q2 = Q2, pageNumber = PageNumber });

@@ -1,0 +1,123 @@
+﻿@model CashTrack.Models.ExpenseModels.AddEditExpenseModal
+@{
+    var addOrEdit = Model.IsEdit ? "Edit" : "Add";
+}
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header text-center">
+            <h5 class="modal-title w-100">@addOrEdit an Expense</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal">
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <form method="post"
+                      asp-page="../Expenses/Index"
+                      asp-page-handler="AddEditExpenseModal"
+                      id="addEditExpenseForm">
+                    @if (Model.IsEdit)
+                    {
+                        <input asp-for="@Model.Id" type="hidden" />
+                    }
+                    <input asp-for="@Model.IsEdit" type="hidden" />
+                    <input asp-for="@Model.Returnurl" type="hidden" />
+                    <div class="row mb-3">
+                        <div class="col-4">
+                            <label class="visually-hidden" asp-for="@Model.Date">Date</label>
+                            <div class="input-group">
+                                <div class="input-group-text text-center">Date</div>
+                                <input data-val="true" asp-for=@Model.Date type="date" class="form-control">
+                                <span asp-validation-for="@Model.Date"></span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <label class="visually-hidden" asp-for="@Model.Amount">Amount</label>
+                            <div class="input-group">
+                                <div class="input-group-text">$</div>
+                                <input data-val="true"
+                                       asp-for=@Model.Amount
+                                       type="number"
+                                       min="0.00"
+                                       step="any"
+                                       class="form-control format-amount-js text-center"
+                                       placeholder="0.00">
+                                <span asp-validation-for="@Model.Amount"></span>
+                            </div>
+                        </div>
+                        <div class="col-4 align-self-center border rounded py-1">
+                            <div class="form-check form-switch">
+                                <label class="form-check-label"
+                                       asp-for="@Model.ExcludeFromStatistics">Exclude From Statistics</label>
+                                <input class="form-check-input" type="checkbox" data-val="true"
+                                       asp-for="@Model.ExcludeFromStatistics" />
+                                <span asp-validation-for="@Model.ExcludeFromStatistics"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-8">
+                            <div class="input-group">
+                                <div class="input-group-text">Category</div>
+                                <label class="visually-hidden" asp-for="@Model.SubCategoryId">Category</label>
+                                <select data-val="true" asp-for=@Model.SubCategoryId asp-items=@Model.SubCategoryList
+                                        class="form-control text-center load-main-category-js"
+                                        data-id=@Model.Id>
+                                    @if (!Model.IsEdit)
+                                    {
+                                        <option value="" selected disabled hidden>Select</option>
+                                    }
+                                </select>
+                                <div class="input-group-text">Main Category</div>
+                                @{
+                                    var mainCategoryInputId =
+                                    Model.IsEdit ? $"editExpenseMainCategory-{Model.Id}" : "addExpenseMainCategory";
+                                }
+                                <input disabled type="text"
+                                       class="form-control text-center bg-white"
+                                       id=@mainCategoryInputId required />
+                            </div>
+                        </div>
+                        <div class="col-4 d-flex justify-content-center">
+                            <a class="btn btn-secondary" asp-page="/SubCategory/Add">Add New Category</a>
+                        </div>
+                        <span class="validation-text" asp-validation-for="@Model.SubCategoryId"></span>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-8">
+                            <div class="input-group">
+                                <div class="input-group-text">Merchant</div>
+                                <label class="visually-hidden" asp-for="@Model.Merchant">Merchant</label>
+                                <input class="form-control merchant-autosuggest-js"
+                                       data-val="true" type="text" asp-for="@Model.Merchant" />
+                            </div>
+                        </div>
+                        <div class="col-4 align-self-center border rounded py-1">
+                            <div class="form-check">
+                                <label class="form-check-label" asp-for="@Model.CreateNewMerchant">Create New Merchant</label>
+                                <input class="form-check-input" type="checkbox"
+                                       asp-for="@Model.CreateNewMerchant" />
+                            </div>
+                        </div>
+                        <span class="validation-text" asp-validation-for="@Model.Merchant"></span>
+                    </div>
+                    <div class="row mb-3 px-1">
+                        <label class="visually-hidden" asp-for="@Model.Notes"></label>
+                        <textarea class="form-control" asp-for="@Model.Notes" rows="3" placeholder="Notes"></textarea>
+                    </div>
+                    <span class="validation-text" asp-validation-for="@Model.Notes"></span>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-evenly">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            @if (Model.IsEdit)
+            {
+                <a asp-page="./Split" asp-route-id="@Model.Id" class="btn btn-info">Split Expense</a>
+            }
+            <form>
+                <button type="submit" class="btn btn-primary" form="addEditExpenseForm">@addOrEdit Expense</button>
+            </form>
+        </div>
+    </div>
+</div>
