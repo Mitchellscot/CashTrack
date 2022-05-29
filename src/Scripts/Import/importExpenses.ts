@@ -6,8 +6,3 @@ console.log('import-expenses page');
 
 disableLocationIfMerchantIsOnline();
 autoSuggestMerchantNames();
-
-
-
-
-

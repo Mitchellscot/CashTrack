@@ -86,7 +86,7 @@
                                     @income.Amount
                                 </td>
                                 <td>
-                                    <input class="form-control text-center form-control-sm" 
+                                    <input class="form-control text-center form-control-sm source-autosuggest-js" 
                                     asp-for="@Model.SelectedIncome.Source" id="sourceName-@income.Id" value="@income.SuggestedSource" />
                                 </td>
                                 <td>
@@ -207,34 +207,5 @@
     }
 </div>
 @section Scripts {
-<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true">
-</script>
-
-<partial name="_ValidationScriptsPartial" />
 <script src="~/js/importIncome.js" asp-append-version="true"></script>
-<script type="text/javascript">
-
-    $(document).ready(() => {
-
-        @if(@Model.IncomeReviewResponse != null && Model.IncomeReviewResponse.ListItems.Any())
-        {
-            var ids = Model.IncomeReviewResponse.ListItems.Select(x => x.Id).ToList();
-            foreach(var id in ids)
-            {
-                //Autocomplete for income source names
-                <text>$("#merchantName-@id").on("input", () => {
-                    let searchTerm = $("#sourceName-@id").val();
-                    $.ajax({
-                        url: `/api/incomesource?sourceName=${searchTerm}`,
-                        method: 'GET'
-                    }).then((response) => {
-                        $("#sourceName-@id").empty();
-                        $("#sourceName-@id").autocomplete({ source: response });
-                    }).catch((error) => console.log(error));
-                })
-                </text>
-            }
-        }
-    });
-</Script>
 }

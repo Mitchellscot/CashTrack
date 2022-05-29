@@ -1,5 +1,4 @@
-﻿
-const disableLocationIfMerchantIsOnline = (): void => {
+﻿const disableLocationIfMerchantIsOnline = (): void => {
     const checkBox: HTMLElement | null = document.getElementById("addEditMerchantIsOnline");
     checkBox?.addEventListener('click', (): void => {
 
