@@ -1,9 +1,11 @@
 using CashTrack.Common.Exceptions;
 using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
+using CashTrack.Models.IncomeCategoryModels;
 using CashTrack.Models.IncomeModels;
 using CashTrack.Models.IncomeSourceModels;
 using CashTrack.Pages.Shared;
+using CashTrack.Services.IncomeCategoryService;
 using CashTrack.Services.IncomeService;
 using CashTrack.Services.IncomeSourceService;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +19,13 @@ namespace CashTrack.Pages.Incomes
     {
         private readonly IIncomeSourceService _sourceService;
         private readonly IIncomeService _incomeService;
+        private readonly IIncomeCategoryService _categoryService;
 
-        public IndexModel(IIncomeService incomeService, IIncomeSourceService sourceService)
+        public IndexModel(IIncomeService incomeService, IIncomeSourceService sourceService, IIncomeCategoryService categoryService)
         {
             _sourceService = sourceService;
             _incomeService = incomeService;
+            _categoryService = categoryService;
         }
         [BindProperty(SupportsGet = true)]
         public string Q { get; set; }
@@ -32,12 +36,13 @@ namespace CashTrack.Pages.Incomes
         public string InputType { get; set; }
         public IncomeResponse IncomeResponse { get; set; }
         public SelectList QueryOptions { get; set; }
+        public IncomeCategoryDropdownSelection[] CategoryList { get; set; }
         [BindProperty]
-        public CashTrack.Models.IncomeModels.Income Income { get; set; }
+        public AddEditIncomeModal Income { get; set; }
 
         public async Task<IActionResult> OnGet(string Q, int Query, int PageNumber)
         {
-            PrepareForm(Query);
+            await PrepareForm(Query);
             if (Query == 0 && Q != null)
             {
                 IncomeResponse = await _incomeService.GetIncomeAsync(new IncomeRequest() { DateOptions = DateOptions.SpecificDate, BeginDate = DateTimeOffset.Parse(Q), PageNumber = PageNumber });
@@ -120,27 +125,37 @@ namespace CashTrack.Pages.Incomes
             IncomeResponse = await _incomeService.GetIncomeAsync(new IncomeRequest() { DateOptions = DateOptions.All, PageNumber = this.PageNumber });
             return Page();
         }
-        public async Task<IActionResult> OnPostAddEdit()
+        public async Task<IActionResult> OnPostAddEditIncomeModal()
         {
-            var IsEdit = Income.Id.HasValue ? true : false;
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
             try
             {
+                var incomeId = 0;
+                //even if you don't click the refund switch, if the category is refund then we redirect to refund page.
+                //gah just put this in the service method later..........
+                var isRefund = await _categoryService.CheckIfIncomeCategoryIsRefund(Income.CategoryId);
+                if (Income.IsRefund == false && isRefund == true)
+                {
+                    Income.IsRefund = isRefund;
+                }
+
                 if (Income.CreateNewSource && !string.IsNullOrEmpty(Income.Source))
                 {
                     var incomeSourceCreationSuccess = await _sourceService.CreateIncomeSourceAsync(new IncomeSource() { Name = Income.Source, SuggestOnLookup = true });
                 }
-
-                var incomeId = IsEdit ? await _incomeService.UpdateIncomeAsync(Income) : await _incomeService.CreateIncomeAsync(Income);
-
-                if (!IsEdit && Income.IsRefund)
+                if (Income.Amount > 0)
+                {
+                    incomeId = Income.IsEdit ? await _incomeService.UpdateIncomeAsync(Income) : await _incomeService.CreateIncomeAsync(Income);
+                }
+                if (Income.IsRefund || isRefund)
                 {
                     return RedirectToPage("./Refund", new { id = incomeId });
                 }
-                TempData["SuccessMessage"] = IsEdit ? "Sucessfully updated the Income!" : "Sucessfully added new Income!";
+                TempData["SuccessMessage"] = Income.IsEdit ? "Sucessfully updated the Income!" : "Sucessfully added new Income!";
                 return RedirectToPage("./Index", new { Query = Query, Q = Q, PageNumber = PageNumber == 0 ? 1 : PageNumber });
             }
             catch (CategoryNotFoundException)
@@ -165,10 +180,10 @@ namespace CashTrack.Pages.Incomes
             TempData["SuccessMessage"] = "Sucessfully deleted Income!";
             return RedirectToPage("./Index", new { Query = query, Q = q, PageNumber = pageNumber });
         }
-        private void PrepareForm(int query)
+        private async Task PrepareForm(int query)
         {
             PageNumber = IncomeResponse != null ? IncomeResponse.PageNumber : PageNumber == 0 ? 1 : PageNumber;
-
+            CategoryList = await _categoryService.GetIncomeCategoryDropdownListAsync();
             QueryOptions = new SelectList(IncomeQueryOptions.GetAll, "Key", "Value", query);
 
             switch (query)

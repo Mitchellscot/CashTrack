@@ -1,5 +1,112 @@
-﻿@*
-*@
+﻿@model CashTrack.Models.IncomeModels.AddEditIncomeModal
 @{
-
+    var addOrEdit = Model.IsEdit ? "Edit" : "Add";
 }
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header text-center">
+            <h5 class="modal-title w-100">@addOrEdit Income</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal">
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <form method="post"
+                      asp-page="../Income/index"
+                      asp-page-handler="AddEditIncomeModal"
+                      id="addEditIncomeForm">
+                    @if (Model.IsEdit)
+                    {
+                        <input asp-for="@Model.Id" type="hidden" />
+                    }
+                    <input asp-for="@Model.IsEdit" type="hidden" />
+                    <input asp-for="@Model.Returnurl" type="hidden" />
+                    <div class="row mb-3">
+                        <div class="col-4">
+                            <label class="visually-hidden" asp-for="@Model.Date">Date</label>
+                            <div class="input-group">
+                                <div class="input-group-text text-center">Date</div>
+                                <input data-val="true" asp-for=@Model.Date type="date" class="form-control">
+                                <span asp-validation-for="@Model.Date"></span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <label class="visually-hidden" asp-for="@Model.Amount">Amount</label>
+                            <div class="input-group">
+                                <div class="input-group-text">$</div>
+                                <input data-val="true"
+                                       asp-for=@Model.Amount
+                                       type="number"
+                                       min="0.00"
+                                       step="any"
+                                       class="form-control format-amount-js text-center"
+                                       placeholder="0.00">
+                                <span asp-validation-for="@Model.Amount"></span>
+                            </div>
+                        </div>
+                        <div class="col-4 align-self-center border rounded py-1 d-flex justify-content-center">
+                            <div class="form-check form-switch">
+                                <label class="form-check-label" asp-for="@Model.IsRefund">This is a Refund</label>
+                                <input class="form-check-input" type="checkbox" data-val="true"
+                                       asp-for="@Model.IsRefund" />
+                                <span asp-validation-for="@Model.IsRefund"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-8">
+                            <div class="input-group">
+                                <div class="input-group-text">Category</div>
+                                <label class="visually-hidden" asp-for="@Model.CategoryId">Category</label>
+                                <select data-val="true"
+                                        asp-for=@Model.CategoryId
+                                        asp-items=@Model.CategoryList
+                                        class="form-control text-center"
+                                        id="addEditIncomeCategory">
+                                    @if (!Model.IsEdit)
+                                    {
+                                        <option value="" selected disabled hidden>Select</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-4 d-flex justify-content-center">
+                            <a class="btn btn-secondary" type="button" asp-page="/IncomeCategory/Add">Add New Category</a>
+                        </div>
+                        <span class="validation-text" asp-validation-for="@Model.CategoryId"></span>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-8">
+                            <div class="input-group">
+                                <div class="input-group-text">Source</div>
+                                <label class="visually-hidden" asp-for="@Model.Source">Income Source</label>
+                                <input class="form-control source-autosuggest-js" data-val="true"
+                                       type="text" asp-for="@Model.Source" id="addEditIncomeSource" />
+                            </div>
+                        </div>
+                        <div class="col-4 align-self-center border rounded py-1">
+                            <div class="form-check ">
+                                <label class="form-check-label" asp-for="@Model.CreateNewSource">Create New Income Source</label>
+                                <input class="form-check-input" type="checkbox" role="switch" id="addEditIncomeCreateNewSource"
+                                       asp-for="@Model.CreateNewSource" />
+                            </div>
+                        </div>
+                        <span class="validation-text" asp-validation-for="@Model.Source"></span>
+                    </div>
+                    <div class="row mb-3 px-1">
+                        <label class="visually-hidden" asp-for="@Model.Notes"></label>
+                        <textarea class="form-control" asp-for="@Model.Notes" id="addEditIncomeNotes" rows="3" placeholder="Notes"></textarea>
+                    </div>
+                    <span class="validation-text" asp-validation-for="@Model.Notes"></span>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-evenly">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <form>
+                <button id="addEditIncomeSubmitButton" type="submit" class="btn btn-primary" form="addEditIncomeForm">Add New Income</button>
+            </form>
+        </div>
+    </div>
+</div>

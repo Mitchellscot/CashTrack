@@ -15,7 +15,7 @@ function autoSuggestSourceEventListener(x: Event) {
     }).then((response) => {
         $(x.target as HTMLInputElement).empty();
         $(x.target as HTMLInputElement).autocomplete({ source: response });
-    });
+    }).catch(err => console.log(err));
 }
 
 export { autoSuggestIncomeSourceNames, autoSuggestSourceEventListener };
