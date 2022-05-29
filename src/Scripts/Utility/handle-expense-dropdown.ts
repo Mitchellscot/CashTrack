@@ -1,7 +1,7 @@
 ﻿import Category from '../Models/Categories';
 import getQueryParam from '../Utility/query-params';
 import { autoSuggestMerchantNames, autoSuggestEventListener } from './merchant-autocomplete';
-import { formatAmountOnChange, formatAmount } from './format-amount';
+import { formatAmountOnChange, formatAmountForEvent } from './format-amount';
 
 const adjustFormBasedOnQueryValue = (queryValue: number) => {
     const firstInput = <HTMLInputElement>document.getElementById('qInput');
@@ -170,7 +170,7 @@ function resetNumbersForm(): void {
     firstInput.removeAttribute('step');
     firstInput.value = '';
     firstInput.classList.remove('format-amount-js');
-    firstInput.removeEventListener('change', formatAmount, true);
+    firstInput.removeEventListener('change', formatAmountForEvent, true);
 }
 function resetCategorySelect(): void {
     const firstInput = <HTMLInputElement>document.getElementById('qInput');

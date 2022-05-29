@@ -27,29 +27,41 @@
             <div class="col-lg-6 col-12 order-lg-1 order-3">
                 <div class="input-group">
                     <span class="input-group-text d-none d-sm-block">Date</span>
-                    <input type="date" class="form-control text-center bg-white" disabled readonly asp-for=@Model.Date />
+                    <input type="date"
+                           class="form-control text-center bg-white"
+                           disabled readonly asp-for=@Model.Date />
                     <span class="input-group-text d-none d-sm-block">Merchant</span>
-                    <input type="text" class="form-control text-center bg-white" disabled readonly asp-for=@Model.Merchant />
+                    <input type="text"
+                           class="form-control text-center bg-white"
+                           disabled readonly asp-for=@Model.Merchant />
                 </div>
             </div>
             <div class="col-lg-3 col-6 order-lg-2 order-1">
                 <div class="input-group">
                     <span class="input-group-text d-none d-sm-block"># of Expenses</span>
-                    <select onchange="this.form.submit()" class="form-control text-center" id="splitOptionsSelect"
+                    <select onchange="this.form.submit()"
+                            class="form-control text-center"
+                            id="splitOptionsSelect"
                             asp-for="@Model.Split" asp-items="@Model.SplitOptions"></select>
                 </div>
             </div>
             <div class="col-lg-3 col-6 order-lg-3 order-2">
                 <div class="input-group">
                     <span class="input-group-text d-none d-sm-block">Tax</span>
-                    <input type="number" class="form-control text-center" min="0.00" step=".0001" asp-for="@Model.Tax" />
-                    <button type="submit" class="btn btn-secondary">Change</button>
+                    <input class="form-control text-center"
+                           type="number"
+                           min="0.00" step=".0001" asp-for="@Model.Tax" />
+                    <button class="btn btn-secondary"
+                            type="submit">
+                        Change
+                    </button>
                 </div>
             </div>
         </div>
     </form>
     <div class="row mt-3">
-        <form class="form-horizontal" method="post" id="splitExpenseForm">
+        <form class="form-horizontal"
+              method="post" id="splitExpenseForm">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover">
                     <thead>
@@ -82,26 +94,37 @@
                                 <input type="hidden" asp-for="ExpenseSplits[i].Date" value="@Model.Date" id="date-@i">
                                 <input type="hidden" asp-for="ExpenseSplits[i].Merchant" value="@Model.Merchant" id="merchant-@i">
                                 <td>
-                                    <input placeholder="0.00" class="form-control expense-split-amount split-amount-js" id="amount-@i" type="number" min="0.00" step="0.01" asp-for="ExpenseSplits[i].Amount" data-tax-amount="@Model.Tax" data-index="@i" />
-                                    <span class="expense-split-amount-validation" asp-validation-for="ExpenseSplits[i].Amount"></span>
+                                    <input placeholder="0.00"
+                                       class="form-control expense-split-amount split-amount-js"
+                                       id="amount-@i" type="number" min="0.00" step="0.01"
+                                       asp-for="ExpenseSplits[i].Amount"
+                                       data-tax-amount="@Model.Tax" data-index="@i" />
+                                    <span class="expense-split-amount-validation"
+                                      asp-validation-for="ExpenseSplits[i].Amount"></span>
                                 </td>
                                 <td class="text-center">
                                     <div class="form-check d-flex justify-content-center">
-                                        <input asp-for="ExpenseSplits[i].Taxed" class="form-check-input" type="checkbox" id="isTaxed-@i">
+                                        <input asp-for="ExpenseSplits[i].Taxed"
+                                           class="form-check-input split-tax-js"
+                                           data-index="@i" data-tax-amount="@Model.Tax"
+                                           type="checkbox" id="isTaxed-@i">
                                     </div>
                                 </td>
                                 <td class="text-center total-amount-js" id="totalAmount-@i">
                                     0.00
                                 </td>
                                 <td>
-                                    <select id="subCategory-@i" class="form-control text-center load-main-category-js" data-width="100%"
-                                    data-sub-category-id=@Model.SubCategoryId data-index=@i
+                                    <select id="subCategory-@i"
+                                        class="form-control text-center load-main-category-js"
+                                        data-width="100%"
+                                        data-sub-category-id=@Model.SubCategoryId data-index=@i
                                         asp-for="ExpenseSplits[i].SubCategoryId" asp-items="Model.SubCategories"></select>
                                 </td>
                                 <td id="mainCategory-@i" class="text-center">
                                 </td>
                                 <td>
-                                    <input class="form-control mx-auto p-0" id="notes-@i" type="text"
+                                    <input class="form-control mx-auto p-0"
+                                       id="notes-@i" type="text"
                                        asp-for="ExpenseSplits[i].Notes" />
                                 </td>
                             </tr>
@@ -114,18 +137,18 @@
     <div class="row">
         <form>
             <div class="col float-end">
-                <a type="button" asp-page="./Index" class="btn btn-secondary mx-5">
+                <a class="btn btn-secondary mx-5"
+                   type="button" asp-page="./Index">
                     Cancel
                 </a>
-                <button id="submitButton" disabled type="submit" form="splitExpenseForm" class="btn btn-primary">Save Changes</button>
+                <button id="submitButton" disabled type="submit" form="splitExpenseForm"
+                        class="btn btn-primary">
+                    Save Changes
+                </button>
             </div>
         </form>
     </div>
 </div>
 @section Scripts {
-<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true">
-</script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
-<partial name="_ValidationScriptsPartial" />
 <script src="~/js/split.js" asp-append-version="true"></script>
-    }
+}

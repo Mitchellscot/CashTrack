@@ -64,7 +64,10 @@ namespace CashTrack.Pages.Expenses
             {
                 foreach (var expenseSplit in expenseSplits)
                 {
-                    var expenseId = await _expenseService.CreateExpenseFromSplitAsync(expenseSplit);
+                    if (expenseSplit.Amount > 0)
+                    {
+                        var expenseId = await _expenseService.CreateExpenseFromSplitAsync(expenseSplit);
+                    }
                 }
                 var deleteSuccess = await _expenseService.DeleteExpenseAsync(int.Parse(RouteData.Values["id"].ToString()));
             }
