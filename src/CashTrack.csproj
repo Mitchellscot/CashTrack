@@ -35,12 +35,16 @@
 		<None Remove="Migrations\**" />
 	</ItemGroup>
 	<ItemGroup>
+	  <None Remove="Pages\Shared\_ShortMessageModal.cshtml.css" />
 	  <None Remove="Scripts\Utility\format-amount.ts" />
 	  <None Remove="Scripts\Utility\handle-expense-dropdown.ts" />
 	  <None Remove="Scripts\Utility\load-main-category.ts" />
 	  <None Remove="Scripts\Utility\merchant-autocomplete.ts" />
 	  <None Remove="Scripts\Utility\online-merchant.ts" />
 	  <None Remove="Scripts\Utility\query-params.ts" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Include="Pages\Shared\_ShortMessageModal.cshtml.css" />
 	</ItemGroup>
 	<ItemGroup>
 		<TypeScriptCompile Include="Scripts\Expenses\expenses.ts" />

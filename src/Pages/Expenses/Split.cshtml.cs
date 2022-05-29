@@ -31,6 +31,7 @@ namespace CashTrack.Pages.Expenses
         [BindProperty]
         public decimal Tax { get; set; }
         public int Id { get; set; }
+        public int SubCategoryId { get; set; }
         public SelectList SplitOptions { get; set; }
         public SelectList SubCategories { get; set; }
         public async Task<IActionResult> OnGet(int id, int? Split, decimal? Tax)
@@ -41,7 +42,7 @@ namespace CashTrack.Pages.Expenses
                 TempData["Message"] = $"Unable to find expense with id {id}";
                 return LocalRedirect("./Index");
             }
-
+            SubCategoryId = originalExpense.SubCategoryId;
             var categories = await _subCategoryService.GetSubCategoryDropdownListAsync();
             SubCategories = new SelectList(categories, nameof(SubCategoryDropdownSelection.Id), nameof(SubCategoryDropdownSelection.Category), originalExpense.SubCategoryId);
             Id = id;

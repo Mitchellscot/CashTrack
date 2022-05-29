@@ -29,7 +29,7 @@ const loadMainCategoryOnEditModalLoad = (): void => {
 }
 
 const loadMainCategoryForEditModal = (e: Event): void => {
-    //these are two data attributes on every icon that loads the edit modal. Don't ask me why they aren't on the button...
+    //these are two data attributes on every icon that loads the edit modal.
     const element = e.target as HTMLElement;
     console.log(element);
     const subCategoryId = element.dataset.subCategoryId;
@@ -42,8 +42,37 @@ const loadMainCategoryForEditModal = (e: Event): void => {
             const mainCategoryInput = <HTMLInputElement>document.getElementById(`editExpenseMainCategory-${expenseId}`);
             console.log(category);
             mainCategoryInput.value = category;
-
         }).catch(err => console.log(err));
 }
 
-export { loadMainCategoryOnSubCategorySelect, loadMainCategoryOnEditModalLoad };
+const loadMainCategoryOnSplitLoad = (): void => {
+    const subCategories = <NodeListOf<HTMLElement>>document.querySelectorAll('.load-main-category-js');
+    subCategories.forEach(x => x.addEventListener('change', loadMainCategoryForSplit, false));
+    subCategories.forEach(x => loadMainCategoriesForSplit(x));
+}
+
+const loadMainCategoriesForSplit = (element: HTMLElement): void => {
+    const subCategoryId = element.dataset.subCategoryId;
+    const index = element.dataset.index;
+    fetch(`/api/maincategory/sub-category/${subCategoryId}`)
+        .then(response => response.text())
+        .then((category: string) => {
+            const mainCategory = <HTMLElement>document.getElementById(`mainCategory-${index}`);
+            mainCategory.innerHTML = category;
+        }).catch(err => console.log(err));
+}
+
+const loadMainCategoryForSplit = (e: Event): void => {
+    const element = e.target as HTMLSelectElement;
+    const subCategoryId = element.value;
+    const index = element.dataset.index;
+    fetch(`/api/maincategory/sub-category/${subCategoryId}`)
+        .then(response => response.text())
+        .then((category: string) => {
+            const mainCategory = <HTMLElement>document.getElementById(`mainCategory-${index}`);
+            mainCategory.innerHTML = '';
+            mainCategory.innerHTML = category;
+        }).catch(err => console.log(err));
+}
+
+export { loadMainCategoryOnSubCategorySelect, loadMainCategoryOnEditModalLoad, loadMainCategoryOnSplitLoad };

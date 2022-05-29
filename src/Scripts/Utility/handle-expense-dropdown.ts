@@ -129,9 +129,6 @@ const adjustFormBasedOnQueryValue = (queryValue: number) => {
             console.log('not implemented yet');
             break;
         default:
-            resetSecondInputForm();
-            resetNumbersForm();
-            resetCategorySelect();
             firstInput.type = 'date';
             console.log('default... something went wrong');
     }

@@ -65,152 +65,123 @@
 
     @if (Model.ExpenseResponse != null && Model.ExpenseResponse.TotalCount > 0)
     {
-                <div class="row">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover table-sm mb-0">
-                            <thead>
-                                <tr class="text-center table-primary">
-                                    <th width="10%">
-                                        Date
-                                    </th>
-                                    <th width="10%">
-                                        Amount
-                                    </th>
-                                    <th width="10%">
-                                        Merchant
-                                    </th>
-                                    <th width="10%">
-                                        Category
-                                    </th>
-                                    <th width="10%">
-                                        Main
-                                    </th>
-                                    <th width="10%">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-sm mb-0">
+                    <thead>
+                        <tr class="text-center table-primary">
+                            <th width="10%">
+                                Date
+                            </th>
+                            <th width="10%">
+                                Amount
+                            </th>
+                            <th width="10%">
+                                Merchant
+                            </th>
+                            <th width="10%">
+                                Category
+                            </th>
+                            <th width="10%">
+                                Main
+                            </th>
+                            <th width="10%">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         @foreach (var expense in Model.ExpenseResponse.ListItems)
                         {
-                                            <tr class="text-center">
-                                                <td>
+                            <tr class="text-center">
+                                <td>
                                     @expense.Date.Date.ToShortDateString()
-                                                </td>
-                                                <td>
+                                </td>
+                                <td>
                                     @String.Format("{0:n}", expense.Amount)
-                                                </td>
-                                                <td>
-                                                    <a class="text-black" asp-page="../Merchants/Detail" asp-route-id="@expense.MerchantId">@expense.Merchant</a>
-                                                </td>
-                                                <td>
+                                </td>
+                                <td>
+                                    <a class="text-black" asp-page="../Merchants/Detail" asp-route-id="@expense.MerchantId">@expense.Merchant</a>
+                                </td>
+                                <td>
                                     @expense.SubCategory
 
-                                                </td>
-                                                <td>
+                                </td>
+                                <td>
                                     @expense.MainCategory
 
-                                                </td>
-                                                <td>
+                                </td>
+                                <td>
                                     @if (!string.IsNullOrEmpty(expense.RefundNotes) && !string.IsNullOrEmpty(expense.Notes))
                                     {
-                                                                <button type="button" data-bs-toggle="modal"
+                                        <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#refundNotes-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
-                                                                    <i class="bi bi-bootstrap-reboot text-primary action-icon" role="img"></i>
-                                                                </button>
+                                            <i class="bi bi-bootstrap-reboot text-primary action-icon" role="img"></i>
+                                        </button>
                                         @*Begin Refund Notes Modal*@
-                                                                <div class="modal fade" id="refundNotes-@expense.Id">
-                                                                    <div class="modal-dialog">
-                                                                        <div class="modal-content">
-                                                                            <div class="modal-header text-center">
-                                                                                <h5 class="modal-title w-100">Refund Notes</h5>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                                                                </button>
-                                                                            </div>
-                                                                            <div class="modal-body text-wrap">
-                                                        @expense.RefundNotes
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                        @await Html.PartialAsync("_ShortMessageModal",
+                            new _ShortMessageModal(){
+                            Id = $"refundNotes-{@expense.Id}",
+                            Title="Refund Notes",
+                            Message = expense.RefundNotes})
                                         @*End Refund Notes Modal*@
                                     }
                                     else if (string.IsNullOrEmpty(expense.RefundNotes))
                                     {
-                                                                <button type="button" data-bs-toggle="modal" disabled
+                                        <button type="button" data-bs-toggle="modal" disabled
                                     data-bs-target="#detailModal-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
-                                                                    <i class="bi bi-file-earmark-check text-white action-icon visibility-hidden" role="img"></i>
-                                                                </button>
+                                            <i class="bi bi-file-earmark-check text-white action-icon visibility-hidden" role="img"></i>
+                                        </button>
                                     }
                                     @if (!string.IsNullOrEmpty(expense.Notes))
                                     {
-                                                                <button type="button" data-bs-toggle="modal"
+                                        <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#detailModal-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
-                                                                    <i class="bi bi-file-earmark-check text-primary action-icon" role="img"></i>
-                                                                </button>
+                                            <i class="bi bi-file-earmark-check text-primary action-icon" role="img"></i>
+                                        </button>
                                         @*Begin Detail Modal*@
-                                                                <div class="modal fade" id="detailModal-@expense.Id">
-                                                                    <div class="modal-dialog">
-                                                                        <div class="modal-content">
-                                                                            <div class="modal-header text-center">
-                                                                                <h5 class="modal-title w-100">Notes</h5>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                                                                </button>
-                                                                            </div>
-                                                                            <div class="modal-body text-wrap">
-                                                        @expense.Notes
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+@*                                        @await Html.PartialAsync("_ShortMessageModal",
+                            new _ShortMessageModal(){
+                            Id = $"detailModal-{@expense.Id}",
+                            Title="Notes",
+                            Message = expense.Notes})*@
                                         @*End Detail Modal*@
                                     }
                                     else if (string.IsNullOrEmpty(expense.Notes) && !string.IsNullOrEmpty(expense.RefundNotes))
                                     {
-                                                                <button type="button" data-bs-toggle="modal" disabled
+                                        <button type="button" data-bs-toggle="modal" disabled
                                     data-bs-target="#detailModal-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
-                                                                    <i class="bi bi-file-earmark-check text-white action-icon visibility-hidden"></i>
-                                                                </button>
-                                                                <button type="button" data-bs-toggle="modal"
+                                            <i class="bi bi-file-earmark-check text-white action-icon visibility-hidden"></i></button>
+                                        <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#refundNotes-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
-                                                                    <i class="bi bi-bootstrap-reboot text-primary action-icon"></i>
-                                                                </button>
+                                            <i class="bi bi-bootstrap-reboot text-primary action-icon"></i>
+                                        </button>
                                         @*Begin Refund Notes Modal*@
-                                                                <div class="modal fade" id="refundNotes-@expense.Id">
-                                                                    <div class="modal-dialog">
-                                                                        <div class="modal-content">
-                                                                            <div class="modal-header text-center">
-                                                                                <h5 class="modal-title w-100">Refund Notes</h5>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                                                                </button>
-                                                                            </div>
-                                                                            <div class="modal-body text-wrap">
-                                                        @expense.RefundNotes
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                        @await Html.PartialAsync("_ShortMessageModal",
+                            new _ShortMessageModal(){
+                            Id = $"refundNotes-{@expense.Id}",
+                            Title="Refund Notes",
+                            Message = expense.RefundNotes})
                                         @*End Refund Notes Modal*@
                                     }
                                     else
                                     {
-                                                                <button type="button" data-bs-toggle="modal" disabled
+                                        <button type="button" data-bs-toggle="modal" disabled
                                     data-bs-target="#detailModal-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
-                                                                    <i class="bi bi-file-earmark-check text-white action-icon visibility-hidden"></i>
-                                                                </button>
+                                            <i class="bi bi-file-earmark-check text-white action-icon visibility-hidden"></i>
+                                        </button>
                                     }
-                                                    <button type="button"
+                                    <button type="button"
                                     data-bs-toggle="modal"
                                     data-bs-target="#editExpenseModal-@expense.Id"
                                     class="icon-button px-2 load-main-category-edit-modal-js">
                                         @*when the icon is clicked, even though the javascript is on the button itself, the data is pulled from the icon...*@
-                                                        <i class="bi bi-pencil text-primary action-icon" data-sub-category-id=@expense.SubCategoryId
+                                        <i class="bi bi-pencil text-primary action-icon" data-sub-category-id=@expense.SubCategoryId
                                    data-id=@expense.Id></i>
-                                                    </button>
+                                    </button>
                                     @* Edit Expense Modal *@
 
-                                                    <div class="modal fade" id="editExpenseModal-@expense.Id">
+                                    <div class="modal fade" id="editExpenseModal-@expense.Id">
                                         @await Html.PartialAsync("_AddExpenseModal",
                                 new AddEditExpenseModal() {
                                 IsEdit = true,
@@ -224,31 +195,29 @@
                                 Merchant = expense.Merchant,
                                 Notes = expense.Notes,
                                 Id = expense.Id });
-                                                    </div>
+                                    </div>
 
                                     @*End Edit Expense Modal*@
-                                                    <button type="button" data-bs-toggle="modal"
+                                    <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-@expense.Id" class="icon-button ps-2 ps-0 me-0">
-                                                        <i class="bi bi-trash text-primary action-icon"></i>
-                                                    </button>
+                                        <i class="bi bi-trash text-primary action-icon"></i>
+                                    </button>
                                     @*Delete Model*@
-                                                    <div class="modal fade" id="deleteModal-@expense.Id">
-                                                        <div class="modal-dialog" role="document">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header text-center">
-                                                                    <h5 class="modal-title text-center">
-                                                                        <strong>Are you sure you want to Delete this Expense?</strong>
-                                                                    </h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                                        <span aria-hidden="true"></span>
-                                                                    </button>
-                                                                </div>
+                                    <div class="modal fade" id="deleteModal-@expense.Id">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header text-center">
+                                                    <h5 class="modal-title text-center">
+                                                        <strong>Are you sure you want to Delete this Expense?</strong>
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true"></span>
+                                                    </button>
+                                                </div>
 
-                                                                <div class="modal-footer d-flex justify-content-evenly">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                                        Cancel
-                                                                    </button>
-                                                                    <form method="post"
+                                                <div class="modal-footer d-flex justify-content-evenly">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <form method="post"
                                                   asp-page="./Index"
                                                   asp-page-handler="Delete"
                                                   asp-route-expenseId="@expense.Id"
@@ -256,35 +225,36 @@
                                                   asp-route-q="@Model.Q"
                                                   asp-route-q2="@Model.Q2"
                                                   asp-route-pageNumber="@Model.PageNumber">
-                                                                        <button type="submit" class="btn btn-danger">DELETE</button>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                        <button type="submit" class="btn btn-danger">DELETE</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     @*End Delete Modal*@
-                                                </td>
-                                            </tr>
+                                </td>
+                            </tr>
                         }
-                            </tbody>
-                        </table>
-                        <div class="row my-1">
-                            <div class="col-sm-6 col-lg-2 col-xl-2 m-auto">
+                    </tbody>
+                </table>
+                <div class="row my-1">
+                    <div class="col-sm-6 col-lg-2 col-xl-2 m-auto">
                         @if (@Model.ExpenseResponse.TotalCount > 0)
                         {
                             var currentCount = Model.ExpenseResponse.PageNumber * @Model.ExpenseResponse.PageSize;
-                                            <span class="text-muted">@(Math.Min(currentCount, Model.ExpenseResponse.TotalCount)) of @Model.ExpenseResponse.TotalCount</span>
+                            <span class="text-muted">
+                                @(Math.Min(currentCount, Model.ExpenseResponse.TotalCount)) of @Model.ExpenseResponse.TotalCount</span>
                         }
-                            </div>
-                            <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
+                    </div>
+                    <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
                         @if (@Model.ExpenseResponse.TotalAmount > 0)
                         {
-                                            <div class="text-center">
-                                                <strong class="p-0 text-success">Total: $ @Model.ExpenseResponse.TotalAmount</strong>
-                                            </div>
-                        }
+                            <div class="text-center">
+                                <strong class="p-0 text-success">Total: $ @Model.ExpenseResponse.TotalAmount</strong>
                             </div>
-                            <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
+                        }
+                    </div>
+                    <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
                         @await Html.PartialAsync("_PaginationPartial",
                     new _PaginationPartialModel {
                     PathLink = "../Expenses/Index",
@@ -295,10 +265,10 @@
                     q = Model.Q,
                     q2 = Model.Q2
                     })
-                            </div>
-                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
     }
 </div>
 
