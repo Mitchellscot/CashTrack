@@ -194,91 +194,55 @@
                                 <td>
                                     @if (!string.IsNullOrEmpty(income.RefundNotes) && !string.IsNullOrEmpty(income.Notes))
                                     {
-                                        <button
-                                    type="button" data-bs-toggle="modal"
+                                        <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#refundNotes-@income.Id" class="pe-2 ps-0 ms-0 icon-button">
                                             <i class="bi bi-bootstrap-reboot text-primary icon-size-lg"></i>
                                         </button>
                                         @*Begin Refund Notes Modal*@
                                         <div class="modal fade" id="refundNotes-@income.Id">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header text-center">
-                                                        <h5 class="modal-title w-100">Refund Notes</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body text-wrap">
-                                                        @income.RefundNotes
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            @await Html.PartialAsync("_ShortMessageModal", new _ShortMessageModal{
+                                Title="Refund Notes", Message = income.RefundNotes})
                                         </div>
                                         @*End Refund Notes Modal*@
                                     }
                                     else if (string.IsNullOrEmpty(income.RefundNotes))
                                     {
-                                        <button
-                                    type="button" data-bs-toggle="modal" disabled class="pe-2 ps-0 ms-0 icon-button">
+                                        <button type="button" data-bs-toggle="modal" disabled class="pe-2 ps-0 ms-0 icon-button">
                                             <i class="bi bi-file-earmark-check text-white visibility-hidden icon-size-lg"></i>
                                         </button>
                                     }
                                     @if (!string.IsNullOrEmpty(income.Notes))
                                     {
-                                        <button
-                                    type="button" data-bs-toggle="modal"
+                                        <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#detailModal-@income.Id" class="pe-2 ps-0 ms-0 icon-button">
                                             <i class="bi bi-file-earmark-check text-primary icon-size-lg"></i>
                                         </button>
                                         @*Begin Detail Modal*@
                                         <div class="modal fade" id="detailModal-@income.Id">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header text-center">
-                                                        <h5 class="modal-title w-100">Notes</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body text-wrap">
-                                                        @income.Notes
-                                                    </div>
-                                                </div>
+                                            @await Html.PartialAsync("_ShortMessageModal", new _ShortMessageModal{ Title="Notes",
+                                            Message = income.Notes})
                                             </div>
-                                        </div>
                                         @*End Detail Modal*@
                                     }
                                     else if (string.IsNullOrEmpty(income.Notes) && !string.IsNullOrEmpty(income.RefundNotes))
                                     {
-                                        <button
-                                    type="button" data-bs-toggle="modal" disabled class="pe-2 ps-0 ms-0 icon-button">
+                                        <button type="button" data-bs-toggle="modal" disabled class="pe-2 ps-0 ms-0 icon-button">
                                             <i class="bi bi-file-earmark-check text-white visibility-hidden icon-size-lg"></i>
                                         </button>
-                                        <button
-                                    type="button" data-bs-toggle="modal"
+                                        <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#refundNotes-@income.Id" class="pe-2 ps-0 ms-0 icon-button">
                                             <i class="bi bi-bootstrap-reboot text-primary icon-size-lg"></i>
                                         </button>
                                         @*Begin Refund Notes Modal*@
                                         <div class="modal fade" id="refundNotes-@income.Id">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header text-center">
-                                                        <h5 class="modal-title w-100">Refund Notes</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body text-wrap">
-                                                        @income.RefundNotes
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            @await Html.PartialAsync("_ShortMessageModal", new _ShortMessageModal{ Title="Refund Notes",
+                                Message = income.RefundNotes})
                                         </div>
                                         @*End Refund Notes Modal*@
                                     }
                                     else
                                     {
-                                        <button
-                                    type="button" data-bs-toggle="modal" disabled
+                                        <button type="button" data-bs-toggle="modal" disabled
                                     data-bs-target="#detailModal-@income.Id" class="pe-2 ps-0 ms-0 icon-button">
                                             <i class="bi bi-file-earmark-check text-white icon-size-lg visibility-hidden"></i>
                                         </button>

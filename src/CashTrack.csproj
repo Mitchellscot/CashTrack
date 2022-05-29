@@ -35,7 +35,6 @@
 		<None Remove="Migrations\**" />
 	</ItemGroup>
 	<ItemGroup>
-	  <None Remove="Pages\Shared\_ShortMessageModal.cshtml.css" />
 	  <None Remove="Scripts\Utility\format-amount.ts" />
 	  <None Remove="Scripts\Utility\handle-expense-dropdown.ts" />
 	  <None Remove="Scripts\Utility\load-main-category.ts" />
@@ -45,9 +44,6 @@
 	  <None Remove="Scripts\Utility\query-params.ts" />
 	  <None Remove="Scripts\Utility\source-autocomplete.ts" />
 	  <None Remove="Scripts\Utility\split-calculations.ts" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Content Include="Pages\Shared\_ShortMessageModal.cshtml.css" />
 	</ItemGroup>
 	<ItemGroup>
 		<TypeScriptCompile Include="Scripts\Expenses\expenses.ts" />

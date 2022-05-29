@@ -1,19 +1,15 @@
-﻿@page
-@model CashTrack.Pages.Shared._ShortMessageModal
+﻿@model CashTrack.Pages.Shared._ShortMessageModal
 @{
 }
-
-<div class="modal fade" id="@Model.Id">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header text-center">
-                <h5 class="modal-title w-100">@Model.Title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal">
-                </button>
-            </div>
-            <div class="modal-body text-wrap">
-                @Model.Message
-            </div>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header text-center">
+            <h5 class="modal-title w-100">@Model.Title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal">
+            </button>
+        </div>
+        <div class="modal-body text-wrap">
+            @Model.Message
         </div>
     </div>
 </div>

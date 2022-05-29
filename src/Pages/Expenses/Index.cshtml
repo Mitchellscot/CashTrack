@@ -119,11 +119,10 @@
                                             <i class="bi bi-bootstrap-reboot text-primary action-icon" role="img"></i>
                                         </button>
                                         @*Begin Refund Notes Modal*@
-                                        @await Html.PartialAsync("_ShortMessageModal",
-                            new _ShortMessageModal(){
-                            Id = $"refundNotes-{@expense.Id}",
-                            Title="Refund Notes",
-                            Message = expense.RefundNotes})
+                                        <div class="modal fade" id="refundNotes-@expense.Id">
+                                            @await Html.PartialAsync("_ShortMessageModal", new _ShortMessageModal() {
+                                Title="Refund Notes", Message = expense.RefundNotes});
+                                        </div>
                                         @*End Refund Notes Modal*@
                                     }
                                     else if (string.IsNullOrEmpty(expense.RefundNotes))
@@ -140,28 +139,26 @@
                                             <i class="bi bi-file-earmark-check text-primary action-icon" role="img"></i>
                                         </button>
                                         @*Begin Detail Modal*@
-@*                                        @await Html.PartialAsync("_ShortMessageModal",
-                            new _ShortMessageModal(){
-                            Id = $"detailModal-{@expense.Id}",
-                            Title="Notes",
-                            Message = expense.Notes})*@
+                                        <div class="modal fade" id="detailModal-@expense.Id">
+                                            @await Html.PartialAsync("_ShortMessageModal", new _ShortMessageModal()
+                                { Title="Notes", Message = expense.Notes });
+                                        </div>
                                         @*End Detail Modal*@
                                     }
                                     else if (string.IsNullOrEmpty(expense.Notes) && !string.IsNullOrEmpty(expense.RefundNotes))
                                     {
                                         <button type="button" data-bs-toggle="modal" disabled
                                     data-bs-target="#detailModal-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
-                                            <i class="bi bi-file-earmark-check text-white action-icon visibility-hidden"></i></button>
+                                            <i class="bi bi-file-earmark-check text-white action-icon visibility-hidden"></i>
+                                        </button>
                                         <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#refundNotes-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
                                             <i class="bi bi-bootstrap-reboot text-primary action-icon"></i>
                                         </button>
                                         @*Begin Refund Notes Modal*@
-                                        @await Html.PartialAsync("_ShortMessageModal",
-                            new _ShortMessageModal(){
-                            Id = $"refundNotes-{@expense.Id}",
-                            Title="Refund Notes",
-                            Message = expense.RefundNotes})
+                                        <div class="modal fade" id="refundNotes-@expense.Id">
+                                            @await Html.PartialAsync("_ShortMessageModal", new _ShortMessageModal { Title="Refund Notes", Message = expense.RefundNotes})
+                                        </div>
                                         @*End Refund Notes Modal*@
                                     }
                                     else
@@ -243,7 +240,8 @@
                         {
                             var currentCount = Model.ExpenseResponse.PageNumber * @Model.ExpenseResponse.PageSize;
                             <span class="text-muted">
-                                @(Math.Min(currentCount, Model.ExpenseResponse.TotalCount)) of @Model.ExpenseResponse.TotalCount</span>
+                                @(Math.Min(currentCount, Model.ExpenseResponse.TotalCount)) of @Model.ExpenseResponse.TotalCount
+                            </span>
                         }
                     </div>
                     <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
@@ -256,7 +254,7 @@
                     </div>
                     <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
                         @await Html.PartialAsync("_PaginationPartial",
-                    new _PaginationPartialModel {
+                    new _PaginationPartialModel() {
                     PathLink = "../Expenses/Index",
                     IsExpensePage = true,
                     PageNumber = Model.ExpenseResponse.PageNumber,
