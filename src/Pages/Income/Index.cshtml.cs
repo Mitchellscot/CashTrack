@@ -130,13 +130,13 @@ namespace CashTrack.Pages.Incomes
 
             if (!ModelState.IsValid)
             {
+                await PrepareForm(Query);
                 return Page();
             }
             try
             {
                 var incomeId = 0;
                 //even if you don't click the refund switch, if the category is refund then we redirect to refund page.
-                //gah just put this in the service method later..........
                 var isRefund = await _categoryService.CheckIfIncomeCategoryIsRefund(Income.CategoryId);
                 if (Income.IsRefund == false && isRefund == true)
                 {
@@ -161,11 +161,13 @@ namespace CashTrack.Pages.Incomes
             catch (CategoryNotFoundException)
             {
                 ModelState.AddModelError("", "Please select a category and try again");
+                await PrepareForm(Query);
                 return Page();
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
+                await PrepareForm(Query);
                 return Page();
             }
         }

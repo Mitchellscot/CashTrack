@@ -35,6 +35,7 @@
 		<None Remove="Migrations\**" />
 	</ItemGroup>
 	<ItemGroup>
+	  <None Remove="Scripts\Utility\force-refund.ts" />
 	  <None Remove="Scripts\Utility\format-amount.ts" />
 	  <None Remove="Scripts\Utility\handle-expense-dropdown.ts" />
 	  <None Remove="Scripts\Utility\load-main-category.ts" />
@@ -54,6 +55,7 @@
 		<TypeScriptCompile Include="Scripts\Merchants\merchants.ts" />
 		<TypeScriptCompile Include="Scripts\Sources\sources.ts" />
 		<TypeScriptCompile Include="Scripts\Sources\sourceDetail.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\force-refund.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\format-amount.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\handle-expense-dropdown.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\load-main-category.ts" />

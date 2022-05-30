@@ -42,7 +42,6 @@ const adjustFormBasedOnQueryValue = (queryValue: number) => {
         case 4:
             resetCategorySelect();
             resetSecondInputForm();
-            firstInput.type = 'number';
             firstInput.step = 'any';
             firstInput.min = '2012';
             const currentYear: string = (new Date().getFullYear()).toString();
@@ -115,7 +114,10 @@ const adjustFormBasedOnQueryValue = (queryValue: number) => {
                         if (category.id.toString() === Q) {
                             categorySelect.add(new Option(category.category, category.id.toString(), true, true))
                         }
-                        categorySelect.add(new Option(category.category, category.id.toString()))
+                        else
+                        {
+                            categorySelect.add(new Option(category.category, category.id.toString()))
+                        }
                     }
                 }).catch(err => console.log(err));
             firstInput.type = 'text';

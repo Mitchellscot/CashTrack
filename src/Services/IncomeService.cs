@@ -118,14 +118,15 @@ public class IncomeService : IIncomeService
         if (request.Id == null)
             throw new ArgumentException("Need an id to update an income");
 
-        if (string.IsNullOrEmpty(request.Category))
+        if (request.IsRefund)
+            request.CategoryId = (await _categoryRepository.Find(x => x.Name == "Refund")).FirstOrDefault().Id;
+
+        if (request.CategoryId == 0)
             throw new CategoryNotFoundException("null");
 
         var currentIncome = await _incomeRespository.FindById(request.Id.Value);
         if (currentIncome == null)
             throw new IncomeNotFoundException(request.Id.Value.ToString());
-
-        var categoryId = (await _categoryRepository.Find(x => x.Name == request.Category)).FirstOrDefault().Id;
 
         currentIncome.Amount = request.Amount;
         currentIncome.Date = request.Date;

@@ -164,145 +164,18 @@
                                     </button>
                                     @* Edit Income Modal *@
                                     <div class="modal fade" id="editIncomeModal-@income.Id">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header text-center">
-                                                    <h5 class="modal-title w-100">
-                                                        @if (income.IsRefund)
-                                                        {
-                                                            <span class="validation-text">You cannot edit a Refund after it's been applied</span>
-                                                        }
-                                                        else
-                                                        {
-                                                            <span>Edit an Expense</span>
-                                                        }
-                                                    </h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="container-fluid">
-                                                        <form method="post"
-                                                      asp-page="./Index"
-                                                      asp-page-handler="AddEdit"
-                                                      id="editIncomeForm-@income.Id">
-                                                            <input type="hidden" asp-for="@income.Id" />
-                                                            <input type="hidden" asp-for="@Model.PageNumber" />
-                                                            <input type="hidden" asp-for="@Model.Q" />
-                                                            <input type="hidden" asp-for="@Model.Query" />
-                                                            <div class="row mb-3">
-                                                                <div class="col-4">
-                                                                    <label class="visually-hidden" asp-for="@income.Date">
-                                                                        Date
-                                                                    </label>
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-text text-center">Date</div>
-                                                                        <input data-val="true" asp-for=@income.Date
-                                                                       asp-format="{0:yyyy-MM-dd}"
-                                                                       type="date" class="form-control" id="editIncomeDate-@income.Id">
-                                                                        <span asp-validation-for="@income.Date"></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-4">
-                                                                    <label class="visually-hidden"
-                                                                   asp-for="@income.Amount">Amount</label>
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-text">$</div>
-                                                                        <input data-val="true"
-                                                                       asp-for=@income.Amount
-                                                                       type="number" min="0.00" step="any"
-                                                                       class="form-control" id="editIncomeAmount-@income.Id"
-                                                                       placeholder="0.00">
-                                                                        <span asp-validation-for="@income.Amount"></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-4 align-self-center border rounded py-1 d-flex justify-content-center">
-                                                                    <div class="form-check form-switch">
-                                                                        <label class="form-check-label"
-                                                                       asp-for="@income.IsRefund">
-                                                                            This is a Refund
-                                                                        </label>
-                                                                        <input class="form-check-input"
-                                                                       type="checkbox"
-                                                                       role="switch"
-                                                                       data-val="true"
-                                                                       id="editIncomeRefundBool-@income.Id"
-                                                                       asp-for="@income.IsRefund" />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <div class="col-8">
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-text">Category</div>
-                                                                        <label class="visually-hidden"
-                                                                       asp-for="@income.Category">Category</label>
-                                                                        <select data-val="true"
-                                                                        asp-for=@income.Category
-                                                                        class="form-control text-center"
-                                                                        id="editIncomeCategory-@income.Id">
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-4 d-flex justify-content-center">
-                                                                    <a class="btn btn-secondary" type="button"
-                                                               asp-page="/IncomeCategory/Add">Add New Category</a>
-                                                                </div>
-                                                                <span class="validation-text" asp-validation-for="@income.Category"></span>
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <div class="col-8">
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-text">Source</div>
-                                                                        <label class="visually-hidden"
-                                                                       asp-for="@income.Source">Source</label>
-                                                                        <input class="form-control"
-                                                                       data-val="true" type="text"
-                                                                       asp-for="@income.Source"
-                                                                       id="editIncomeSource-@income.Id" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-4 align-self-center border rounded py-1">
-                                                                    <div class="form-check ">
-                                                                        <label class="form-check-label"
-                                                                       asp-for="@income.CreateNewSource">Create New Income Source</label>
-                                                                        <input class="form-check-input"
-                                                                       type="checkbox" role="switch"
-                                                                       id="editIncomeCreateNewSource-@income.Id"
-                                                                       asp-for="@income.CreateNewSource" />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row mb-3 px-1">
-                                                                <label class="visually-hidden"
-                                                               asp-for="@income.Notes"></label>
-                                                                <textarea class="form-control" asp-for="@income.Notes"
-                                                                  id="editIncomeNotes-@income.Id" rows="3" placeholder="Notes"></textarea>
-                                                            </div>
-                                                            <span class="validation-text" asp-validation-for="@income.Notes"></span>
-                                                            <span class="validation-text" asp-validation-for="@income.Source"></span>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer d-flex justify-content-evenly">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    @if (string.IsNullOrEmpty(income.RefundNotes))
-                                                    {
-                                                        <a asp-page="./Refund" asp-route-id="@income.Id"
-                                               type="button" class="btn btn-info display-none" id="refundButton-@income.Id">Refund Expenses</a>
-                                                    }
-                                                    <form>
-                                                        @{
-                                                            var isDisabled = @income.IsRefund ? "disabled" : "";
-                                                        }
-                                                        <button @isDisabled id="editIncomeSubmitButton-@income.Id" type="submit" class="btn btn-primary"
-                                                        form="editIncomeForm-@income.Id">
-                                                            Save Changes
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        @await Html.PartialAsync("_AddINcomeModal", new AddEditIncomeModal(){
+                                IsEdit = true,
+                                Returnurl = "./Index",
+                                CategoryId = @income.CategoryId,
+                                CategoryList = new SelectList(Model.CategoryList, "Id", "Category", income.CategoryId),
+                                Date=income.Date,
+                                Amount = income.Amount,
+                                IsRefund = income.IsRefund,
+                                Source = income.Source,
+                                Notes = income.Notes,
+                                Id = income.Id
+                                })
                                     </div>
                                     @*End Edit Income Modal*@
 
