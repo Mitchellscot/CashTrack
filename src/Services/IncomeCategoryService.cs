@@ -19,6 +19,7 @@ public interface IIncomeCategoryService
     Task<bool> DeleteIncomeCategoryAsync(int id);
     Task<IncomeCategoryDropdownSelection[]> GetIncomeCategoryDropdownListAsync();
     Task<string[]> GetIncomeCategoryNames();
+    Task<bool> CheckIfIncomeCategoryIsRefund(int categoryId);
 }
 public class IncomeCategoryService : IIncomeCategoryService
 {
@@ -91,8 +92,14 @@ public class IncomeCategoryService : IIncomeCategoryService
         category.Name = request.Name;
         category.Description = request.Description;
         category.InUse = request.InUse;
-        
+
         return await _repo.Update(category);
+    }
+
+    public async Task<bool> CheckIfIncomeCategoryIsRefund(int categoryId)
+    {
+        var refundCategoryId = (await _repo.Find(x => x.Name == "Refund")).FirstOrDefault().Id;
+        return refundCategoryId == categoryId;
     }
 }
 

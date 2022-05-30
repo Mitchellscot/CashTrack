@@ -1,5 +1,6 @@
 ﻿using CashTrack.Models.Common;
 using CashTrack.Models.TagModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -37,6 +38,12 @@ public class Expense : Transaction
     public bool ExcludeFromStatistics { get; set; }
     public bool CreateNewMerchant { get; set; }
     public string RefundNotes { get; set; }
+}
+public class AddEditExpenseModal : Expense
+{
+    public bool IsEdit { get; set; }
+    public string Returnurl { get; set; }
+    public SelectList SubCategoryList { get; set; }
 }
 public class ExpenseQuickView : Transaction
 {

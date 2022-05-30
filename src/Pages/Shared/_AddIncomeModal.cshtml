@@ -1,0 +1,142 @@
+﻿@model CashTrack.Models.IncomeModels.AddEditIncomeModal
+@{
+    var addOrEdit = Model.IsEdit ? "Edit" : "Add";
+    var addOrEditClassForSwitch = Model.IsEdit ? "refund-switch-edit-js" : "refund-switch-add-js";
+}
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header text-center">
+            <h5 class="modal-title w-100">
+                @if (Model.IsRefund)
+                {
+                    <span class="validation-text">You cannot edit a Refund after it's been applied</span>
+                }
+                else
+                {
+                    <span>@addOrEdit Income</span>
+                }
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal">
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                @{
+                    var formId = Model.IsEdit ? $"editIncomeForm-{Model.Id}" : "addIncomeForm";
+                }
+                <form method="post"
+                      asp-page="../Income/index"
+                      asp-page-handler="AddEditIncomeModal"
+                      id="@formId">
+                    @if (Model.IsEdit)
+                    {
+                        <input asp-for="@Model.Id" type="hidden" />
+                    }
+                    <input asp-for="@Model.IsEdit" type="hidden" />
+                    <input asp-for="@Model.Returnurl" type="hidden" />
+                    @*                    TODO: you can put page number, Q and Query here later and that way when you are done editing you will return to the same page and continue on... that would be nice.*@
+                    <div class="row mb-3">
+                        <div class="col-4">
+                            <label class="visually-hidden" asp-for="@Model.Date">Date</label>
+                            <div class="input-group">
+                                <div class="input-group-text text-center">Date</div>
+                                <input data-val="true" asp-for=@Model.Date type="date" class="form-control" asp-format="{0:yyyy-MM-dd}">
+                                <span asp-validation-for="@Model.Date"></span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <label class="visually-hidden" asp-for="@Model.Amount">Amount</label>
+                            <div class="input-group">
+                                <div class="input-group-text">$</div>
+                                <input data-val="true"
+                                       asp-for=@Model.Amount
+                                       type="number"
+                                       min="0.00"
+                                       step="any"
+                                       class="form-control format-amount-js text-center"
+                                       placeholder="0.00">
+                                <span asp-validation-for="@Model.Amount"></span>
+                            </div>
+                        </div>
+                        <div class="col-4 align-self-center border rounded py-1 d-flex justify-content-center">
+                            <div class="form-check form-switch">
+                                <label class="form-check-label" asp-for="@Model.IsRefund">This is a Refund</label>
+                                <input class="form-check-input @addOrEditClassForSwitch" type="checkbox" data-val="true"
+                                       data-id=@Model.Id
+                                       asp-for="@Model.IsRefund" />
+                                <span asp-validation-for="@Model.IsRefund"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-8">
+                            <div class="input-group">
+                                <div class="input-group-text">Category</div>
+                                <label class="visually-hidden" asp-for="@Model.CategoryId">Category</label>
+                                @{
+                                    var categoryListId = Model.IsEdit ? $"editIncomeCategory-{Model.Id}" : "addIncomeCategory";
+                                }
+                                <select data-val="true"
+                                        asp-for=@Model.CategoryId
+                                        asp-items=@Model.CategoryList
+                                        class="form-control text-center"
+                                        id=@categoryListId>
+                                    @if (!Model.IsEdit)
+                                    {
+                                        <option value="" selected disabled hidden>Select</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-4 d-flex justify-content-center">
+                            @*TODO: wire this up*@
+                            <a class="btn btn-secondary" type="button" asp-page="/IncomeCategory/Add">Add New Category</a>
+                        </div>
+                        <span class="validation-text" asp-validation-for="@Model.CategoryId"></span>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-8">
+                            <div class="input-group">
+                                <div class="input-group-text">Source</div>
+                                <label class="visually-hidden" asp-for="@Model.Source">Income Source</label>
+                                <input class="form-control source-autosuggest-js" data-val="true"
+                                       type="text" asp-for="@Model.Source" />
+                            </div>
+                        </div>
+                        <div class="col-4 align-self-center border rounded py-1">
+                            <div class="form-check ">
+                                <label class="form-check-label" asp-for="@Model.CreateNewSource">Create New Income Source</label>
+                                <input class="form-check-input" type="checkbox" role="switch" asp-for="@Model.CreateNewSource" />
+                            </div>
+                        </div>
+                        <span class="validation-text" asp-validation-for="@Model.Source"></span>
+                    </div>
+                    <div class="row mb-3 px-1">
+                        <label class="visually-hidden" asp-for="@Model.Notes"></label>
+                        <textarea class="form-control" asp-for="@Model.Notes" rows="3" placeholder="Notes"></textarea>
+                    </div>
+                    <span class="validation-text" asp-validation-for="@Model.Notes"></span>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-evenly">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            @*TODO: See if you need to show this when switch is checked*@
+            @if (string.IsNullOrEmpty(Model.RefundNotes))
+            {
+                <a asp-page="./Refund" asp-route-id="@Model.Id"
+               type="button" class="btn btn-info display-none">Refund Expenses</a>
+            }
+            @{
+                var submitButtonId = Model.IsEdit ? $"editIncomeSubmitButton-{Model.Id}" : "addEditIncomeSubmitButton";
+            }
+            <form>
+                @{
+                    var isDisabled = @Model.IsRefund ? "disabled" : "";
+                }
+                <button @isDisabled id=@submitButtonId type="submit" class="btn btn-primary" form="@formId">@addOrEdit Income</button>
+            </form>
+        </div>
+    </div>
+</div>

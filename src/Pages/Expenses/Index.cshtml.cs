@@ -2,11 +2,12 @@ using CashTrack.Common.Exceptions;
 using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.MerchantModels;
+using CashTrack.Models.SubCategoryModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.MerchantService;
+using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
@@ -17,9 +18,10 @@ namespace CashTrack.Pages.Expenses
     {
         private readonly IExpenseService _expenseService;
         private readonly IMerchantService _merchantService;
+        private readonly ISubCategoryService _subCategoryService;
 
-        public Index(IExpenseService expenseService, IMerchantService merchantService) =>
-            (_expenseService, _merchantService) = (expenseService, merchantService);
+        public Index(IExpenseService expenseService, IMerchantService merchantService, ISubCategoryService subCategoryService) =>
+            (_expenseService, _merchantService, _subCategoryService) = (expenseService, merchantService, subCategoryService);
 
         [BindProperty(SupportsGet = true)]
         public string Q { get; set; }
@@ -29,15 +31,16 @@ namespace CashTrack.Pages.Expenses
         public int Query { get; set; }
         public ExpenseResponse ExpenseResponse { get; set; }
         public SelectList QueryOptions { get; set; }
+        public SubCategoryDropdownSelection[] CategoryList { get; set; }
         public string InputType { get; set; }
         [BindProperty(SupportsGet = true)]
         public int PageNumber { get; set; } = 1;
         [BindProperty]
-        public Expense Expense { get; set; }
+        public AddEditExpenseModal Expense { get; set; }
 
         public async Task<ActionResult> OnGet(string q, int query, string q2, int pageNumber)
         {
-            PrepareForm(query);
+            await PrepareForm(query);
 
             if (query == 0 && q != null)
             {
@@ -148,9 +151,8 @@ namespace CashTrack.Pages.Expenses
             TempData["SuccessMessage"] = "Sucessfully deleted expense!";
             return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
         }
-        public async Task<IActionResult> OnPostAddEdit()
+        public async Task<IActionResult> OnPostAddEditExpenseModal()
         {
-            var IsEdit = Expense.Id.HasValue ? false : true;
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -162,9 +164,9 @@ namespace CashTrack.Pages.Expenses
                     var merchantCreationSuccess = await _merchantService.CreateMerchantAsync(new Merchant() { Name = Expense.Merchant, SuggestOnLookup = true });
                 }
 
-                var success = IsEdit ? await _expenseService.CreateExpenseAsync(Expense) : await _expenseService.CreateExpenseAsync(Expense);
+                var success = Expense.IsEdit ? await _expenseService.UpdateExpenseAsync(Expense) : await _expenseService.CreateExpenseAsync(Expense);
 
-                TempData["SuccessMessage"] = IsEdit ? "Sucessfully added a new Expense!" : "Sucessfully updated the Expense!";
+                TempData["SuccessMessage"] = Expense.Id.HasValue ? "Sucessfully updated the Expense!" : "Sucessfully added a new Expense!";
                 return RedirectToPage("./Index", new { query = Query, q = Q, q2 = Q2, pageNumber = PageNumber });
             }
             catch (CategoryNotFoundException)
@@ -178,10 +180,11 @@ namespace CashTrack.Pages.Expenses
                 return Page();
             }
         }
-        private void PrepareForm(int query)
+        private async Task PrepareForm(int query)
         {
             PageNumber = ExpenseResponse != null ? ExpenseResponse.PageNumber : PageNumber == 0 ? 1 : PageNumber;
             QueryOptions = new SelectList(ExpenseQueryOptions.GetAll, "Key", "Value", query);
+            CategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
 
             switch (query)
             {

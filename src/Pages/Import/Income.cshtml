@@ -1,4 +1,5 @@
 ﻿@page
+@using CashTrack.Models.ImportCsvModels
 @using CashTrack.Models.IncomeSourceModels
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Import.IncomeModel
@@ -13,9 +14,10 @@
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
 
-    <form method="post" asp-page-handler="RunScript">
-        <div><button class="btn btn-primary import-button" type="submit" id="importButton">Import</button></div>
-    </form>
+
+        <div><button class="btn btn-primary import-button" type="button" id="importButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">Import</button>
+            </div>
+
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a asp-page="./Expenses" class="nav-link">Expenses</a>
@@ -38,6 +40,9 @@
     <div class="modal fade" id="addSourceModal">
         @await Html.PartialAsync("_AddIncomeSourcePartial", new AddEditIncomeSourceModal() { ReturnUrl = "~/Import/Income", SuggestOnLookup = true })
     </div>
+    <div class="modal fade" id="importCsvModal">
+        @await Html.PartialAsync("_ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Import/Income" })
+                  </div>
     @if (Model.IncomeReviewResponse != null && Model.IncomeReviewResponse.ListItems.Count() > 0)
     {
         <div class="row mb-0">
@@ -81,7 +86,7 @@
                                     @income.Amount
                                 </td>
                                 <td>
-                                    <input class="form-control text-center form-control-sm" 
+                                    <input class="form-control text-center form-control-sm source-autosuggest-js" 
                                     asp-for="@Model.SelectedIncome.Source" id="sourceName-@income.Id" value="@income.SuggestedSource" />
                                 </td>
                                 <td>
@@ -202,43 +207,5 @@
     }
 </div>
 @section Scripts {
-<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true">
-</script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
-<partial name="_ValidationScriptsPartial" />
 <script src="~/js/importIncome.js" asp-append-version="true"></script>
-<script type="text/javascript">
-
-    $(document).ready(() => {
-        
-        //creates a waiting effect while import script runs
-        $('#importButton').click(()=>{
-            $("#importButton").prepend("<span class='spinner-border spinner-border-sm'></span> ");
-            $("#importButton").append("ing...");
-            $("#importButton").css('pointer-events', 'none');
-            $("#importButton").removeClass('btn-primary');
-            $("#importButton").addClass('btn-secondary');
-        });
-
-        @if(@Model.IncomeReviewResponse != null && Model.IncomeReviewResponse.ListItems.Any())
-        {
-            var ids = Model.IncomeReviewResponse.ListItems.Select(x => x.Id).ToList();
-            foreach(var id in ids)
-            {
-                //Autocomplete for income source names
-                <text>$("#merchantName-@id").on("input", () => {
-                    let searchTerm = $("#sourceName-@id").val();
-                    $.ajax({
-                        url: `/api/incomesource?sourceName=${searchTerm}`,
-                        method: 'GET'
-                    }).then((response) => {
-                        $("#sourceName-@id").empty();
-                        $("#sourceName-@id").autocomplete({ source: response });
-                    }).catch((error) => console.log(error));
-                })
-                </text>
-            }
-        }
-    });
-</Script>
 }

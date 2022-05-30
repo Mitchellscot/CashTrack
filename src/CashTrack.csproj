@@ -15,25 +15,37 @@
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="11.0.1" />
 		<PackageReference Include="CsvHelper" Version="27.2.1" />
-		<PackageReference Include="FluentValidation" Version="10.3.6" />
-		<PackageReference Include="FluentValidation.AspNetCore" Version="10.3.6" />
+		<PackageReference Include="FluentValidation" Version="11.0.1" />
+		<PackageReference Include="FluentValidation.AspNetCore" Version="11.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.2">
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.5">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.5" />
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.6" />
-		<PackageReference Include="Microsoft.PowerShell.SDK" Version="7.2.2" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="Migrations\**" />
 		<EmbeddedResource Remove="Migrations\**" />
 		<None Remove="Migrations\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Scripts\Utility\force-refund.ts" />
+	  <None Remove="Scripts\Utility\format-amount.ts" />
+	  <None Remove="Scripts\Utility\handle-expense-dropdown.ts" />
+	  <None Remove="Scripts\Utility\load-main-category.ts" />
+	  <None Remove="Scripts\Utility\merchant-autocomplete.ts" />
+	  <None Remove="Scripts\Utility\online-merchant.ts" />
+	  <None Remove="Scripts\Utility\online-source.ts" />
+	  <None Remove="Scripts\Utility\query-params.ts" />
+	  <None Remove="Scripts\Utility\refund-calculations.ts" />
+	  <None Remove="Scripts\Utility\source-autocomplete.ts" />
+	  <None Remove="Scripts\Utility\split-calculations.ts" />
 	</ItemGroup>
 	<ItemGroup>
 		<TypeScriptCompile Include="Scripts\Expenses\expenses.ts" />
@@ -44,6 +56,17 @@
 		<TypeScriptCompile Include="Scripts\Merchants\merchants.ts" />
 		<TypeScriptCompile Include="Scripts\Sources\sources.ts" />
 		<TypeScriptCompile Include="Scripts\Sources\sourceDetail.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\force-refund.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\format-amount.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\handle-expense-dropdown.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\load-main-category.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\merchant-autocomplete.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\online-merchant.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\online-source.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\query-params.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\refund-calculations.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\source-autocomplete.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\split-calculations.ts" />
 	</ItemGroup>
 	<ItemGroup>
 		<Content Update="appsettings.json">

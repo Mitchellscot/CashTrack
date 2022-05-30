@@ -1,5 +1,6 @@
 const path = require("path");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const webpack = require('webpack');
 
 const config = {
     entry: {
@@ -22,7 +23,10 @@ const config = {
         path: path.resolve(__dirname, "wwwroot/js/"),
     },
     plugins: [
-        new CleanWebpackPlugin()
+        new CleanWebpackPlugin(),
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+        }),
     ],
     module: {
         rules: [
@@ -39,13 +43,11 @@ const config = {
 };
 
 module.exports = (env, argv) => {
-    if (argv.mode === 'development')
-    {
+    if (argv.mode === 'development') {
         config.devtool = 'inline-source-map';
     }
 
-    if (argv.mode === 'production')
-    {
+    if (argv.mode === 'production') {
         //I don't know... uglify or something?
     }
 

@@ -1,5 +1,6 @@
 ﻿@page
 @using CashTrack.Models.Common
+@using CashTrack.Models.ExpenseModels
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Expenses.Index
 @{
@@ -57,100 +58,8 @@
     </div>
     @* Add Expense Modal *@
     <div class="modal fade" id="addExpenseModal">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header text-center">
-                    <h5 class="modal-title w-100">Add an Expense</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal">
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="container-fluid">
-                        <form method="post"
-                              asp-page="./Index"
-                              asp-page-handler="AddEdit"
-                              id="addExpenseForm">
-                            <div class="row mb-3">
-                                <div class="col-4">
-                                    <label class="visually-hidden" asp-for="@Model.Expense.Date">Date</label>
-                                    <div class="input-group">
-                                        <div class="input-group-text text-center">Date</div>
-                                        <input data-val="true" asp-for=@Model.Expense.Date type="date" class="form-control" id="addExpenseDate">
-                                        <span asp-validation-for="@Model.Expense.Date"></span>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <label class="visually-hidden" asp-for="@Model.Expense.Amount">Amount</label>
-                                    <div class="input-group">
-                                        <div class="input-group-text">$</div>
-                                        <input data-val="true"
-                                               asp-for=@Model.Expense.Amount type="number" min="0.00" step="any" class="form-control" id="addExpenseAmount" placeholder="0.00">
-                                        <span asp-validation-for="@Model.Expense.Amount"></span>
-
-                                    </div>
-                                </div>
-                                <div class="col-4 align-self-center border rounded py-1">
-                                    <div class="form-check form-switch ">
-                                        <label class="form-check-label" asp-for="Expense.ExcludeFromStatistics">Exclude From Statistics</label>
-                                        <input class="form-check-input" type="checkbox" id="addExpenseExcludeBool" data-val="true"
-                                               asp-for="Expense.ExcludeFromStatistics" />
-                                        <span asp-validation-for="@Model.Expense.ExcludeFromStatistics"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-8">
-                                    <div class="input-group">
-                                        <div class="input-group-text">Category</div>
-                                        <label class="visually-hidden" asp-for="@Model.Expense.SubCategoryId">Category</label>
-                                        <select data-val="true"
-                                                asp-for=@Model.Expense.SubCategoryId
-                                                class="form-control text-center"
-                                                id="addExpenseSubCategory">
-                                            <option value="" selected disabled hidden>Select</option>
-                                        </select>
-                                        <div class="input-group-text">Main Category</div>
-                                        <input disabled type="text" class="form-control text-center bg-white" id="addExpenseMainCategory" required />
-                                    </div>
-                                </div>
-                                <div class="col-4 d-flex justify-content-center">
-                                    <a class="btn btn-secondary" asp-page="/SubCategory/Add">Add New Category</a>
-                                </div>
-                                <span class="validation-text" asp-validation-for="Expense.SubCategoryId"></span>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-8">
-                                    <div class="input-group">
-                                        <div class="input-group-text">Merchant</div>
-                                        <label class="visually-hidden" asp-for="Expense.Merchant">Merchant</label>
-                                        <input class="form-control" data-val="true" type="text" asp-for="Expense.Merchant" id="addExpenseMerchantName" />
-                                    </div>
-                                </div>
-                                <div class="col-4 align-self-center border rounded py-1">
-                                    <div class="form-check ">
-                                        <label class="form-check-label" asp-for="@Model.Expense.CreateNewMerchant">Create New Merchant</label>
-                                        <input class="form-check-input" type="checkbox" id="addExpenseCreateNewMerchant"
-                                               asp-for="@Model.Expense.CreateNewMerchant" />
-                                    </div>
-                                </div>
-                                <span class="validation-text" asp-validation-for="Expense.Merchant"></span>
-                            </div>
-                            <div class="row mb-3 px-1">
-                                <label class="visually-hidden" asp-for="@Model.Expense.Notes"></label>
-                                <textarea class="form-control" asp-for="@Model.Expense.Notes" id="addExpenseNotes" rows="3" placeholder="Notes"></textarea>
-                            </div>
-                            <span class="validation-text" asp-validation-for="@Model.Expense.Notes"></span>
-                        </form>
-                    </div>
-                </div>
-                <div class="modal-footer d-flex justify-content-evenly">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <form>
-                        <button type="submit" class="btn btn-primary" form="addExpenseForm">Add New Expense</button>
-                    </form>
-                </div>
-            </div>
-        </div>
+        @await Html.PartialAsync("_AddExpenseModal",
+        new AddEditExpenseModal() {IsEdit = false, Returnurl = "./Index", SubCategoryList = new SelectList(Model.CategoryList, "Id", "Category"), Date= DateTime.Today });
     </div>
     @*End Add Expense Modal*@
 
@@ -181,7 +90,6 @@
                             </th>
                         </tr>
                     </thead>
-
                     <tbody>
                         @foreach (var expense in Model.ExpenseResponse.ListItems)
                         {
@@ -212,18 +120,8 @@
                                         </button>
                                         @*Begin Refund Notes Modal*@
                                         <div class="modal fade" id="refundNotes-@expense.Id">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header text-center">
-                                                        <h5 class="modal-title w-100">Refund Notes</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body text-wrap">
-                                                        @expense.RefundNotes
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            @await Html.PartialAsync("_ShortMessageModal", new _ShortMessageModal() {
+                                Title="Refund Notes", Message = expense.RefundNotes});
                                         </div>
                                         @*End Refund Notes Modal*@
                                     }
@@ -242,18 +140,8 @@
                                         </button>
                                         @*Begin Detail Modal*@
                                         <div class="modal fade" id="detailModal-@expense.Id">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header text-center">
-                                                        <h5 class="modal-title w-100">Notes</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body text-wrap">
-                                                        @expense.Notes
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            @await Html.PartialAsync("_ShortMessageModal", new _ShortMessageModal()
+                                { Title="Notes", Message = expense.Notes });
                                         </div>
                                         @*End Detail Modal*@
                                     }
@@ -269,18 +157,7 @@
                                         </button>
                                         @*Begin Refund Notes Modal*@
                                         <div class="modal fade" id="refundNotes-@expense.Id">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header text-center">
-                                                        <h5 class="modal-title w-100">Refund Notes</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body text-wrap">
-                                                        @expense.RefundNotes
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            @await Html.PartialAsync("_ShortMessageModal", new _ShortMessageModal { Title="Refund Notes", Message = expense.RefundNotes})
                                         </div>
                                         @*End Refund Notes Modal*@
                                     }
@@ -291,139 +168,33 @@
                                             <i class="bi bi-file-earmark-check text-white action-icon visibility-hidden"></i>
                                         </button>
                                     }
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#editExpenseModal-@expense.Id" id="editExpenseButton-@expense.Id" class="icon-button px-2">
-                                        <i class="bi bi-pencil text-primary action-icon"></i>
+                                    <button type="button"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editExpenseModal-@expense.Id"
+                                    class="icon-button px-2 load-main-category-edit-modal-js">
+                                        @*when the icon is clicked, even though the javascript is on the button itself, the data is pulled from the icon...*@
+                                        <i class="bi bi-pencil text-primary action-icon" data-sub-category-id=@expense.SubCategoryId
+                                   data-id=@expense.Id></i>
                                     </button>
                                     @* Edit Expense Modal *@
+
                                     <div class="modal fade" id="editExpenseModal-@expense.Id">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header text-center">
-                                                    <h5 class="modal-title w-100">Edit an Expense</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal">
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="container-fluid">
-                                                        <form method="post"
-                                                      asp-page="./Index"
-                                                      asp-page-handler="AddEdit"
-                                                      id="editExpenseForm-@expense.Id">
-                                                            <input type="hidden" asp-for="@expense.Id" />
-                                                            <div class="row mb-3">
-                                                                <div class="col-4">
-                                                                    <label class="visually-hidden" asp-for="@expense.Date">
-                                                                        Date
-                                                                    </label>
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-text text-center">Date</div>
-                                                                        <input data-val="true" asp-for=@expense.Date
-                                                                       asp-format="{0:yyyy-MM-dd}"
-                                                                       type="date" class="form-control" id="editExpenseDate-@expense.Id">
-                                                                        <span asp-validation-for="@expense.Date"></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-4">
-                                                                    <label class="visually-hidden"
-                                                                   asp-for="@expense.Amount">Amount</label>
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-text">$</div>
-                                                                        <input data-val="true"
-                                                                       asp-for=@expense.Amount
-                                                                       type="number" min="0.00" step="any"
-                                                                       class="form-control" id="editExpenseAmount-@expense.Id"
-                                                                       placeholder="0.00">
-                                                                        <span asp-validation-for="@expense.Amount"></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-4 align-self-center border rounded py-1">
-                                                                    <div class="form-check form-switch ">
-                                                                        <label class="form-check-label"
-                                                                       asp-for="@expense.ExcludeFromStatistics">
-                                                                            Exclude From Statistics
-                                                                        </label>
-                                                                        <input class="form-check-input" type="checkbox"
-                                                                       id="editExpenseExcludeBool-@expense.Id"
-                                                                       data-val="true"
-                                                                       asp-for="@expense.ExcludeFromStatistics" />
-                                                                        <span asp-validation-for="@expense.ExcludeFromStatistics"></span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <div class="col-8">
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-text">Category</div>
-                                                                        <label class="visually-hidden"
-                                                                       asp-for="@expense.SubCategoryId">Category</label>
-                                                                        <select data-val="true"
-                                                                        asp-for=@expense.SubCategoryId
-                                                                        class="form-control text-center"
-                                                                        id="editExpenseSubCategory-@expense.Id">
-                                                                        </select>
-                                                                        <div class="input-group-text">Main Category</div>
-                                                                        <input disabled type="text"
-                                                                       asp-for="@expense.MainCategory"
-                                                                       class="form-control text-center bg-white"
-                                                                       id="editExpenseMainCategory-@expense.Id" required />
-
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-4 d-flex justify-content-center">
-                                                                    <a class="btn btn-secondary"
-                                                               asp-page="/SubCategory/Add">Add New Category</a>
-                                                                </div>
-                                                                <span class="validation-text" asp-validation-for="@expense.SubCategoryId"></span>
-                                                            </div>
-                                                            <div class="row mb-3">
-                                                                <div class="col-8">
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-text">Merchant</div>
-                                                                        <label class="visually-hidden"
-                                                                       asp-for="@expense.Merchant">Merchant</label>
-                                                                        <input class="form-control"
-                                                                       data-val="true" type="text"
-                                                                       asp-for="@expense.Merchant"
-                                                                       id="editExpenseMerchantName-@expense.Id" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-4 align-self-center border rounded py-1">
-                                                                    <div class="form-check ">
-                                                                        <label class="form-check-label"
-                                                                       asp-for="@Model.Expense.CreateNewMerchant">Create New Merchant</label>
-                                                                        <input class="form-check-input"
-                                                                       type="checkbox"
-                                                                       id="editExpenseCreateNewMerchant-@expense.Id"
-                                                                       asp-for="@Model.Expense.CreateNewMerchant" />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row mb-3 px-1">
-                                                                <label class="visually-hidden"
-                                                               asp-for="@expense.Notes"></label>
-                                                                <textarea class="form-control" asp-for="@expense.Notes"
-                                                                  id="editExpenseNotes-@expense.Id" rows="3" placeholder="Notes"></textarea>
-                                                            </div>
-                                                            <span class="validation-text" asp-validation-for="@expense.Notes"></span>
-                                                            <span class="validation-text" asp-validation-for="@expense.Merchant"></span>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer d-flex justify-content-evenly">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <a asp-page="./Split" asp-route-id="@expense.Id" class="btn btn-info">Split Expense</a>
-                                                    <form>
-                                                        <button type="submit" class="btn btn-primary"
-                                                        form="editExpenseForm-@expense.Id">
-                                                            Save Changes
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        @await Html.PartialAsync("_AddExpenseModal",
+                                new AddEditExpenseModal() {
+                                IsEdit = true,
+                                Returnurl = "./Index",
+                                SubCategoryId = expense.SubCategoryId,
+                                SubCategoryList = new SelectList(Model.CategoryList, "Id", "Category",
+                                expense.SubCategoryId),
+                                Date=expense.Date,
+                                Amount = expense.Amount,
+                                ExcludeFromStatistics = expense.ExcludeFromStatistics,
+                                Merchant = expense.Merchant,
+                                Notes = expense.Notes,
+                                Id = expense.Id });
                                     </div>
-                                    @*End Edit Expense Modal*@
 
+                                    @*End Edit Expense Modal*@
                                     <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-@expense.Id" class="icon-button ps-2 ps-0 me-0">
                                         <i class="bi bi-trash text-primary action-icon"></i>
@@ -442,9 +213,7 @@
                                                 </div>
 
                                                 <div class="modal-footer d-flex justify-content-evenly">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                        Cancel
-                                                    </button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                                     <form method="post"
                                                   asp-page="./Index"
                                                   asp-page-handler="Delete"
@@ -470,7 +239,9 @@
                         @if (@Model.ExpenseResponse.TotalCount > 0)
                         {
                             var currentCount = Model.ExpenseResponse.PageNumber * @Model.ExpenseResponse.PageSize;
-                            <span class="text-muted">@(Math.Min(currentCount, Model.ExpenseResponse.TotalCount)) of @Model.ExpenseResponse.TotalCount</span>
+                            <span class="text-muted">
+                                @(Math.Min(currentCount, Model.ExpenseResponse.TotalCount)) of @Model.ExpenseResponse.TotalCount
+                            </span>
                         }
                     </div>
                     <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
@@ -483,7 +254,7 @@
                     </div>
                     <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
                         @await Html.PartialAsync("_PaginationPartial",
-                    new _PaginationPartialModel {
+                    new _PaginationPartialModel() {
                     PathLink = "../Expenses/Index",
                     IsExpensePage = true,
                     PageNumber = Model.ExpenseResponse.PageNumber,
@@ -500,354 +271,5 @@
 </div>
 
 @section Scripts {
-<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true">
-</script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
-<partial name="_ValidationScriptsPartial" />
 <script src="~/js/expenses.js" asp-append-version="true"></script>
-<script type="text/javascript">
-
-    $(document).ready(() => {
-
-        //get query values for dropdown lists
-        let q = getQueryValue();
-        let queryType = getQueryType();
-        //fires on load
-        let selectListValue = $("#querySelect").val();
-        handleQuerySelectChange(selectListValue);
-
-        //GET REQUEST METHODS
-        //When the query selection option changes, change the input type box
-        $("#querySelect").change(() => {
-            let selectListValue = $("#querySelect").val();
-            handleQuerySelectChange(selectListValue);
-        });
-        //massive switch statement handling qet requests
-        function handleQuerySelectChange(selectListValue) {
-            switch (selectListValue) {
-                //date
-                case "0":
-                    resetCategorySelect();
-                    resetNumbersForm();
-                    resetSecondInputForm();
-                    $("#qInput").prop("type", "date");
-                    break;
-                //date range
-                case "1":
-                    resetCategorySelect();
-                    resetNumbersForm();
-                    $("#qInput").prop("type", "date");
-                    $("#q2Input").show();
-                    $("#qInput").removeClass("w-50");
-                    $("#qInput").addClass("w-25");
-                    $("#q2Input").addClass("w-25");
-                    break;
-                //month
-                case "2":
-                    resetCategorySelect();
-                    resetNumbersForm();
-                    resetSecondInputForm();
-                    $("#qInput").prop("type", "month");
-                    break;
-                //quarter
-                case "3":
-                    resetCategorySelect();
-                    resetNumbersForm();
-                    resetSecondInputForm();
-                    $("#qInput").prop("type", "month");
-                    break;
-                //year
-                case "4":
-                    resetCategorySelect();
-                    resetSecondInputForm();
-                    $("#qInput").prop("type", "number");
-                    $("#qInput").prop('min', "2012");
-                    let currentYear = new Date().getFullYear();
-                    $("#qInput").prop('max', currentYear);
-                    if(q !== undefined && queryType === "4"){
-                        console.log(q)
-                        $("#qInput").val(q);
-                    }
-                    else{
-                        $("#qInput").val(parseInt(new Date().getFullYear()));
-                    }
-                    break;
-                //amount
-                case "5":
-                    resetCategorySelect();
-                    resetSecondInputForm();
-                    $("#qInput").val('');
-                    $("#qInput").prop("type", "number");
-                    $("#qInput").prop('step', "any");
-                    $("#qInput").prop('min', "0.00");
-                    if(q !== undefined && queryType === "5"){
-                        $("#qInput").val(q);
-                    }
-                    break;
-                //notes
-                case "6":
-                    resetCategorySelect();
-                    resetNumbersForm();
-                    resetSecondInputForm();
-                    $("#qInput").prop("type", "text");
-                    if(q !== undefined && queryType === "6"){
-                        $("#qInput").val(q);
-                    }
-                    break;
-                //merchant
-                case "7":
-                    resetCategorySelect();
-                    resetNumbersForm();
-                    resetSecondInputForm();
-                    $("#qInput").prop("type", "text");
-                    break;
-                //sub category
-                case "8":
-                    resetNumbersForm();
-                    resetSecondInputForm();
-                    $("#qInput").hide();
-                    $("#categorySelect").show();
-                    $.ajax({
-                        url: `/api/subcategory`,
-                        method: 'GET'
-                    }).then((response) => {
-                        $("#categorySelect").empty();
-                        for (let category of response) {
-                            if(q !== undefined && queryType == "8")
-                            {
-                                if(Number(category.id) === Number(q))
-                                {
-                                    $("#categorySelect").append(`<option selected value=${category.id}>${category.category}</option>`);
-                                }
-                                else
-                                {
-                                    $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
-                                }
-                            }
-                            else{
-                                $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
-                            }
-                        }
-                    }).catch((error) => alert(error));
-                    break;
-                //main category
-                case "9":
-                    resetNumbersForm();
-                    resetSecondInputForm();
-                    $("#qInput").hide();
-                    $("#categorySelect").show();
-                    $.ajax({
-                        url: `/api/maincategory`,
-                        method: 'GET'
-                    }).then((response) => {
-                        $("#categorySelect").empty();
-                        for (let category of response) {
-                            if(q !== undefined && queryType == "9")
-                            {
-                                if(Number(category.id) === Number(q))
-                                {
-                                    $("#categorySelect").append(`<option selected value=${category.id}>${category.category}</option>`);
-                                }
-                                else
-                                {
-                                    $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
-                                }
-                            }
-                            else{
-                                $("#categorySelect").append(`<option value=${category.id}>${category.category}</option>`);
-                            }
-                        }
-                    }).catch((error) => alert(error));
-                    break;
-                //tags
-                case "10":
-                    resetCategorySelect();
-                    resetNumbersForm();
-                    resetSecondInputForm();
-                    $("#qInput").prop("type", "text");
-                    break;
-                default:
-                    resetSecondInputForm();
-                    resetNumbersForm();
-                    resetCategorySelect();
-                    $("#qInput").prop("type", "date");
-                    break;
-            }
-        }
-        //if it's a query of the amount, make it a nice loking decimal
-        $('#qInput').change(() => {
-            let selectListValue = $("#querySelect").val();
-            if (selectListValue == "5") {
-                let amount = $("#qInput").val();
-                let rounded = Math.round(amount * 100) / 100;
-                let finalNumber = rounded.toFixed(2);
-                $("#qInput").val(finalNumber);
-            }
-        });
-        //if it's a query of the merchants, show a dropdown list of matching merchant names
-        $("#qInput").on("input", () => {
-            let selectListValue = $("#querySelect").val();
-            if (selectListValue === "7") {
-                let searchTerm = $("#qInput").val();
-                $.ajax({
-                    url: `/api/merchants?merchantName=${searchTerm}`,
-                    method: 'GET'
-                }).then((response) => {
-                    $("#qInput").empty();
-                    $("#qInput").autocomplete({ source: response });
-                }).catch((error) => console.log(error));
-            }
-        });
-
-
-        //ADD EXPENSE MODAl
-        //when adding a new expense amount, make it a nice loking decimal
-        $('#addExpenseAmount').change(() => {
-                let amount = $("#addExpenseAmount").val();
-                let rounded = Math.round(amount * 100) / 100;
-                let finalNumber = rounded.toFixed(2);
-                $("#addExpenseAmount").val(finalNumber);
-        });
-        //loads sub category list when add expense modal opens
-        $("#addExpenseButton").click(() =>{
-            $("#addExpenseMainCategory").val('');
-            $.ajax({
-                url: `/api/subcategory`,
-                method: 'GET'
-            }).then((response) => {
-                $("#addExpenseSubCategory").empty();
-                $("#addExpenseSubCategory").append(`<option value="" selected disabled hidden>Select</option>`);
-                for (let category of response) {
-                    $("#addExpenseSubCategory").append(`<option value=${category.id}>${category.category}</option>`);
-                }});
-        });
-        //loads the main category after sub category is chosen on add expense modal
-        $("#addExpenseSubCategory").change(()=>{
-            let categoryId = $("#addExpenseSubCategory").val();
-            $.ajax({
-                url: `/api/maincategory/sub-category/${categoryId}`,
-                method: 'GET'
-            }).then((response) => {
-                    $("#addExpenseMainCategory").prop(`value`, `${response}`);
-                }).catch((error) => console.log(error));
-        });
-        //Autocomplete for merchant names on add expense modal
-         $("#addExpenseMerchantName").on("input", () => {
-             let merchantName = $("#addExpenseMerchantName").val();
-             $.ajax({
-                 url: `/api/merchants?merchantName=${merchantName}`,
-                 method: 'GET'
-             }).then((response) => {
-                 $("#addExpenseMerchantName").empty();
-                 $("#addExpenseMerchantName").autocomplete({ source: response });
-             });
-        });
-
-        //EDIT EXPENSE MODALS
-        //dynamically loaded code for each edit modal
-        @if(@Model.ExpenseResponse != null && @Model.ExpenseResponse.ListItems.Count() > 0)
-        {
-            var expenseIds = Model.ExpenseResponse.ListItems.ToDictionary(x => x.Id, x => x.SubCategory);
-            foreach(var id in expenseIds)
-            {
-                //changes main category when edit modal opens
-                <text>$("#editExpenseSubCategory-@id.Key").change(()=>{
-                    let categoryId = $("#editExpenseSubCategory-@id.Key").val();
-                    $.ajax({
-                        url: `/api/maincategory/sub-category/${categoryId}`,
-                        method: 'GET'
-                    }).then((response) => {
-                        $("#editExpenseMainCategory-@id.Key").prop(`value`, `${response}`);
-                    }).catch((error) => console.log(error));
-                });</text>
-                //Loads the sub category select list
-                <text>$("#editExpenseButton-@id.Key").click(() =>{
-                    let subCategory = $("#editExpenseSubCategory-@id.Key").val();
-                    $.ajax({
-                        url: `/api/subcategory`,
-                        method: 'GET'
-                    }).then((response) => {
-                        $("#editExpenseSubCategory-@id.Key").empty();
-                        for (let category of response) {
-                            if(category.category === "@id.Value")
-                            {
-                                $("#editExpenseSubCategory-@id.Key").append(`<option selected value=${category.id}>${category.category}</option>`);
-                            }
-                            else{
-                                $("#editExpenseSubCategory-@id.Key").append(`<option value=${category.id}>${category.category}</option>`);
-                            }
-                        }});
-                        });
-                </text>
-                //Autocomplete for merchant names
-                <text>$("#editExpenseMerchantName-@id.Key").on("input", () => {
-                    let editSearchTerm = $("#editExpenseMerchantName-@id.Key").val();
-                    $.ajax({
-                        url: `/api/merchants?merchantName=${editSearchTerm}`,
-                        method: 'GET'
-                    }).then((response) => {
-                        $("#editExpenseMerchantName-@id.Key").empty();
-                        $("#editExpenseMerchantName-@id.Key").autocomplete({ source: response });
-                    });
-                })
-                </text>
-                //When updating the expense amount, make it a nice looking decimal
-                <text>$('#editExpenseAmount-@id.Key').change(() => {
-                    let amount = $("#editExpenseAmount-@id.Key").val();
-                    let rounded = Math.round(amount * 100) / 100;
-                    let finalNumber = rounded.toFixed(2);
-                    $("#editExpenseAmount-@id.Key").val(finalNumber);
-                });
-                </text>
-            }
-        }
-
-        //general helper methods
-        function getQueryValue()
-        {
-            let queries = [], hash;
-            let values = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-            for(let i = 0; i < values.length; i++)
-            {
-                hash = values[i].split('=');
-                if(hash[0] === "q")
-                {
-                    return hash[1];
-                }
-            }
-            return undefined;
-        }
-        function getQueryType()
-        {
-            let queries = [], hash;
-            let values = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-            for(let i = 0; i < values.length; i++)
-            {
-                hash = values[i].split('=');
-                if(hash[0] === "query")
-                {
-                    return hash[1];
-                }
-            }
-            return undefined;
-        }
-        function resetSecondInputForm(){
-            $("#qInput").addClass("w-50");
-            $("#q2Input").val("");
-            $("#q2Input").removeClass("w-25");
-            $("#q2Input").hide();
-        }
-        function resetNumbersForm(){
-            $("#qInput").removeAttr('min');
-            $("#qInput").removeAttr('step');
-            $("#qInput").removeAttr('min');
-            $("#qInput").val('');
-        }
-        function resetCategorySelect(){
-            $("#qInput").show();
-            $("#categorySelect").empty();
-            $("#categorySelect").hide();
-        }
-    });
-</script>
-    }
+}

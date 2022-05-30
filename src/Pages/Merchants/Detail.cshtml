@@ -9,7 +9,7 @@
 }
 
 <div class="container">
-        @await Html.PartialAsync("_MessagePartial",
+    @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
@@ -184,9 +184,6 @@
 </div>
 @section Scripts {
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true"></script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
-<partial name="_ValidationScriptsPartial" />
 <script src="~/js/merchantDetail.js" asp-append-version="true"></script>
 @if(Model.Merchant.AnnualExpenseStatistics.Any()){
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
@@ -262,20 +259,4 @@
     Responsive = true
 })
 }
-<script type="text/javascript">
-
-    $(document).ready(() => {
-
-        //disables city and state inputs if merchant is online - for add merchant modal
-        $("#addEditMerchantIsOnline").click(() => {
-            if($("#addEditMerchantIsOnline").is(":checked")){
-                $("#addEditMerchantCity").prop("disabled", true);
-                $("#addEditMerchantState").prop("disabled", true);
-            }
-            else{
-                $("#addEditMerchantCity").prop("disabled", false);
-                $("#addEditMerchantState").prop("disabled", false);
-            }});
-    });
-</script>
-    }
+}

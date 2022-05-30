@@ -92,16 +92,13 @@ public class IncomeService : IIncomeService
     }
     public async Task<int> CreateIncomeAsync(Income request)
     {
-        if (request.Category == "Refund")
-            request.IsRefund = true;
-
         var sourceId = 0;
         if (request.Source != null)
             sourceId = (await _sourceRepository.Find(x => x.Name == request.Source)).FirstOrDefault().Id;
 
-        var categoryId = 0;
-        if (!string.IsNullOrEmpty(request.Category))
-            categoryId = (await _categoryRepository.Find(x => x.Name == request.Category)).FirstOrDefault().Id;
+        //this is set on the controller.
+        if (request.IsRefund)
+            request.CategoryId = (await _categoryRepository.Find(x => x.Name == "Refund")).FirstOrDefault().Id;
 
         var incomeEntity = new IncomeEntity()
         {
@@ -109,7 +106,7 @@ public class IncomeService : IIncomeService
             Date = request.Date,
             Notes = request.Notes,
             SourceId = sourceId > 0 ? sourceId : null,
-            CategoryId = categoryId,
+            CategoryId = request.CategoryId,
             IsRefund = request.IsRefund,
             RefundNotes = request.RefundNotes
         };
@@ -121,21 +118,22 @@ public class IncomeService : IIncomeService
         if (request.Id == null)
             throw new ArgumentException("Need an id to update an income");
 
-        if (string.IsNullOrEmpty(request.Category))
+        if (request.IsRefund)
+            request.CategoryId = (await _categoryRepository.Find(x => x.Name == "Refund")).FirstOrDefault().Id;
+
+        if (request.CategoryId == 0)
             throw new CategoryNotFoundException("null");
 
         var currentIncome = await _incomeRespository.FindById(request.Id.Value);
         if (currentIncome == null)
             throw new IncomeNotFoundException(request.Id.Value.ToString());
 
-        var categoryId = (await _categoryRepository.Find(x => x.Name == request.Category)).FirstOrDefault().Id;
-
         currentIncome.Amount = request.Amount;
         currentIncome.Date = request.Date;
         currentIncome.Notes = request.Notes;
         currentIncome.IsRefund = request.IsRefund;
         currentIncome.RefundNotes = request.RefundNotes;
-        currentIncome.CategoryId = categoryId;
+        currentIncome.CategoryId = request.CategoryId;
 
         if (request.Source != null)
             currentIncome.SourceId = (await _sourceRepository.Find(x => x.Name == request.Source)).FirstOrDefault().Id;

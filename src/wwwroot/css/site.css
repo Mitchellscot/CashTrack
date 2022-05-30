@@ -11,7 +11,7 @@ td {
     list-style: none;
 }
 ul.ui-autocomplete {
-    z-index: 2;
+    z-index: 1201;
 }
 .fakeLink {
     border: 0px;

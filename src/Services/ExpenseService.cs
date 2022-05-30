@@ -109,8 +109,8 @@ public class ExpenseService : IExpenseService
         if (request.Merchant != null)
             merchantId = (await _merchantRepo.Find(x => x.Name == request.Merchant)).FirstOrDefault().Id;
 
-        if (!string.IsNullOrEmpty(request.SubCategory))
-            request.SubCategoryId = (await _subCategoryRepo.Find(x => x.Name == request.SubCategory)).FirstOrDefault().Id;
+        if (request.SubCategoryId == 0)
+            request.SubCategoryId = (await _subCategoryRepo.FindById(request.SubCategoryId)).Id;
 
         var expenseEntity = new ExpenseEntity()
         {
@@ -147,14 +147,14 @@ public class ExpenseService : IExpenseService
         if (request.Id == null)
             throw new ArgumentException("Need an id to update an expense");
 
-        if (string.IsNullOrEmpty(request.SubCategory))
+        if (request.SubCategoryId == 0)
             throw new CategoryNotFoundException("null");
 
         var currentExpense = await _expenseRepo.FindById(request.Id.Value);
         if (currentExpense == null)
             throw new ExpenseNotFoundException(request.Id.Value.ToString());
 
-        var categoryId = (await _subCategoryRepo.Find(x => x.Name == request.SubCategory)).FirstOrDefault().Id;
+        var categoryId = (await _subCategoryRepo.FindById(request.SubCategoryId)).Id;
 
         currentExpense.Amount = request.Amount;
         currentExpense.Date = request.Date;
