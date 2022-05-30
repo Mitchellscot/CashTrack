@@ -259,20 +259,4 @@
     Responsive = true
 })
 }
-<script type="text/javascript">
-
-    $(document).ready(() => {
-
-        //disables city and state inputs if merchant is online - for add merchant modal
-        $("#addEditMerchantIsOnline").click(() => {
-            if($("#addEditMerchantIsOnline").is(":checked")){
-                $("#addEditMerchantCity").prop("disabled", true);
-                $("#addEditMerchantState").prop("disabled", true);
-            }
-            else{
-                $("#addEditMerchantCity").prop("disabled", false);
-                $("#addEditMerchantState").prop("disabled", false);
-            }});
-    });
-</script>
-    }
+}

@@ -31,7 +31,7 @@
                     <div class="input-group-prepend d-none d-sm-block">
                         <div class="input-group-text">Search</div>
                     </div>
-                    <input id="QueryInput" data-val="true" asp-for="@Model.SearchTerm" type="text" class="form-control">
+                    <input id="QueryInput" data-val="true" asp-for="@Model.SearchTerm" type="text" class="form-control source-autosuggest-js">
                     <button class="btn btn-secondary rounded-end" type="submit" asp-route-pageNumber="1">
                         <i class="bi bi-search text-white mx-3 icon-size-md"></i>
                     </button>
@@ -134,25 +134,5 @@
     }
 </div>
 @section Scripts {
-<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true"></script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
-<partial name="_ValidationScriptsPartial" />
 <script src="~/js/sources.js" asp-append-version="true"></script>
-<script type="text/javascript">
-
-    $(document).ready(() => {
-
-        //show a dropdown list of matching income source names
-        $("#QueryInput").on("input", () => {
-            let searchTerm = $("#QueryInput").val();
-            $.ajax({
-                url: `/api/incomesource?sourceName=${searchTerm}`,
-                method: 'GET'
-            }).then((response) => {
-                $("#QueryInput").empty();
-                $("#QueryInput").autocomplete({ source: response });
-            }).catch((error) => console.log(error));
-        });
-    });
-</script>
 }

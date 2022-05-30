@@ -180,10 +180,7 @@
 </div>
 @section Scripts {
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.js" asp-append-version="true"></script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" asp-append-version="true"></script>
 <script src="~/js/sourceDetail.js" asp-append-version="true"></script>
-<partial name="_ValidationScriptsPartial" />
 
 @if(Model.Source.AnnualIncomeStatistcis.Any()){
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
