@@ -1,6 +1,7 @@
 ﻿import disableLocationIfSourceIsOnline from '../Utility/online-source';
 import { autoSuggestIncomeSourceNames } from '../Utility/source-autocomplete';
-console.log('income sources page');
+import 'jquery-validation';
+import 'jquery-validation-unobtrusive';
 
 autoSuggestIncomeSourceNames();
 disableLocationIfSourceIsOnline();

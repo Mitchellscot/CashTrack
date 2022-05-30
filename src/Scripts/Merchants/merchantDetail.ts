@@ -1,4 +1,6 @@
-﻿import disableLocationIfMerchantIsOnline from "../Utility/online-merchant";
-console.log('merchant details page');
+﻿import 'jquery';
+import 'jquery-validation';
+import 'jquery-validation-unobtrusive';
+import disableLocationIfMerchantIsOnline from "../Utility/online-merchant";
 
 disableLocationIfMerchantIsOnline();

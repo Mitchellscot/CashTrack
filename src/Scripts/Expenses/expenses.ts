@@ -6,14 +6,9 @@ import 'jquery-validation-unobtrusive';
 import { loadMainCategoryOnSubCategorySelect, loadMainCategoryOnEditModalLoad } from "../Utility/load-main-category";
 import { formatAmountOnChange } from '../Utility/format-amount';
 
-console.log('expenses page');
-
 autoSuggestMerchantNames();
 formatInputsOnPageLoad();
 formatInputsOnSelectListChange();
 loadMainCategoryOnSubCategorySelect();
 loadMainCategoryOnEditModalLoad()
 formatAmountOnChange();
-
-
-

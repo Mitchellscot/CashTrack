@@ -43,6 +43,7 @@
 	  <None Remove="Scripts\Utility\online-merchant.ts" />
 	  <None Remove="Scripts\Utility\online-source.ts" />
 	  <None Remove="Scripts\Utility\query-params.ts" />
+	  <None Remove="Scripts\Utility\refund-calculations.ts" />
 	  <None Remove="Scripts\Utility\source-autocomplete.ts" />
 	  <None Remove="Scripts\Utility\split-calculations.ts" />
 	</ItemGroup>
@@ -63,6 +64,7 @@
 		<TypeScriptCompile Include="Scripts\Utility\online-merchant.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\online-source.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\query-params.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\refund-calculations.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\source-autocomplete.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\split-calculations.ts" />
 	</ItemGroup>

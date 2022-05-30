@@ -1,1 +1,1 @@
-﻿console.log('home page');
+﻿console.log('welcome');
