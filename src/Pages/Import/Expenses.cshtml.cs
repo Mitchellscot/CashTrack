@@ -5,6 +5,7 @@ using CashTrack.Models.SubCategoryModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.ExpenseReviewService;
 using CashTrack.Services.ExpenseService;
+using CashTrack.Services.ImportService;
 using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Hosting;
@@ -17,21 +18,19 @@ namespace CashTrack.Pages.Import
 {
     public class ExpensesModel : PageModelBase
     {
-
-        private readonly IWebHostEnvironment _env;
         private readonly IMerchantService _merchantService;
         private readonly IExpenseService _expenseService;
         private readonly ISubCategoryService _subCategoryService;
         private readonly IExpenseReviewService _expenseReviewService;
+        private readonly IImportService _importService;
 
-
-        public ExpensesModel(IExpenseReviewService expenseReviewService, ISubCategoryService subCategoryService, IExpenseService expenseService, IMerchantService merchantService, IWebHostEnvironment env)
+        public ExpensesModel(IExpenseReviewService expenseReviewService, ISubCategoryService subCategoryService, IExpenseService expenseService, IMerchantService merchantService, IImportService importService)
         {
-            _env = env;
             _merchantService = merchantService;
             _expenseService = expenseService;
             _subCategoryService = subCategoryService;
             _expenseReviewService = expenseReviewService;
+            _importService = importService;
         }
         public ExpenseReviewResponse ExpenseReviewResponse { get; set; }
         [BindProperty(SupportsGet = true)]
@@ -66,7 +65,7 @@ namespace CashTrack.Pages.Import
                 await PrepareData();
                 return Page();
             }
-            var result = await _expenseReviewService.ImportTransactions(Import);
+            var result = await _importService.ImportTransactions(Import);
             if (result.ToString().Contains("Added"))
                 SuccessMessage += result;
             else

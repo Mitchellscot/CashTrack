@@ -43,7 +43,6 @@ namespace CashTrack.Pages.Sources
         }
         public async Task<IActionResult> OnPostDelete()
         {
-            //TODO: When deleting, set all incomes sourceId to null
             try
             {
                 var deleteSuccess = await _sourceService.DeleteIncomeSourceAsync(id);

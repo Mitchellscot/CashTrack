@@ -115,7 +115,6 @@ namespace CashTrack.Services.MainCategoriesService
                 throw new CategoryNotFoundException(request.Id.Value.ToString());
 
             category.Name = request.Name;
-            //TODO: Figure out how you will edit sub category relationships, from Main category or from Sub Category?
             return await _mainCategoryRepo.Update(category);
         }
     }
