@@ -151,6 +151,19 @@ namespace CashTrack.Services.ImportService
                 {
                     csv.Context.RegisterClassMap<CreditTransactionMap>();
                     creditImports = csv.GetRecords<CreditImport>().ToList();
+                    foreach (var item in creditImports)
+                    {
+                        if (item.Credit > 0) 
+                        {
+                            item.Amount = item.Credit.Value;
+                            item.IsIncome = true;
+                        }
+                        if (item.Debit > 0)
+                        {
+                            item.Amount = item.Debit.Value;
+                            item.IsIncome = false;
+                        }
+                    }
                 }
                 else if (fileType == CsvFileType.Other)
                 {
@@ -227,4 +240,3 @@ namespace CashTrack.Services.ImportService
         }
     }
 }
-

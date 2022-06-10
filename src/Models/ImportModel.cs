@@ -46,8 +46,6 @@ namespace CashTrack.Models.ImportCsvModels
             set
             {
                 _debit = value.HasValue ? Decimal.Round(Math.Abs(value.Value), 2) : null;
-                this.IsIncome = this._debit.HasValue ? this._debit.Value > 0 ? false : true : true;
-                this.Amount = _debit.HasValue ? _debit.Value : 0;
             }
         }
         public decimal? Credit
@@ -57,8 +55,6 @@ namespace CashTrack.Models.ImportCsvModels
             {
 
                 _credit = value.HasValue ? Decimal.Round(Math.Abs(value.Value), 2) : null;
-                this.IsIncome = this._credit.HasValue ? this._credit.Value > 0 ? true : false : false;
-                this.Amount = _credit.HasValue ? _credit.Value : 0;
             }
         }
     }
