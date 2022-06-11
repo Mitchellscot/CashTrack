@@ -34,6 +34,8 @@ using Microsoft.AspNetCore.Identity;
 using CashTrack.Services.UserService;
 using CashTrack.Repositories.ImportRuleRepository;
 using CashTrack.Services.ImportService;
+using CashTrack.Services.ExportService;
+using CashTrack.Repositories.ExportRepository;
 
 namespace CashTrack
 {
@@ -127,6 +129,8 @@ namespace CashTrack
             services.AddScoped<IIncomeReviewRepository, IncomeReviewRepository>();
             services.AddScoped<IExpenseReviewRepository, ExpenseReviewRepository>();
             services.AddScoped<IImportService, ImportService>();
+            services.AddScoped<IExportService, ExportService>();
+            services.AddScoped<IExportRepository, ExportRepository>();
         }
 
         public void Configure(IApplicationBuilder app)
