@@ -31,6 +31,11 @@ namespace CashTrack.Pages
         public async Task<ActionResult> OnPost()
         {
             var filePath = await _exportService.ExportTransactions(new ExportTransactionsRequest() { IsIncome = false });
+            if (string.IsNullOrEmpty(filePath))
+            {
+                ModelState.AddModelError("", "");
+                return Page();
+            }
             byte[] fileBytes = GetFile(filePath);
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "export.csv");
         }

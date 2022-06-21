@@ -1,12 +1,12 @@
 ﻿using CashTrack.Models.ExportModels;
 using CashTrack.Repositories.ExportRepository;
 using CsvHelper;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static System.Environment;
 
 namespace CashTrack.Services.ExportService;
 
@@ -17,13 +17,13 @@ public interface IExportService
 public class ExportService : IExportService
 {
     private readonly IExportRepository _exportRepo;
-    private readonly IConfiguration _config;
 
-    public ExportService(IExportRepository exportRepo, IConfiguration config) => (_exportRepo, _config) = (exportRepo, config);
+    public ExportService(IExportRepository exportRepo) => _exportRepo = exportRepo;
 
     public async Task<string> ExportTransactions(ExportTransactionsRequest request)
     {
-        var filePath = _config["CsvFileDirectory"] + "export.csv";
+        var filePath = Path.ChangeExtension(Path.GetTempFileName(), ".csv");
+
         if (request.IsIncome)
         {
             var incomes = await _exportRepo.GetIncomeTransactionsToExportAsync();
@@ -44,7 +44,6 @@ public class ExportService : IExportService
             {
                 csv.WriteRecords(incomeExports);
             }
-
         }
         else
         {
