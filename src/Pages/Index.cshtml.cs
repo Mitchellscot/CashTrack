@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Core;
 using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CashTrack.Pages
 {
@@ -28,16 +30,32 @@ namespace CashTrack.Pages
         {
             return Page();
         }
-        public async Task<ActionResult> OnPost()
+        public async Task<ActionResult> OnPostExportTransactions()
         {
             var filePath = await _exportService.ExportTransactions(new ExportTransactionsRequest() { IsIncome = false });
             if (string.IsNullOrEmpty(filePath))
             {
-                ModelState.AddModelError("", "");
+                ModelState.AddModelError("", "You don't have any transactions to export.");
                 return Page();
             }
             byte[] fileBytes = GetFile(filePath);
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "export.csv");
+        }
+        public async Task<ActionResult> OnPostExportData()
+        {
+            List<string> filePaths = await _exportService.ExportData();
+            if (!filePaths.Any())
+            {
+                ModelState.AddModelError("", "You don't have any data to export.");
+                return Page();
+            }
+            foreach (var path in filePaths)
+            {
+                //Find a way to download multiple files... this might not work
+                byte[] fileBytes = GetFile(path);
+                //find a way to make the file name match the entity type or whatever.
+                return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "export.csv");
+            }
         }
         private byte[] GetFile(string filePath)
         {
