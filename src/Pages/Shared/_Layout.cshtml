@@ -129,12 +129,14 @@
             <div class="nav bungee row sidebar-heading align-items-center">
                 <div class="col-lg-9 col-md-6 nav-link bungee pb-0">
                     <button class="text-primary fakeLink spin-it">
-                        Settings
+                        <a asp-page="/Settings/Index" class="text-primary spin-it">Settings</a>
                     </button>
                 </div>
                 <div class="col-2">
-                    <button class="text-primary fakeLink">
+                    <button class="text-primary fakeLink" asp-page="/Settings/Index">
+                        <a asp-page="/Settings">
                         <i class="bi bi-gear text-primary d-none d-xl-block icon-size-xl"></i>
+                        </a>
                     </button>
                 </div>
             </div>

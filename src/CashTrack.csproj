@@ -35,6 +35,7 @@
 		<None Remove="Migrations\**" />
 	</ItemGroup>
 	<ItemGroup>
+	  <None Remove="Scripts\Settings\settings.ts" />
 	  <None Remove="Scripts\Utility\force-refund.ts" />
 	  <None Remove="Scripts\Utility\format-amount.ts" />
 	  <None Remove="Scripts\Utility\handle-expense-dropdown.ts" />
@@ -54,6 +55,7 @@
 		<TypeScriptCompile Include="Scripts\Income\refund.ts" />
 		<TypeScriptCompile Include="Scripts\Merchants\merchantDetail.ts" />
 		<TypeScriptCompile Include="Scripts\Merchants\merchants.ts" />
+		<TypeScriptCompile Include="Scripts\Settings\settings.ts" />
 		<TypeScriptCompile Include="Scripts\Sources\sources.ts" />
 		<TypeScriptCompile Include="Scripts\Sources\sourceDetail.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\force-refund.ts" />

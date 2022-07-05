@@ -90,7 +90,7 @@ public class IncomeCategoryService : IIncomeCategoryService
             throw new CategoryNotFoundException(request.Id.Value.ToString());
 
         category.Name = request.Name;
-        category.Description = request.Description;
+        category.Notes = request.Notes;
         category.InUse = request.InUse;
 
         return await _repo.Update(category);
@@ -117,7 +117,7 @@ public class IncomeCategoryProfile : Profile
         CreateMap<AddEditIncomeCategory, IncomeCategoryEntity>()
             .ForMember(dest => dest.Id, o => o.MapFrom(src => src.Id))
             .ForMember(dest => dest.Name, o => o.MapFrom(src => src.Name))
-            .ForMember(dest => dest.Description, o => o.MapFrom(src => src.Description))
+            .ForMember(dest => dest.Notes, o => o.MapFrom(src => src.Notes))
             .ForMember(dest => dest.InUse, o => o.MapFrom(src => src.InUse))
             .ReverseMap();
     }

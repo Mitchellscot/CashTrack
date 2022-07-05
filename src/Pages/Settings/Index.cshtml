@@ -1,0 +1,24 @@
+﻿@page
+@model CashTrack.Pages.Settings.Index
+@{
+    ViewData["Title"] = "Settings";
+    Layout = "_Layout";
+}
+
+        <div class="col-xl-6 col-12 mb-1">
+            <form method="post">
+                <div class="input-group">
+                    <div class="input-group-prepend d-none d-sm-block">
+                        <div class="input-group-text">Export Data</div>
+                    </div>
+                    <select data-width="100%" asp-items="Model.ExportOptions" class="form-select text-center" id="exportOptions" asp-for="ExportOption">
+                    </select>
+                    <button class="btn btn-secondary rounded-end" type="submit" asp-page-handler="Export">
+                        <i class="bi bi-download icon-size-md text-white mx-3" role="img"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    @section Scripts {
+        <script src="~/js/settings.js"></script>
+    }

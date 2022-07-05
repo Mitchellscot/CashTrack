@@ -8,13 +8,6 @@
     <div class="text-center">
         <h1 class="display-4">Welcome @User.Identity.Name</h1>
     </div>
-    <div>
-        <form method="post">
-            <button class="btn btn-primary" type="submit">Download Expenses</button>
-            <button class="btn btn-secondary" asp-page-handler="ExportTransactions" type="submit">Download Income</button>
-        </form>
-
-    </div>
 </div>
 
 @section Scripts {

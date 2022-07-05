@@ -4,6 +4,7 @@ const webpack = require('webpack');
 
 const config = {
     entry: {
+        settings: './Scripts/Settings/settings.ts',
         login: './Scripts/Account/login.ts',
         site: './Scripts/Site/site.ts',
         home: './Scripts/home/home.ts',

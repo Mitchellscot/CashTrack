@@ -79,7 +79,7 @@ namespace CashTrack.Data.CsvFiles
                 {
                     Id = Convert.ToInt32(columns[0]),
                     Name = columns[1],
-                    Description = columns[2] == "" ? null : columns[2],
+                    Notes = columns[2] == "" ? null : columns[2],
                     InUse = ParseBoolean(columns[3])
                 };
             }
