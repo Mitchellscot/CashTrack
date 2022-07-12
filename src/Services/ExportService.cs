@@ -1,23 +1,22 @@
 ﻿using CashTrack.Models.Common;
 using CashTrack.Models.ExportModels;
 using CashTrack.Repositories.ExportRepository;
-using CashTrack.Repositories.MainCategoriesRepository;
 using CsvHelper;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
-using static System.Environment;
 
 namespace CashTrack.Services.ExportService;
 
 public interface IExportService
 {
-    //As Readable?
-    //Task<string> ExportTransactions(ExportTransactionsRequest request);
-    Task<string> ExportData(int exportFileOption);
+    //As Readable
+    //Task<string> ExportReadableData(ExportTransactionsRequest request);
+    Task<string> ExportRawData(int exportFileOption);
 }
 public class ExportService : IExportService
 {
@@ -27,9 +26,9 @@ public class ExportService : IExportService
     {
         _exportRepo = exportRepo;
     }
-    public async Task<string> ExportData(int exportFileOption)
+    public async Task<string> ExportRawData(int exportFileOption)
     {
-        var fileName = ExportFileOptions.GetAll[exportFileOption];
+        var fileName = ExportFileOptions.GetAll[exportFileOption].Replace(" ", "");
         var filePath = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), fileName), ".csv");
 
         switch (exportFileOption)
@@ -59,7 +58,6 @@ public class ExportService : IExportService
                 await CreateSubCategoriesFile(filePath);
                 return filePath;
             default:
-                //all data
                 await CreateAllDataZip();
                 return filePath;
         }
@@ -145,41 +143,31 @@ public class ExportService : IExportService
             csv.WriteRecords(exports);
         }
     }
-    private async Task CreateAllDataZip()
+    private async Task<string> CreateAllDataZip()
     {
-        var filePath = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), DateTime.Now.ToString("yyyy_MM_dd-HH_mm_ss")), ".csv");
-        var expenses = await _exportRepo.GetExpenses();
+        var zipFilePath = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), DateTime.Now.ToString("yyyy_MM_dd-HH_mm_ss")), ".zip");
+        var fileTypes = ExportFileOptions.GetAll.Keys.ToArray();
+        var filePaths = new List<string>();
+        foreach (var fileType in fileTypes)
+        {
+            var filePath = await ExportRawData(fileType);
+            filePaths.Add(filePath);
+        }
+        using (var memoryStream = new MemoryStream())
+        {
+            using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, false))
+            {
+                filePaths.ForEach(file =>
+                {
+                    var theFile = archive.CreateEntry(file);
+                    using (var streamWriter = new StreamWriter(theFile.Open()))
+                    {
+                        streamWriter.Write(File.ReadAllText(file));
+                    }
 
-        if (expenses.Length == 0)
-            return;
-
-        WriteFile<ExpenseExport>(filePath, expenses);
+                });
+            }
+        }
+        return zipFilePath;
     }
 }
-
-//downloading multiple files with zip archive
-//public (string fileType, byte[] archiveData, string archiveName) DownloadFiles(string subDirectory)
-//{
-//    var zipName = $"archive-{DateTime.Now.ToString("yyyy_MM_dd-HH_mm_ss")}.zip";
-
-//    var files = Directory.GetFiles(Path.Combine(_hostingEnvironment.ContentRootPath, subDirectory)).ToList();
-
-//    using (var memoryStream = new MemoryStream())
-//    {
-//        using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-//        {
-//            files.ForEach(file =>
-//            {
-//                var theFile = archive.CreateEntry(file);
-//                using (var streamWriter = new StreamWriter(theFile.Open()))
-//                {
-//                    streamWriter.Write(File.ReadAllText(file));
-//                }
-
-//            });
-//        }
-
-//        return ("application/zip", memoryStream.ToArray(), zipName);
-//    }
-
-//}

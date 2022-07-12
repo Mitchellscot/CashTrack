@@ -30,16 +30,15 @@ namespace CashTrack.Pages.Settings
             ExportOptions = new SelectList(ExportFileOptions.GetAll, "Key", "Value");
             return Page();
         }
-        public async Task<ActionResult> OnPostExport()
+        public async Task<ActionResult> OnPostExport(int ExportOption)
         {
-
-            var filePath = await _exportService.ExportTransactions(new ExportTransactionsRequest() { IsIncome = false });
-            if (string.IsNullOrEmpty(filePath))
-            {
-                ModelState.AddModelError("", "You don't have any data export.");
-                return Page();
-            }
+            var filePath = await _exportService.ExportRawData(ExportOption);
             byte[] fileBytes = GetFile(filePath);
+            if (filePath.EndsWith(".zip")) 
+            {
+                return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Zip, "export.zip");
+            }
+            
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "export.csv");
         }
 
