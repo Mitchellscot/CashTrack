@@ -33,8 +33,9 @@ namespace CashTrack.Pages.Settings
         public async Task<ActionResult> OnPostExport(int ExportOption)
         {
             var filePath = await _exportService.ExportRawData(ExportOption);
-            byte[] fileBytes = GetFile(filePath);
-            if (filePath.Contains("archive")) 
+            byte[] fileBytes = GetFileBytes(filePath);
+            
+            if (filePath.Contains("archive"))
             {
                 return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Zip, Path.GetFileName(filePath) + ".zip");
             }
@@ -42,7 +43,7 @@ namespace CashTrack.Pages.Settings
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, Path.GetFileName(filePath));
         }
 
-        private byte[] GetFile(string filePath)
+        private byte[] GetFileBytes(string filePath)
         {
             FileStream fileStream = System.IO.File.OpenRead(filePath);
             byte[] data = new byte[fileStream.Length];
@@ -50,26 +51,8 @@ namespace CashTrack.Pages.Settings
             if (buffer != fileStream.Length)
                 throw new IOException(filePath);
             fileStream.Close();
+            System.IO.File.Delete(filePath);
             return data;
         }
     }
 }
-
-//code from earlier...
-
-//    public async Task<ActionResult> OnPostExportData()
-//    {
-//        List<string> filePaths = await _exportService.ExportData();
-//        if (!filePaths.Any())
-//        {
-//            ModelState.AddModelError("", "You don't have any data to export.");
-//            return Page();
-//        }
-//        foreach (var path in filePaths)
-//        {
-//            //Find a way to download multiple files... this might not work
-//            byte[] fileBytes = GetFile(path);
-//            //find a way to make the file name match the entity type or whatever.
-//            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "export.csv");
-//        }
-//    }

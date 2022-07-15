@@ -73,7 +73,7 @@ public class ExportService : IExportService
         if (expenses.Length == 0)
             return;
 
-        await WriteFile<ExpenseExport>(filePath, expenses);
+        await WriteFileAsync<ExpenseExport>(filePath, expenses);
     }
     private async Task CreateImportRulesFile(string filePath)
     {
@@ -82,7 +82,7 @@ public class ExportService : IExportService
         if (importRules.Length == 0)
             return;
 
-        await WriteFile<ImportRuleExport>(filePath, importRules);
+        await WriteFileAsync<ImportRuleExport>(filePath, importRules);
     }
     private async Task CreateIncomeFile(string filePath)
     {
@@ -91,7 +91,7 @@ public class ExportService : IExportService
         if (incomes.Length == 0)
             return;
 
-        await WriteFile<IncomeExport>(filePath, incomes);
+        await WriteFileAsync<IncomeExport>(filePath, incomes);
     }
     private async Task CreateIncomeCategoriesFile(string filePath)
     {
@@ -100,7 +100,7 @@ public class ExportService : IExportService
         if (incomeCategories.Length == 0)
             return;
 
-        await WriteFile<IncomeCategoryExport>(filePath, incomeCategories);
+        await WriteFileAsync<IncomeCategoryExport>(filePath, incomeCategories);
     }
     private async Task CreateIncomeSourcesFile(string filePath)
     {
@@ -109,7 +109,7 @@ public class ExportService : IExportService
         if (incomeSources.Length == 0)
             return;
 
-        await WriteFile<IncomeSourceExport>(filePath, incomeSources);
+        await WriteFileAsync<IncomeSourceExport>(filePath, incomeSources);
     }
     private async Task CreateMerchantsFile(string filePath)
     {
@@ -118,7 +118,7 @@ public class ExportService : IExportService
         if (merchants.Length == 0)
             return;
 
-        await WriteFile<MerchantExport>(filePath, merchants);
+        await WriteFileAsync<MerchantExport>(filePath, merchants);
     }
     private async Task CreateSubCategoriesFile(string filePath)
     {
@@ -127,7 +127,7 @@ public class ExportService : IExportService
         if (subCategories.Length == 0)
             return;
 
-        await WriteFile<SubCategoryExport>(filePath, subCategories);
+        await WriteFileAsync<SubCategoryExport>(filePath, subCategories);
     }
     private async Task CreateMainCategoriesFile(string filePath)
     {
@@ -136,40 +136,45 @@ public class ExportService : IExportService
         if (mainCategories.Length == 0)
             return;
 
-        await WriteFile<MainCategoryExport>(filePath, mainCategories);
+        await WriteFileAsync<MainCategoryExport>(filePath, mainCategories);
     }
-    private async Task WriteFile<T>(string filePath, IEnumerable<T> exports) where T : notnull
+    private async Task WriteFileAsync<T>(string filePath, IEnumerable<T> exports) where T : notnull
     {
         using (var writer = new StreamWriter(filePath))
         using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
         {
             await csv.WriteRecordsAsync(exports);
         }
-        
+
     }
     private async Task<string> CreateAllDataZip()
     {
-        var folderName = "export_" + DateTime.Now.ToString("MM-dd-yyyy_HH_mm_ss");
-        var folderPath = Path.Combine(Path.GetTempPath(), folderName);
-        Directory.CreateDirectory(folderPath);
-        var fileTypes = ExportFileOptions.GetAll.Keys.ToArray();
+        var exportFolderPath = Path.Combine(Path.GetTempPath(), "export_" + DateTime.Now.ToString("MM-dd-yyyy_HH_mm_ss"));
+        var directoryInfo = Directory.CreateDirectory(exportFolderPath);
         var filePaths = new List<string>();
-        foreach (var fileType in fileTypes)
+        foreach (var fileType in ExportFileOptions.GetAll.Keys.ToArray())
         {
             if (fileType == 0)
                 continue;
 
-            var filePath = await ExportRawData(fileType, folderPath);
+            var filePath = await ExportRawData(fileType, exportFolderPath);
             filePaths.Add(filePath);
         }
-
         var zipFolderPath = Path.Combine(Path.GetTempPath(), "archive_" + DateTime.Now.ToString("MM-dd-yyyy_HH_mm_ss"));
-        if (Directory.Exists(zipFolderPath))
-        {
-            throw new Exception(zipFolderPath + " Already Exists");
-        }
-        ZipFile.CreateFromDirectory(folderPath, zipFolderPath);
-
+        ZipFile.CreateFromDirectory(exportFolderPath, zipFolderPath);
+        CleanupFiles(exportFolderPath, directoryInfo);
         return zipFolderPath;
+    }
+
+    private void CleanupFiles(string folderPath, DirectoryInfo di = null)
+    {
+        foreach (var file in Directory.GetFiles(folderPath, "*.csv", SearchOption.TopDirectoryOnly))
+        {
+            File.Delete(file);
+        }
+        if (di != null)
+        {
+            di.Delete();
+        }
     }
 }
