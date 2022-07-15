@@ -34,21 +34,22 @@ namespace CashTrack.Pages.Settings
         {
             var filePath = await _exportService.ExportRawData(ExportOption);
             byte[] fileBytes = GetFile(filePath);
-            if (filePath.EndsWith(".zip")) 
+            if (filePath.Contains("archive")) 
             {
-                return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Zip, "export.zip");
+                return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Zip, Path.GetFileName(filePath) + ".zip");
             }
             
-            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, "export.csv");
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, Path.GetFileName(filePath));
         }
 
         private byte[] GetFile(string filePath)
         {
-            FileStream fs = System.IO.File.OpenRead(filePath);
-            byte[] data = new byte[fs.Length];
-            int br = fs.Read(data, 0, data.Length);
-            if (br != fs.Length)
+            FileStream fileStream = System.IO.File.OpenRead(filePath);
+            byte[] data = new byte[fileStream.Length];
+            int buffer = fileStream.Read(data, 0, data.Length);
+            if (buffer != fileStream.Length)
                 throw new IOException(filePath);
+            fileStream.Close();
             return data;
         }
     }

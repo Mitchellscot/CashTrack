@@ -16,7 +16,7 @@ public interface IExportService
 {
     //As Readable
     //Task<string> ExportReadableData(ExportTransactionsRequest request);
-    Task<string> ExportRawData(int exportFileOption);
+    Task<string> ExportRawData(int exportFileOption, string zipFolder = null);
 }
 public class ExportService : IExportService
 {
@@ -26,11 +26,14 @@ public class ExportService : IExportService
     {
         _exportRepo = exportRepo;
     }
-    public async Task<string> ExportRawData(int exportFileOption)
+    public async Task<string> ExportRawData(int exportFileOption, string zipFolder = null)
     {
         var fileName = ExportFileOptions.GetAll[exportFileOption].Replace(" ", "");
         var filePath = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), fileName), ".csv");
-
+        if (!string.IsNullOrEmpty(zipFolder))
+        {
+            filePath = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), zipFolder, fileName), ".csv");
+        }
         switch (exportFileOption)
         {
             case 1:
@@ -58,8 +61,8 @@ public class ExportService : IExportService
                 await CreateSubCategoriesFile(filePath);
                 return filePath;
             default:
-                await CreateAllDataZip();
-                return filePath;
+                var zipFileName = await CreateAllDataZip();
+                return zipFileName;
         }
     }
 
@@ -70,7 +73,7 @@ public class ExportService : IExportService
         if (expenses.Length == 0)
             return;
 
-        WriteFile<ExpenseExport>(filePath, expenses);
+        await WriteFile<ExpenseExport>(filePath, expenses);
     }
     private async Task CreateImportRulesFile(string filePath)
     {
@@ -79,7 +82,7 @@ public class ExportService : IExportService
         if (importRules.Length == 0)
             return;
 
-        WriteFile<ImportRuleExport>(filePath, importRules);
+        await WriteFile<ImportRuleExport>(filePath, importRules);
     }
     private async Task CreateIncomeFile(string filePath)
     {
@@ -88,7 +91,7 @@ public class ExportService : IExportService
         if (incomes.Length == 0)
             return;
 
-        WriteFile<IncomeExport>(filePath, incomes);
+        await WriteFile<IncomeExport>(filePath, incomes);
     }
     private async Task CreateIncomeCategoriesFile(string filePath)
     {
@@ -97,7 +100,7 @@ public class ExportService : IExportService
         if (incomeCategories.Length == 0)
             return;
 
-        WriteFile<IncomeCategoryExport>(filePath, incomeCategories);
+        await WriteFile<IncomeCategoryExport>(filePath, incomeCategories);
     }
     private async Task CreateIncomeSourcesFile(string filePath)
     {
@@ -106,7 +109,7 @@ public class ExportService : IExportService
         if (incomeSources.Length == 0)
             return;
 
-        WriteFile<IncomeSourceExport>(filePath, incomeSources);
+        await WriteFile<IncomeSourceExport>(filePath, incomeSources);
     }
     private async Task CreateMerchantsFile(string filePath)
     {
@@ -115,7 +118,7 @@ public class ExportService : IExportService
         if (merchants.Length == 0)
             return;
 
-        WriteFile<MerchantExport>(filePath, merchants);
+        await WriteFile<MerchantExport>(filePath, merchants);
     }
     private async Task CreateSubCategoriesFile(string filePath)
     {
@@ -124,7 +127,7 @@ public class ExportService : IExportService
         if (subCategories.Length == 0)
             return;
 
-        WriteFile<SubCategoryExport>(filePath, subCategories);
+        await WriteFile<SubCategoryExport>(filePath, subCategories);
     }
     private async Task CreateMainCategoriesFile(string filePath)
     {
@@ -133,41 +136,40 @@ public class ExportService : IExportService
         if (mainCategories.Length == 0)
             return;
 
-        WriteFile<MainCategoryExport>(filePath, mainCategories);
+        await WriteFile<MainCategoryExport>(filePath, mainCategories);
     }
-    private void WriteFile<T>(string filePath, IEnumerable<T> exports) where T : notnull
+    private async Task WriteFile<T>(string filePath, IEnumerable<T> exports) where T : notnull
     {
         using (var writer = new StreamWriter(filePath))
         using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
         {
             await csv.WriteRecordsAsync(exports);
         }
+        
     }
     private async Task<string> CreateAllDataZip()
     {
-        var zipFilePath = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), DateTime.Now.ToString("yyyy_MM_dd-HH_mm_ss")), ".zip");
+        var folderName = "export_" + DateTime.Now.ToString("MM-dd-yyyy_HH_mm_ss");
+        var folderPath = Path.Combine(Path.GetTempPath(), folderName);
+        Directory.CreateDirectory(folderPath);
         var fileTypes = ExportFileOptions.GetAll.Keys.ToArray();
         var filePaths = new List<string>();
         foreach (var fileType in fileTypes)
         {
-            var filePath = await ExportRawData(fileType);
+            if (fileType == 0)
+                continue;
+
+            var filePath = await ExportRawData(fileType, folderPath);
             filePaths.Add(filePath);
         }
-        using (var memoryStream = new MemoryStream())
-        {
-            using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, false))
-            {
-                filePaths.ForEach(file =>
-                {
-                    var theFile = archive.CreateEntry(file);
-                    using (var streamWriter = new StreamWriter(theFile.Open()))
-                    {
-                        streamWriter.Write(File.ReadAllText(file));
-                    }
 
-                });
-            }
+        var zipFolderPath = Path.Combine(Path.GetTempPath(), "archive_" + DateTime.Now.ToString("MM-dd-yyyy_HH_mm_ss"));
+        if (Directory.Exists(zipFolderPath))
+        {
+            throw new Exception(zipFolderPath + " Already Exists");
         }
-        return zipFilePath;
+        ZipFile.CreateFromDirectory(folderPath, zipFolderPath);
+
+        return zipFolderPath;
     }
 }

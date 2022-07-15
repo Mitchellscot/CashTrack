@@ -130,7 +130,7 @@ namespace CashTrack
             services.AddScoped<IExpenseReviewRepository, ExpenseReviewRepository>();
             services.AddScoped<IImportService, ImportService>();
             services.AddScoped<IExportService, ExportService>();
-            services.AddScoped<IExportRepository, ExportRepository>();
+            services.AddTransient<IExportRepository, ExportRepository>();
         }
 
         public void Configure(IApplicationBuilder app)
