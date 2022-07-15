@@ -140,7 +140,7 @@ public class ExportService : IExportService
         using (var writer = new StreamWriter(filePath))
         using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
         {
-            csv.WriteRecords(exports);
+            await csv.WriteRecordsAsync(exports);
         }
     }
     private async Task<string> CreateAllDataZip()

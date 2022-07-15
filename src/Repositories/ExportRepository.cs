@@ -40,7 +40,7 @@ public class ExportRepository : IExportRepository
                 CategoryId: x.Category.Id.ToString(),
                 MerchantId: x.Merchant?.Id.ToString(),
                 Notes: x.Notes,
-                ExcludeFromStatistics: x.ExcludeFromStatistics ? "0" : "1'",
+                ExcludeFromStatistics: x.ExcludeFromStatistics ? "1" : "0",
                 RefundNotes: x.RefundNotes
                 )).ToArray();
         }
@@ -92,7 +92,7 @@ public class ExportRepository : IExportRepository
                 CategoryId: x.Category.Id.ToString(),
                 SourceId: x.Source?.Id.ToString(),
                 Notes: x.Notes,
-                IsRefund: x.IsRefund ? "0" : "1",
+                IsRefund: x.IsRefund ? "1" : "0",
                 RefundNotes: x.RefundNotes
                 )).ToArray();
         }
