@@ -33,13 +33,7 @@ namespace CashTrack.Pages.Settings
         }
         public async Task<ActionResult> OnPostExport(int ExportOption, bool ExportAsReadable)
         {
-            if (ExportAsReadable)
-            {
-                //write code to export readable data
-                ExportOptions = new SelectList(ExportFileOptions.GetAll, "Key", "Value");
-                return Page();
-            }
-            var filePath = await _exportService.ExportRawData(ExportOption);
+            var filePath = await _exportService.ExportData(ExportOption, ExportAsReadable);
             byte[] fileBytes = GetFileBytes(filePath);
 
             if (filePath.Contains("archive"))

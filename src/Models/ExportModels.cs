@@ -20,3 +20,12 @@ public record ExpenseExport(string Id, string MerchantId, string RefundNotes, st
 public record IncomeExport(string Id, string Date, string Amount, string CategoryId, string SourceId, string Notes, string IsRefund, string RefundNotes)
     : TransactionExport(Id, Date, Amount, CategoryId, Notes);
 public record ImportRuleExport(string Id, string Transaction, string Rule, string MerchantSourceId, string CategoryId);
+
+
+public record ReadableExpenseExport(string Date, string Amount, string Category, string Merchant, string Notes);
+public record ReadableIncomeExport(string Date, string Amount, string Category, string Source, string Notes, string IsRefund);
+public record ReadableIncomeCategoryExport(string Name, string InUse, string Notes);
+public record ReadableIncomeSourceExport(string Name, string City, string State);
+public record ReadableMainCategoryExport(string Name);
+public record ReadableMerchantExport(string Name, string City, string State);
+public record ReadableSubCategoryExport(string Name, string MainCategory, string InUse, string Notes);
