@@ -4,22 +4,33 @@
     ViewData["Title"] = "Settings";
     Layout = "_Layout";
 }
-
-        <div class="col-xl-6 col-12 mb-1">
-            <form method="post">
-                <div class="input-group">
-                    <div class="input-group-prepend d-none d-sm-block">
-                        <div class="input-group-text">Export Data</div>
-                    </div>
-                    <select data-width="100%" asp-items="Model.ExportOptions" class="form-select text-center" id="exportOptions" 
-                    asp-for="ExportOption">
-                    </select>
-                    <button class="btn btn-secondary rounded-end" type="submit" asp-page-handler="Export">
-                        <i class="bi bi-download icon-size-md text-white mx-3" role="img"></i>
-                    </button>
+<form method="post" class="container mt-3">
+    <div class="row">
+        <div class="col-6">
+            <div class="input-group">
+                <div class="input-group-prepend d-none d-sm-block">
+                    <div class="input-group-text">Export Data</div>
                 </div>
-            </form>
+                <select data-width="100%" asp-items="Model.ExportOptions" class="form-select text-center" id="exportOptions"
+                        asp-for="ExportOption">
+                </select>
+                <button class="btn btn-secondary rounded-end" type="submit" asp-page-handler="Export">
+                    <i class="bi bi-download icon-size-md text-white mx-3" role="img"></i>
+                </button>
+            </div>
         </div>
-    @section Scripts {
-        <script src="~/js/settings.js"></script>
-    }
+        <div class="col-4 d-flex">
+            <div class="form-check me-3 d-flex align-items-center">
+                <input class="form-check-input me-2" type="radio" asp-for="ExportAsReadable" value="false">
+                <label asp-for="ExportAsReadable" class="form-check-label">Export Raw Data</label>
+            </div>
+            <div class="form-check d-flex align-items-center">
+                <input class="form-check-input me-2" type="radio" asp-for="ExportAsReadable" value="true">
+                <label asp-for="ExportAsReadable" class="form-check-label">Export Readable Data</label>
+            </div>
+        </div>
+    </div>
+</form>
+@section Scripts {
+    <script src="~/js/settings.js"></script>
+}

@@ -14,9 +14,7 @@ namespace CashTrack.Services.ExportService;
 
 public interface IExportService
 {
-    //As Readable
-    //Task<string> ExportReadableData(ExportTransactionsRequest request);
-    Task<string> ExportRawData(int exportFileOption, string zipFolder = null);
+    Task<string> ExportData(int exportFileOption, bool asReadable, string zipFolder = null);
 }
 public class ExportService : IExportService
 {
@@ -26,7 +24,7 @@ public class ExportService : IExportService
     {
         _exportRepo = exportRepo;
     }
-    public async Task<string> ExportRawData(int exportFileOption, string zipFolder = null)
+    public async Task<string> ExportData(int exportFileOption, bool asReadable, string zipFolder = null)
     {
         var fileName = ExportFileOptions.GetAll[exportFileOption].Replace(" ", "");
         var filePath = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), fileName), ".csv");
@@ -37,106 +35,203 @@ public class ExportService : IExportService
         switch (exportFileOption)
         {
             case 1:
-                await CreateExpensesFile(filePath);
+                await CreateExpensesFile(filePath, asReadable);
                 return filePath;
             case 2:
-                await CreateImportRulesFile(filePath);
+                await CreateImportRulesFile(filePath, asReadable);
                 return filePath;
             case 3:
-                await CreateIncomeFile(filePath);
+                await CreateIncomeFile(filePath, asReadable);
                 return filePath;
             case 4:
-                await CreateIncomeCategoriesFile(filePath);
+                await CreateIncomeCategoriesFile(filePath, asReadable);
                 return filePath;
             case 5:
-                await CreateIncomeSourcesFile(filePath);
+                await CreateIncomeSourcesFile(filePath, asReadable);
                 return filePath;
             case 6:
-                await CreateMainCategoriesFile(filePath);
+                await CreateMainCategoriesFile(filePath, asReadable);
                 return filePath;
             case 7:
-                await CreateMerchantsFile(filePath);
+                await CreateMerchantsFile(filePath, asReadable);
                 return filePath;
             case 8:
-                await CreateSubCategoriesFile(filePath);
+                await CreateSubCategoriesFile(filePath, asReadable);
                 return filePath;
             default:
-                var zipFileName = await CreateAllDataZip();
+                var zipFileName = await CreateAllDataZip(asReadable);
                 return zipFileName;
         }
     }
 
-    private async Task CreateExpensesFile(string filePath)
+    private async Task CreateExpensesFile(string filePath, bool asReadable)
     {
-        var expenses = await _exportRepo.GetExpenses();
+        if (asReadable)
+        {
+            var readableExpenses = await _exportRepo.GetReadableExpenses();
 
-        if (expenses.Length == 0)
-            return;
+            if (readableExpenses.Length == 0)
+                return;
 
-        await WriteFileAsync<ExpenseExport>(filePath, expenses);
+            await WriteFileAsync(filePath, readableExpenses);
+        }
+        else
+        {
+            var expenses = await _exportRepo.GetExpenses();
+
+            if (expenses.Length == 0)
+                return;
+
+            await WriteFileAsync<ExpenseExport>(filePath, expenses);
+        }
     }
-    private async Task CreateImportRulesFile(string filePath)
+    private async Task CreateImportRulesFile(string filePath, bool asReadable)
     {
-        var importRules = await _exportRepo.GetImportRules();
-
-        if (importRules.Length == 0)
+        if (asReadable)
+        {
+            //don't care to export these... too much trouble.
             return;
+        }
+        else
+        {
+            var importRules = await _exportRepo.GetImportRules();
 
-        await WriteFileAsync<ImportRuleExport>(filePath, importRules);
+            if (importRules.Length == 0)
+                return;
+
+            await WriteFileAsync<ImportRuleExport>(filePath, importRules);
+        }
+
     }
-    private async Task CreateIncomeFile(string filePath)
+    private async Task CreateIncomeFile(string filePath, bool asReadable)
     {
-        var incomes = await _exportRepo.GetIncome();
+        if (asReadable)
+        {
+            var readableIncomes = await _exportRepo.GetReadableIncome();
 
-        if (incomes.Length == 0)
-            return;
+            if (readableIncomes.Length == 0)
+                return;
 
-        await WriteFileAsync<IncomeExport>(filePath, incomes);
+            await WriteFileAsync(filePath, readableIncomes);
+        }
+        else
+        {
+            var incomes = await _exportRepo.GetIncome();
+
+            if (incomes.Length == 0)
+                return;
+
+            await WriteFileAsync<IncomeExport>(filePath, incomes);
+        }
+
     }
-    private async Task CreateIncomeCategoriesFile(string filePath)
+    private async Task CreateIncomeCategoriesFile(string filePath, bool asReadable)
     {
-        var incomeCategories = await _exportRepo.GetIncomeCategories();
+        if (asReadable)
+        {
+            var readableIncomeCategories = await _exportRepo.GetReadableIncomeCategories();
 
-        if (incomeCategories.Length == 0)
-            return;
+            if (readableIncomeCategories.Length == 0)
+                return;
 
-        await WriteFileAsync<IncomeCategoryExport>(filePath, incomeCategories);
+            await WriteFileAsync(filePath, readableIncomeCategories);
+        }
+        else
+        {
+            var incomeCategories = await _exportRepo.GetIncomeCategories();
+
+            if (incomeCategories.Length == 0)
+                return;
+
+            await WriteFileAsync<IncomeCategoryExport>(filePath, incomeCategories);
+        }
+
     }
-    private async Task CreateIncomeSourcesFile(string filePath)
+    private async Task CreateIncomeSourcesFile(string filePath, bool asReadable)
     {
-        var incomeSources = await _exportRepo.GetIncomeSources();
+        if (asReadable)
+        {
+            var readableIncomeSources = await _exportRepo.GetReadableIncomeSources();
 
-        if (incomeSources.Length == 0)
-            return;
+            if (readableIncomeSources.Length == 0)
+                return;
 
-        await WriteFileAsync<IncomeSourceExport>(filePath, incomeSources);
+            await WriteFileAsync(filePath, readableIncomeSources);
+        }
+        else
+        {
+            var incomeSources = await _exportRepo.GetIncomeSources();
+
+            if (incomeSources.Length == 0)
+                return;
+
+            await WriteFileAsync<IncomeSourceExport>(filePath, incomeSources);
+        }
+
     }
-    private async Task CreateMerchantsFile(string filePath)
+    private async Task CreateMerchantsFile(string filePath, bool asReadable)
     {
-        var merchants = await _exportRepo.GetMerchants();
+        if (asReadable)
+        {
+            var readableMerchants = await _exportRepo.GetReadableMerchants();
 
-        if (merchants.Length == 0)
-            return;
+            if (readableMerchants.Length == 0)
+                return;
 
-        await WriteFileAsync<MerchantExport>(filePath, merchants);
+            await WriteFileAsync(filePath, readableMerchants);
+        }
+        else
+        {
+            var merchants = await _exportRepo.GetMerchants();
+
+            if (merchants.Length == 0)
+                return;
+
+            await WriteFileAsync<MerchantExport>(filePath, merchants);
+        }
     }
-    private async Task CreateSubCategoriesFile(string filePath)
+    private async Task CreateSubCategoriesFile(string filePath, bool asReadable)
     {
-        var subCategories = await _exportRepo.GetSubCategories();
+        if (asReadable)
+        {
+            var readableSubCategories = await _exportRepo.GetReadableSubCategories();
 
-        if (subCategories.Length == 0)
-            return;
+            if (readableSubCategories.Length == 0)
+                return;
 
-        await WriteFileAsync<SubCategoryExport>(filePath, subCategories);
+            await WriteFileAsync(filePath, readableSubCategories);
+        }
+        else
+        {
+            var subCategories = await _exportRepo.GetSubCategories();
+
+            if (subCategories.Length == 0)
+                return;
+
+            await WriteFileAsync<SubCategoryExport>(filePath, subCategories);
+        }
+
     }
-    private async Task CreateMainCategoriesFile(string filePath)
+    private async Task CreateMainCategoriesFile(string filePath, bool asReadable)
     {
-        var mainCategories = await _exportRepo.GetMainCategories();
+        if (asReadable)
+        {
+            var readableMainCategories = await _exportRepo.GetReadableMainCategories();
 
-        if (mainCategories.Length == 0)
-            return;
+            if (readableMainCategories.Length == 0)
+                return;
 
-        await WriteFileAsync<MainCategoryExport>(filePath, mainCategories);
+            await WriteFileAsync(filePath, readableMainCategories);
+        }
+        else
+        {
+            var mainCategories = await _exportRepo.GetMainCategories();
+
+            if (mainCategories.Length == 0)
+                return;
+
+            await WriteFileAsync<MainCategoryExport>(filePath, mainCategories);
+        }
     }
     private async Task WriteFileAsync<T>(string filePath, IEnumerable<T> exports) where T : notnull
     {
@@ -145,9 +240,8 @@ public class ExportService : IExportService
         {
             await csv.WriteRecordsAsync(exports);
         }
-
     }
-    private async Task<string> CreateAllDataZip()
+    private async Task<string> CreateAllDataZip(bool asReadable)
     {
         var exportFolderPath = Path.Combine(Path.GetTempPath(), "export_" + DateTime.Now.ToString("MM-dd-yyyy_HH_mm_ss"));
         var directoryInfo = Directory.CreateDirectory(exportFolderPath);
@@ -157,7 +251,7 @@ public class ExportService : IExportService
             if (fileType == 0)
                 continue;
 
-            var filePath = await ExportRawData(fileType, exportFolderPath);
+            var filePath = await ExportData(fileType, asReadable, exportFolderPath);
             filePaths.Add(filePath);
         }
         var zipFolderPath = Path.Combine(Path.GetTempPath(), "archive_" + DateTime.Now.ToString("MM-dd-yyyy_HH_mm_ss"));

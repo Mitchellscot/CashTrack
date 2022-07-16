@@ -17,6 +17,14 @@ public interface IExportRepository
     Task<MainCategoryExport[]> GetMainCategories();
     Task<MerchantExport[]> GetMerchants();
     Task<SubCategoryExport[]> GetSubCategories();
+
+    Task<ReadableExpenseExport[]> GetReadableExpenses();
+    Task<ReadableIncomeExport[]> GetReadableIncome();
+    Task<ReadableIncomeCategoryExport[]> GetReadableIncomeCategories();
+    Task<ReadableIncomeSourceExport[]> GetReadableIncomeSources();
+    Task<ReadableMainCategoryExport[]> GetReadableMainCategories();
+    Task<ReadableMerchantExport[]> GetReadableMerchants();
+    Task<ReadableSubCategoryExport[]> GetReadableSubCategories();
 }
 public class ExportRepository : IExportRepository
 {
@@ -27,7 +35,7 @@ public class ExportRepository : IExportRepository
         try
         {
             IQueryable<ExpenseEntity> query = _ctx.Expenses.Include(x => x.Merchant).Include(x => x.Category);
-            query = query.OrderBy(x => x.Date);
+            query = query.OrderByDescending(x => x.Date);
             var expenseEntities = await query.ToArrayAsync();
             if (!expenseEntities.Any())
             {
@@ -79,7 +87,7 @@ public class ExportRepository : IExportRepository
         try
         {
             IQueryable<IncomeEntity> query = _ctx.Incomes.Include(x => x.Source).Include(x => x.Category);
-            query = query.OrderBy(x => x.Date);
+            query = query.OrderByDescending(x => x.Date);
             var incomeEntities = await query.ToArrayAsync();
             if (!incomeEntities.Any())
             {
@@ -192,7 +200,6 @@ public class ExportRepository : IExportRepository
             throw;
         }
     }
-
     public async Task<SubCategoryExport[]> GetSubCategories()
     {
         try
@@ -208,6 +215,164 @@ public class ExportRepository : IExportRepository
                 Name: x.Name,
                 MainCategoryId: x.MainCategoryId.ToString(),
                 InUse: x.InUse ? "1" : "0",
+                Notes: x.Notes
+                )).ToArray();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<ReadableExpenseExport[]> GetReadableExpenses()
+    {
+        try
+        {
+            IQueryable<ExpenseEntity> query = _ctx.Expenses.Include(x => x.Merchant).Include(x => x.Category);
+            query = query.OrderByDescending(x => x.Date);
+            var expenseEntities = await query.ToArrayAsync();
+            if (!expenseEntities.Any())
+            {
+                return new ReadableExpenseExport[] { };
+            }
+            return expenseEntities.Select(x => new ReadableExpenseExport(
+                Date: x.Date.DateTime.ToShortDateString(),
+                Amount: x.Amount.ToString(),
+                Category: x.Category.Name,
+                Merchant: x.Merchant?.Name,
+                Notes: x.Notes + x.RefundNotes ?? ""
+                )).ToArray();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<ReadableIncomeExport[]> GetReadableIncome()
+    {
+        try
+        {
+            IQueryable<IncomeEntity> query = _ctx.Incomes.Include(x => x.Source).Include(x => x.Category);
+            query = query.OrderBy(x => x.Date);
+            var incomeEntities = await query.ToArrayAsync();
+            if (!incomeEntities.Any())
+            {
+                return new ReadableIncomeExport[] { };
+            }
+            return incomeEntities.Select(x => new ReadableIncomeExport(
+                Date: x.Date.DateTime.ToShortDateString(),
+                Amount: x.Amount.ToString(),
+                Category: x.Category.Name,
+                Source: x.Source?.Name,
+                Notes: x.Notes + x.RefundNotes ?? "",
+                IsRefund: x.IsRefund ? "Refund" : ""
+                )).ToArray();
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
+    public async Task<ReadableIncomeCategoryExport[]> GetReadableIncomeCategories()
+    {
+        try
+        {
+            var incomeCategoryEntities = await _ctx.IncomeCategories.OrderBy(x => x.Id).ToArrayAsync();
+            if (!incomeCategoryEntities.Any())
+            {
+                return new ReadableIncomeCategoryExport[] { };
+            }
+
+            return incomeCategoryEntities.Select(x => new ReadableIncomeCategoryExport(
+                Name: x.Name,
+                InUse: x.InUse ? "Yes" : "No",
+                Notes: x.Notes
+                )).ToArray();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<ReadableIncomeSourceExport[]> GetReadableIncomeSources()
+    {
+        try
+        {
+            var incomeSourceEntities = await _ctx.IncomeSources.OrderBy(x => x.Id).ToArrayAsync();
+            if (!incomeSourceEntities.Any())
+            {
+                return new ReadableIncomeSourceExport[] { };
+            }
+
+            return incomeSourceEntities.Select(x => new ReadableIncomeSourceExport(
+                Name: x.Name,
+                City: x.City,
+                State: x.State
+                )).ToArray();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<ReadableMainCategoryExport[]> GetReadableMainCategories()
+    {
+        try
+        {
+            var mainCategoryEntities = await _ctx.MainCategories.OrderBy(x => x.Id).ToArrayAsync();
+            if (!mainCategoryEntities.Any())
+            {
+                return new ReadableMainCategoryExport[] { };
+            }
+            return mainCategoryEntities.Select(x => new ReadableMainCategoryExport(x.Name)).ToArray();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<ReadableMerchantExport[]> GetReadableMerchants()
+    {
+        try
+        {
+            var merchantEntities = await _ctx.Merchants.OrderBy(x => x.Id).ToArrayAsync();
+            if (!merchantEntities.Any())
+            {
+                return new ReadableMerchantExport[] { };
+            }
+
+            return merchantEntities.Select(x => new ReadableMerchantExport(
+                Name: x.Name,
+                City: x.City,
+                State: x.State
+                )).ToArray();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<ReadableSubCategoryExport[]> GetReadableSubCategories()
+    {
+        try
+        {
+            var subCategoryEntities = await _ctx.SubCategories.OrderBy(x => x.Id).Include(x => x.MainCategory).ToArrayAsync();
+            if (!subCategoryEntities.Any())
+            {
+                return new ReadableSubCategoryExport[] { };
+            }
+
+            return subCategoryEntities.Select(x => new ReadableSubCategoryExport(
+                Name: x.Name,
+                MainCategory: x.MainCategory.Name,
+                InUse: x.InUse ? "Yes" : "No",
                 Notes: x.Notes
                 )).ToArray();
         }

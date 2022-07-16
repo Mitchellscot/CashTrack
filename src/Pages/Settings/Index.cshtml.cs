@@ -25,22 +25,24 @@ namespace CashTrack.Pages.Settings
         }
         public SelectList ExportOptions { get; set; }
         public int ExportOption { get; set; }
+        public bool ExportAsReadable { get; set; }
         public IActionResult OnGet()
         {
             ExportOptions = new SelectList(ExportFileOptions.GetAll, "Key", "Value");
             return Page();
         }
-        public async Task<ActionResult> OnPostExport(int ExportOption)
+        public async Task<ActionResult> OnPostExport(int ExportOption, bool ExportAsReadable)
         {
-            var filePath = await _exportService.ExportRawData(ExportOption);
+            var filePath = await _exportService.ExportData(ExportOption, ExportAsReadable);
             byte[] fileBytes = GetFileBytes(filePath);
-            
+
             if (filePath.Contains("archive"))
             {
                 return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Zip, Path.GetFileName(filePath) + ".zip");
             }
-            
+
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, Path.GetFileName(filePath));
+
         }
 
         private byte[] GetFileBytes(string filePath)
