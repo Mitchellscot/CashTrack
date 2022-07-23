@@ -52,7 +52,8 @@ namespace CashTrack.Services.ImportService
             }
             catch (HeaderValidationException)
             {
-                return "CSV File does not match file type.";
+                File.Delete(filePath);
+                return "Please inspect the csv file for the correct headers.";
             }
 
 
@@ -174,6 +175,7 @@ namespace CashTrack.Services.ImportService
                 creditImports.Any() ? creditImports : otherImports.Any() ? otherImports : new List<ImportTransaction>();
 
             //remove unnecessary credit transactions
+            //TODO: add this as an option in settings.
             imports = imports.Where(x => !x.Notes.Contains("thank you"));
 
 

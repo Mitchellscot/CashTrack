@@ -74,7 +74,7 @@
                         @foreach (var income in Model.IncomeReviewResponse.ListItems)
                         {
                             <tr class="text-center">
-                                <form method="post" id="editIncomeReviewForm-@income.Id" asp-page-handler="AddIncome">
+                                <form method="post" id="editIncomeReviewForm-@income.Id" asp-page-handler="AddIncome" asp-route-pageNumber="@Model.PageNumber">
                                     <input type="hidden" asp-for="@Model.SelectedIncomeId" value="@income.Id" />
 
                                 <td>
@@ -91,13 +91,13 @@
                                 </td>
                                 <td>
                                     @{
-                                    var dropdownList = new SelectList(Model.CategoryList, "", "", income.SuggestedCategory);
+                                    var dropdownList = new SelectList(Model.CategoryList, "Id", "Category", income.SuggestedCategoryId);
                                 }
                                 <select class="form-select text-center form-select-sm" 
-                                id="category-@income.Id" asp-for="SelectedIncome.Category" 
-                                asp-items="@dropdownList">
+                                id="category-@income.Id" asp-for="SelectedIncome.CategoryId" 
+                                asp-items="@dropdownList" value="@income.SuggestedCategoryId">
                                 @{
-                                    if (income.SuggestedCategory == null)
+                                    if (income.SuggestedCategoryId == 0)
                                     {
                                         <option value="" selected disabled hidden></option>
                                     }
@@ -135,7 +135,8 @@
                                                    Cancel
                                                    </button>
                                                    <button 
-                                                   asp-page-handler="RemoveIncome" 
+                                                   asp-page-handler="RemoveIncome"
+                                                   asp-route-pageNumber="@Model.PageNumber"
                                                    name="SelectedId" value="@income.Id" 
                                                    type="submit" class="btn btn-danger">DELETE</button>
                                                 </div>

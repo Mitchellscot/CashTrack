@@ -43,12 +43,12 @@ namespace CashTrack.Pages.Import
 
         [BindProperty]
         public ImportModel Import { get; set; }
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGet(int pageNumber)
         {
             await PrepareData();
             return Page();
         }
-        public async Task<IActionResult> OnPostImportCsv()
+        public async Task<IActionResult> OnPostImportCsv(int pageNumber)
         {
             if (Import.File == null)
             {
@@ -76,7 +76,7 @@ namespace CashTrack.Pages.Import
         }
         public async Task<IActionResult> OnPostExpenseAdd()
         {
-            if (string.IsNullOrEmpty(SelectedExpense.SubCategory))
+            if (SelectedExpense.SubCategoryId == 0)
             {
                 ModelState.AddModelError("", "Expense must have an assigned category");
                 await PrepareData();
@@ -100,10 +100,11 @@ namespace CashTrack.Pages.Import
                 await PrepareData();
                 return Page();
             }
+
             TempData["SuccessMessage"] = "Sucessfully Added A New Expense!";
-            return LocalRedirect("~/Import/Expenses");
+            return RedirectToPage($"../Import/Expenses", new { pageNumber = PageNumber });
         }
-        public async Task<IActionResult> OnPostRemoveExpense()
+        public async Task<IActionResult> OnPostRemoveExpense(int pageNumber)
         {
             try
             {
@@ -115,9 +116,9 @@ namespace CashTrack.Pages.Import
                 return Page();
             }
             TempData["SuccessMessage"] = "Successfully Removed the Expense!";
-            return LocalRedirect("~/Import/Expenses");
+            return RedirectToPage($"../Import/Expenses", new { pageNumber = pageNumber });
         }
-        public async Task<IActionResult> OnPostSplitExpense()
+        public async Task<IActionResult> OnPostSplitExpense(int pageNumber)
         {
             if (string.IsNullOrEmpty(SelectedExpense.SubCategory))
             {
@@ -147,6 +148,7 @@ namespace CashTrack.Pages.Import
         }
         private async Task PrepareData()
         {
+
             CategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
             PageNumber = ExpenseReviewResponse != null ? ExpenseReviewResponse.PageNumber : PageNumber == 0 ? 1 : PageNumber;
 

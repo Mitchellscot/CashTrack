@@ -109,9 +109,6 @@ public class ExpenseService : IExpenseService
         if (request.Merchant != null)
             merchantId = (await _merchantRepo.Find(x => x.Name == request.Merchant)).FirstOrDefault().Id;
 
-        if (request.SubCategoryId == 0)
-            request.SubCategoryId = (await _subCategoryRepo.FindById(request.SubCategoryId)).Id;
-
         var expenseEntity = new ExpenseEntity()
         {
             Amount = request.Amount,

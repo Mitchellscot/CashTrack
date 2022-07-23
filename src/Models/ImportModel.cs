@@ -60,7 +60,7 @@ namespace CashTrack.Models.ImportCsvModels
     }
     public class OtherTransactionImport : ImportTransaction
     {
-
+        //TODO: figure this one out
     }
     public enum CsvFileType
     {

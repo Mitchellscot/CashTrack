@@ -1,3 +1,4 @@
+using CashTrack.Models.IncomeCategoryModels;
 using CashTrack.Models.IncomeReviewModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.IncomeCategoryService;
@@ -27,9 +28,9 @@ namespace CashTrack.Pages.Import
             _incomeService = incomeService;
         }
         public IncomeReviewResponse IncomeReviewResponse { get; set; }
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public int PageNumber { get; set; } = 1;
-        public string[] CategoryList { get; set; }
+        public IncomeCategoryDropdownSelection[] CategoryList { get; set; }
         [BindProperty]
         public CashTrack.Models.IncomeModels.Income SelectedIncome { get; set; }
         [BindProperty]
@@ -43,13 +44,13 @@ namespace CashTrack.Pages.Import
         }
         public async Task<IActionResult> OnPostAddIncome()
         {
-            if (string.IsNullOrEmpty(SelectedIncome.Category))
+            if (SelectedIncome.CategoryId == 0)
             {
                 ModelState.AddModelError("", "Income must have an assigned category");
                 await PrepareData();
                 return Page();
             }
-            if ((await _incomeSourceService.GetAllIncomeSourceNames()).Any(x => x == SelectedIncome.Source))
+            if (!(await _incomeSourceService.GetAllIncomeSourceNames()).Any(x => x == SelectedIncome.Source))
             {
                 await PrepareData();
                 return Page();
@@ -70,9 +71,9 @@ namespace CashTrack.Pages.Import
                 return RedirectToPage("../Income/Refund", new { id = incomeId });
 
             TempData["SuccessMessage"] = "Sucessfully Added New Income!";
-            return LocalRedirect("~/Import/Income");
+            return RedirectToPage($"../Import/Income", new { pageNumber = PageNumber });
         }
-        public async Task<IActionResult> OnPostRemoveIncome()
+        public async Task<IActionResult> OnPostRemoveIncome(int pageNumber)
         {
             try
             {
@@ -84,11 +85,11 @@ namespace CashTrack.Pages.Import
                 return Page();
             }
             TempData["SuccessMessage"] = "Successfully Removed the Income!";
-            return LocalRedirect("~/Import/Income");
+            return RedirectToPage($"../Import/Income", new { pageNumber = pageNumber });
         }
         private async Task PrepareData()
         {
-            CategoryList = await _incomeCategoryService.GetIncomeCategoryNames();
+            CategoryList = await _incomeCategoryService.GetIncomeCategoryDropdownListAsync();
             PageNumber = IncomeReviewResponse != null ? IncomeReviewResponse.PageNumber : PageNumber == 0 ? 1 : PageNumber;
 
             IncomeReviewResponse = await _incomeReviewService.GetIncomeReviewsAsync(new IncomeReviewRequest() { PageNumber = PageNumber });
