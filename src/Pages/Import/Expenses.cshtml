@@ -75,7 +75,7 @@
                         @foreach (var expense in Model.ExpenseReviewResponse.ListItems)
                         {
                                             <tr class="text-center">
-                                                <form method="post" id="editExpenseReviewForm-@expense.Id" asp-page-handler="ExpenseAdd">
+                                                <form method="post" id="editExpenseReviewForm-@expense.Id" asp-page-handler="ExpenseAdd" asp-route-pageNumber="@Model.PageNumber">
                                                     <input type="hidden" asp-for="@Model.SelectedExpenseId" value="@expense.Id" />
                                                 <td>
                                                     <input type="hidden" asp-for="@Model.SelectedExpense.Date" value="@expense.Date" />
@@ -90,13 +90,13 @@
                                                 </td>
                                                 <td>
                                         @{
-                                            var dropdownList = new SelectList(Model.CategoryList, "Category", "Category", expense.SuggestedCategory);
+                                            var dropdownList = new SelectList(Model.CategoryList, "Id", "Category", expense.SuggestedCategoryId);
                                         }
                                                     <select class="form-select text-center form-select-sm" 
-                                id="category-@expense.Id" asp-for="SelectedExpense.SubCategory" 
-                                asp-items="@dropdownList" value="@expense.SuggestedCategory">
+                                id="category-@expense.Id" asp-for="SelectedExpense.SubCategoryId" 
+                                asp-items="@dropdownList" value="@expense.SuggestedCategoryId">
                                 @{
-                                    if (expense.SuggestedCategory == null)
+                                    if (expense.SuggestedCategoryId == null)
                                     {
                                         <option value="" selected disabled hidden></option>
                                     }
@@ -134,7 +134,8 @@
                                                                    Cancel
                                                                    </button>
                                                                    <button 
-                                                   asp-page-handler="RemoveExpense" 
+                                                   asp-page-handler="RemoveExpense"
+                                                   asp-route-pageNumber="@Model.PageNumber"
                                                    name="SelectedId" value="@expense.Id" 
                                                    type="submit" class="btn btn-danger">DELETE</button>
                                                                 </div>
