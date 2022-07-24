@@ -13,6 +13,7 @@ public interface IIncomeReviewService
 {
     Task<IncomeReviewListItem> GetIncomeReviewByIdAsync(int id);
     Task<IncomeReviewResponse> GetIncomeReviewsAsync(IncomeReviewRequest request);
+    Task<int> GetCountOfIncomeReviews();
     Task<int> SetIncomeReviewToIgnoreAsync(int id);
 }
 
@@ -22,6 +23,11 @@ public class IncomeReviewService : IIncomeReviewService
     private readonly IMapper _mapper;
 
     public IncomeReviewService(IIncomeReviewRepository repo, IMapper mapper) => (_repo, _mapper) = (repo, mapper);
+
+    public Task<int> GetCountOfIncomeReviews()
+    {
+        return _repo.GetCount(x => x.IsReviewed == false);
+    }
 
     public async Task<IncomeReviewListItem> GetIncomeReviewByIdAsync(int id)
     {

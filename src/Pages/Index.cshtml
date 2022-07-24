@@ -5,6 +5,11 @@
     Layout = "_Layout";
 }
 <div class="container-fluid">
+    @if (Model.ReviewAmount > 0)
+    {
+        
+        <div class="alert alert-danger">You have @Model.ReviewAmount transactions to review. <a asp-page="./Import/Expenses">Review them here</a></div>
+    }
     <div class="text-center">
         <h1 class="display-4">Welcome @User.Identity.Name</h1>
     </div>

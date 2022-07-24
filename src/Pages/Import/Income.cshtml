@@ -14,10 +14,6 @@
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
 
-
-        <div><button class="btn btn-primary import-button" type="button" id="importButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">Import</button>
-            </div>
-
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a asp-page="./Expenses" class="nav-link">Expenses</a>
@@ -40,9 +36,7 @@
     <div class="modal fade" id="addSourceModal">
         @await Html.PartialAsync("_AddIncomeSourcePartial", new AddEditIncomeSourceModal() { ReturnUrl = "~/Import/Income", SuggestOnLookup = true })
     </div>
-    <div class="modal fade" id="importCsvModal">
-        @await Html.PartialAsync("_ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Import/Income" })
-                  </div>
+
     @if (Model.IncomeReviewResponse != null && Model.IncomeReviewResponse.ListItems.Count() > 0)
     {
         <div class="row mb-0">
