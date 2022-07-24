@@ -16,6 +16,7 @@ public interface IExpenseReviewService
 {
     Task<ExpenseReviewListItem> GetExpenseReviewByIdAsync(int id);
     Task<ExpenseReviewResponse> GetExpenseReviewsAsync(ExpenseReviewRequest request);
+    Task<int> GetCountOfExpenseReviews();
     Task<int> SetExpenseReviewToIgnoreAsync(int id);
 }
 
@@ -32,6 +33,10 @@ public class ExpenseReviewService : IExpenseReviewService
         _mapper = mapper;
     }
 
+    public async Task<int> GetCountOfExpenseReviews()
+    {
+        return await _expenseReviewRepo.GetCount(x => x.IsReviewed == false);
+    }
 
     public async Task<ExpenseReviewListItem> GetExpenseReviewByIdAsync(int id)
     {

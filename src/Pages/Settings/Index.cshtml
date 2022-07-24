@@ -1,11 +1,15 @@
 ﻿@page
+@using CashTrack.Models.ImportCsvModels
 @model CashTrack.Pages.Settings.Index
 @{
     ViewData["Title"] = "Settings";
     Layout = "_Layout";
 }
-<form method="post" class="container mt-3">
-    <div class="row">
+                  <div class="modal fade" id="importCsvModal">
+        @await Html.PartialAsync("_ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Import/Expenses" })
+                  </div>
+<div class="container mt-3">
+    <div class="row mb-3">
         <div class="col-6">
             <div class="input-group">
                 <div class="input-group-prepend d-none d-sm-block">
@@ -19,18 +23,22 @@
                 </button>
             </div>
         </div>
-        <div class="col-4 d-flex">
+        <form class="col-4 d-flex" method="post">
             <div class="form-check me-3 d-flex align-items-center">
                 <input class="form-check-input me-2" type="radio" asp-for="ExportAsReadable" value="false">
-                <label asp-for="ExportAsReadable" class="form-check-label">Export Raw Data</label>
+                <label asp-for="ExportAsReadable" class="form-check-label">Raw Data</label>
             </div>
             <div class="form-check d-flex align-items-center">
                 <input class="form-check-input me-2" type="radio" asp-for="ExportAsReadable" value="true">
-                <label asp-for="ExportAsReadable" class="form-check-label">Export Readable Data</label>
+                <label asp-for="ExportAsReadable" class="form-check-label">Readable Data</label>
             </div>
-        </div>
+        </form>
     </div>
-</form>
+    <div class="row">
+                <div><button class="btn btn-primary" type="button" id="importButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">Import</button>
+    </div>
+</div>
+</div>
 @section Scripts {
     <script src="~/js/settings.js"></script>
 }
