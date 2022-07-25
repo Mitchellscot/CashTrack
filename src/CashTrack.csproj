@@ -36,6 +36,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <None Remove="Scripts\Settings\settings.ts" />
+	  <None Remove="Scripts\SubCategories\subCategoryDetail.ts" />
 	  <None Remove="Scripts\Utility\force-refund.ts" />
 	  <None Remove="Scripts\Utility\format-amount.ts" />
 	  <None Remove="Scripts\Utility\handle-expense-dropdown.ts" />
@@ -58,6 +59,7 @@
 		<TypeScriptCompile Include="Scripts\Settings\settings.ts" />
 		<TypeScriptCompile Include="Scripts\Sources\sources.ts" />
 		<TypeScriptCompile Include="Scripts\Sources\sourceDetail.ts" />
+		<TypeScriptCompile Include="Scripts\SubCategories\subCategoryDetail.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\force-refund.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\format-amount.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\handle-expense-dropdown.ts" />

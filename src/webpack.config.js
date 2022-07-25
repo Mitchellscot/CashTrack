@@ -18,6 +18,8 @@ const config = {
         merchants: './Scripts/Merchants/merchants.ts',
         sources: './Scripts/Sources/sources.ts',
         sourceDetail: './Scripts/Sources/sourceDetail.ts',
+        subCategories: './Scripts/SubCategories/subCategories.ts',
+        subCategoryDetail: './Scripts/SubCategories/subCategoryDetail.ts'
     },
     output: {
         filename: '[name].js',
