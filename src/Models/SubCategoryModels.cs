@@ -1,4 +1,5 @@
 ﻿using CashTrack.Models.Common;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CashTrack.Models.SubCategoryModels;
 
@@ -11,12 +12,18 @@ public class SubCategoryResponse : PaginationResponse<SubCategoryListItem>
     public SubCategoryResponse(int pageNumber, int pageSize, int totalCount, SubCategoryListItem[] listItems) : base(pageNumber, pageSize, totalCount, listItems) { }
 }
 
-public class AddEditSubCategory : Category
+public class SubCategory : Category
 {
     new public int? Id { get; set; }
     public int MainCategoryId { get; set; }
     public string Notes { get; set; }
     public bool InUse { get; set; }
+}
+public class AddEditSubCategoryModal : SubCategory
+{
+    public bool IsEdit { get; set; }
+    public string Returnurl { get; set; }
+    public SelectList MainCategoryList { get; set; }
 }
 
 public class SubCategoryListItem : Category

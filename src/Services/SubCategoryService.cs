@@ -16,9 +16,9 @@ public interface ISubCategoryService
 {
     Task<SubCategoryResponse> GetSubCategoriesAsync(SubCategoryRequest request);
     Task<SubCategoryDetail> GetSubCategoryDetailsAsync(int id);
-    Task<AddEditSubCategory> CreateSubCategoryAsync(AddEditSubCategory request);
+    Task<int> CreateSubCategoryAsync(SubCategory request);
     Task<SubCategoryDropdownSelection[]> GetSubCategoryDropdownListAsync();
-    Task<int> UpdateSubCategoryAsync(AddEditSubCategory request);
+    Task<int> UpdateSubCategoryAsync(SubCategory request);
     Task<bool> DeleteSubCategoryAsync(int id);
     Task<SubCategoryEntity> GetSubCategoryByNameAsync(string name);
     Task<string[]> GetMatchingSubCategoryNamesAsync(string match);
@@ -51,20 +51,27 @@ public class SubCategoryService : ISubCategoryService
 
         return new SubCategoryResponse(request.PageNumber, request.PageSize, count, categoryViewModels);
     }
-    public async Task<AddEditSubCategory> CreateSubCategoryAsync(AddEditSubCategory request)
+    public async Task<int> CreateSubCategoryAsync(SubCategory request)
     {
         var categories = await _subCategoryRepo.Find(x => true);
         if (categories.Any(x => x.Name == request.Name))
             throw new DuplicateNameException(nameof(SubCategoryEntity), request.Name);
 
-        var subCategoryEntity = _mapper.Map<SubCategoryEntity>(request);
+        if (request.MainCategoryId < 1)
+            throw new CategoryNotFoundException("You must assign a main category to a sub category.", new Exception());
+            
+        var entity = new SubCategoryEntity()
+        {
+            Name = request.Name,
+            InUse = request.InUse,
+            MainCategoryId = request.MainCategoryId,
+            Notes = request.Notes,
 
-        //Here i am setting the id and then returning addedit because I'm lazy and returning the entity causes json circular reference issues.
-        request.Id = subCategoryEntity.Id;
+        };
 
-        return request;
+        return await _subCategoryRepo.Create(entity);
     }
-    public async Task<int> UpdateSubCategoryAsync(AddEditSubCategory request)
+    public async Task<int> UpdateSubCategoryAsync(SubCategory request)
     {
         var categories = await _subCategoryRepo.Find(x => x.Name == request.Name);
         if (categories.Any(x => x.Id != request.Id))
@@ -129,7 +136,7 @@ public class SubCategoryMapperProfile : Profile
             .ForMember(c => c.Id, o => o.MapFrom(src => src.Id))
             .ReverseMap();
 
-        CreateMap<AddEditSubCategory, SubCategoryEntity>()
+        CreateMap<SubCategory, SubCategoryEntity>()
             .ForMember(c => c.Id, o => o.MapFrom(src => src.Id))
             .ForMember(c => c.Name, o => o.MapFrom(src => src.Name))
             .ForMember(c => c.MainCategoryId, o => o.MapFrom(src => src.MainCategoryId))

@@ -117,7 +117,7 @@ namespace CashTrack.Validators;
 //    }
 //}
 
-//public class AddEditSubCategoryValidator : AbstractValidator<AddEditSubCategory>
+//public class AddEditSubCategoryValidator : AbstractValidator<SubCategory>
 //{
 //    public AddEditSubCategoryValidator()
 //    {
