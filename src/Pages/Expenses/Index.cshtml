@@ -1,6 +1,7 @@
 ﻿@page
 @using CashTrack.Models.Common
 @using CashTrack.Models.ExpenseModels
+@using CashTrack.Models.SubCategoryModels
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Expenses.Index
 @{
@@ -58,7 +59,7 @@
     @* Add Expense Modal *@
     <div class="modal fade" id="addExpenseModal">
         @await Html.PartialAsync("_AddExpenseModal",
-        new AddEditExpenseModal() {IsEdit = false, Returnurl = "./Index", SubCategoryList = new SelectList(Model.CategoryList, "Id", "Category"), Date= DateTime.Today });
+        new AddEditExpenseModal() {IsEdit = false, Returnurl = "./Index", SubCategoryList = new SelectList(Model.CategoryList, "Id", "Category"), Date= DateTime.Today, MainCategoryList = new SelectList(Model.MainCategoryList, "Id", "Category") });
     </div>
     @*End Add Expense Modal*@
 

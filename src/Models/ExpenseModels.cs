@@ -44,6 +44,7 @@ public class AddEditExpenseModal : Expense
     public bool IsEdit { get; set; }
     public string Returnurl { get; set; }
     public SelectList SubCategoryList { get; set; }
+    public SelectList MainCategoryList { get; set; }
 }
 public class ExpenseQuickView : Transaction
 {
