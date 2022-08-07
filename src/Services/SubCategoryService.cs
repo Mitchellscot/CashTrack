@@ -20,6 +20,8 @@ public interface ISubCategoryService
     Task<SubCategoryDropdownSelection[]> GetSubCategoryDropdownListAsync();
     Task<int> UpdateSubCategoryAsync(AddEditSubCategory request);
     Task<bool> DeleteSubCategoryAsync(int id);
+    Task<SubCategoryEntity> GetSubCategoryByNameAsync(string name);
+    Task<string[]> GetMatchingSubCategoryNamesAsync(string match);
 }
 public class SubCategoryService : ISubCategoryService
 {
@@ -100,6 +102,19 @@ public class SubCategoryService : ISubCategoryService
             Id = x.Id,
             Category = x.Name
         }).ToArray();
+    }
+
+    public async Task<SubCategoryEntity> GetSubCategoryByNameAsync(string name)
+    {
+        var category = (await _subCategoryRepo.Find(x => x.Name == name)).FirstOrDefault();
+        if (category == null)
+            throw new CategoryNotFoundException(name);
+        return category;
+    }
+
+    public async Task<string[]> GetMatchingSubCategoryNamesAsync(string match)
+    {
+        return (await _subCategoryRepo.Find(x => x.Name.StartsWith(match))).Select(x => x.Name).Take(10).ToArray();
     }
 }
 

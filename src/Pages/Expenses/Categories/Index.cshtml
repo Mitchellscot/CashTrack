@@ -1,0 +1,42 @@
+﻿@page
+@using CashTrack.Pages.Shared
+@model CashTrack.Pages.Expenses.Categories.IndexModel
+@{
+}
+<div class="container-fluid">
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+    <div class="row mb-1">
+        <div class="row mb-1">
+            <div class="col-xs-9 order-2 order-md-1 col-md-6 col-xxl-4">
+                <form method="get">
+                    <div class="input-group">
+                        <div class="input-group-prepend d-none d-sm-block">
+                            <div class="input-group-text">Search</div>
+                        </div>
+                        <input id="QueryInput" data-val="true" asp-for="@Model.SearchTerm" type="text" class="form-control subcategory-autosuggest-js">
+                        <button class="btn btn-secondary rounded-end" type="submit" asp-route-pageNumber="1">
+                            <i class="bi bi-search text-white mx-3 icon-size-md"></i>
+                        </button>
+                        <input type="hidden" asp-for="@Model.PageNumber" value="1" />
+                    </div>
+                </form>
+            </div>
+            <div class="col-xs-3 order-1 order-md-2 col-md-6 col-xxl-8 mb-1 mb-md-0">
+                <span asp-validation-for="@Model.SearchTerm"></span>
+                <button class="btn btn-primary float-end" id="addSubCategoryButton" data-bs-toggle="modal" data-bs-target="#addSubCategoryModal">Add Category</button>
+                <div class="modal fade" id="addSubCategoryModal">
+@*                    @await Html.PartialAsync("_AddMerchantPartial", new AddEditSubCategoryModal() { Returnurl = "~/Expenses/Categories/Index", InUse = true, IsEdit = false })*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/subCategories.js"></script>
+}

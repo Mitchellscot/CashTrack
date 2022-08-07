@@ -66,6 +66,10 @@ ul.ui-autocomplete {
     overflow: hidden;
 }
 
+.detail-zoom {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
 
 
 /*CLASSES ON TAG HELPERS ON OTHER PAGES*/

@@ -1,9 +1,10 @@
+using CashTrack.Pages.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace CashTrack.Pages.SubCategories
+namespace CashTrack.Pages.Income.Categories
 {
-    public class DetailModel : PageModel
+    public class IndexModel : PageModelBase
     {
         public void OnGet()
         {
