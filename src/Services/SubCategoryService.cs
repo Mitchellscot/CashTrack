@@ -9,6 +9,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using CashTrack.Services.Common;
 
 namespace CashTrack.Services.SubCategoryService;
 
@@ -38,18 +39,31 @@ public class SubCategoryService : ISubCategoryService
 
         var predicate = request.Query == null ? returnAll : searchCategories;
 
-        var categories = await _subCategoryRepo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
-        var count = await _subCategoryRepo.GetCount(predicate);
+        var categories = await _subCategoryRepo.FindWithPaginationIncludeExpenses(predicate, request.PageNumber, request.PageSize);
+        var expenses = categories.SelectMany(x => x.Expenses).ToArray();
+        var count = await _subCategoryRepo.GetCount(x => true);
 
-        var categoryViewModels = categories.Select(c => new SubCategoryListItem
-        {
-            Id = c.Id,
-            Name = c.Name,
-            MainCategoryName = c.MainCategory.Name,
-            NumberOfExpenses = (int)_expenseRepo.GetCount(x => x.CategoryId == c.Id).Result
-        }).ToArray();
+        var categoryViewModels = GetSubCategoryListItems(categories, expenses);
 
         return new SubCategoryResponse(request.PageNumber, request.PageSize, count, categoryViewModels);
+    }
+    private SubCategoryListItem[] GetSubCategoryListItems(SubCategoryEntity[] categories, ExpenseEntity[] expenses)
+    {
+        return expenses.GroupBy(e => e.CategoryId).Select(g =>
+        {
+            var results = g.Aggregate(new SubCategoryListItemAggregator(g.Key.Value, categories), (acc, e) => acc.Accumulate(e), acc => acc.Compute());
+            return new SubCategoryListItem()
+            {
+                Id = g.Key.Value,
+                Name = results.Category.Name,
+                MainCategoryName = results.Category.MainCategory.Name,
+                Purchases = results.Purchases,
+                Amount = results.Amount,
+                LastPurchase = results.LastPurchase,
+                InUse = results.Category.InUse
+
+            };
+        }).ToArray();
     }
     public async Task<int> CreateSubCategoryAsync(SubCategory request)
     {
@@ -59,7 +73,7 @@ public class SubCategoryService : ISubCategoryService
 
         if (request.MainCategoryId < 1)
             throw new CategoryNotFoundException("You must assign a main category to a sub category.", new Exception());
-            
+
         var entity = new SubCategoryEntity()
         {
             Name = request.Name,

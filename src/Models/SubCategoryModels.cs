@@ -1,5 +1,6 @@
 ﻿using CashTrack.Models.Common;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 
 namespace CashTrack.Models.SubCategoryModels;
 
@@ -29,7 +30,10 @@ public class AddEditSubCategoryModal : SubCategory
 public class SubCategoryListItem : Category
 {
     public string MainCategoryName { get; set; }
-    public int NumberOfExpenses { get; set; }
+    public int Purchases { get; set; }
+    public decimal Amount { get; set; }
+    public DateTime LastPurchase { get; set; }
+    public bool InUse { get; set; }
 }
 public class SubCategoryDetail : Category
 {

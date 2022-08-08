@@ -60,13 +60,13 @@
                                 Purchases
                                 </th>
                                 <th>
+                                Amount
+                                </th>
+                                <th>
                                 Last Purchase
                                 </th>
                                 <th>
                                 In Use
-                                </th>
-                                <th>
-                                Notes
                                 </th>
                                 <th>
                                 Details
@@ -85,16 +85,23 @@
                                  @category.MainCategoryName
                              </td>
                              <td>
-                                 @category.NumberOfExpenses
+                                 @category.Purchases
                              </td>
                              <td>
-                                 1/1/2022
+                                 @String.Format("{0:n}", category.Amount)
                              </td>
                              <td>
-                                 Yes
+                                 @category.LastPurchase.Date.ToShortDateString()
                              </td>
                              <td>
-                                 
+                                 @if(category.InUse)
+                                 {
+                                     <span>Yes</span>    
+                                 }
+                                 else
+                                 {
+                                     <span>No</span>
+                                 }
                              </td>
                              <td>
                                  <a asp-page="./Detail" asp-route-id="@category.Id" class="text-primary">
