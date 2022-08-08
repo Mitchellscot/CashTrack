@@ -1,15 +1,12 @@
-﻿
-
-/*
-.merchant-table-header-row {
+﻿.sub-category-table-header-row {
     height: 34px;
     overflow: hidden;
     text-overflow: ellipsis;
     max-height: 34px;
     white-space: nowrap;
 }
-
-.location-column {
+/*
+.main-category-column {
     min-width: 105px;
 }
 
@@ -17,15 +14,14 @@
     min-width: 117px;
 }
 
-.amount-column {
-    min-width: 100px;
-}
-
 .last-purchase-column {
     min-width: 142px;
 }
 
-.category-column {
+.in-use-column {
+    min-width: 108px;
+}
+.notes-column {
     min-width: 108px;
 }
 
