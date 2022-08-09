@@ -6,6 +6,8 @@ namespace CashTrack.Models.SubCategoryModels;
 
 public class SubCategoryRequest : PaginationRequest
 {
+    public bool Reversed { get; set; }
+    public SubCategoryOrderBy Order { get; set; }
 }
 
 public class SubCategoryResponse : PaginationResponse<SubCategoryListItem>

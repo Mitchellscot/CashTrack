@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using CashTrack.Services.Common;
+using CashTrack.Models.Common;
 
 namespace CashTrack.Services.SubCategoryService;
 
@@ -34,21 +35,87 @@ public class SubCategoryService : ISubCategoryService
 
     public async Task<SubCategoryResponse> GetSubCategoriesAsync(SubCategoryRequest request)
     {
-        Expression<Func<SubCategoryEntity, bool>> returnAll = (SubCategoryEntity s) => true;
-        Expression<Func<SubCategoryEntity, bool>> searchCategories = (SubCategoryEntity s) => s.Name.ToLower().Contains(request.Query.ToLower());
+        var categoryViewModels = await ParseCategoryQuery(request);
 
-        var predicate = request.Query == null ? returnAll : searchCategories;
-
-        var categories = await _subCategoryRepo.FindWithPaginationIncludeExpenses(predicate, request.PageNumber, request.PageSize);
-        var expenses = categories.SelectMany(x => x.Expenses).ToArray();
         var count = await _subCategoryRepo.GetCount(x => true);
-
-        var categoryViewModels = GetSubCategoryListItems(categories, expenses);
 
         return new SubCategoryResponse(request.PageNumber, request.PageSize, count, categoryViewModels);
     }
-    private SubCategoryListItem[] GetSubCategoryListItems(SubCategoryEntity[] categories, ExpenseEntity[] expenses)
+    private async Task<SubCategoryListItem[]> ParseCategoryQuery(SubCategoryRequest request)
     {
+        switch (request.Order)
+        {
+            case SubCategoryOrderBy.Name:
+                //only pulls the first 20 from the DB instead of pulling all of them
+                //this is what is run when you first load the page
+                if (!request.Reversed)
+                { 
+                    return await GetSubCategoriesFastPageLoad();
+                }
+
+                var categoriesByName = await GetSubCategoryListItems();
+
+                return categoriesByName.OrderByDescending(x => x.Name).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
+            case SubCategoryOrderBy.MainCategory:
+                var categoriesByMainCategory = await GetSubCategoryListItems();
+
+                return request.Reversed ? categoriesByMainCategory.OrderByDescending(x => x.MainCategoryName).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray() :
+                    categoriesByMainCategory.OrderBy(x => x.MainCategoryName).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
+
+            case SubCategoryOrderBy.Purchases:
+                var categoriesByPurchases = await GetSubCategoryListItems();
+
+                return request.Reversed ? categoriesByPurchases.OrderByDescending(x => x.Purchases).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray() :
+                    categoriesByPurchases.OrderBy(x => x.Purchases).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
+
+            case SubCategoryOrderBy.Amount:
+                var categoriesByAmount = await GetSubCategoryListItems();
+
+                return request.Reversed ? categoriesByAmount.OrderByDescending(x => x.Amount).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray() :
+                    categoriesByAmount.OrderBy(x => x.Amount).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
+
+            case SubCategoryOrderBy.LastPurchase:
+                var categoriesByLastPurchase = await GetSubCategoryListItems();
+
+                return request.Reversed ? categoriesByLastPurchase.OrderByDescending(x => x.LastPurchase).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray() :
+                    categoriesByLastPurchase.OrderBy(x => x.LastPurchase).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
+
+            case SubCategoryOrderBy.InUse:
+                var categoriesByInUse = await GetSubCategoryListItems();
+
+                return request.Reversed ? categoriesByInUse.OrderByDescending(x => x.InUse).ThenBy(x => x.Name).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray() :
+                    categoriesByInUse.OrderBy(x => x.InUse).ThenBy(x => x.Name).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
+
+            default: throw new ArgumentException();
+        }
+
+    }
+
+    private async Task<SubCategoryListItem[]> GetSubCategoryListItems()
+    {
+        var expenses = await _expenseRepo.Find(x => true);
+        var categories = await _subCategoryRepo.Find(x => true);
+        return expenses.GroupBy(e => e.CategoryId).Select(g =>
+        {
+            var results = g.Aggregate(new SubCategoryListItemAggregator(g.Key.Value, categories), (acc, e) => acc.Accumulate(e), acc => acc.Compute());
+            return new SubCategoryListItem()
+            {
+                Id = g.Key.Value,
+                Name = results.Category.Name,
+                MainCategoryName = results.Category.MainCategory.Name,
+                Purchases = results.Purchases,
+                Amount = results.Amount,
+                LastPurchase = results.LastPurchase,
+                InUse = results.Category.InUse
+
+            };
+        }).ToArray();
+    }
+    private async Task<SubCategoryListItem[]> GetSubCategoriesFastPageLoad()
+    {
+        var categories = await _subCategoryRepo.FindWithPaginationIncludeExpenses(x => true, 1, 20);
+
+        var expenses = categories.SelectMany(x => x.Expenses).ToArray();
         return expenses.GroupBy(e => e.CategoryId).Select(g =>
         {
             var results = g.Aggregate(new SubCategoryListItemAggregator(g.Key.Value, categories), (acc, e) => acc.Accumulate(e), acc => acc.Compute());

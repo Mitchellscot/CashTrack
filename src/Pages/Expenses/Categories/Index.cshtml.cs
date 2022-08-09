@@ -1,4 +1,5 @@
 using CashTrack.Common.Exceptions;
+using CashTrack.Models.Common;
 using CashTrack.Models.MainCategoryModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Pages.Shared;
@@ -20,6 +21,10 @@ namespace CashTrack.Pages.Expenses.Categories
             _subCategoryService = subcategoryService;
             _mainCategoryService = mainCategoryService;
         }
+        [BindProperty(SupportsGet = true)]
+        public SubCategoryOrderBy Query { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool Q2 { get; set; }
         [BindProperty(SupportsGet = true)]
         public string SearchTerm { get; set; }
         [BindProperty(SupportsGet = true)]
@@ -83,7 +88,7 @@ namespace CashTrack.Pages.Expenses.Categories
         private async Task<IActionResult> PrepareAndRenderPage()
         {
             MainCategoryList = await _mainCategoryService.GetMainCategoriesForDropdownListAsync();
-            SubCategoryResponse = await _subCategoryService.GetSubCategoriesAsync(new SubCategoryRequest() { PageNumber = this.PageNumber });
+            SubCategoryResponse = await _subCategoryService.GetSubCategoriesAsync(new SubCategoryRequest() { PageNumber = this.PageNumber, Order = this.Query, Reversed = this.Q2 });
             return Page();
         }
     }
