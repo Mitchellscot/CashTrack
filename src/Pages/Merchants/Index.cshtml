@@ -10,10 +10,8 @@
 
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
-
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
-
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
 
@@ -156,32 +154,52 @@
                                     @item.Location
                                                 </td>
                                                 <td width="10%">
-                                    @item.NumberOfExpenses
+                                                    <a asp-page="/Expenses/Index"
+                                                    asp-route-Query="7"
+                                                    asp-route-Q=@item.Name
+                                                    asp-route-pageNumber="1"
+                                                    class="text-black no-hyperlink-underline">
+                                                    @item.NumberOfExpenses
+                                                    </a>
                                                 </td>
                                                 <td width="20%">
-                                    @String.Format("{0:n}", item.TotalSpent)
+                                                    <a asp-page="/Expenses/Index"
+                                                    asp-route-Query="7"
+                                                    asp-route-Q=@item.Name
+                                                    asp-route-pageNumber="1"
+                                                    class="text-black no-hyperlink-underline">
+                                                    @String.Format("{0:n}", item.TotalSpent)
+                                                    </a>
                                                 </td>
                                                 <td width="15%">
                                     @if (item.LastPurchase != DateTime.MinValue)
                                     {
+                                        <a asp-page="/Expenses/Index"
+                                        asp-route-Query="0"
+                                        asp-route-Q=@item.LastPurchase.Date.ToString("yyyy-MM-dd")
+                                        asp-route-pageNumber="1"
+                                        class="text-black no-hyperlink-underline">
                                         @item.LastPurchase.Date.ToShortDateString()
+                                        </a>
                                     }
                                     else
                                     {
-                                                                <span>N/A</span>
+                                        <span>N/A</span>
                                     }
                                                 </td>
                                                 <td width="15%">
-                                    @item.Category
+                                                    <a asp-page="/Expenses/Categories/Detail" 
+                                                    asp-route-id="@item.Id" 
+                                                    class="text-black no-hyperlink-underline">
+                                                    @item.Category
+                                                    </a>
                                                 </td>
                                                 <td width="5%">
                                                     <a asp-page="./Detail" asp-route-id="@item.Id" class="text-primary">
                                                         <i class="bi bi-zoom-in detail-zoom"></i>
                                                     </a>
                                                 </td>
-
                                             </tr>
-
                         }
                             </tbody>
                         </table>

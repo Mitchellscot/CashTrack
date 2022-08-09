@@ -31,16 +31,12 @@ const loadMainCategoryOnEditModalLoad = (): void => {
 const loadMainCategoryForEditModal = (e: Event): void => {
     //these are two data attributes on every icon that loads the edit modal.
     const element = e.target as HTMLElement;
-    console.log(element);
     const subCategoryId = element.dataset.subCategoryId;
-    console.log(subCategoryId);
     const expenseId = (e.target as HTMLElement).dataset.id;
-    console.log(expenseId);
     fetch(`/api/maincategory/sub-category/${subCategoryId}`)
         .then(response => response.text())
         .then((category: string) => {
             const mainCategoryInput = <HTMLInputElement>document.getElementById(`editExpenseMainCategory-${expenseId}`);
-            console.log(category);
             mainCategoryInput.value = category;
         }).catch(err => console.log(err));
 }

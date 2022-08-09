@@ -9,6 +9,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using CashTrack.Services.Common;
+using CashTrack.Models.Common;
 
 namespace CashTrack.Services.SubCategoryService;
 
@@ -16,10 +18,12 @@ public interface ISubCategoryService
 {
     Task<SubCategoryResponse> GetSubCategoriesAsync(SubCategoryRequest request);
     Task<SubCategoryDetail> GetSubCategoryDetailsAsync(int id);
-    Task<AddEditSubCategory> CreateSubCategoryAsync(AddEditSubCategory request);
+    Task<int> CreateSubCategoryAsync(SubCategory request);
     Task<SubCategoryDropdownSelection[]> GetSubCategoryDropdownListAsync();
-    Task<int> UpdateSubCategoryAsync(AddEditSubCategory request);
+    Task<int> UpdateSubCategoryAsync(SubCategory request);
     Task<bool> DeleteSubCategoryAsync(int id);
+    Task<SubCategoryEntity> GetSubCategoryByNameAsync(string name);
+    Task<string[]> GetMatchingSubCategoryNamesAsync(string match);
 }
 public class SubCategoryService : ISubCategoryService
 {
@@ -31,38 +35,124 @@ public class SubCategoryService : ISubCategoryService
 
     public async Task<SubCategoryResponse> GetSubCategoriesAsync(SubCategoryRequest request)
     {
-        Expression<Func<SubCategoryEntity, bool>> returnAll = (SubCategoryEntity s) => true;
-        Expression<Func<SubCategoryEntity, bool>> searchCategories = (SubCategoryEntity s) => s.Name.ToLower().Contains(request.Query.ToLower());
+        var categoryViewModels = await ParseCategoryQuery(request);
 
-        var predicate = request.Query == null ? returnAll : searchCategories;
-
-        var categories = await _subCategoryRepo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
-        var count = await _subCategoryRepo.GetCount(predicate);
-
-        var categoryViewModels = categories.Select(c => new SubCategoryListItem
-        {
-            Id = c.Id,
-            Name = c.Name,
-            MainCategoryName = c.MainCategory.Name,
-            NumberOfExpenses = (int)_expenseRepo.GetCount(x => x.CategoryId == c.Id).Result
-        }).ToArray();
+        var count = await _subCategoryRepo.GetCount(x => true);
 
         return new SubCategoryResponse(request.PageNumber, request.PageSize, count, categoryViewModels);
     }
-    public async Task<AddEditSubCategory> CreateSubCategoryAsync(AddEditSubCategory request)
+    private async Task<SubCategoryListItem[]> ParseCategoryQuery(SubCategoryRequest request)
+    {
+        switch (request.Order)
+        {
+            case SubCategoryOrderBy.Name:
+                //only pulls the first 20 from the DB instead of pulling all of them
+                //this is what is run when you first load the page
+                if (!request.Reversed)
+                { 
+                    return await GetSubCategoriesFastPageLoad();
+                }
+
+                var categoriesByName = await GetSubCategoryListItems();
+
+                return categoriesByName.OrderByDescending(x => x.Name).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
+            case SubCategoryOrderBy.MainCategory:
+                var categoriesByMainCategory = await GetSubCategoryListItems();
+
+                return request.Reversed ? categoriesByMainCategory.OrderByDescending(x => x.MainCategoryName).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray() :
+                    categoriesByMainCategory.OrderBy(x => x.MainCategoryName).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
+
+            case SubCategoryOrderBy.Purchases:
+                var categoriesByPurchases = await GetSubCategoryListItems();
+
+                return request.Reversed ? categoriesByPurchases.OrderByDescending(x => x.Purchases).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray() :
+                    categoriesByPurchases.OrderBy(x => x.Purchases).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
+
+            case SubCategoryOrderBy.Amount:
+                var categoriesByAmount = await GetSubCategoryListItems();
+
+                return request.Reversed ? categoriesByAmount.OrderByDescending(x => x.Amount).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray() :
+                    categoriesByAmount.OrderBy(x => x.Amount).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
+
+            case SubCategoryOrderBy.LastPurchase:
+                var categoriesByLastPurchase = await GetSubCategoryListItems();
+
+                return request.Reversed ? categoriesByLastPurchase.OrderByDescending(x => x.LastPurchase).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray() :
+                    categoriesByLastPurchase.OrderBy(x => x.LastPurchase).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
+
+            case SubCategoryOrderBy.InUse:
+                var categoriesByInUse = await GetSubCategoryListItems();
+
+                return request.Reversed ? categoriesByInUse.OrderByDescending(x => x.InUse).ThenBy(x => x.Name).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray() :
+                    categoriesByInUse.OrderBy(x => x.InUse).ThenBy(x => x.Name).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
+
+            default: throw new ArgumentException();
+        }
+
+    }
+
+    private async Task<SubCategoryListItem[]> GetSubCategoryListItems()
+    {
+        var expenses = await _expenseRepo.Find(x => true);
+        var categories = await _subCategoryRepo.Find(x => true);
+        return expenses.GroupBy(e => e.CategoryId).Select(g =>
+        {
+            var results = g.Aggregate(new SubCategoryListItemAggregator(g.Key.Value, categories), (acc, e) => acc.Accumulate(e), acc => acc.Compute());
+            return new SubCategoryListItem()
+            {
+                Id = g.Key.Value,
+                Name = results.Category.Name,
+                MainCategoryName = results.Category.MainCategory.Name,
+                Purchases = results.Purchases,
+                Amount = results.Amount,
+                LastPurchase = results.LastPurchase,
+                InUse = results.Category.InUse
+
+            };
+        }).ToArray();
+    }
+    private async Task<SubCategoryListItem[]> GetSubCategoriesFastPageLoad()
+    {
+        var categories = await _subCategoryRepo.FindWithPaginationIncludeExpenses(x => true, 1, 20);
+
+        var expenses = categories.SelectMany(x => x.Expenses).ToArray();
+        return expenses.GroupBy(e => e.CategoryId).Select(g =>
+        {
+            var results = g.Aggregate(new SubCategoryListItemAggregator(g.Key.Value, categories), (acc, e) => acc.Accumulate(e), acc => acc.Compute());
+            return new SubCategoryListItem()
+            {
+                Id = g.Key.Value,
+                Name = results.Category.Name,
+                MainCategoryName = results.Category.MainCategory.Name,
+                Purchases = results.Purchases,
+                Amount = results.Amount,
+                LastPurchase = results.LastPurchase,
+                InUse = results.Category.InUse
+
+            };
+        }).ToArray();
+    }
+    public async Task<int> CreateSubCategoryAsync(SubCategory request)
     {
         var categories = await _subCategoryRepo.Find(x => true);
         if (categories.Any(x => x.Name == request.Name))
             throw new DuplicateNameException(nameof(SubCategoryEntity), request.Name);
 
-        var subCategoryEntity = _mapper.Map<SubCategoryEntity>(request);
+        if (request.MainCategoryId < 1)
+            throw new CategoryNotFoundException("You must assign a main category to a sub category.", new Exception());
 
-        //Here i am setting the id and then returning addedit because I'm lazy and returning the entity causes json circular reference issues.
-        request.Id = subCategoryEntity.Id;
+        var entity = new SubCategoryEntity()
+        {
+            Name = request.Name,
+            InUse = request.InUse,
+            MainCategoryId = request.MainCategoryId,
+            Notes = request.Notes,
 
-        return request;
+        };
+
+        return await _subCategoryRepo.Create(entity);
     }
-    public async Task<int> UpdateSubCategoryAsync(AddEditSubCategory request)
+    public async Task<int> UpdateSubCategoryAsync(SubCategory request)
     {
         var categories = await _subCategoryRepo.Find(x => x.Name == request.Name);
         if (categories.Any(x => x.Id != request.Id))
@@ -101,6 +191,19 @@ public class SubCategoryService : ISubCategoryService
             Category = x.Name
         }).ToArray();
     }
+
+    public async Task<SubCategoryEntity> GetSubCategoryByNameAsync(string name)
+    {
+        var category = (await _subCategoryRepo.Find(x => x.Name == name)).FirstOrDefault();
+        if (category == null)
+            throw new CategoryNotFoundException(name);
+        return category;
+    }
+
+    public async Task<string[]> GetMatchingSubCategoryNamesAsync(string match)
+    {
+        return (await _subCategoryRepo.Find(x => x.Name.StartsWith(match))).Select(x => x.Name).Take(10).ToArray();
+    }
 }
 
 public class SubCategoryMapperProfile : Profile
@@ -114,7 +217,7 @@ public class SubCategoryMapperProfile : Profile
             .ForMember(c => c.Id, o => o.MapFrom(src => src.Id))
             .ReverseMap();
 
-        CreateMap<AddEditSubCategory, SubCategoryEntity>()
+        CreateMap<SubCategory, SubCategoryEntity>()
             .ForMember(c => c.Id, o => o.MapFrom(src => src.Id))
             .ForMember(c => c.Name, o => o.MapFrom(src => src.Name))
             .ForMember(c => c.MainCategoryId, o => o.MapFrom(src => src.MainCategoryId))
