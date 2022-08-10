@@ -18,40 +18,11 @@ namespace CashTrack.Tests.Controllers
             _sut = new MerchantsController(_service.Object);
         }
         [Fact]
-        public async void GetAll()
+        public async void Should_GetMatchingMerchants()
         {
-            var request = new MerchantRequest();
-            var result = await _sut.GetAllMerchants(request);
+            var result = await _sut.GetMatchingMerchants("Costco");
             var viewResult = Assert.IsType<ActionResult<MerchantResponse>>(result);
             _service.Verify(s => s.GetMerchantsAsync(It.IsAny<MerchantRequest>()), Times.AtLeastOnce());
-        }
-        [Fact]
-        public async void GetById()
-        {
-            var result = await _sut.GetMerchantDetail(1);
-            var viewResult = Assert.IsType<ActionResult<MerchantDetail>>(result);
-            _service.Verify(s => s.GetMerchantDetailAsync(It.IsAny<int>()), Times.AtLeastOnce());
-        }
-        [Fact]
-        public async void Create()
-        {
-            var request = new AddEditMerchant();
-            var result = await _sut.CreateMerchant(request);
-            var viewResult = Assert.IsType<ActionResult<AddEditMerchant>>(result);
-            _service.Verify(s => s.CreateMerchantAsync(It.IsAny<AddEditMerchant>()), Times.AtLeastOnce());
-        }
-        [Fact]
-        public async void Update()
-        {
-            var request = new AddEditMerchant() with { Id = int.MaxValue };
-            var result = await _sut.UpdateMerchant(request);
-            _service.Verify(s => s.UpdateMerchantAsync(It.IsAny<AddEditMerchant>()), Times.AtLeastOnce());
-        }
-        [Fact]
-        public async void Delete()
-        {
-            var result = await _sut.DeleteMerchant(int.MaxValue);
-            _service.Verify(s => s.DeleteMerchantAsync(It.IsAny<int>()), Times.AtLeastOnce());
         }
     }
 }
