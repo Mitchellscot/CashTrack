@@ -10,7 +10,6 @@ using System.IO;
 using Microsoft.Extensions.Options;
 using CashTrack.Common;
 using Microsoft.AspNetCore.Hosting;
-using System.Diagnostics;
 
 namespace CashTrack.Data
 {
@@ -50,9 +49,6 @@ namespace CashTrack.Data
     {
         public static void Initialize(this ModelBuilder mb, UserEntity[] users, string csvFileDirectory, string env, bool emptyDatabase)
         {
-            Debug.WriteLine($"Environment: {env}");
-            Debug.WriteLine($"Create Database: {emptyDatabase}");
-
             mb.Entity<ExpenseTags>().HasKey(et => new { et.ExpenseId, et.TagId });
 
             mb.Entity<ExpenseTags>()

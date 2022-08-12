@@ -1,0 +1,9 @@
+global using Xunit;
+global using Microsoft.AspNetCore.Mvc.Testing;
+global using CashTrack.Data;
+global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
+global using System;
+global using System.Linq;

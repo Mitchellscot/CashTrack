@@ -3,11 +3,12 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<NoLogo>true</NoLogo>
-		<StartupObject>CashTrack.Program</StartupObject>
+		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<InternalsVisibleTo Include="$(AssemblyName).Tests" />
 		<InternalsVisibleTo Include="$(AssemblyName).IntegrationTests" />
+		<InternalsVisibleTo Include="IntegrationTests" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<NoWarn>1701,1702,80001;</NoWarn>
@@ -35,20 +36,20 @@
 		<None Remove="Migrations\**" />
 	</ItemGroup>
 	<ItemGroup>
-	  <None Remove="Scripts\Settings\settings.ts" />
-	  <None Remove="Scripts\SubCategories\subCategoryDetail.ts" />
-	  <None Remove="Scripts\Utility\force-refund.ts" />
-	  <None Remove="Scripts\Utility\format-amount.ts" />
-	  <None Remove="Scripts\Utility\handle-expense-dropdown.ts" />
-	  <None Remove="Scripts\Utility\load-main-category.ts" />
-	  <None Remove="Scripts\Utility\merchant-autocomplete.ts" />
-	  <None Remove="Scripts\Utility\online-merchant.ts" />
-	  <None Remove="Scripts\Utility\online-source.ts" />
-	  <None Remove="Scripts\Utility\query-params.ts" />
-	  <None Remove="Scripts\Utility\refund-calculations.ts" />
-	  <None Remove="Scripts\Utility\source-autocomplete.ts" />
-	  <None Remove="Scripts\Utility\split-calculations.ts" />
-	  <None Remove="Scripts\Utility\subcategory-autocomplete.ts" />
+		<None Remove="Scripts\Settings\settings.ts" />
+		<None Remove="Scripts\SubCategories\subCategoryDetail.ts" />
+		<None Remove="Scripts\Utility\force-refund.ts" />
+		<None Remove="Scripts\Utility\format-amount.ts" />
+		<None Remove="Scripts\Utility\handle-expense-dropdown.ts" />
+		<None Remove="Scripts\Utility\load-main-category.ts" />
+		<None Remove="Scripts\Utility\merchant-autocomplete.ts" />
+		<None Remove="Scripts\Utility\online-merchant.ts" />
+		<None Remove="Scripts\Utility\online-source.ts" />
+		<None Remove="Scripts\Utility\query-params.ts" />
+		<None Remove="Scripts\Utility\refund-calculations.ts" />
+		<None Remove="Scripts\Utility\source-autocomplete.ts" />
+		<None Remove="Scripts\Utility\split-calculations.ts" />
+		<None Remove="Scripts\Utility\subcategory-autocomplete.ts" />
 	</ItemGroup>
 	<ItemGroup>
 		<TypeScriptCompile Include="Scripts\Expenses\expenses.ts" />
