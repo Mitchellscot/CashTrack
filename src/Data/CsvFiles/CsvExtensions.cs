@@ -15,7 +15,7 @@ namespace CashTrack.Data.CsvFiles
                 yield return new CsvModels.CsvExpense()
                 {
                     Id = Convert.ToInt32(columns[0]),
-                    Date = DateTimeOffset.Parse(columns[1],
+                    Date = DateTime.Parse(columns[1],
                     null
                     , DateTimeStyles.AdjustToUniversal),
                     Amount = Math.Round(Decimal.Parse(columns[2]), 2),
@@ -109,7 +109,7 @@ namespace CashTrack.Data.CsvFiles
                 yield return new CsvModels.CsvIncome()
                 {
                     Id = Convert.ToInt32(columns[0]),
-                    Date = DateTimeOffset.Parse(columns[1], null
+                    Date = DateTime.Parse(columns[1], null
                     , DateTimeStyles.AdjustToUniversal),
                     Amount = Math.Round(Convert.ToDecimal(columns[2]), 2),
                     CategoryId = Convert.ToInt32(columns[3]),

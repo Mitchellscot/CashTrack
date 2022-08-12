@@ -7,7 +7,7 @@ namespace CashTrack.Models.Common
     {
         private decimal _amount;
         public int Id { get; set; }
-        public DateTimeOffset Date { get; set; }
+        public DateTime Date { get; set; }
         public decimal Amount
         {
             get => _amount;
@@ -17,8 +17,8 @@ namespace CashTrack.Models.Common
     public abstract class TransactionRequest : PaginationRequest
     {
         public DateOptions DateOptions { get; set; }
-        public DateTimeOffset BeginDate { get; set; } = DateTimeOffset.UtcNow;
-        public DateTimeOffset EndDate { get; set; } = DateTimeOffset.UtcNow;
+        public DateTime BeginDate { get; set; } = DateTime.UtcNow;
+        public DateTime EndDate { get; set; } = DateTime.UtcNow;
     }
     public abstract class TransactionResponse<T> : PaginationResponse<T> where T : Transaction
     {

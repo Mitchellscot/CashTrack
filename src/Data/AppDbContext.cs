@@ -51,14 +51,14 @@ namespace CashTrack.Data
         }
         private void ConfigureForSqlLite(ModelBuilder modelBuilder)
         {
-            //used to convert decimals and datetimeoffset for the sqllite in memory database.
+            //used to convert decimals and DateTime for the sqllite in memory database.
             if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
             {
                 foreach (var entityType in modelBuilder.Model.GetEntityTypes())
                 {
                     var properties = entityType.ClrType.GetProperties().Where(p => p.PropertyType == typeof(decimal));
                     var dateTimeProperties = entityType.ClrType.GetProperties()
-                        .Where(p => p.PropertyType == typeof(DateTimeOffset));
+                        .Where(p => p.PropertyType == typeof(DateTime));
 
                     foreach (var property in properties)
                     {
@@ -68,7 +68,7 @@ namespace CashTrack.Data
                     foreach (var property in dateTimeProperties)
                     {
                         modelBuilder.Entity(entityType.Name).Property(property.Name)
-                            .HasConversion(new DateTimeOffsetToBinaryConverter());
+                            .HasConversion(new DateTimeToBinaryConverter());
                     }
                 }
             }

@@ -69,7 +69,7 @@ public class ExpenseSplit
     [Required]
     public decimal Tax { get; set; }
     [Required]
-    public DateTimeOffset Date { get; set; }
+    public DateTime Date { get; set; }
     [Required]
     public string Merchant { get; set; }
 }
@@ -78,7 +78,7 @@ public class ExpenseRefund
     private decimal _originalAmount;
     private decimal _refundAmount;
     public int Id { get; set; }
-    public DateTimeOffset Date { get; set; }
+    public DateTime Date { get; set; }
     public decimal OriginalAmount
     {
         get => _originalAmount;

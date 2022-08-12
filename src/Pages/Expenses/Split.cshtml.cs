@@ -24,7 +24,7 @@ namespace CashTrack.Pages.Expenses
         [BindProperty]
         public List<ExpenseSplit> ExpenseSplits { get; set; }
         public decimal Total { get; set; }
-        public DateTimeOffset Date { get; set; }
+        public DateTime Date { get; set; }
         public string Merchant { get; set; }
         [BindProperty]
         public int Split { get; set; }

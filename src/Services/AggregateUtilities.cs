@@ -32,7 +32,7 @@ namespace CashTrack.Services
         {
             var monthlyStatistics = new List<MonthlyStatistics>();
 
-            var monthlyStats = transactions.GroupBy(e => e.Date.DateTime)
+            var monthlyStats = transactions.GroupBy(e => e)
             .Select(g =>
             {
                 var results = g.Aggregate(new StatisticsAggregator<T>(),
@@ -41,7 +41,7 @@ namespace CashTrack.Services
 
                 return new MonthlyStatistics()
                 {
-                    Date = g.Key,
+                    Date = g.Key.Date,
                     Average = results.Average,
                     Min = results.Min,
                     Max = results.Max,

@@ -22,7 +22,7 @@ namespace CashTrack.Services.Common
         public SubCategoryListItemAggregator Accumulate(ExpenseEntity e)
         {
             Amount += e.Amount;
-            LastPurchase = e.Date > this.LastPurchase ? e.Date.DateTime : this.LastPurchase;
+            LastPurchase = e.Date > this.LastPurchase ? e.Date : this.LastPurchase;
             Purchases++;
             return this;
         }

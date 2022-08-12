@@ -48,7 +48,7 @@ namespace CashTrack.Tests.Services
         [InlineData(3)]
         public async Task Get_Expense_By_Id(int id)
         {
-            _expenseRepo.Setup(r => r.FindById(id)).ReturnsAsync(_data[id-1]);
+            _expenseRepo.Setup(r => r.FindById(id)).ReturnsAsync(_data[id - 1]);
             var result = await _sut.GetExpenseByIdAsync(id);
             result.Id.ShouldBe(id);
         }
@@ -172,7 +172,7 @@ namespace CashTrack.Tests.Services
                 Amount = 2,
                 Date = DateTime.UtcNow,
                 Taxed = false,
-                SubCategoryId=1
+                SubCategoryId = 1
             };
             _expenseRepo.Setup(r => r.Create(It.IsAny<ExpenseEntity>())).ReturnsAsync(1);
             var expense = _data[0];
@@ -184,7 +184,7 @@ namespace CashTrack.Tests.Services
         {
             var editedExpense = new Expense()
             {
-                Id=1,
+                Id = 1,
                 Amount = 5,
                 Date = DateTime.Now,
                 SubCategoryId = 2,
@@ -202,7 +202,7 @@ namespace CashTrack.Tests.Services
             };
             _expenseRepo.Setup(r => r.Update(It.IsAny<ExpenseEntity>())).ReturnsAsync(1);
             _expenseRepo.Setup(r => r.FindById(It.IsAny<int>())).ReturnsAsync(currentExpense);
-            _subcategoryRepo.Setup(r => r.FindById(It.IsAny<int>())).ReturnsAsync(new SubCategoryEntity() {Id = 1, Name="test" });
+            _subcategoryRepo.Setup(r => r.FindById(It.IsAny<int>())).ReturnsAsync(new SubCategoryEntity() { Id = 1, Name = "test" });
             var expense = _data[0];
             var result = await _sut.UpdateExpenseAsync(editedExpense);
             result.ShouldBe(1);
@@ -242,7 +242,7 @@ namespace CashTrack.Tests.Services
             result.ListItems.Count().ShouldBe(1);
         }
         [Fact]
-        public async Task Get_Expenses_By_Date_No_Pagination() 
+        public async Task Get_Expenses_By_Date_No_Pagination()
         {
             _expenseRepo.Setup(r => r.Find(It.IsAny<Expression<Func<ExpenseEntity, bool>>>())).ReturnsAsync(_data);
             var result = await _sut.GetExpensesByDateWithoutPaginationAsync(DateTime.Now);
@@ -254,7 +254,7 @@ namespace CashTrack.Tests.Services
             {
                 new ExpenseEntity() {
                     Id = 1,
-                    Date = DateTimeOffset.UtcNow.AddDays(-3),
+                    Date = DateTime.UtcNow.AddDays(-3),
                     Amount = 25.00m,
                     Category = new SubCategoryEntity() {
                         Id=1,
@@ -272,7 +272,7 @@ namespace CashTrack.Tests.Services
                 },
                 new ExpenseEntity() {
                     Id = 2,
-                    Date = DateTimeOffset.UtcNow.AddDays(-2),
+                    Date = DateTime.UtcNow.AddDays(-2),
                     Amount = 15.00m,
                     Category = new SubCategoryEntity() {
                         Id=2,
@@ -290,7 +290,7 @@ namespace CashTrack.Tests.Services
                 },
                 new ExpenseEntity() {
                     Id = 3,
-                    Date = DateTimeOffset.UtcNow.AddDays(-1),
+                    Date = DateTime.UtcNow.AddDays(-1),
                     Amount = 5.00m,
                     Category = new SubCategoryEntity() {
                         Id=3,

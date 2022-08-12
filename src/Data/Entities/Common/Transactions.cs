@@ -7,9 +7,9 @@ namespace CashTrack.Data.Entities.Common
 {
     public abstract class Transactions : IEntity
     {
-        private DateTimeOffset _date;
+        private DateTime _date;
         [Required]
-        public DateTimeOffset Date
+        public DateTime Date
         {
             get => _date;
             set => _date = value.ToUniversalTime();

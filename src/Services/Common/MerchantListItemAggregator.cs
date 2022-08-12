@@ -30,7 +30,7 @@ namespace CashTrack.Services.Common
         public MerchantListItemAggregator Accumulate(ExpenseEntity e)
         {
             Amount += e.Amount;
-            LastPurchase = e.Date > this.LastPurchase ? e.Date.DateTime : this.LastPurchase;
+            LastPurchase = e.Date > this.LastPurchase ? e.Date : this.LastPurchase;
             Purchases++;
             Categories.Add(e.CategoryId.Value);
             return this;

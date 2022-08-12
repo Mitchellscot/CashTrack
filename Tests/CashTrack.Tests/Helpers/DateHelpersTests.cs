@@ -34,9 +34,9 @@
 //        [InlineData("2005-12-03")]
 //        public void GetMonthDatesWorks(string month)
 //        {
-//            var parsedMonth = DateTimeOffset.Parse(month);
+//            var parsedMonth = DateTime.Parse(month);
 //            var result = DateHelpers.GetMonthDatesFromDate(parsedMonth);
-//            var beginingOfMonth = new DateTimeOffset(parsedMonth.Year, parsedMonth.Month, 1, 0, 0, 0, new TimeSpan(0, 0, 0));
+//            var beginingOfMonth = new DateTime(parsedMonth.Year, parsedMonth.Month, 1, 0, 0, 0);
 
 //            result.startDate.ShouldBe(beginingOfMonth);
 //            result.endDate.Day.ShouldBeOneOf(28, 29, 30, 31);
@@ -65,13 +65,13 @@
 //        public void GetCurrentYearWorks()
 //        {
 //            var result = DateHelpers.GetCurrentYear();
-//            result.Year.ShouldBe(DateTimeOffset.UtcNow.Year);
+//            result.Year.ShouldBe(DateTime.UtcNow.Year);
 //        }
 //        [Fact]
 //        public void GetCurrentMonthWorks()
 //        {
 //            var result = DateHelpers.GetCurrentMonth();
-//            result.Month.ShouldBe(DateTimeOffset.UtcNow.Month);
+//            result.Month.ShouldBe(DateTime.UtcNow.Month);
 //        }
 //        [Fact]
 //        public void GetCurrentQuarterWorks()

@@ -29,7 +29,7 @@ namespace CashTrack.Services.Common
         public SourceListItemAggregator Accumulate(IncomeEntity i)
         {
             Amount += i.Amount;
-            LastPayment = i.Date > this.LastPayment ? i.Date.DateTime : this.LastPayment;
+            LastPayment = i.Date > this.LastPayment ? i.Date : this.LastPayment;
             Payments++;
             Categories.Add(i.CategoryId.Value);
             return this;

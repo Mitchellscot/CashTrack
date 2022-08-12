@@ -41,7 +41,7 @@
 //        public async Task Create()
 //        {
 //            _repo.Setup(x => x.Create(It.IsAny<Incomes>())).ReturnsAsync(true);
-//            var request = new AddEditIncome() { Amount = 1m, Date = DateTimeOffset.UtcNow, CategoryId = 1, };
+//            var request = new AddEditIncome() { Amount = 1m, Date = DateTime.UtcNow, CategoryId = 1, };
 //            var result = await _sut.CreateIncomeAsync(request);
 //            result.Amount.ShouldBe(1m);
 //        }
@@ -49,7 +49,7 @@
 //        public async Task Update()
 //        {
 //            _repo.Setup(x => x.Update(It.IsAny<Incomes>())).ReturnsAsync(true);
-//            var objectToUpdate = new Incomes { id = 1, amount = 1m, date = DateTimeOffset.UtcNow };
+//            var objectToUpdate = new Incomes { id = 1, amount = 1m, date = DateTime.UtcNow };
 //            _repo.Setup(x => x.FindById(1)).ReturnsAsync(objectToUpdate);
 //            var request = new AddEditIncome() { Id = 1, Amount = 2m };
 //            var result = await _sut.UpdateIncomeAsync(request);
@@ -59,7 +59,7 @@
 //        public async Task Delete()
 //        {
 //            _repo.Setup(x => x.Delete(It.IsAny<Incomes>())).ReturnsAsync(true);
-//            var objectToUpdate = new Incomes() { id = 1, amount = 5m, categoryid = 12, date = DateTimeOffset.UtcNow };
+//            var objectToUpdate = new Incomes() { id = 1, amount = 5m, categoryid = 12, date = DateTime.UtcNow };
 //            _repo.Setup(x => x.FindById(1)).ReturnsAsync(objectToUpdate);
 //            var result = await _sut.DeleteIncomeAsync(1);
 //            result.ShouldBe(true);
@@ -103,7 +103,7 @@
 //            {
 //                new Incomes() {
 //                    id = 1,
-//                    date = DateTimeOffset.UtcNow.AddDays(-3),
+//                    date = DateTime.UtcNow.AddDays(-3),
 //                    amount = 25.00m,
 //                    category = new IncomeCategories() {
 //                        id=1,
@@ -112,7 +112,7 @@
 //                },
 //                new Incomes() {
 //                    id = 2,
-//                    date = DateTimeOffset.UtcNow.AddDays(-3),
+//                    date = DateTime.UtcNow.AddDays(-3),
 //                    amount = 15.00m,
 //                    category = new IncomeCategories() {
 //                        id=1,
@@ -121,7 +121,7 @@
 //                },
 //                new Incomes() {
 //                    id = 3,
-//                    date = DateTimeOffset.UtcNow.AddDays(-3),
+//                    date = DateTime.UtcNow.AddDays(-3),
 //                    amount = 5.00m,
 //                    category = new IncomeCategories() {
 //                        id=1,

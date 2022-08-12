@@ -32,31 +32,31 @@ namespace CashTrack.Tests.Services.Common
         [Fact]
         public void Get_Current_Month_Dates_Works()
         {
-            var currentMonthDates = DateHelpers.GetMonthDatesFromDate(DateTimeOffset.UtcNow);
+            var currentMonthDates = DateHelpers.GetMonthDatesFromDate(DateTime.UtcNow);
             currentMonthDates.startDate.Day.ShouldBe(1);
             currentMonthDates.startDate.Month.ShouldBe(DateTime.UtcNow.Month);
         }
         [Fact]
         public void Get_Last_Day_Of_Month_Works()
         {
-            var lastDay = DateHelpers.GetLastDayOfMonth(DateTimeOffset.UtcNow);
+            var lastDay = DateHelpers.GetLastDayOfMonth(DateTime.UtcNow);
             lastDay.ShouldBeGreaterThan(27);
             lastDay.ShouldBeLessThan(32);
         }
         [Fact]
         public void Get_Quarter_Dates_Works()
         {
-            var dates = DateHelpers.GetQuarterDatesFromDate(DateTimeOffset.UtcNow);
-            dates.startDate.ShouldBeLessThan(DateTimeOffset.UtcNow);
-            dates.endDate.ShouldBeGreaterThan(DateTimeOffset.UtcNow);
+            var dates = DateHelpers.GetQuarterDatesFromDate(DateTime.UtcNow);
+            dates.startDate.ShouldBeLessThan(DateTime.UtcNow);
+            dates.endDate.ShouldBeGreaterThan(DateTime.UtcNow);
         }
         [Fact]
         public void Get_Year_Dates_Works()
         {
-            var dates = DateHelpers.GetYearDatesFromDate(DateTimeOffset.UtcNow);
+            var dates = DateHelpers.GetYearDatesFromDate(DateTime.UtcNow);
             dates.startDate.Day.ShouldBe(1);
             dates.endDate.Day.ShouldBe(31);
-            dates.startDate.Year.ShouldBe(DateTimeOffset.UtcNow.Year);
+            dates.startDate.Year.ShouldBe(DateTime.UtcNow.Year);
         }
 
         [Theory]

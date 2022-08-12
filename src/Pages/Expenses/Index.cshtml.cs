@@ -47,22 +47,22 @@ namespace CashTrack.Pages.Expenses
 
             if (query == 0 && q != null)
             {
-                ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificDate, BeginDate = DateTimeOffset.Parse(q), PageNumber = pageNumber });
+                ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificDate, BeginDate = DateTime.Parse(q), PageNumber = pageNumber });
                 return await PrepareAndRenderPage(this.Query);
             }
             if (query == 1 && q != null && q2 != null)
             {
-                ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.DateRange, BeginDate = DateTimeOffset.Parse(q), EndDate = DateTimeOffset.Parse(q2), PageNumber = pageNumber });
+                ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.DateRange, BeginDate = DateTime.Parse(q), EndDate = DateTime.Parse(q2), PageNumber = pageNumber });
                 return await PrepareAndRenderPage(this.Query);
             }
             if (query == 2 && q != null)
             {
-                ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificMonthAndYear, BeginDate = DateTimeOffset.Parse(q), PageNumber = pageNumber });
+                ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificMonthAndYear, BeginDate = DateTime.Parse(q), PageNumber = pageNumber });
                 return await PrepareAndRenderPage(this.Query);
             }
             if (query == 3 && q != null)
             {
-                ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificQuarter, BeginDate = DateTimeOffset.Parse(q), PageNumber = pageNumber });
+                ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.SpecificQuarter, BeginDate = DateTime.Parse(q), PageNumber = pageNumber });
                 return await PrepareAndRenderPage(this.Query);
             }
             if (query == 4 && q != null)
