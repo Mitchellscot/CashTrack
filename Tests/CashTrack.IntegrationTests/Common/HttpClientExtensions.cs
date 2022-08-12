@@ -41,11 +41,11 @@ namespace CashTrack.IntegrationTests.Common
             }
 
             var submit = form.GetSubmission(submitButton);
-            var target = (Uri)submit.Target;
+            var target = (Uri)submit!.Target;
             if (submitButton.HasAttribute("formaction"))
             {
                 var formaction = submitButton.GetAttribute("formaction");
-                target = new Uri(formaction, UriKind.Relative);
+                target = new Uri(formaction!, UriKind.Relative);
             }
             var submission = new HttpRequestMessage(new HttpMethod(submit.Method.ToString()), target)
             {

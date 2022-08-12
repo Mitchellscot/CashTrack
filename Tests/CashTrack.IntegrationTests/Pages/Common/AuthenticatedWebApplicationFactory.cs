@@ -1,18 +1,32 @@
-﻿using CashTrack.Data;
+﻿using Bogus;
+using CashTrack.Data;
+using CashTrack.IntegrationTests.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
-using System;
+using System.IO;
 using System.Linq;
 
-namespace CashTrack.IntegrationTests.Common
+namespace CashTrack.IntegrationTests.Pages.Common
 {
-    public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
+    public class AuthenticatedWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
     {
+        public readonly TestSettings _settings;
+        public Faker _faker;
+        public AuthenticatedWebApplicationFactory()
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.Test.json")
+                .Build();
+            _settings = configuration.GetSection("TestSettings").Get<TestSettings>();
+            _faker = new Faker();
+        }
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.UseEnvironment("Test");
@@ -26,8 +40,6 @@ namespace CashTrack.IntegrationTests.Common
                 connection.Open();
                 services.AddDbContext<AppDbContext>(options =>
                 {
-                    //options.UseInMemoryDatabase(Guid.NewGuid().ToString());
-                    //options.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=CashTrackTest;Trusted_Connection=True;");
                     options.UseSqlite(connection);
                 });
                 services.AddHeaderPropagation(options =>
@@ -46,22 +58,10 @@ namespace CashTrack.IntegrationTests.Common
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<AppDbContext>();
                     var logger = scopedServices
-                        .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
+                        .GetRequiredService<ILogger<AuthenticatedWebApplicationFactory<TStartup>>>();
 
                     db.Database.EnsureCreated();
-
-                    //I think the database would already be seeded, though if not you can do it here.
-                    //try
-                    //{
-                    //    Utilities.InitializeDbForTests(db);
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    logger.LogError(ex, "An error occurred seeding the " +
-                    //        "database with test messages. Error: {Message}", ex.Message);
-                    //}
                 }
-
             });
         }
     }

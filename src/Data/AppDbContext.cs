@@ -10,6 +10,10 @@ using System.IO;
 using Microsoft.Extensions.Options;
 using CashTrack.Common;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Reflection.Emit;
+using System.Reflection;
+using System.Linq;
 
 namespace CashTrack.Data
 {
@@ -42,6 +46,32 @@ namespace CashTrack.Data
             base.OnModelCreating(mb);
             var csvFileDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Code", "CashTrack", "ct-data");
             mb.Initialize(_appSettings.Value.Users, csvFileDirectory, _env.EnvironmentName, _appSettings.Value.CreateDb);
+            ConfigureForSqlLite(mb);
+
+        }
+        private void ConfigureForSqlLite(ModelBuilder modelBuilder)
+        {
+            //used to convert decimals and datetimeoffset for the sqllite in memory database.
+            if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
+            {
+                foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+                {
+                    var properties = entityType.ClrType.GetProperties().Where(p => p.PropertyType == typeof(decimal));
+                    var dateTimeProperties = entityType.ClrType.GetProperties()
+                        .Where(p => p.PropertyType == typeof(DateTimeOffset));
+
+                    foreach (var property in properties)
+                    {
+                        modelBuilder.Entity(entityType.Name).Property(property.Name).HasConversion<double>();
+                    }
+
+                    foreach (var property in dateTimeProperties)
+                    {
+                        modelBuilder.Entity(entityType.Name).Property(property.Name)
+                            .HasConversion(new DateTimeOffsetToBinaryConverter());
+                    }
+                }
+            }
         }
     }
     //model builder extension to seed DB data
@@ -109,4 +139,5 @@ namespace CashTrack.Data
 
         }
     }
+
 }

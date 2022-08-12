@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using System.Linq;
+using CashTrack.IntegrationTests.Pages.Common;
 
 namespace CashTrack.IntegrationTests.Pages.IndexTests;
 
@@ -37,7 +38,6 @@ public class IndexTests
     [InlineData("/Income")]
     [InlineData("/Merchants")]
     [InlineData("/Sources")]
-
     public async Task Redirect_All_Endpoints_When_Not_Authenticated(string url)
     {
         var client = _factory.CreateClient(new WebApplicationFactoryClientOptions
@@ -91,45 +91,9 @@ public class IndexTests
         response.EnsureSuccessStatusCode();
 
     }
-    [Fact]
-    public async Task Can_Log_In_To_Secure_Page()
-    {
-        var client = _factory.CreateClient();
-
-        var defaultPage = await client.GetAsync("/");
-        var content = await HtmlHelpers.GetDocumentAsync(defaultPage);
-
-        var passWord = "8043";
-        var name = "Mitch";
-        //grab the form and the submit button with anglesharps JS looking syntax
-        var form = content.QuerySelector<IHtmlFormElement>("#loginForm");
-        var button = content.QuerySelector<IHtmlButtonElement>("#loginButton");
-
-        var response = await client.SendAsync((IHtmlFormElement)form!, (IHtmlButtonElement)button!, new List<KeyValuePair<string, string>>
-        {
-            new KeyValuePair<string, string>("UserName", name),
-            new KeyValuePair<string, string>("Password", passWord)
-        });
-
-        var result = await response.Content.ReadAsStringAsync();
-        result.ShouldContain($"Welcome {name}");
-
-        defaultPage.EnsureSuccessStatusCode();
-        response.EnsureSuccessStatusCode();
-
-        var expensePage = await client.GetAsync("/Expenses");
-        var expensePageresult = await expensePage.Content.ReadAsStringAsync();
-        var expensePageContent = await HtmlHelpers.GetDocumentAsync(expensePage);
-
-        expensePage.EnsureSuccessStatusCode();
-
-        // newClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("set-cookie", response.Headers);
-
-    }
     private void PrintRequestAndResponse(object request, object response)
     {
         _output.WriteLine(request.ToString());
         _output.WriteLine(response.ToString());
     }
-
 }
