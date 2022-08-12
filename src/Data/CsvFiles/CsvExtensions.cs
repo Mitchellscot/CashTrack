@@ -48,7 +48,8 @@ namespace CashTrack.Data.CsvFiles
                     Id = Convert.ToInt32(columns[0]),
                     Name = columns[1],
                     MainCategoryId = Convert.ToInt32(columns[2]),
-                    InUse = ParseBoolean(columns[3])
+                    InUse = ParseBoolean(columns[3]),
+                    Notes = columns[4] == "" ? null : columns[4]
                 };
             }
         }
