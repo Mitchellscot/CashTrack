@@ -19,7 +19,7 @@
             <img src="\images\cash-track.png" height="200" width="200" alt="Cash Track Logo" />
         </div>
         <div class="container pt-3">
-            <form method="post">
+            <form method="post" id="loginForm">
                 <div class="input-group mb-3">
                     <input type="text" class="text-center form-control" asp-for=@Model.UserName placeholder="Name" required />
                 </div>
@@ -27,7 +27,7 @@
                     <input asp-for=@Model.Password type="password" class="text-center form-control" placeholder="Password" required />
                 </div>
                 <div class="d-flex justify-content-center mb-3">
-                    <button type="submit" class="btn btn-info">Sign In</button>
+                    <button type="submit" class="btn btn-info" id="loginButton">Sign In</button>
                 </div>
             </form>
 

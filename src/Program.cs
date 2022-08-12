@@ -103,36 +103,36 @@ namespace CashTrack
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IExpenseRepository, ExpenseRepository>();
-            services.AddTransient<IExpenseService, ExpenseService>();
-            services.AddTransient<IMerchantRepository, MerchantRepository>();
-            services.AddTransient<IMerchantService, MerchantService>();
-            services.AddTransient<ITagRepository, TagRepository>();
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<ISubCategoryRepository, SubCategoryRepository>();
-            services.AddTransient<ISubCategoryService, SubCategoryService>();
-            services.AddTransient<IMainCategoriesService, MainCategoriesService>();
-            services.AddTransient<IMainCategoriesRepository, MainCategoriesRepository>();
-            services.AddTransient<IIncomeCategoryService, IncomeCategoryService>();
-            services.AddTransient<IIncomeCategoryRepository, IncomeCategoryRepository>();
-            services.AddTransient<IIncomeSourceRepository, IncomeSourceRepository>();
-            services.AddTransient<IIncomeSourceService, IncomeSourceService>();
-            services.AddTransient<IIncomeRepository, IncomeRepository>();
-            services.AddTransient<IIncomeService, IncomeService>();
-            services.AddTransient<IImportRulesRepository, ImportRulesRepository>();
-            services.AddTransient<IRepository<ExpenseReviewEntity>, ExpenseReviewRepository>();
-            services.AddTransient<IExpenseReviewService, ExpenseReviewService>();
-            services.AddTransient<IIncomeReviewService, IncomeReviewService>();
-            services.AddTransient<IIncomeReviewRepository, IncomeReviewRepository>();
-            services.AddTransient<IExpenseReviewRepository, ExpenseReviewRepository>();
-            services.AddTransient<IImportService, ImportService>();
-            services.AddTransient<IExportService, ExportService>();
-            services.AddTransient<IExportRepository, ExportRepository>();
+            services.AddScoped<IExpenseRepository, ExpenseRepository>();
+            services.AddScoped<IMerchantRepository, MerchantRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
+            services.AddScoped<IMainCategoriesRepository, MainCategoriesRepository>();
+            services.AddScoped<IIncomeCategoryRepository, IncomeCategoryRepository>();
+            services.AddScoped<IIncomeSourceRepository, IncomeSourceRepository>();
+            services.AddScoped<IIncomeRepository, IncomeRepository>();
+            services.AddScoped<IImportRulesRepository, ImportRulesRepository>();
+            services.AddScoped<IIncomeReviewRepository, IncomeReviewRepository>();
+            services.AddScoped<IExpenseReviewRepository, ExpenseReviewRepository>();
+            services.AddScoped<IExportRepository, ExportRepository>();
+
+            services.AddScoped<IExpenseService, ExpenseService>();
+            services.AddScoped<IMerchantService, MerchantService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ISubCategoryService, SubCategoryService>();
+            services.AddScoped<IMainCategoriesService, MainCategoriesService>();
+            services.AddScoped<IIncomeCategoryService, IncomeCategoryService>();
+            services.AddScoped<IIncomeSourceService, IncomeSourceService>();
+            services.AddScoped<IIncomeService, IncomeService>();
+            services.AddScoped<IImportService, ImportService>();
+            services.AddScoped<IExpenseReviewService, ExpenseReviewService>();
+            services.AddScoped<IIncomeReviewService, IncomeReviewService>();
+            services.AddScoped<IExportService, ExportService>();
+
         }
         private static void ConfigureMiddleware(IApplicationBuilder app, IServiceProvider services, IWebHostEnvironment env)
         {
-            if (!env.IsDevelopment())
+            if (!env.IsDevelopment() && env.EnvironmentName != "Test")
             {
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
