@@ -1,11 +1,14 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
+using AutoMapper.Configuration.Conventions;
+using Bogus.DataSets;
 using CashTrack.IntegrationTests.Common;
 using CashTrack.IntegrationTests.Pages.Common;
 using CsvHelper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.VisualStudio.TestPlatform.Utilities;
 using Shouldly;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -26,7 +29,7 @@ namespace CashTrack.IntegrationTests.Pages
             _settings = factory._settings;
             _output = output;
             _factory = factory;
-            _client = GetAuthenticated(_factory).Result;
+            _client = factory._client;
         }
         [Fact]
         public async Task Can_View_Expense_Table()
@@ -39,42 +42,50 @@ namespace CashTrack.IntegrationTests.Pages
             PrintRequestAndResponse("/Expenses", expensePageresult);
             expensePage.EnsureSuccessStatusCode();
         }
+        [Theory]
+        [InlineData("0")]
+        [InlineData("2")]
+        [InlineData("3")]
+        [InlineData("4")]
+        [InlineData("5")]
+        [InlineData("6")]
+        [InlineData("7")]
+        [InlineData("8")]
+        [InlineData("9")]
+        [InlineData("10")]
+        [InlineData("11")]
+        [InlineData("12")]
+        [InlineData("13")]
+        [InlineData("14")]
+        public async Task Can_Query_Expenses(string query)
+        {
+            var expensePage = await _client.GetAsync($"/Expenses?query={query}");
+            expensePage.EnsureSuccessStatusCode();
+        }
         [Fact]
-        public async Task Can_Query_Expenses()
-        { 
-            
-            for (int i = 0; i < 15; i++)
-            {
-                var expensePage = await _client.GetAsync($"/Expenses?query={i}");
-                expensePage.EnsureSuccessStatusCode();
-            }
-            
-        }
-        private async Task<HttpClient> GetAuthenticated(AuthenticatedWebApplicationFactory<Program> app)
+        public async Task Can_Query_Expenses_Between_Two_Dates()
         {
-            var client = app.CreateClient();
-            var defaultPage = await client.GetAsync("/");
-            var content = await HtmlHelpers.GetDocumentAsync(defaultPage);
-
-            var passWord = _settings.Password;
-            var name = _settings.Username;
-            //grab the form and the submit button with anglesharps JS looking syntax
-            var form = content.QuerySelector<IHtmlFormElement>("#loginForm");
-            var button = content.QuerySelector<IHtmlButtonElement>("#loginButton");
-
-            var response = await client.SendAsync((IHtmlFormElement)form!, (IHtmlButtonElement)button!, new List<KeyValuePair<string, string>>
-        {
-            new KeyValuePair<string, string>("UserName", name),
-            new KeyValuePair<string, string>("Password", passWord)
-        });
-
-            var result = await response.Content.ReadAsStringAsync();
-            result.ShouldContain($"Welcome {name}");
-
-            defaultPage.EnsureSuccessStatusCode();
-            response.EnsureSuccessStatusCode();
-            return client;
+            var expensePage = await _client.GetAsync($"/Expenses?query=1&q=2020-01-01&q2=2021-12-31&pageNumber=1");
+            expensePage.EnsureSuccessStatusCode();
         }
+        //Anglesharp doesn't like select lists, so I can't run tests on select list form values...
+        //[Fact]
+        //public async Task Can_Add_New_Expense()
+        //{
+        //    var expensePage = await _client.GetAsync($"/Expenses");
+        //    var content = await HtmlHelpers.GetDocumentAsync(expensePage);
+        //    var form = content.QuerySelector<IHtmlFormElement>("#addExpenseForm");
+        //    var button = content.QuerySelector<IHtmlButtonElement>("#addExpenseButton");
+        //    var response = await _client.SendAsync((IHtmlFormElement)form!, (IHtmlButtonElement)button!, new List<KeyValuePair<string, string>>
+        //    {
+        //    new KeyValuePair<string, string>("Date", DateTime.Now.ToShortDateString()),
+        //    new KeyValuePair<string, string>("Amount", "10"),
+        //    new KeyValuePair<string, string>("SubCategoryId", "1"),
+        //    new KeyValuePair<string, string>("Merchant", "Costco"),
+        //});
+        //    response.EnsureSuccessStatusCode();
+        //}
+
         private void PrintRequestAndResponse(object request, object response)
         {
             _output.WriteLine(request.ToString());

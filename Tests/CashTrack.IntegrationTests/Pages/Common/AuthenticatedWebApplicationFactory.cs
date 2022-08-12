@@ -1,4 +1,6 @@
-﻿using Bogus;
+﻿using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
+using Bogus;
 using CashTrack.Data;
 using CashTrack.IntegrationTests.Common;
 using Microsoft.AspNetCore.Hosting;
@@ -9,8 +11,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace CashTrack.IntegrationTests.Pages.Common
 {
@@ -18,6 +23,7 @@ namespace CashTrack.IntegrationTests.Pages.Common
     {
         public readonly TestSettings _settings;
         public Faker _faker;
+        public readonly HttpClient _client;
         public AuthenticatedWebApplicationFactory()
         {
             var configuration = new ConfigurationBuilder()
@@ -26,6 +32,7 @@ namespace CashTrack.IntegrationTests.Pages.Common
                 .Build();
             _settings = configuration.GetSection("TestSettings").Get<TestSettings>();
             _faker = new Faker();
+            _client = GetAuthenticated(this.CreateClient()).Result;
         }
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -63,6 +70,24 @@ namespace CashTrack.IntegrationTests.Pages.Common
                     db.Database.EnsureCreated();
                 }
             });
+        }
+        private async Task<HttpClient> GetAuthenticated(HttpClient client)
+        {
+            var defaultPage = await client.GetAsync("/");
+            var content = await HtmlHelpers.GetDocumentAsync(defaultPage);
+
+            var passWord = _settings.Password;
+            var name = _settings.Username;
+            //grab the form and the submit button with anglesharps JS looking syntax
+            var form = content.QuerySelector<IHtmlFormElement>("#loginForm");
+            var button = content.QuerySelector<IHtmlButtonElement>("#loginButton");
+
+            var response = await client.SendAsync((IHtmlFormElement)form!, (IHtmlButtonElement)button!, new List<KeyValuePair<string, string>>
+        {
+            new KeyValuePair<string, string>("UserName", name),
+            new KeyValuePair<string, string>("Password", passWord)
+        });
+            return client;
         }
     }
 }
