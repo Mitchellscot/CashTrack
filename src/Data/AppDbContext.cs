@@ -7,6 +7,13 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Security.Claims;
 using System.IO;
+using Microsoft.Extensions.Options;
+using CashTrack.Common;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Reflection.Emit;
+using System.Reflection;
+using System.Linq;
 
 namespace CashTrack.Data
 {
@@ -24,53 +31,54 @@ namespace CashTrack.Data
         public DbSet<IncomeReviewEntity> IncomeToReview { get; set; }
         public DbSet<ImportRuleEntity> ImportRules { get; set; }
 
-        private IConfiguration _config;
+        private IOptions<AppSettingsOptions> _appSettings;
+        private readonly IWebHostEnvironment _env;
 
-        public AppDbContext(DbContextOptions options, IConfiguration config) : base(options)
+        public AppDbContext(DbContextOptions options, IOptions<AppSettingsOptions> appSettings, IWebHostEnvironment env, IConfiguration args) : base(options)
         {
-            this._config = config;
+
+            _appSettings = appSettings;
+            _env = env;
         }
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
             base.OnModelCreating(mb);
             var csvFileDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Code", "CashTrack", "ct-data");
-            mb.Initialize(_config.GetSection("Users").Get<UserEntity[]>(), csvFileDirectory);
+            mb.Initialize(_appSettings.Value.Users, csvFileDirectory, _env.EnvironmentName, _appSettings.Value.CreateDb);
+            ConfigureForSqlLite(mb);
+
+        }
+        private void ConfigureForSqlLite(ModelBuilder modelBuilder)
+        {
+            //used to convert decimals and DateTime for the sqllite in memory database.
+            if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
+            {
+                foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+                {
+                    var properties = entityType.ClrType.GetProperties().Where(p => p.PropertyType == typeof(decimal));
+                    var dateTimeProperties = entityType.ClrType.GetProperties()
+                        .Where(p => p.PropertyType == typeof(DateTime));
+
+                    foreach (var property in properties)
+                    {
+                        modelBuilder.Entity(entityType.Name).Property(property.Name).HasConversion<double>();
+                    }
+
+                    foreach (var property in dateTimeProperties)
+                    {
+                        modelBuilder.Entity(entityType.Name).Property(property.Name)
+                            .HasConversion(new DateTimeToBinaryConverter());
+                    }
+                }
+            }
         }
     }
     //model builder extension to seed DB data
     public static class SeedData
     {
-        public static void Initialize(this ModelBuilder mb, UserEntity[] users, string csvFileDirectory)
+        public static void Initialize(this ModelBuilder mb, UserEntity[] users, string csvFileDirectory, string env, bool emptyDatabase)
         {
-            foreach (var user in users)
-            {
-                var password = new PasswordHasher<UserEntity>();
-                var seededUser = new UserEntity()
-                {
-                    Id = user.Id,
-                    UserName = user.UserName,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email,
-                    NormalizedEmail = user.NormalizedEmail,
-                    NormalizedUserName = user.NormalizedUserName,
-                    SecurityStamp = Guid.NewGuid().ToString("D"),
-                    EmailConfirmed = true
-                };
-                var hashed = password.HashPassword(seededUser, user.PasswordHash);
-                seededUser.PasswordHash = hashed;
-                mb.Entity<UserEntity>().HasData(seededUser);
-                var claim = new IdentityUserClaim<int>()
-                {
-                    Id = user.Id,
-                    UserId = user.Id,
-                    ClaimType = ClaimTypes.NameIdentifier,
-                    ClaimValue = user.UserName,
-                };
-                mb.Entity<IdentityUserClaim<int>>().HasData(claim);
-            }
-
             mb.Entity<ExpenseTags>().HasKey(et => new { et.ExpenseId, et.TagId });
 
             mb.Entity<ExpenseTags>()
@@ -90,14 +98,46 @@ namespace CashTrack.Data
             mb.Ignore<IdentityRoleClaim<int>>();
             mb.Ignore<IdentityUserRole<int>>();
 
-            mb.Entity<MainCategoryEntity>().HasData(CsvParser.ProcessMainCategoryFile(Path.Combine(csvFileDirectory, "MainCategories.csv")));
-            mb.Entity<SubCategoryEntity>().HasData(CsvParser.ProcessSubCategoryFile(Path.Combine(csvFileDirectory, "SubCategories.csv")));
-            mb.Entity<MerchantEntity>().HasData(CsvParser.ProcessMerchantFile(Path.Combine(csvFileDirectory, "Merchants.csv")));
-            mb.Entity<ExpenseEntity>().HasData(CsvParser.ProcessExpenseFile(Path.Combine(csvFileDirectory, "Expenses.csv")));
-            mb.Entity<IncomeCategoryEntity>().HasData(CsvParser.ProcessIncomeCategoryFile(Path.Combine(csvFileDirectory, "IncomeCategories.csv")));
-            mb.Entity<IncomeSourceEntity>().HasData(CsvParser.ProcessIncomeSourceFile(Path.Combine(csvFileDirectory , "IncomeSources.csv")));
-            mb.Entity<IncomeEntity>().HasData(CsvParser.ProcessIncomeFile(Path.Combine(csvFileDirectory, "Income.csv")));
-            mb.Entity<ImportRuleEntity>().HasData(CsvParser.ProcessImportRuleFile(Path.Combine(csvFileDirectory, "ImportRules.csv")));
+            if (env == "Test" || emptyDatabase)
+            {
+                foreach (var user in users)
+                {
+                    var password = new PasswordHasher<UserEntity>();
+                    var seededUser = new UserEntity()
+                    {
+                        Id = user.Id,
+                        UserName = user.UserName,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Email = user.Email,
+                        NormalizedEmail = user.NormalizedEmail,
+                        NormalizedUserName = user.NormalizedUserName,
+                        SecurityStamp = Guid.NewGuid().ToString("D"),
+                        EmailConfirmed = true
+                    };
+                    var hashed = password.HashPassword(seededUser, user.PasswordHash);
+                    seededUser.PasswordHash = hashed;
+                    mb.Entity<UserEntity>().HasData(seededUser);
+                    var claim = new IdentityUserClaim<int>()
+                    {
+                        Id = user.Id,
+                        UserId = user.Id,
+                        ClaimType = ClaimTypes.NameIdentifier,
+                        ClaimValue = user.UserName,
+                    };
+                    mb.Entity<IdentityUserClaim<int>>().HasData(claim);
+                }
+                mb.Entity<MainCategoryEntity>().HasData(CsvParser.ProcessMainCategoryFile(Path.Combine(csvFileDirectory, "MainCategories.csv")));
+                mb.Entity<SubCategoryEntity>().HasData(CsvParser.ProcessSubCategoryFile(Path.Combine(csvFileDirectory, "SubCategories.csv")));
+                mb.Entity<MerchantEntity>().HasData(CsvParser.ProcessMerchantFile(Path.Combine(csvFileDirectory, "Merchants.csv")));
+                mb.Entity<ExpenseEntity>().HasData(CsvParser.ProcessExpenseFile(Path.Combine(csvFileDirectory, "Expenses.csv")));
+                mb.Entity<IncomeCategoryEntity>().HasData(CsvParser.ProcessIncomeCategoryFile(Path.Combine(csvFileDirectory, "IncomeCategories.csv")));
+                mb.Entity<IncomeSourceEntity>().HasData(CsvParser.ProcessIncomeSourceFile(Path.Combine(csvFileDirectory, "IncomeSources.csv")));
+                mb.Entity<IncomeEntity>().HasData(CsvParser.ProcessIncomeFile(Path.Combine(csvFileDirectory, "Income.csv")));
+                mb.Entity<ImportRuleEntity>().HasData(CsvParser.ProcessImportRuleFile(Path.Combine(csvFileDirectory, "ImportRules.csv")));
+            }
+
         }
     }
+
 }

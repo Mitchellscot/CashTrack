@@ -24,11 +24,11 @@ namespace CashTrack.Services.Common
         }
         public TotalsAggregator<T> Accumulate(T e)
         {
-            if (e.Date.Month == DateTimeOffset.UtcNow.Month && e.Date.Year == DateTimeOffset.UtcNow.Year)
+            if (e.Date.Month == DateTime.UtcNow.Month && e.Date.Year == DateTime.UtcNow.Year)
             {
                 TotalSpentThisMonth += e.Amount;
             }
-            if (e.Date.Year == DateTimeOffset.UtcNow.Year)
+            if (e.Date.Year == DateTime.UtcNow.Year)
             {
                 TotalSpentThisYear += e.Amount;
             }

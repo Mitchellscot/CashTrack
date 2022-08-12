@@ -208,7 +208,7 @@
                         @if (@Model.MerchantResponse.TotalCount > 0)
                         {
                             var currentCount = Model.MerchantResponse.PageNumber * @Model.MerchantResponse.PageSize;
-                                            <span class="text-muted">@(Math.Min(currentCount, Model.MerchantResponse.TotalCount)) of @Model.MerchantResponse.TotalCount</span>
+                                            <span class="text-muted" id="totalCount">@(Math.Min(currentCount, Model.MerchantResponse.TotalCount)) of @Model.MerchantResponse.TotalCount</span>
                         }
                             </div>
                             <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">

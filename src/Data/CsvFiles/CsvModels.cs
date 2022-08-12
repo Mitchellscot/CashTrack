@@ -9,9 +9,9 @@ namespace CashTrack.Data.CsvFiles
         //these models are used when pulling data from the CSV files and inserting it into the database
         public class CsvExpense
         {
-            private DateTimeOffset? _date;
+            private DateTime? _date;
             public int Id { get; set; }
-            public DateTimeOffset? Date
+            public DateTime? Date
             {
                 get => _date;
                 set
@@ -69,9 +69,9 @@ namespace CashTrack.Data.CsvFiles
         }
         public class CsvIncome
         {
-            private DateTimeOffset? _date;
+            private DateTime? _date;
             public int Id { get; set; }
-            public DateTimeOffset? Date
+            public DateTime? Date
             {
                 get => _date;
                 set

@@ -239,7 +239,7 @@
                         @if (@Model.ExpenseResponse.TotalCount > 0)
                         {
                             var currentCount = Model.ExpenseResponse.PageNumber * @Model.ExpenseResponse.PageSize;
-                            <span class="text-muted">
+                            <span class="text-muted" id="totalPages">
                                 @(Math.Min(currentCount, Model.ExpenseResponse.TotalCount)) of @Model.ExpenseResponse.TotalCount
                             </span>
                         }
@@ -248,7 +248,7 @@
                         @if (@Model.ExpenseResponse.TotalAmount > 0)
                         {
                             <div class="text-center">
-                                <strong class="p-0 text-success">Total: $ @Model.ExpenseResponse.TotalAmount</strong>
+                                <strong class="p-0 text-success" id="totalAmount">Total: $ @Model.ExpenseResponse.TotalAmount</strong>
                             </div>
                         }
                     </div>

@@ -45,12 +45,12 @@ namespace CashTrack.Pages.Incomes
             await PrepareForm(Query);
             if (Query == 0 && Q != null)
             {
-                IncomeResponse = await _incomeService.GetIncomeAsync(new IncomeRequest() { DateOptions = DateOptions.SpecificDate, BeginDate = DateTimeOffset.Parse(Q), PageNumber = PageNumber });
+                IncomeResponse = await _incomeService.GetIncomeAsync(new IncomeRequest() { DateOptions = DateOptions.SpecificDate, BeginDate = DateTime.Parse(Q), PageNumber = PageNumber });
                 return Page();
             }
             if (Query == 1 && Q != null)
             {
-                IncomeResponse = await _incomeService.GetIncomeAsync(new IncomeRequest() { DateOptions = DateOptions.SpecificMonthAndYear, BeginDate = DateTimeOffset.Parse(Q), PageNumber = PageNumber });
+                IncomeResponse = await _incomeService.GetIncomeAsync(new IncomeRequest() { DateOptions = DateOptions.SpecificMonthAndYear, BeginDate = DateTime.Parse(Q), PageNumber = PageNumber });
                 return Page();
             }
             if (Query == 2 && Q != null)

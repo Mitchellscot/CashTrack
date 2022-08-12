@@ -15,6 +15,7 @@
             <div class="container-fluid">
                 @{
                     var formId = Model.IsEdit ? $"editExpenseForm-{Model.Id}" : "addExpenseForm";
+                    var buttonId = Model.IsEdit ? $"editExpenseButton-{Model.Id}" : "addExpenseButton";
                 }
                 <form method="post"
                       asp-page="../Expenses/Index"
@@ -121,7 +122,7 @@
                 <a asp-page="./Split" asp-route-id="@Model.Id" class="btn btn-info">Split Expense</a>
             }
             <form>
-                <button type="submit" class="btn btn-primary" form="@formId">@addOrEdit Expense</button>
+                <button type="submit" class="btn btn-primary" form="@formId" id="">@addOrEdit Expense</button>
             </form>
         </div>
     </div>

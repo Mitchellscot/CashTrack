@@ -186,7 +186,7 @@ public class ExpenseService : IExpenseService
     }
     public async Task<Expense[]> GetExpensesByDateWithoutPaginationAsync(DateTime request)
     {
-        var expenses = await _expenseRepo.Find(x => x.Date == request);
+        var expenses = await _expenseRepo.Find(x => x.Date == request.ToUniversalTime());
         return _mapper.Map<Expense[]>(expenses);
     }
     public async Task<bool> RefundExpensesAsync(List<ExpenseRefund> refunds, int incomeId)

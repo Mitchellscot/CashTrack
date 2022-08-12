@@ -222,14 +222,14 @@
                         @if (@Model.IncomeResponse.TotalCount > 0)
                         {
                             var currentCount = Model.IncomeResponse.PageNumber * @Model.IncomeResponse.PageSize;
-                            <span class="text-muted">@(Math.Min(currentCount, Model.IncomeResponse.TotalCount)) of @Model.IncomeResponse.TotalCount</span>
+                            <span class="text-muted" id="totalPages">@(Math.Min(currentCount, Model.IncomeResponse.TotalCount)) of @Model.IncomeResponse.TotalCount</span>
                         }
                     </div>
                     <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
                         @if (@Model.IncomeResponse.TotalAmount > 0 && Model.InfoMessage == null)
                         {
                             <div class="text-center">
-                                <strong class="p-0 text-success">Total: $ @Model.IncomeResponse.TotalAmount</strong>
+                                <strong class="p-0 text-success" id="totalAmount">Total: $ @Model.IncomeResponse.TotalAmount</strong>
                             </div>
                         }
                     </div>

@@ -43,7 +43,7 @@ public class ExportRepository : IExportRepository
             }
             return expenseEntities.Select(x => new ExpenseExport(
                 Id: x.Id.ToString(),
-                Date: x.Date.DateTime.ToShortDateString(),
+                Date: x.Date.ToShortDateString(),
                 Amount: x.Amount.ToString(),
                 CategoryId: x.Category.Id.ToString(),
                 MerchantId: x.Merchant?.Id.ToString(),
@@ -95,7 +95,7 @@ public class ExportRepository : IExportRepository
             }
             return incomeEntities.Select(x => new IncomeExport(
                 Id: x.Id.ToString(),
-                Date: x.Date.DateTime.ToShortDateString(),
+                Date: x.Date.ToShortDateString(),
                 Amount: x.Amount.ToString(),
                 CategoryId: x.Category.Id.ToString(),
                 SourceId: x.Source?.Id.ToString(),
@@ -236,7 +236,7 @@ public class ExportRepository : IExportRepository
                 return new ReadableExpenseExport[] { };
             }
             return expenseEntities.Select(x => new ReadableExpenseExport(
-                Date: x.Date.DateTime.ToShortDateString(),
+                Date: x.Date.ToShortDateString(),
                 Amount: x.Amount.ToString(),
                 Category: x.Category.Name,
                 Merchant: x.Merchant?.Name,
@@ -261,7 +261,7 @@ public class ExportRepository : IExportRepository
                 return new ReadableIncomeExport[] { };
             }
             return incomeEntities.Select(x => new ReadableIncomeExport(
-                Date: x.Date.DateTime.ToShortDateString(),
+                Date: x.Date.ToShortDateString(),
                 Amount: x.Amount.ToString(),
                 Category: x.Category.Name,
                 Source: x.Source?.Name,
