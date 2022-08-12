@@ -1,24 +1,16 @@
-﻿using AngleSharp;
-using AngleSharp.Dom;
+﻿using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
-using AngleSharp.Io;
-using CashTrack.Data;
 using CashTrack.IntegrationTests.Common;
-using CsvHelper;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Shouldly;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using System.Linq;
 using CashTrack.IntegrationTests.Pages.Common;
 
-namespace CashTrack.IntegrationTests.Pages.IndexTests;
+namespace CashTrack.IntegrationTests.Pages;
 
 public class IndexTests
     : IClassFixture<CustomWebApplicationFactory<CashTrack.Program>>

@@ -1,16 +1,8 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
-using AutoMapper.Configuration.Conventions;
-using Bogus.DataSets;
 using CashTrack.IntegrationTests.Common;
 using CashTrack.IntegrationTests.Pages.Common;
-using CsvHelper;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -41,6 +33,23 @@ namespace CashTrack.IntegrationTests.Pages
             PrintRequestAndResponse(_endpoint, merchantPageresult);
             merchantPage.EnsureSuccessStatusCode();
         }
+        [Theory]
+        [InlineData("0")]
+        [InlineData("1")]
+        [InlineData("2")]
+        [InlineData("3")]
+        [InlineData("4")]
+        [InlineData("5")]
+        public async Task Can_Reorder_Merchant_Table(string queryValue)
+        {
+            var query = $"{_endpoint}?Query={queryValue}&Q2=true";
+            var merchantPage = await _client.GetAsync(query);
+            var merchantPageresult = await merchantPage.Content.ReadAsStringAsync();
+            var merchantPageContent = await HtmlHelpers.GetDocumentAsync(merchantPage);
+            merchantPageContent.QuerySelector<IHtmlSpanElement>("#totalCount")!.TextContent.ShouldContain("20 of 486");
+            PrintRequestAndResponse(query, merchantPageresult);
+            merchantPage.EnsureSuccessStatusCode();
+        }
         [Fact]
         public async Task Can_Search_Merchant_and_Redirect_To_Detail()
         {
@@ -50,7 +59,6 @@ namespace CashTrack.IntegrationTests.Pages
             merchantPage!.RequestMessage!.RequestUri!.AbsolutePath.ShouldBe("/Merchants/Detail/85");
             merchantPage.EnsureSuccessStatusCode();
         }
-
 
         private void PrintRequestAndResponse(object request, object response)
         {

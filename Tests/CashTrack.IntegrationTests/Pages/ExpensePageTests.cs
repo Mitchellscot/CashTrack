@@ -1,16 +1,8 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
-using AutoMapper.Configuration.Conventions;
-using Bogus.DataSets;
 using CashTrack.IntegrationTests.Common;
 using CashTrack.IntegrationTests.Pages.Common;
-using CsvHelper;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;

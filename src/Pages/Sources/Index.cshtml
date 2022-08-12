@@ -114,7 +114,7 @@
                         @if (@Model.SourceResponse.TotalCount > 0)
                         {
                             var currentCount = Model.SourceResponse.PageNumber * @Model.SourceResponse.PageSize;
-                            <span class="text-muted">@(Math.Min(currentCount, Model.SourceResponse.TotalCount)) of @Model.SourceResponse.TotalCount</span>
+                            <span class="text-muted" id="totalCount">@(Math.Min(currentCount, Model.SourceResponse.TotalCount)) of @Model.SourceResponse.TotalCount</span>
                         }
                     </div>
                     <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
