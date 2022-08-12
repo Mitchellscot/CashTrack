@@ -17,7 +17,7 @@ namespace CashTrack.Data.CsvFiles
                 set
                 {
                     if (value != null)
-                        _date = value.Value.ToUniversalTime();
+                        _date = value.Value;
                 }
             }
             public decimal Amount { get; set; }
@@ -38,6 +38,7 @@ namespace CashTrack.Data.CsvFiles
             public string? Name { get; set; }
             public int MainCategoryId { get; set; }
             public bool InUse { get; set; }
+            public string? Notes { get; set; }
         }
         public class CsvMerchant
         {
@@ -77,7 +78,7 @@ namespace CashTrack.Data.CsvFiles
                 set
                 {
                     if (value != null)
-                        _date = value.Value.ToUniversalTime();
+                        _date = value.Value;
                 }
             }
             public decimal Amount { get; set; }
