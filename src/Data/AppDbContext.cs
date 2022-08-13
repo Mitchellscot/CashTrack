@@ -44,8 +44,8 @@ namespace CashTrack.Data
         protected override void OnModelCreating(ModelBuilder mb)
         {
             base.OnModelCreating(mb);
-            var csvFileDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Code", "CashTrack", "ct-data");
-            mb.Initialize(_appSettings.Value.Users, csvFileDirectory, _env.EnvironmentName, _appSettings.Value.CreateDb);
+
+            mb.Initialize( _env.EnvironmentName, _appSettings.Value.CreateDb);
             ConfigureForSqlLite(mb);
 
         }
@@ -77,8 +77,11 @@ namespace CashTrack.Data
     //model builder extension to seed DB data
     public static class SeedData
     {
-        public static void Initialize(this ModelBuilder mb, UserEntity[] users, string csvFileDirectory, string env, bool emptyDatabase)
+        public static void Initialize(this ModelBuilder mb, string env, bool emptyDatabase)
         {
+            var csvFileDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Code", "CashTrack", "ct-data");
+
+
             mb.Entity<ExpenseTags>().HasKey(et => new { et.ExpenseId, et.TagId });
 
             mb.Entity<ExpenseTags>()
@@ -100,6 +103,7 @@ namespace CashTrack.Data
 
             if (env == "Test" || emptyDatabase)
             {
+                var users = CsvParser.ProcessUserFile(Path.Combine(csvFileDirectory, "Users.csv"));
                 foreach (var user in users)
                 {
                     var password = new PasswordHasher<UserEntity>();

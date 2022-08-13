@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CashTrack.Data.Entities;
 using CashTrack.Models.ImportCsvModels;
+using CsvHelper;
 
 namespace CashTrack.Data.CsvFiles
 {
@@ -9,43 +11,48 @@ namespace CashTrack.Data.CsvFiles
     {
         public static List<CsvModels.CsvExpense> ProcessExpenseFile(string path)
         {
-            return File.ReadAllLines(path).Skip(1).Where(line => line.Length > 1).ToExpenses().ToList();
+            var reader = new CsvUtility<CsvModels.CsvExpense>();
+            return reader.GetEntitiesFromCSV(path).ToList();
         }
         public static List<CsvModels.CsvExpenseMainCategory> ProcessMainCategoryFile(string path)
         {
-            return File.ReadAllLines(path).Skip(1).Where(l => l.Length > 1).ToExpenseMainCategory().ToList();
+            var reader = new CsvUtility<CsvModels.CsvExpenseMainCategory>();
+            return reader.GetEntitiesFromCSV(path).ToList();
         }
         public static List<CsvModels.CsvExpenseSubCategory> ProcessSubCategoryFile(string path)
         {
-            return File.ReadAllLines(path).Skip(1).Where(l => l.Length > 1).ToExpenseSubCategory().ToList();
+            var reader = new CsvUtility<CsvModels.CsvExpenseSubCategory>();
+            return reader.GetEntitiesFromCSV(path).ToList();
         }
         public static List<CsvModels.CsvMerchant> ProcessMerchantFile(string path)
         {
-            return File.ReadAllLines(path).Skip(1).Where(l => l.Length > 1).ToMerchant().ToList();
+            var reader = new CsvUtility<CsvModels.CsvMerchant>();
+            return reader.GetEntitiesFromCSV(path).ToList();
         }
         public static List<CsvModels.CsvIncomeCategory> ProcessIncomeCategoryFile(string path)
         {
-            return File.ReadAllLines(path).Skip(1).Where(l => l.Length > 1).ToIncomeCategory().ToList();
+            var reader = new CsvUtility<CsvModels.CsvIncomeCategory>();
+            return reader.GetEntitiesFromCSV(path).ToList();
         }
         public static List<CsvModels.CsvIncomeSource> ProcessIncomeSourceFile(string path)
         {
-            return File.ReadAllLines(path).Skip(1).Where(l => l.Length > 1).ToIncomeSource().ToList();
+            var reader = new CsvUtility<CsvModels.CsvIncomeSource>();
+            return reader.GetEntitiesFromCSV(path).ToList();
         }
         public static List<CsvModels.CsvIncome> ProcessIncomeFile(string path)
         {
-            return File.ReadAllLines(path).Skip(1).Where(l => l.Length > 1).ToIncome().ToList();
+            var reader = new CsvUtility<CsvModels.CsvIncome>();
+            return reader.GetEntitiesFromCSV(path).ToList();
         }
         public static List<CsvModels.CsvUser> ProcessUserFile(string path)
         {
-            return File.ReadAllLines(path).Skip(1).Where(l => l.Length > 1).ToUser().ToList();
+            var reader = new CsvUtility<CsvModels.CsvUser>();
+            return reader.GetEntitiesFromCSV(path).ToList();
         }
         public static List<CsvModels.CsvImportRule> ProcessImportRuleFile(string path)
         {
-            return File.ReadAllLines(path).Skip(1).Where(l => l.Length > 1).ToImportRule().ToList();
-        }
-        public static List<OtherTransactionImport> ProcessCsvImport(string path)
-        {
-            return File.ReadAllLines(path).Skip(1).Where(l => l.Length > 1).ToTransactionImport().ToList();
+            var reader = new CsvUtility<CsvModels.CsvImportRule>();
+            return reader.GetEntitiesFromCSV(path).ToList();
         }
     }
 }
