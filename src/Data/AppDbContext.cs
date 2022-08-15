@@ -33,7 +33,7 @@ namespace CashTrack.Data
 
         private readonly IWebHostEnvironment _env;
 
-        public AppDbContext(DbContextOptions options, IWebHostEnvironment env, IConfiguration args) : base(options)
+        public AppDbContext(DbContextOptions options, IWebHostEnvironment env) : base(options)
         {
             _env = env;
         }

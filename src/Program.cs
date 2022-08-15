@@ -56,7 +56,7 @@ namespace CashTrack
             ConfigureServices(builder.Services);
 
             var app = builder.Build();
-            app.Logger.LogInformation($"Using connection string: {connectionString} and environment {builder.Environment}");
+            app.Logger.LogInformation($"Using connection string: {connectionString} and environment {builder.Environment.EnvironmentName}");
 
             ConfigureMiddleware(app, app.Services, app.Environment);
             ConfigureEndpoints(app, app.Services);
@@ -132,12 +132,12 @@ namespace CashTrack
         }
         private static void ConfigureMiddleware(IApplicationBuilder app, IServiceProvider services, IWebHostEnvironment env)
         {
-            if (!env.IsDevelopment() && env.EnvironmentName != "Test")
+            if (env.IsProduction())
             {
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
+                app.UseHttpsRedirection();
             }
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();

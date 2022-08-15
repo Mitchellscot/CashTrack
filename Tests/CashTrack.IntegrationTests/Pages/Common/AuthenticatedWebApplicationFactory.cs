@@ -36,6 +36,7 @@ namespace CashTrack.IntegrationTests.Pages.Common
             _faker = new Faker();
             _client = GetAuthenticated(this.CreateClient()).Result;
         }
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.UseEnvironment("Test");
@@ -71,7 +72,9 @@ namespace CashTrack.IntegrationTests.Pages.Common
 
                     db.Database.EnsureCreated();
                 }
+
             });
+
         }
         private async Task<HttpClient> GetAuthenticated(HttpClient client)
         {
