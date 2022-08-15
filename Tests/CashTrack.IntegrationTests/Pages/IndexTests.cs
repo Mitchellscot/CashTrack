@@ -53,8 +53,6 @@ public class IndexTests
         //parse into a response AngleSharp understands
         var content = await HtmlHelpers.GetDocumentAsync(defaultPage);
 
-        var passWord = "8043";
-        var name = "Mitch";
         //grab the form and the submit button with anglesharps JS looking syntax
         var form = content.QuerySelector<IHtmlFormElement>("#loginForm");
         var button = content.QuerySelector<IHtmlButtonElement>("#loginButton");
@@ -71,13 +69,13 @@ public class IndexTests
 
         var response = await client.SendAsync((IHtmlFormElement)form!, (IHtmlButtonElement)button!, new List<KeyValuePair<string, string>>
         {
-            new KeyValuePair<string, string>("UserName", name),
-            new KeyValuePair<string, string>("Password", passWord)
+            new KeyValuePair<string, string>("UserName", "Test"),
+            new KeyValuePair<string, string>("Password", "0f1fe927-6221-4b44-bdb5-233a81748de1")
         });
 
         var result = await response.Content.ReadAsStringAsync();
         //this might change in the future.
-        result.ShouldContain($"Welcome {name}");
+        result.ShouldContain($"Welcome ");
 
         defaultPage.EnsureSuccessStatusCode();
         response.EnsureSuccessStatusCode();

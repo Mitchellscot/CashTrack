@@ -44,8 +44,7 @@ namespace CashTrack.Data
         protected override void OnModelCreating(ModelBuilder mb)
         {
             base.OnModelCreating(mb);
-            var createDb = string.IsNullOrEmpty(_appSettings.Value.CreateDb) ? true : Boolean.Parse(_appSettings.Value.CreateDb);
-            mb.Initialize( _env.EnvironmentName, createDb);
+            mb.Initialize(_env.EnvironmentName, false);
             ConfigureForSqlLite(mb);
 
         }
@@ -77,10 +76,10 @@ namespace CashTrack.Data
     //model builder extension to seed DB data
     public static class SeedData
     {
-        public static void Initialize(this ModelBuilder mb, string env, bool emptyDatabase)
+        public static void Initialize(this ModelBuilder mb, string env, bool createNewDatabase)
         {
-            string csvFileDirectory = env == "Test" ? 
-                csvFileDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.FullName, "ct-data") : 
+            string csvFileDirectory = env == "Test" ?
+                csvFileDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.FullName, "ct-data") :
                 csvFileDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "ct-data");
 
             mb.Entity<ExpenseTags>().HasKey(et => new { et.ExpenseId, et.TagId });
@@ -102,9 +101,10 @@ namespace CashTrack.Data
             mb.Ignore<IdentityRoleClaim<int>>();
             mb.Ignore<IdentityUserRole<int>>();
 
-            if (env == "Test" || emptyDatabase)
+            if (env == "Test" || createNewDatabase)
             {
-                var users = CsvParser.ProcessUserFile(Path.Combine(csvFileDirectory, "Users.csv"));
+                var users = env == "Test" ? CsvParser.ProcessUserFile(Path.Combine(csvFileDirectory, "TestUser.csv")) :
+                    CsvParser.ProcessUserFile(Path.Combine(csvFileDirectory, "Users.csv"));
                 foreach (var user in users)
                 {
                     var password = new PasswordHasher<UserEntity>();

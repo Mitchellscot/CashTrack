@@ -22,10 +22,10 @@ jobs:
         run: cp ./ct-data/appsettings.json ./src/appsettings.json
       - name: Copy Appsettings.Development.json
         run: cp ./ct-data/appsettings.Development.json ./src/appsettings.Development.json
+      - name: Copy Appsettings.Test.json
+        run: cp ./ct-data/appsettings.Test.json ./src/appsettings.Test.json
       - name: Copy Appsettings.Test.json to Integration Tests
         run: cp ./ct-data/appsettings.Test.json ./Tests/CashTrack.IntegrationTests/appsettings.Test.json
-      - name: Copy Appsettings.Test.json to Unit Tests
-        run: cp ./ct-data/appsettings.Test.json ./Tests/CashTrack.Tests/appsettings.Test.json
       - name: Add Variables To Appsettings Files
         uses: microsoft/variable-substitution@v1
         with:

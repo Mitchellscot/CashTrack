@@ -14,11 +14,9 @@ namespace CashTrack.IntegrationTests.Pages
     {
         private readonly AuthenticatedWebApplicationFactory<CashTrack.Program> _factory;
         private readonly HttpClient _client;
-        private readonly TestSettings _settings;
         private ITestOutputHelper _output;
         public ExpensePageTests(AuthenticatedWebApplicationFactory<CashTrack.Program> factory, ITestOutputHelper output)
         {
-            _settings = factory._settings;
             _output = output;
             _factory = factory;
             _client = factory._client;
