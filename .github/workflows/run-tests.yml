@@ -17,38 +17,36 @@ jobs:
         with:
           repository: mitchellscot/ct-data
           token: ${{ secrets.CHECKOUT_CT_DATA_TOKEN }}
-      - name: Create Appsettings.json
+          path: ./ct-data
+      - name: Copy Appsettings.json
+        run: cp ./ct-data/appsettings.json ./src/appsettings.json
+      - name: Copy Appsettings.Development.json
+        run: cp ./ct-data/appsettings.Development.json ./src/appsettings.Development.json
+      - name: Copy Appsettings.Test.json
+        run: cp ./ct-data/appsettings.Test.json ./src/appsettings.Test.json
+      - name: Copy Appsettings.Test.json to Integration Tests
+        run: cp ./ct-data/appsettings.Test.json ./Tests/CashTrack.IntegrationTests/appsettings.Test.json
+      - name: Add Variables To Appsettings Files
         uses: microsoft/variable-substitution@v1
         with:
-          files: './src/appsettings.json'
-          files: './src/appsettings.Development.json'
-          files: './Test/CashTrack.IntegrationTests/appsettings.Test.json'
+          files: '**/appsettings.json, **/appsettings.Development.json, **/appsettings.Test.json'
         env:
           AppSettings.Secret: ${{ secrets.SECRET }}
-          AppSettings.ConnectionStrings.Development: ${{ secrets.CONN_STRING }}
-          AppSettings.ConnectionStrings.Test: ${{ secrets.CONN_STRING }}
-          AppSettings.ConnectionStrings.Production: ${{ secrets.CONN_STRING }}
-          AppSettings.CreateDb: ${{secrets.CREATEDB}}
-          AppSettings.CsvFileDirectory: ${{secrets.CSV_DIR}}
-      - name: Create Appsettings.json
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: '${{env.DOTNET_ROOT}}\src\appsettings.json'
-          files: '${{env.DOTNET_ROOT}}\src\appsettings.Development.json'
-          files: '${{env.DOTNET_ROOT}}\Test\CashTrack.IntegrationTests\appsettings.Test.json'
-        env:
-          CosmosDbSettings:ServiceEndpoint: ${{ secrets.COSMOSDBSETTINGS_SERVICEENDPOINT }}
-          CosmosDbSettings:AuthKey: ${{ secrets.COSMOSDBSETTINGS_AUTHKEY }}
+          AppSettings.CreateDb: ${{ secrets.CREATEDB }}
+          TestSettings.Username: ${{ secrets.USERNAME }}
+          TestSettings.Password: ${{ secrets.PASSWORD }}
+          AppSettings.ConnectionStrings.Development: ${{ secrets.CONNECTION_STRING }}
+          AppSettings.ConnectionStrings.Test: ${{ secrets.CONNECTION_STRING }}
       - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
       - name: Install dependencies
-        working-directory: ./src
+        working-directory: src
         run: dotnet restore
       - name: Build
-        working-directory: ./src
+        working-directory: src
         run: dotnet build --configuration Release --no-restore
       - name: Test
-        working-directory: ./src
+        working-directory: src
         run: dotnet test --no-restore --verbosity normal

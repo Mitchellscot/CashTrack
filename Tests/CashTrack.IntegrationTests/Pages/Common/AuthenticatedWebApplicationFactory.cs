@@ -2,6 +2,7 @@
 using AngleSharp.Html.Dom;
 using Bogus;
 using CashTrack.Data;
+using CashTrack.Data.Entities;
 using CashTrack.IntegrationTests.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -12,25 +13,26 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Xunit.Abstractions;
 
 namespace CashTrack.IntegrationTests.Pages.Common
 {
     public class AuthenticatedWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
     {
-        public readonly TestSettings _settings;
         public Faker _faker;
         public readonly HttpClient _client;
+
         public AuthenticatedWebApplicationFactory()
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.Test.json")
                 .Build();
-            _settings = configuration.GetSection("TestSettings").Get<TestSettings>();
             _faker = new Faker();
             _client = GetAuthenticated(this.CreateClient()).Result;
         }
@@ -76,16 +78,14 @@ namespace CashTrack.IntegrationTests.Pages.Common
             var defaultPage = await client.GetAsync("/");
             var content = await HtmlHelpers.GetDocumentAsync(defaultPage);
 
-            var passWord = _settings.Password;
-            var name = _settings.Username;
             //grab the form and the submit button with anglesharps JS looking syntax
             var form = content.QuerySelector<IHtmlFormElement>("#loginForm");
             var button = content.QuerySelector<IHtmlButtonElement>("#loginButton");
 
             var response = await client.SendAsync((IHtmlFormElement)form!, (IHtmlButtonElement)button!, new List<KeyValuePair<string, string>>
         {
-            new KeyValuePair<string, string>("UserName", name),
-            new KeyValuePair<string, string>("Password", passWord)
+            new KeyValuePair<string, string>("UserName", "Test"),
+            new KeyValuePair<string, string>("Password", "0f1fe927-6221-4b44-bdb5-233a81748de1")
         });
             return client;
         }
