@@ -1,5 +1,7 @@
-name: dotnet package
-on: [push]
+name: Run Tests On Push
+on: 
+  [push]
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
