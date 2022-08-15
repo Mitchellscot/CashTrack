@@ -2,6 +2,7 @@
 using AngleSharp.Html.Dom;
 using Bogus;
 using CashTrack.Data;
+using CashTrack.Data.Entities;
 using CashTrack.IntegrationTests.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -12,10 +13,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Xunit.Abstractions;
 
 namespace CashTrack.IntegrationTests.Pages.Common
 {
@@ -24,6 +27,7 @@ namespace CashTrack.IntegrationTests.Pages.Common
         public readonly TestSettings _settings;
         public Faker _faker;
         public readonly HttpClient _client;
+
         public AuthenticatedWebApplicationFactory()
         {
             var configuration = new ConfigurationBuilder()
@@ -81,6 +85,10 @@ namespace CashTrack.IntegrationTests.Pages.Common
             //grab the form and the submit button with anglesharps JS looking syntax
             var form = content.QuerySelector<IHtmlFormElement>("#loginForm");
             var button = content.QuerySelector<IHtmlButtonElement>("#loginButton");
+            if (form == null)
+            {
+                var defaultPageResult = await defaultPage.Content.ReadAsStringAsync();
+            }
 
             var response = await client.SendAsync((IHtmlFormElement)form!, (IHtmlButtonElement)button!, new List<KeyValuePair<string, string>>
         {

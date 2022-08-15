@@ -44,8 +44,8 @@ namespace CashTrack.Data
         protected override void OnModelCreating(ModelBuilder mb)
         {
             base.OnModelCreating(mb);
-
-            mb.Initialize( _env.EnvironmentName, _appSettings.Value.CreateDb);
+            var createDb = string.IsNullOrEmpty(_appSettings.Value.CreateDb) ? true : Boolean.Parse(_appSettings.Value.CreateDb);
+            mb.Initialize( _env.EnvironmentName, createDb);
             ConfigureForSqlLite(mb);
 
         }
@@ -79,8 +79,9 @@ namespace CashTrack.Data
     {
         public static void Initialize(this ModelBuilder mb, string env, bool emptyDatabase)
         {
-            var csvFileDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Code", "CashTrack", "ct-data");
-
+            string csvFileDirectory = env == "Test" ? 
+                csvFileDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.FullName, "ct-data") : 
+                csvFileDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "ct-data");
 
             mb.Entity<ExpenseTags>().HasKey(et => new { et.ExpenseId, et.TagId });
 
