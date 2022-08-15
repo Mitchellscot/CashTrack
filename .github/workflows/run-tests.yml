@@ -32,9 +32,6 @@ jobs:
           files: '**/appsettings.json, **/appsettings.Development.json, **/appsettings.Test.json'
         env:
           AppSettings.Secret: ${{ secrets.SECRET }}
-          AppSettings.CreateDb: ${{ secrets.CREATEDB }}
-          TestSettings.Username: ${{ secrets.USERNAME }}
-          TestSettings.Password: ${{ secrets.PASSWORD }}
           AppSettings.ConnectionStrings.Development: ${{ secrets.CONNECTION_STRING }}
           AppSettings.ConnectionStrings.Test: ${{ secrets.CONNECTION_STRING }}
       - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
