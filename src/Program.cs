@@ -56,7 +56,7 @@ namespace CashTrack
             ConfigureServices(builder.Services);
 
             var app = builder.Build();
-            app.Logger.LogInformation($"Using connection string: {connectionString}");
+            app.Logger.LogInformation($"Using connection string: {connectionString} and environment {builder.Environment}");
 
             ConfigureMiddleware(app, app.Services, app.Environment);
             ConfigureEndpoints(app, app.Services);

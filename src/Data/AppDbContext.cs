@@ -31,13 +31,10 @@ namespace CashTrack.Data
         public DbSet<IncomeReviewEntity> IncomeToReview { get; set; }
         public DbSet<ImportRuleEntity> ImportRules { get; set; }
 
-        private IOptions<AppSettingsOptions> _appSettings;
         private readonly IWebHostEnvironment _env;
 
-        public AppDbContext(DbContextOptions options, IOptions<AppSettingsOptions> appSettings, IWebHostEnvironment env, IConfiguration args) : base(options)
+        public AppDbContext(DbContextOptions options, IWebHostEnvironment env, IConfiguration args) : base(options)
         {
-
-            _appSettings = appSettings;
             _env = env;
         }
 
