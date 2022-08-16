@@ -8,7 +8,6 @@ using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using CashTrack.IntegrationTests.Pages.Common;
 
 namespace CashTrack.IntegrationTests.Pages;
 
