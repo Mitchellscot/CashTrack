@@ -22,7 +22,7 @@ namespace CashTrack.Services.Common
             var endingOfMonth = new DateTime(
                 date.Year, date.Month, monthEndDate, 0, 0, 0
                 );
-            return (beginingOfMonth.ToUniversalTime(), endingOfMonth.ToUniversalTime());
+            return (beginingOfMonth, endingOfMonth);
         }
         internal static int GetLastDayOfMonth(DateTime date) => date.Month switch
         {
@@ -52,7 +52,7 @@ namespace CashTrack.Services.Common
             DateOptions.All => (T x) => true,
             //2
             DateOptions.SpecificDate => (T x) =>
-                x.Date == request.BeginDate.ToUniversalTime(),
+                x.Date == request.BeginDate,
             //3
             DateOptions.SpecificMonthAndYear => (T x) =>
                x.Date >= DateHelpers.GetMonthDatesFromDate(request.BeginDate).startDate &&
@@ -67,8 +67,8 @@ namespace CashTrack.Services.Common
                 x.Date <= DateHelpers.GetYearDatesFromDate(request.BeginDate).endDate,
             //6
             DateOptions.DateRange => (T x) =>
-                x.Date >= request.BeginDate.ToUniversalTime() &&
-                x.Date <= request.EndDate.ToUniversalTime(),
+                x.Date >= request.BeginDate &&
+                x.Date <= request.EndDate,
             //7
             DateOptions.Last30Days => (T x) =>
                 x.Date >= DateTime.UtcNow.AddDays(-30),
