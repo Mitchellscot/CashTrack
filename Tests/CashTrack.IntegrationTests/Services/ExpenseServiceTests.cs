@@ -347,7 +347,7 @@ namespace CashTrack.IntegrationTests.Services
                 result.ShouldBeTrue();
 
                 var updatedIncome = await incomerepo.FindById(86);
-                updatedIncome.RefundNotes.ShouldBe($"Applied refund for the amount of 14 to an expense on 1/3/2012. ");
+                updatedIncome.RefundNotes.ShouldBe($"Applied refund for the amount of 14 to an expense on {expenses.FirstOrDefault()!.Date.Date.ToShortDateString()}. ");
                 var refundDate = updatedIncome.Date.Date.ToShortDateString();
                 var updatedExpense = await repo.FindById(2);
                 updatedExpense.RefundNotes.ShouldBe($"Original Amount: 850 - Refunded Amount: 14 - Date Refunded: {refundDate}");
