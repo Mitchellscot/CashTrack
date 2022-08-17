@@ -7,13 +7,13 @@ using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.MerchantRepository;
 using AutoMapper;
 using CashTrack.Repositories.SubCategoriesRepository;
-
 using CashTrack.IntegrationTests.Services.Common;
 using CashTrack.IntegrationTests.Common;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.Common;
 using System;
 using System.Linq;
+using CashTrack.Common.Exceptions;
 
 namespace CashTrack.IntegrationTests.Services
 {
@@ -24,7 +24,7 @@ namespace CashTrack.IntegrationTests.Services
         private readonly IMapper mapper;
 
         public ExpenseServiceTests()
-        { 
+        {
             var expenseMapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(new ExpenseMapperProfile());
@@ -55,33 +55,127 @@ namespace CashTrack.IntegrationTests.Services
                 result.ShouldBeTrue();
             }
         }
-
-        [Theory]
-        [ExpenseIdData]
-        public async Task Get_Expense_By_Id(int id)
+        [Fact]
+        public async Task Get_Expense_By_Id()
         {
-            var result = await _service.GetExpenseByIdAsync(id);
+            var _random = new Random();
+            var randomNumber = _random.Next(1, 462);
+            var result = await _service.GetExpenseByIdAsync(randomNumber);
 
-            result.Id!.Value.ShouldBe(id);
+            result.Id!.Value.ShouldBe(randomNumber);
         }
-        [Theory]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        [InlineData(5)]
-        [InlineData(6)]
-        public async Task Get_Expenses_Returns_Paginated_Respose(int dateOptions)
+        [Fact]
+        public async Task Get_Refund_Expense_By_Id()
+        {
+            var _random = new Random();
+            var randomNumber = _random.Next(1, 462);
+            var result = await _service.GetExpenseRefundByIdAsync(randomNumber);
+
+            result.Id.ShouldBe(randomNumber);
+        }
+        [Fact]
+        public async Task Get_All_Expenses()
         {
             var request = new ExpenseRequest()
             {
-                DateOptions = (DateOptions)dateOptions,
-                BeginDate = new DateTime(2020, 04, 24),
-                EndDate = new DateTime(2021, 04, 24),
-                Query = "birthday"
+                DateOptions = DateOptions.All,
             };
             var result = await _service.GetExpensesAsync(request);
-            result.ListItems.Count().ShouldBeGreaterThan(1);
+            result.TotalAmount.ShouldBe(31543.40m);
+            result.TotalCount.ShouldBe(462);
+        }
+        [Fact]
+        public async Task Get_Expenses_Specific_Date()
+        {
+            var request = new ExpenseRequest()
+            {
+                DateOptions = DateOptions.SpecificDate,
+                BeginDate = new DateTime(2012, 04, 24)
+            };
+            var result = await _service.GetExpensesAsync(request);
+            result.TotalAmount.ShouldBe(72.98m);
+            result.TotalCount.ShouldBe(2);
+        }
+        [Fact]
+        public async Task Get_Expenses_Specific_Month_And_Year()
+        {
+            var request = new ExpenseRequest()
+            {
+                DateOptions = DateOptions.SpecificMonthAndYear,
+                BeginDate = new DateTime(2012, 04, 24)
+            };
+            var result = await _service.GetExpensesAsync(request);
+            result.TotalAmount.ShouldBe(2026.07m);
+            result.TotalCount.ShouldBe(35);
+        }
+        [Fact]
+        public async Task Get_Expenses_Specific_Quarter()
+        {
+            var request = new ExpenseRequest()
+            {
+                DateOptions = DateOptions.SpecificQuarter,
+                BeginDate = new DateTime(2012, 04, 24)
+            };
+            var result = await _service.GetExpensesAsync(request);
+            result.TotalAmount.ShouldBe(7467.72m);
+            result.TotalCount.ShouldBe(115);
+        }
+        [Fact]
+        public async Task Get_Expenses_Specific_Year()
+        {
+            var request = new ExpenseRequest()
+            {
+                DateOptions = DateOptions.SpecificYear,
+                BeginDate = new DateTime(2012, 04, 24)
+            };
+            var result = await _service.GetExpensesAsync(request);
+            result.TotalAmount.ShouldBe(31543.40m);
+            result.TotalCount.ShouldBe(462);
+        }
+        [Fact]
+        public async Task Get_Expenses_Between_Two_Dates()
+        {
+            var request = new ExpenseRequest()
+            {
+                DateOptions = DateOptions.DateRange,
+                BeginDate = new DateTime(2012, 03, 05),
+                EndDate = new DateTime(2012, 04, 24)
+            };
+            var result = await _service.GetExpensesAsync(request);
+            result.TotalAmount.ShouldBe(2477.17m);
+            result.TotalCount.ShouldBe(58);
+        }
+        [Fact]
+        public async Task Get_Expenses_Last_30_Days()
+        {
+            var testDate = DateTime.Today.AddDays(-2);
+            var expense = new Expense()
+            {
+                Amount = 4.24M,
+                Date = testDate,
+                Notes = "",
+                MerchantId = 5,
+                SubCategoryId = 1,
+                ExcludeFromStatistics = true,
+            };
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var repo = new ExpenseRepository(db);
+                var incomerepo = new IncomeRepository(db);
+                var merchantRepo = new MerchantRepository(db);
+                var subCategoryRepo = new SubCategoryRepository(db);
+                var service = new ExpenseService(repo, incomerepo, merchantRepo, mapper, subCategoryRepo);
+
+                var createExpense = await service.CreateExpenseAsync(expense);
+                var request = new ExpenseRequest()
+                {
+                    DateOptions = DateOptions.Last30Days
+                };
+                var individualExpenseResult = await service.GetExpenseByIdAsync(createExpense);
+                var result = await service.GetExpensesAsync(request);
+
+                result.ListItems.FirstOrDefault().Date.Date.ShouldBe(testDate.Date);
+            }
         }
         [Fact]
         public async Task Create_An_Expense()
@@ -89,9 +183,9 @@ namespace CashTrack.IntegrationTests.Services
             var expense = new Expense()
             {
                 Amount = 4.24M,
-                Date = new DateTime(1984, 04, 24),
-                Notes = "happy birthday",
-                MerchantId = 85,
+                Date = new DateTime(2012, 04, 24),
+                Notes = "hi",
+                MerchantId = 5,
                 SubCategoryId = 1,
                 ExcludeFromStatistics = true,
             };
@@ -108,6 +202,81 @@ namespace CashTrack.IntegrationTests.Services
                 result.ShouldBe(expectedId);
             }
         }
-    }
+        [Fact]
+        public async Task Update_An_Expense()
+        {
+            const string testnotes = "blah blah blah";
+            var expense = new Expense()
+            {
+                Id = 1,
+                Amount = 4.24M,
+                Date = new DateTime(1984, 04, 24),
+                Notes = testnotes,
+                MerchantId = 5,
+                SubCategoryId = 1,
+                ExcludeFromStatistics = true,
+            };
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var repo = new ExpenseRepository(db);
+                var incomerepo = new IncomeRepository(db);
+                var merchantRepo = new MerchantRepository(db);
+                var subCategoryRepo = new SubCategoryRepository(db);
+                var service = new ExpenseService(repo, incomerepo, merchantRepo, mapper, subCategoryRepo);
 
+                var result = await service.UpdateExpenseAsync(expense);
+                var verifyResult = await service.GetExpenseByIdAsync(expense.Id.Value);
+                verifyResult.Notes.ShouldBe(testnotes);
+            }
+        }
+        [Fact]
+        public async Task Update_An_Expense_Throws_With_No_Id()
+        {
+            var expense = new Expense()
+            {
+                Amount = 4.24M,
+                Date = new DateTime(1984, 04, 24),
+                Notes = "blah blah blah",
+                MerchantId = 5,
+                SubCategoryId = 1,
+                ExcludeFromStatistics = true,
+            };
+            await Task.Run(() =>
+            Should.Throw<ArgumentException>(async () => await _service.UpdateExpenseAsync(expense)).Message.ShouldBe("Need an id to update an expense")
+            );
+        }
+        [Fact]
+        public async Task Update_An_Expense_Throws_With_No_Category()
+        {
+            var expense = new Expense()
+            {
+                Id = 1,
+                Amount = 4.24M,
+                Date = new DateTime(1984, 04, 24),
+                Notes = "blah blah blah",
+                MerchantId = 5,
+                ExcludeFromStatistics = true,
+            };
+            await Task.Run(() =>
+            Should.Throw<CategoryNotFoundException>(async () => await _service.UpdateExpenseAsync(expense))
+            );
+        }
+        [Fact]
+        public async Task Update_An_Expense_Throws_With_Invalid_Id()
+        {
+            var expense = new Expense()
+            {
+                Id = int.MaxValue,
+                Amount = 4.24M,
+                Date = new DateTime(1984, 04, 24),
+                Notes = "blah blah blah",
+                MerchantId = 5,
+                SubCategoryId = 1,
+                ExcludeFromStatistics = true,
+            };
+            await Task.Run(() =>
+            Should.Throw<ExpenseNotFoundException>(async () => await _service.UpdateExpenseAsync(expense))
+            );
+        }
+    }
 }

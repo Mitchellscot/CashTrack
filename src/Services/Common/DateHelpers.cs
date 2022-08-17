@@ -43,6 +43,10 @@ namespace CashTrack.Services.Common
         {
             return (startDate: new DateTime(date.Year, 1, 1, 0, 0, 0), endDate: new DateTime(date.Year, 12, 31, 0, 0, 0));
         }
+        public static DateTime GetLast30Days()
+        {
+            return DateTime.Today.AddDays(-30).Date;
+        }
     }
     public static class DateOption<T, TRequest> where T : Transactions where TRequest : TransactionRequest
     {
@@ -71,19 +75,19 @@ namespace CashTrack.Services.Common
                 x.Date <= request.EndDate,
             //7
             DateOptions.Last30Days => (T x) =>
-                x.Date >= DateTime.UtcNow.AddDays(-30),
+                x.Date >= DateHelpers.GetLast30Days(),
             //8
             DateOptions.CurrentMonth => (T x) =>
                 x.Date >= DateHelpers.GetCurrentMonth() &&
-                x.Date <= DateTime.UtcNow,
+                x.Date <= DateTime.Today,
             //9
             DateOptions.CurrentQuarter => (T x) =>
                 x.Date >= DateHelpers.GetCurrentQuarter() &&
-                x.Date <= DateTime.UtcNow,
+                x.Date <= DateTime.Today,
             //10
             DateOptions.CurrentYear => (T x) =>
                 x.Date >= DateHelpers.GetCurrentYear() &&
-                x.Date <= DateTime.UtcNow,
+                x.Date <= DateTime.Today,
 
             _ => throw new ArgumentException($"DateOption type not supported {request.DateOptions}", nameof(request.DateOptions))
 
