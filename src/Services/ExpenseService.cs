@@ -186,7 +186,7 @@ public class ExpenseService : IExpenseService
     }
     public async Task<Expense[]> GetExpensesByDateWithoutPaginationAsync(DateTime request)
     {
-        var expenses = await _expenseRepo.Find(x => x.Date == request.ToUniversalTime());
+        var expenses = await _expenseRepo.Find(x => x.Date == request);
         return _mapper.Map<Expense[]>(expenses);
     }
     public async Task<bool> RefundExpensesAsync(List<ExpenseRefund> refunds, int incomeId)
@@ -200,7 +200,7 @@ public class ExpenseService : IExpenseService
                 var expense = await _expenseRepo.FindById(refund.Id);
                 expense.RefundNotes = $"Original Amount: {refund.OriginalAmount} - Refunded Amount: {refund.RefundAmount} - Date Refunded: {income.Date.Date.ToShortDateString()}";
                 expense.Amount = Decimal.Round((refund.OriginalAmount - refund.RefundAmount), 2);
-                income.RefundNotes += $"Applied refund for the amount of {refund.RefundAmount} to an expense on {expense.Date.Date.ToShortDateString()}. ";
+                income.RefundNotes += $"Applied refund for the amount of {refund.RefundAmount} to an expense on {refund.Date.Date.ToShortDateString()}. ";
                 expenseUpdates.Add(expense);
             }
         }

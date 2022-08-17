@@ -14,6 +14,10 @@ using CashTrack.Models.Common;
 using System;
 using System.Linq;
 using CashTrack.Common.Exceptions;
+using CashTrack.Data;
+using System.Collections.Generic;
+using CashTrack.Models.IncomeModels;
+using AngleSharp.Dom;
 
 namespace CashTrack.IntegrationTests.Services
 {
@@ -21,7 +25,7 @@ namespace CashTrack.IntegrationTests.Services
     public class ExpenseServiceTests
     {
         private readonly ExpenseService _service;
-        private readonly IMapper mapper;
+        private readonly IMapper _mapper;
 
         public ExpenseServiceTests()
         {
@@ -36,19 +40,15 @@ namespace CashTrack.IntegrationTests.Services
             var incomerepo = new IncomeRepository(sharedDB);
             var merchantRepo = new MerchantRepository(sharedDB);
             var subCategoryRepo = new SubCategoryRepository(sharedDB);
-            mapper = expenseMapper.CreateMapper();
-            _service = new ExpenseService(repo, incomerepo, merchantRepo, mapper, subCategoryRepo);
+            _mapper = expenseMapper.CreateMapper();
+            _service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo);
         }
         [Fact]
         public async Task Delete_An_Expense_By_Id()
         {
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
-                var repo = new ExpenseRepository(db);
-                var incomerepo = new IncomeRepository(db);
-                var merchantRepo = new MerchantRepository(db);
-                var subCategoryRepo = new SubCategoryRepository(db);
-                var service = new ExpenseService(repo, incomerepo, merchantRepo, mapper, subCategoryRepo);
+                var service = GetExepenseService(db);
 
                 var result = await service.DeleteExpenseAsync(1);
 
@@ -160,11 +160,7 @@ namespace CashTrack.IntegrationTests.Services
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
-                var repo = new ExpenseRepository(db);
-                var incomerepo = new IncomeRepository(db);
-                var merchantRepo = new MerchantRepository(db);
-                var subCategoryRepo = new SubCategoryRepository(db);
-                var service = new ExpenseService(repo, incomerepo, merchantRepo, mapper, subCategoryRepo);
+                var service = GetExepenseService(db);
 
                 var createExpense = await service.CreateExpenseAsync(expense);
                 var request = new ExpenseRequest()
@@ -192,11 +188,7 @@ namespace CashTrack.IntegrationTests.Services
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
-                var repo = new ExpenseRepository(db);
-                var incomerepo = new IncomeRepository(db);
-                var merchantRepo = new MerchantRepository(db);
-                var subCategoryRepo = new SubCategoryRepository(db);
-                var service = new ExpenseService(repo, incomerepo, merchantRepo, mapper, subCategoryRepo);
+                var service = GetExepenseService(db);
 
                 var createExpense = await service.CreateExpenseAsync(expense);
                 var request = new ExpenseRequest()
@@ -224,11 +216,7 @@ namespace CashTrack.IntegrationTests.Services
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
-                var repo = new ExpenseRepository(db);
-                var incomerepo = new IncomeRepository(db);
-                var merchantRepo = new MerchantRepository(db);
-                var subCategoryRepo = new SubCategoryRepository(db);
-                var service = new ExpenseService(repo, incomerepo, merchantRepo, mapper, subCategoryRepo);
+                var service = GetExepenseService(db);
 
                 var createExpense = await service.CreateExpenseAsync(expense);
                 var request = new ExpenseRequest()
@@ -258,11 +246,7 @@ namespace CashTrack.IntegrationTests.Services
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
-                var repo = new ExpenseRepository(db);
-                var incomerepo = new IncomeRepository(db);
-                var merchantRepo = new MerchantRepository(db);
-                var subCategoryRepo = new SubCategoryRepository(db);
-                var service = new ExpenseService(repo, incomerepo, merchantRepo, mapper, subCategoryRepo);
+                var service = GetExepenseService(db);
 
                 var createExpense = await service.CreateExpenseAsync(expense);
                 var request = new ExpenseRequest()
@@ -272,8 +256,128 @@ namespace CashTrack.IntegrationTests.Services
 
                 var result = await service.GetExpensesAsync(request);
 
-                result.ListItems.FirstOrDefault()!.Date.Year.ShouldBe(currentYear);
+                result.ListItems.FirstOrDefault()!.Date.Date.ShouldBe(testDate.Date);
             }
+        }
+        [Fact]
+        public async Task Get_Expenses_By_Notes()
+        {
+            const string testnotes = "abcdefghijklmnopqrstuvwxyz";
+            var expense = new Expense()
+            {
+                Amount = 4.24M,
+                Date = DateTime.Today,
+                Notes = testnotes,
+                MerchantId = 5,
+                SubCategoryId = 1,
+                ExcludeFromStatistics = true,
+            };
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var service = GetExepenseService(db);
+
+                var createExpense = await service.CreateExpenseAsync(expense);
+                var request = new ExpenseRequest()
+                {
+                    Query = testnotes
+                };
+
+                var result = await service.GetExpensesByNotesAsync(request);
+
+                result.ListItems.FirstOrDefault()!.Notes.ShouldBe(testnotes);
+            }
+        }
+        [Fact]
+        public async Task Get_Expenses_By_SubCategory_Id()
+        {
+            var request = new ExpenseRequest()
+            {
+                Query = "32"
+            };
+            var result = await _service.GetExpensesBySubCategoryIdAsync(request);
+            result.TotalAmount.ShouldBe(10200m);
+            result.TotalCount.ShouldBe(12);
+            result.ListItems.FirstOrDefault()!.SubCategoryId.ShouldBe(32);
+        }
+        [Fact]
+        public async Task Get_Expenses_By_Main_Category()
+        {
+            var request = new ExpenseRequest()
+            {
+                Query = "4"
+            };
+            var result = await _service.GetExpensesByMainCategoryAsync(request);
+            result.TotalAmount.ShouldBe(5474.54M);
+            result.TotalCount.ShouldBe(225);
+            result.ListItems.FirstOrDefault()!.MainCategory.ShouldBe("Food");
+        }
+        [Fact]
+        public async Task Get_Expenses_By_Date_Without_Pagination()
+        {
+            var date = new DateTime(2012, 04, 24);
+            var result = await _service.GetExpensesByDateWithoutPaginationAsync(date);
+            result.FirstOrDefault()!.Date.Date.ShouldBe(date.Date);
+            result.Sum(x => x.Amount).ShouldBe(72.98m);
+            result.Count().ShouldBe(2);
+        }
+        [Fact]
+        public async Task Can_Refund_Expenses()
+        {
+            var expenses = new List<ExpenseRefund>()
+            {
+                new ExpenseRefund()
+                {
+                    Id = 2,
+                    OriginalAmount = 850M,
+                    RefundAmount = 14m,
+                    Date = new DateTime(2012, 01, 03),
+                    Merchant = "CA Apartments",
+                    Category = "Rent"
+                },
+            };
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var repo = new ExpenseRepository(db);
+                var incomerepo = new IncomeRepository(db);
+                var merchantRepo = new MerchantRepository(db);
+                var subCategoryRepo = new SubCategoryRepository(db);
+                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo);
+
+                var result = await service.RefundExpensesAsync(expenses, 86);
+                result.ShouldBeTrue();
+
+                var updatedIncome = await incomerepo.FindById(86);
+                updatedIncome.RefundNotes.ShouldBe($"Applied refund for the amount of 14 to an expense on 1/3/2012. ");
+                var refundDate = updatedIncome.Date.Date.ToShortDateString();
+                var updatedExpense = await repo.FindById(2);
+                updatedExpense.RefundNotes.ShouldBe($"Original Amount: 850 - Refunded Amount: 14 - Date Refunded: {refundDate}");
+                updatedExpense.Amount.ShouldBe(836m);
+
+            };
+
+        }
+        [Fact]
+        public async Task Get_Expenses_By_Merchant()
+        {
+            var request = new ExpenseRequest()
+            {
+                Query = "Costco"
+            };
+            var result = await _service.GetExpensesByMerchantAsync(request);
+            result.TotalAmount.ShouldBe(3617.19M);
+            result.TotalCount.ShouldBe(38);
+            result.ListItems.FirstOrDefault()!.MerchantId.ShouldBe(5);
+        }
+        [Fact]
+        public async Task Get_Expenses_By_Amount()
+        {
+            var request = new AmountSearchRequest()
+            {
+                Query = 850
+            };
+            var result = await _service.GetExpensesByAmountAsync(request);
+            result.TotalAmount.ShouldBe(10200m);
+            result.TotalCount.ShouldBe(12);
         }
         [Fact]
         public async Task Create_An_Expense()
@@ -293,9 +397,33 @@ namespace CashTrack.IntegrationTests.Services
                 var incomerepo = new IncomeRepository(db);
                 var merchantRepo = new MerchantRepository(db);
                 var subCategoryRepo = new SubCategoryRepository(db);
-                var service = new ExpenseService(repo, incomerepo, merchantRepo, mapper, subCategoryRepo);
+                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo);
                 var expectedId = (repo.GetCount(x => true).Result) + 1;
                 var result = await service.CreateExpenseAsync(expense);
+
+                result.ShouldBe(expectedId);
+            }
+        }
+        [Fact]
+        public async Task Create_An_Expense_From_Split()
+        {
+            var expense = new ExpenseSplit()
+            {
+                Amount = 4.24M,
+                Date = new DateTime(2012, 04, 24),
+                Notes = "hi",
+                Merchant = "Costco",
+                SubCategoryId = 1
+            };
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var repo = new ExpenseRepository(db);
+                var incomerepo = new IncomeRepository(db);
+                var merchantRepo = new MerchantRepository(db);
+                var subCategoryRepo = new SubCategoryRepository(db);
+                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo);
+                var expectedId = (repo.GetCount(x => true).Result) + 1;
+                var result = await service.CreateExpenseFromSplitAsync(expense);
 
                 result.ShouldBe(expectedId);
             }
@@ -316,11 +444,7 @@ namespace CashTrack.IntegrationTests.Services
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
-                var repo = new ExpenseRepository(db);
-                var incomerepo = new IncomeRepository(db);
-                var merchantRepo = new MerchantRepository(db);
-                var subCategoryRepo = new SubCategoryRepository(db);
-                var service = new ExpenseService(repo, incomerepo, merchantRepo, mapper, subCategoryRepo);
+                var service = GetExepenseService(db);
 
                 var result = await service.UpdateExpenseAsync(expense);
                 var verifyResult = await service.GetExpenseByIdAsync(expense.Id.Value);
@@ -375,6 +499,15 @@ namespace CashTrack.IntegrationTests.Services
             await Task.Run(() =>
             Should.Throw<ExpenseNotFoundException>(async () => await _service.UpdateExpenseAsync(expense))
             );
+        }
+        private ExpenseService GetExepenseService(AppDbContext db)
+        {
+            var repo = new ExpenseRepository(db);
+            var incomerepo = new IncomeRepository(db);
+            var merchantRepo = new MerchantRepository(db);
+            var subCategoryRepo = new SubCategoryRepository(db);
+            var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo);
+            return service;
         }
     }
 }
