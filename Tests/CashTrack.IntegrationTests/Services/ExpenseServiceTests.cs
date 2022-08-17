@@ -148,7 +148,7 @@ namespace CashTrack.IntegrationTests.Services
         [Fact]
         public async Task Get_Expenses_Last_30_Days()
         {
-            var testDate = DateTime.Today.AddDays(-2);
+            var testDate = DateTime.Today.AddDays(-29);
             var expense = new Expense()
             {
                 Amount = 4.24M,
@@ -171,10 +171,108 @@ namespace CashTrack.IntegrationTests.Services
                 {
                     DateOptions = DateOptions.Last30Days
                 };
-                var individualExpenseResult = await service.GetExpenseByIdAsync(createExpense);
+
                 var result = await service.GetExpensesAsync(request);
 
-                result.ListItems.FirstOrDefault().Date.Date.ShouldBe(testDate.Date);
+                result.ListItems.FirstOrDefault()!.Date.Date.ShouldBe(testDate.Date);
+            }
+        }
+        [Fact]
+        public async Task Get_Expenses_Current_Month()
+        {
+            var testDate = DateTime.Today;
+            var expense = new Expense()
+            {
+                Amount = 4.24M,
+                Date = testDate,
+                Notes = "",
+                MerchantId = 5,
+                SubCategoryId = 1,
+                ExcludeFromStatistics = true,
+            };
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var repo = new ExpenseRepository(db);
+                var incomerepo = new IncomeRepository(db);
+                var merchantRepo = new MerchantRepository(db);
+                var subCategoryRepo = new SubCategoryRepository(db);
+                var service = new ExpenseService(repo, incomerepo, merchantRepo, mapper, subCategoryRepo);
+
+                var createExpense = await service.CreateExpenseAsync(expense);
+                var request = new ExpenseRequest()
+                {
+                    DateOptions = DateOptions.CurrentMonth
+                };
+
+                var result = await service.GetExpensesAsync(request);
+
+                result.ListItems.FirstOrDefault()!.Date.Month.ShouldBe(testDate.Date.Month);
+            }
+        }
+        [Fact]
+        public async Task Get_Expenses_Current_Quarter()
+        {
+            var testDate = DateTime.Today;
+            var expense = new Expense()
+            {
+                Amount = 4.24M,
+                Date = testDate,
+                Notes = "",
+                MerchantId = 5,
+                SubCategoryId = 1,
+                ExcludeFromStatistics = true,
+            };
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var repo = new ExpenseRepository(db);
+                var incomerepo = new IncomeRepository(db);
+                var merchantRepo = new MerchantRepository(db);
+                var subCategoryRepo = new SubCategoryRepository(db);
+                var service = new ExpenseService(repo, incomerepo, merchantRepo, mapper, subCategoryRepo);
+
+                var createExpense = await service.CreateExpenseAsync(expense);
+                var request = new ExpenseRequest()
+                {
+                    DateOptions = DateOptions.CurrentQuarter
+                };
+
+                var result = await service.GetExpensesAsync(request);
+
+                result.ListItems.FirstOrDefault()!.Date.Month.ShouldBe(testDate.Date.Month);
+            }
+        }
+        [Fact]
+        public async Task Get_Expenses_Current_Year()
+        {
+            var rando = new Random();
+            var currentYear = DateTime.Today.Year;
+            var testDate = new DateTime(currentYear, rando.Next(1, 12), rando.Next(1, 27));
+            var expense = new Expense()
+            {
+                Amount = 4.24M,
+                Date = testDate,
+                Notes = "",
+                MerchantId = 5,
+                SubCategoryId = 1,
+                ExcludeFromStatistics = true,
+            };
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var repo = new ExpenseRepository(db);
+                var incomerepo = new IncomeRepository(db);
+                var merchantRepo = new MerchantRepository(db);
+                var subCategoryRepo = new SubCategoryRepository(db);
+                var service = new ExpenseService(repo, incomerepo, merchantRepo, mapper, subCategoryRepo);
+
+                var createExpense = await service.CreateExpenseAsync(expense);
+                var request = new ExpenseRequest()
+                {
+                    DateOptions = DateOptions.CurrentYear
+                };
+
+                var result = await service.GetExpensesAsync(request);
+
+                result.ListItems.FirstOrDefault()!.Date.Year.ShouldBe(currentYear);
             }
         }
         [Fact]
