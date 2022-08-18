@@ -1,6 +1,6 @@
 ﻿#nullable disable
 
-namespace CashTrack.IntegrationTests.Common
+namespace CashTrack.Tests.Common
 {
     public class TestSettings
     {

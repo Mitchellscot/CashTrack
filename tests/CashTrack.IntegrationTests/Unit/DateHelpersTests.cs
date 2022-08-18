@@ -6,7 +6,7 @@ using Shouldly;
 using System;
 using Xunit;
 
-namespace CashTrack.Tests.Services.Common
+namespace CashTrack.Tests.Unit
 {
     public class DateHelpersTests
     {
@@ -19,9 +19,10 @@ namespace CashTrack.Tests.Services.Common
         [Fact]
         public void Get_Current_Quarter_Works()
         {
-            //not the best test but whatever
             var currentQuarter = DateHelpers.GetCurrentQuarter();
             currentQuarter.Year.ShouldBe(DateTime.Today.Year);
+            currentQuarter.Day.ShouldBe(1);
+            currentQuarter.Month.ShouldBeOneOf<int>(new int[] { 1, 4, 7, 10});
         }
         [Fact]
         public void Get_Current_Year_Works()
@@ -32,31 +33,36 @@ namespace CashTrack.Tests.Services.Common
         [Fact]
         public void Get_Current_Month_Dates_Works()
         {
-            var currentMonthDates = DateHelpers.GetMonthDatesFromDate(DateTime.UtcNow);
+            var currentMonthDates = DateHelpers.GetMonthDatesFromDate(DateTime.Now);
             currentMonthDates.startDate.Day.ShouldBe(1);
-            currentMonthDates.startDate.Month.ShouldBe(DateTime.UtcNow.Month);
+            currentMonthDates.startDate.Month.ShouldBe(DateTime.Now.Month);
+            currentMonthDates.endDate.Day.ShouldBeOneOf<int>(new int[] { 28, 29, 30, 31 });
         }
         [Fact]
         public void Get_Last_Day_Of_Month_Works()
         {
-            var lastDay = DateHelpers.GetLastDayOfMonth(DateTime.UtcNow);
-            lastDay.ShouldBeGreaterThan(27);
-            lastDay.ShouldBeLessThan(32);
+            var lastDay = DateHelpers.GetLastDayOfMonth(DateTime.Now);
+            lastDay.ShouldBeOneOf<int>(new int[] { 28, 29, 30, 31 });
         }
         [Fact]
         public void Get_Quarter_Dates_Works()
         {
-            var dates = DateHelpers.GetQuarterDatesFromDate(DateTime.UtcNow);
-            dates.startDate.ShouldBeLessThan(DateTime.UtcNow);
-            dates.endDate.ShouldBeGreaterThan(DateTime.UtcNow);
+            var dates = DateHelpers.GetQuarterDatesFromDate(DateTime.Now);
+            dates.startDate.ShouldBeLessThanOrEqualTo(DateTime.Now);
+            dates.startDate.Day.ShouldBe(1);
+            dates.endDate.ShouldBeGreaterThanOrEqualTo(DateTime.Now);
+            dates.endDate.Day.ShouldBeOneOf<int>(new int[] { 28, 29, 30, 31 });
+            dates.startDate.Year.ShouldBe(DateTime.Now.Year);
+            dates.endDate.Year.ShouldBe(DateTime.Now.Year);
+
         }
         [Fact]
         public void Get_Year_Dates_Works()
         {
-            var dates = DateHelpers.GetYearDatesFromDate(DateTime.UtcNow);
+            var dates = DateHelpers.GetYearDatesFromDate(DateTime.Now);
             dates.startDate.Day.ShouldBe(1);
             dates.endDate.Day.ShouldBe(31);
-            dates.startDate.Year.ShouldBe(DateTime.UtcNow.Year);
+            dates.startDate.Year.ShouldBe(DateTime.Now.Year);
         }
 
         [Theory]

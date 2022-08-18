@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 
-namespace CashTrack.IntegrationTests
+namespace CashTrack.Tests
 {
     public class TestOptionsSnapshot<T> : IOptionsSnapshot<T> where T : class
     {

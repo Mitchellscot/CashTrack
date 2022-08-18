@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AngleSharp.Html.Dom;
 using Xunit;
 
-namespace CashTrack.IntegrationTests.Common
+namespace CashTrack.Tests.Common
 {
     public static class HttpClientExtensions
     {

@@ -3,7 +3,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace CashTrack.IntegrationTests.Services.Common
+namespace CashTrack.Tests.Services.Common
 {
     public class AppDbContextFactory : IDisposable
     {
