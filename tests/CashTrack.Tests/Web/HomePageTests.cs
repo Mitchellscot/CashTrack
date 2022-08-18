@@ -1,23 +1,27 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using CashTrack.Tests.Common;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace CashTrack.Tests.Pages;
+namespace CashTrack.Tests.Web;
 
-public class IndexTests
-    : IClassFixture<CustomWebApplicationFactory<CashTrack.Program>>
+public class HomePageTests : IClassFixture<CustomWebApplicationFactory<CashTrack.Program>>
 {
     private readonly CustomWebApplicationFactory<CashTrack.Program> _factory;
     private ITestOutputHelper _output;
 
-    public IndexTests(CustomWebApplicationFactory<CashTrack.Program> factory, ITestOutputHelper output)
+    public HomePageTests(CustomWebApplicationFactory<CashTrack.Program> factory, ITestOutputHelper output)
     {
         _output = output;
         _factory = factory;
