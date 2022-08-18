@@ -19,12 +19,14 @@ namespace CashTrack.Tests.Web;
 public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTrack.Program>>
 {
     private readonly CustomWebApplicationFactory<CashTrack.Program> _factory;
+    private readonly HttpClient _client;
     private ITestOutputHelper _output;
 
     public ControllerTests(CustomWebApplicationFactory<CashTrack.Program> factory, ITestOutputHelper output)
     {
         _output = output;
         _factory = factory;
+        _client = GetAuthenticatedClient();
     }
     [Theory]
     [InlineData("/Expenses")]
@@ -40,9 +42,8 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
     [InlineData("/Settings")]
     public async Task Can_Return_Secure_Pages(string path)
     {
-        var client = GetAuthenticatedClient();
 
-        var response = await client.GetAsync(path);
+        var response = await _client.GetAsync(path);
 
         var html = await response.Content.ReadAsStringAsync();
         response.Content.Headers.ContentType!.ToString().ShouldBe("text/html; charset=utf-8");

@@ -24,19 +24,19 @@ namespace CashTrack.Tests.Controllers;
 public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTrack.Program>>
 {
     private readonly CustomWebApplicationFactory<CashTrack.Program> _factory;
+    private readonly HttpClient _client;
     private ITestOutputHelper _output;
 
     public ControllerTests(CustomWebApplicationFactory<CashTrack.Program> factory, ITestOutputHelper output)
     {
         _output = output;
         _factory = factory;
+        _client = GetAuthenticatedClient();
     }
     [Fact]
     public async Task Income_Category_Controller_Returns_Categories()
     {
-        var client = GetAuthenticatedClient();
-
-        var response = await client.GetAsync("/api/IncomeCategory");
+        var response = await _client.GetAsync("/api/IncomeCategory");
 
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<IncomeCategoryDropdownSelection[]>(result);
@@ -48,9 +48,7 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
     [Fact]
     public async Task Sub_Category_Controller_Returns_Categories()
     {
-        var client = GetAuthenticatedClient();
-
-        var response = await client.GetAsync("/api/SubCategory");
+        var response = await _client.GetAsync("/api/SubCategory");
 
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<SubCategoryDropdownSelection[]>(result);
@@ -62,9 +60,7 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
     [Fact]
     public async Task Main_Category_Controller_Returns_Categories()
     {
-        var client = GetAuthenticatedClient();
-
-        var response = await client.GetAsync("/api/MainCategory");
+        var response = await _client.GetAsync("/api/MainCategory");
 
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<MainCategoryDropdownSelection[]>(result);
@@ -80,9 +76,7 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
 
     public async Task Main_Category_Controller_Returns_By_Subcategory_Id(int id)
     {
-        var client = GetAuthenticatedClient();
-
-        var response = await client.GetAsync($"/api/maincategory/sub-category/{id}");
+        var response = await _client.GetAsync($"/api/maincategory/sub-category/{id}");
 
         var result = await response.Content.ReadAsStringAsync();
         result.ShouldNotBeEmpty();
@@ -96,14 +90,11 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
 
     public async Task Income_Source_Controller_Returns_Matching_Sources(string name)
     {
-        var client = GetAuthenticatedClient();
-
-        var response = await client.GetAsync($"/api/incomesource?sourceName={name}");
+        var response = await _client.GetAsync($"/api/incomesource?sourceName={name}");
 
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<string[]>(result);
-        responseObject.Length.ShouldBe(1);
-        responseObject[0].ShouldBe(name);
+        responseObject.ShouldContain(name);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         PrintRequestAndResponse("/api/IncomeSource?sourceName=", result);
     }
@@ -114,13 +105,10 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
 
     public async Task Subcategory_Controller_Returns_Matching_Categories(string name)
     {
-        var client = GetAuthenticatedClient();
-
-        var response = await client.GetAsync($"/api/subcategory/autocomplete?categoryName={name}");
+        var response = await _client.GetAsync($"/api/subcategory/autocomplete?categoryName={name}");
 
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<string[]>(result);
-        responseObject.Length.ShouldBe(1);
         responseObject[0].ShouldBe(name);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         PrintRequestAndResponse("/api/subcategory/autocomplete?categoryName=", result);
@@ -132,9 +120,7 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
 
     public async Task Merchants_Controller_Returns_Matching_Merchants(string name)
     {
-        var client = GetAuthenticatedClient();
-
-        var response = await client.GetAsync($"/api/merchants?merchantName={name}");
+        var response = await _client.GetAsync($"/api/merchants?merchantName={name}");
 
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<string[]>(result);
