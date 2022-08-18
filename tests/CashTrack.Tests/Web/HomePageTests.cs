@@ -72,8 +72,8 @@ public class HomePageTests : IClassFixture<CustomWebApplicationFactory<CashTrack
 
         var response = await client.SendAsync((IHtmlFormElement)form!, (IHtmlButtonElement)button!, new List<KeyValuePair<string, string>>
         {
-            new KeyValuePair<string, string>("UserName", "Test"),
-            new KeyValuePair<string, string>("Password", "0f1fe927-6221-4b44-bdb5-233a81748de1")
+            new KeyValuePair<string, string>("LoginRequest.UserName", "Test"),
+            new KeyValuePair<string, string>("LoginRequest.Password", "0f1fe927-6221-4b44-bdb5-233a81748de1")
         });
 
         var result = await response.Content.ReadAsStringAsync();

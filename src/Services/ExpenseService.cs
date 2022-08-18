@@ -2,6 +2,7 @@
 using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.ExpenseModels;
+using CashTrack.Models.IncomeModels;
 using CashTrack.Models.TagModels;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.IncomeRepository;
@@ -171,6 +172,8 @@ public class ExpenseService : IExpenseService
     public async Task<bool> DeleteExpenseAsync(int id)
     {
         var expense = await _expenseRepo.FindById(id);
+        if (expense == null)
+            throw new ExpenseNotFoundException("Invalid expense Id");
 
         return await _expenseRepo.Delete(expense);
     }
