@@ -1,11 +1,9 @@
-﻿using CashTrack.Data.Entities;
-using CashTrack.Data.Entities.Common;
-using CashTrack.Services.Common;
+﻿using CashTrack.Data.Entities.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CashTrack.Services
+namespace CashTrack.Services.Common
 {
     public static class AggregateUtilities<T> where T : Transactions
     {

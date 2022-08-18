@@ -154,7 +154,7 @@ namespace CashTrack.Services.ImportService
                     creditImports = csv.GetRecords<CreditImport>().ToList();
                     foreach (var item in creditImports)
                     {
-                        if (item.Credit > 0) 
+                        if (item.Credit > 0)
                         {
                             item.Amount = item.Credit.Value;
                             item.IsIncome = true;
@@ -176,7 +176,7 @@ namespace CashTrack.Services.ImportService
 
             //remove unnecessary credit transactions
             //TODO: add this as an option in settings.
-            imports = imports.Where(x => !x.Notes.Contains("thank you"));
+            imports = imports.Where(x => !x.Notes.ToLower().Contains("thank you"));
 
 
             File.Delete(filePath);

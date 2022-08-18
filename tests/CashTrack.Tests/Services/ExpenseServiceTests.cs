@@ -436,7 +436,7 @@ namespace CashTrack.Tests.Services
             {
                 Id = 1,
                 Amount = 4.24M,
-                Date = new DateTime(1984, 04, 24),
+                Date = DateTime.Today,
                 Notes = testnotes,
                 MerchantId = 5,
                 SubCategoryId = 1,
@@ -499,6 +499,15 @@ namespace CashTrack.Tests.Services
             await Task.Run(() =>
             Should.Throw<ExpenseNotFoundException>(async () => await _service.UpdateExpenseAsync(expense))
             );
+        }
+        [Fact]
+        public async Task Delete_Expense_Throws_With_Invalid_Id()
+        {
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var service = GetExepenseService(db);
+                await Task.Run(() => Should.Throw<ExpenseNotFoundException>(async () => await _service.DeleteExpenseAsync(int.MaxValue)));
+            }
         }
         private ExpenseService GetExepenseService(AppDbContext db)
         {

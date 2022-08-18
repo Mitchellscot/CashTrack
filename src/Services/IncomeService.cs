@@ -11,6 +11,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using static CashTrack.Models.AuthenticationModels.AuthenticationModels;
 
 namespace CashTrack.Services.IncomeService;
 
@@ -38,6 +39,8 @@ public class IncomeService : IIncomeService
     public async Task<bool> DeleteIncomeAsync(int id)
     {
         var income = await _incomeRespository.FindById(id);
+        if (income == null)
+            throw new IncomeNotFoundException("Invalid income Id");
 
         return await _incomeRespository.Delete(income);
     }

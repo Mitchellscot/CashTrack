@@ -27,7 +27,7 @@ public class AuthenticationValidator : AbstractValidator<AuthenticationModels.Re
     public AuthenticationValidator()
     {
         RuleFor(a => a.UserName).NotEmpty().MaximumLength(6).WithMessage("What's your name again?");
-        RuleFor(a => a.Password).NotEmpty().MaximumLength(25).WithMessage("Forget your password?");
+        RuleFor(a => a.Password).NotEmpty().MaximumLength(36).WithMessage("Forget your password?");
     }
 }
 
