@@ -1,6 +1,6 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
-using CashTrack.IntegrationTests.Common;
+using CashTrack.Tests.Common;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Shouldly;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace CashTrack.IntegrationTests.Pages;
+namespace CashTrack.Tests.Pages;
 
 public class IndexTests
     : IClassFixture<CustomWebApplicationFactory<CashTrack.Program>>

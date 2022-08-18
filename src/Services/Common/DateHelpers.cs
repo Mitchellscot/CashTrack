@@ -9,7 +9,7 @@ namespace CashTrack.Services.Common
     {
         public static DateTime GetCurrentMonth() => new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1, 0, 0, 0);
 
-        public static DateTime GetCurrentQuarter() => GetQuarterDatesFromDate(DateTime.UtcNow).startDate;
+        public static DateTime GetCurrentQuarter() => GetQuarterDatesFromDate(DateTime.Now).startDate;
 
         public static DateTime GetCurrentYear() => new DateTime(DateTime.Now.Year, 1, 1, 0, 0, 0);
 

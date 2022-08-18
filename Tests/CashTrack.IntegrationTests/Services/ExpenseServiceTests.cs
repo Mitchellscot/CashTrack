@@ -7,8 +7,8 @@ using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.MerchantRepository;
 using AutoMapper;
 using CashTrack.Repositories.SubCategoriesRepository;
-using CashTrack.IntegrationTests.Services.Common;
-using CashTrack.IntegrationTests.Common;
+using CashTrack.Tests.Services.Common;
+using CashTrack.Tests.Common;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.Common;
 using System;
@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using CashTrack.Models.IncomeModels;
 using AngleSharp.Dom;
 
-namespace CashTrack.IntegrationTests.Services
+namespace CashTrack.Tests.Services
 {
 
     public class ExpenseServiceTests

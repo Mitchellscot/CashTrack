@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Xunit.Sdk;
 using System.Reflection;
 
-namespace CashTrack.IntegrationTests.Common
+namespace CashTrack.Tests.Common
 {
     internal class EmptyDataAttribute : DataAttribute
     {

@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace CashTrack.IntegrationTests.Common
+namespace CashTrack.Tests.Common
 {
     public class HtmlHelpers
     {

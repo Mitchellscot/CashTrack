@@ -2,7 +2,7 @@
 using Microsoft.Extensions.FileProviders;
 using System;
 
-namespace CashTrack.IntegrationTests.Services.Common
+namespace CashTrack.Tests.Services.Common
 {
     public class TestWebHostEnvironment : IWebHostEnvironment
     {
