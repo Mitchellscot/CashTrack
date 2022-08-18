@@ -1,6 +1,4 @@
-﻿using AngleSharp.Dom;
-using AngleSharp.Html.Dom;
-using CashTrack.Models.IncomeCategoryModels;
+﻿using CashTrack.Models.IncomeCategoryModels;
 using CashTrack.Models.MainCategoryModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Tests.Common;
@@ -9,9 +7,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Shouldly;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
