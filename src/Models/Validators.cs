@@ -21,15 +21,15 @@ namespace CashTrack.Validators;
 
 //you can think about adding this later... if you want.
 
-///* AUTHENTICATION */
-//public class AuthenticationValidator : AbstractValidator<AuthenticationModels.Request>
-//{
-//    public AuthenticationValidator()
-//    {
-//        RuleFor(a => a.Name).NotEmpty().WithMessage("What's your name again?").MaximumLength(25);
-//        RuleFor(a => a.Password).NotEmpty().WithMessage("Forget your password?").MaximumLength(50);
-//    }
-//}
+/* AUTHENTICATION */
+public class AuthenticationValidator : AbstractValidator<AuthenticationModels.Request>
+{
+    public AuthenticationValidator()
+    {
+        RuleFor(a => a.UserName).NotEmpty().MaximumLength(6).WithMessage("What's your name again?");
+        RuleFor(a => a.Password).NotEmpty().MaximumLength(25).WithMessage("Forget your password?");
+    }
+}
 
 ///*  EXPENSES */
 //public class ExpenseValidators : AbstractValidator<Expense>

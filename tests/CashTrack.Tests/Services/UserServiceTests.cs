@@ -3,8 +3,6 @@ using CashTrack.Data.Entities;
 using CashTrack.Repositories.UserRepository;
 using CashTrack.Services.UserService;
 using Moq;
-using System;
-using System.Linq.Expressions;
 using Xunit;
 using Shouldly;
 using CashTrack.Models.UserModels;
@@ -12,7 +10,6 @@ using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
-using CashTrack.Services.ExpenseService;
 using CashTrack.Tests.Services.Common;
 
 namespace CashTrack.Tests.Services
