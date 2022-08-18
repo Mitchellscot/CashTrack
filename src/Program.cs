@@ -41,6 +41,7 @@ using Microsoft.AspNetCore.Routing;
 using CashTrack.Common;
 using System.Diagnostics;
 using System.Collections.Generic;
+using FluentValidation;
 
 namespace CashTrack
 {
@@ -74,7 +75,7 @@ namespace CashTrack
         private static void ConfigureThirdPartyServices(IServiceCollection app, string connectionString)
         {
             app.AddRazorPages();
-            app.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
+            app.AddValidatorsFromAssemblyContaining<Program>();
             app.AddAutoMapper(typeof(Program));
             app.AddDbContext<AppDbContext>(o =>
             {
