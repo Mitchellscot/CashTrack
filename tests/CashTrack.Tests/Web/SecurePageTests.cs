@@ -94,7 +94,7 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
 
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<string[]>(result);
-        responseObject.ShouldContain(name);
+        responseObject[0].ShouldBe(name);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         PrintRequestAndResponse("/api/IncomeSource?sourceName=", result);
     }
