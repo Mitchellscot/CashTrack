@@ -62,6 +62,7 @@ namespace CashTrack.Pages.Expenses
             }
             try
             {
+                //TODO: All of this should be moved into the service, delete and everything.
                 foreach (var expenseSplit in expenseSplits)
                 {
                     if (expenseSplit.Amount > 0)
