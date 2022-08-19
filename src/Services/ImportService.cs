@@ -103,7 +103,7 @@ namespace CashTrack.Services.ImportService
             return results;
         }
 
-        private async Task<IEnumerable<ImportTransaction>> FilterTransactions(IEnumerable<ImportTransaction> imports)
+        internal async Task<IEnumerable<ImportTransaction>> FilterTransactions(IEnumerable<ImportTransaction> imports)
         {
             var oldestExpenseDate = imports.OrderBy(x => x.Date).FirstOrDefault().Date;
             var expenseImports = imports.Where(x => !x.IsIncome).ToList();
@@ -112,7 +112,7 @@ namespace CashTrack.Services.ImportService
             var expenseImportsNotAlreadyinDatabase = new List<ImportTransaction>();
             foreach (var import in expenseImports)
             {
-                if (!expenses.Any(x => x.Date == import.Date && x.Amount == import.Amount) || !expenseReviews.Any(x => x.Date == import.Date && x.Amount == import.Amount))
+                if (!expenses.Any(x => x.Date.Date == import.Date.Date && x.Amount == import.Amount) && !expenseReviews.Any(x => x.Date.Date == import.Date.Date && x.Amount == import.Amount))
                 {
                     expenseImportsNotAlreadyinDatabase.Add(import);
                 }
@@ -124,7 +124,7 @@ namespace CashTrack.Services.ImportService
             var incomeImportsNotAlreadyinDatabase = new List<ImportTransaction>();
             foreach (var import in incomeImports)
             {
-                if (!income.Any(x => x.Date == import.Date && x.Amount == import.Amount) || !incomeReviews.Any(x => x.Date == import.Date && x.Amount == import.Amount))
+                if (!income.Any(x => x.Date.Date == import.Date.Date && x.Amount == import.Amount) && !incomeReviews.Any(x => x.Date.Date == import.Date.Date && x.Amount == import.Amount))
                 {
                     incomeImportsNotAlreadyinDatabase.Add(import);
                 }
@@ -135,7 +135,7 @@ namespace CashTrack.Services.ImportService
             return importsNotInDatabase;
         }
 
-        private IEnumerable<ImportTransaction> GetTransactionsFromFile(string filePath, CsvFileType fileType)
+        internal IEnumerable<ImportTransaction> GetTransactionsFromFile(string filePath, CsvFileType fileType)
         {
             using var reader = new StreamReader(filePath);
             var bankImports = new List<BankImport>();
@@ -184,7 +184,7 @@ namespace CashTrack.Services.ImportService
 
         }
 
-        private IEnumerable<ImportTransaction> SetImportRules(IEnumerable<ImportTransaction> imports, ImportRuleEntity[] rules)
+        internal IEnumerable<ImportTransaction> SetImportRules(IEnumerable<ImportTransaction> imports, ImportRuleEntity[] rules)
         {
             var expenseImports = imports.Where(x => !x.IsIncome).ToList();
             var expenseRules = rules.Where(x => x.Transaction == "Expense").ToList();
