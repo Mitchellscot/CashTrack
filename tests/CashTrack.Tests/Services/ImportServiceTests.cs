@@ -286,6 +286,42 @@ namespace CashTrack.Tests.Services
                 result.ShouldBe("No transactions imported - is the file formatted properly?");
             }
         }
+        [Fact]
+        public async Task Get_Transactions_From_Bank_File()
+        {
+            var newFilePath = await CopyTestFileToRootForTesting("test-bank-import.csv");
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var service = GetImportService(db);
+                var result = service.GetTransactionsFromFile(newFilePath, CsvFileType.Bank).ToList();
+                result.Count().ShouldBe(9);
+            }
+        }
+        [Fact]
+        public async Task Get_Transactions_From_Credit_File()
+        {
+            var newFilePath = await CopyTestFileToRootForTesting("test-credit-import.csv");
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var service = GetImportService(db);
+                var result = service.GetTransactionsFromFile(newFilePath, CsvFileType.Credit).ToList();
+                result.Count().ShouldBe(7);
+            }
+        }
+        //FilterTransactions next
+        private async Task<string> CopyTestFileToRootForTesting(string testFileName)
+        {
+            //need to copy file to root so because the SUT deletes the file after reading it
+            var bytes = FileUtils.GetFileBytes(Path.Combine(FilesFolderPath, testFileName));
+            var file = new FormFile(new MemoryStream(bytes), 0, bytes.Length, testFileName, testFileName);
+            var newFilePath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())!.Parent!.Parent!.FullName, file.FileName);
+
+            using (var fileStream = new FileStream(newFilePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+            return newFilePath;
+        }
         private ImportService GetImportService(AppDbContext db)
         {
             var incomeReviewRepo = new IncomeReviewRepository(db);

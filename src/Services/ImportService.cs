@@ -185,6 +185,7 @@ namespace CashTrack.Services.ImportService
 
             //remove unnecessary credit transactions
             //TODO: add this as an option in settings.
+            //high priority
             imports = imports.Where(x => !x.Notes.ToLower().Contains("thank you"));
 
 
