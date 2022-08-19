@@ -154,7 +154,7 @@ namespace CashTrack.Tests.Services
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
                 var service = GetSourceService(db);
-                var repo = new IncomeRepository(db);
+                var repo = new IncomeSourceRepository(db);
                 var lastId = (await repo.GetCount(x => true) + 1);
                 var created = await service.CreateIncomeSourceAsync(source);
                 created.ShouldBe(lastId);
