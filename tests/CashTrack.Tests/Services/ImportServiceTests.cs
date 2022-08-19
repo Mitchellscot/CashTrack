@@ -168,7 +168,7 @@ namespace CashTrack.Tests.Services
                 var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
 
                 var result = await importService.ImportTransactions(request);
-                result.ShouldBe("No transactions imported - is the file empty?");
+                result.ShouldBe("No transactions imported");
             }
         }
         [Fact]
@@ -191,7 +191,7 @@ namespace CashTrack.Tests.Services
                 var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
 
                 var result = await importService.ImportTransactions(request);
-                result.ShouldBe("No transactions imported - is the file empty?");
+                result.ShouldBe("No transactions imported");
             }
         }
         [Fact]
@@ -238,6 +238,52 @@ namespace CashTrack.Tests.Services
 
                 var result = await importService.ImportTransactions(request);
                 result.ShouldBe("Please inspect the csv file for the correct headers.");
+            }
+        }
+        [Fact]
+        public async Task Bad_Formmatting_On_Bank_File_Gives_Error()
+        {
+            var bytes = FileUtils.GetFileBytes(Path.Combine(FilesFolderPath, "test-bank-import-bad-formatting.csv"));
+            var request = new ImportModel()
+            {
+                File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-bank-import-bad-formatting", "test-bank-import-bad-formatting.csv"),
+                FileType = CsvFileType.Bank,
+                ReturnUrl = "/"
+            };
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var incomeReviewRepo = new IncomeReviewRepository(db);
+                var expenseReviewRepo = new ExpenseReviewRepository(db);
+                var incomeRepo = new IncomeRepository(db);
+                var expenseRepo = new ExpenseRepository(db);
+                var rulesRepo = new ImportRulesRepository(db);
+                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+
+                var result = await importService.ImportTransactions(request);
+                result.ShouldBe("No transactions imported - is the file formatted properly?");
+            }
+        }
+        [Fact]
+        public async Task Bad_Formmatting_On_Credit_File_Gives_Error()
+        {
+            var bytes = FileUtils.GetFileBytes(Path.Combine(FilesFolderPath, "test-credit-import-bad-formatting.csv"));
+            var request = new ImportModel()
+            {
+                File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-credit-import-bad-formatting", "test-credit-import-bad-formatting.csv"),
+                FileType = CsvFileType.Credit,
+                ReturnUrl = "/"
+            };
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var incomeReviewRepo = new IncomeReviewRepository(db);
+                var expenseReviewRepo = new ExpenseReviewRepository(db);
+                var incomeRepo = new IncomeRepository(db);
+                var expenseRepo = new ExpenseRepository(db);
+                var rulesRepo = new ImportRulesRepository(db);
+                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+
+                var result = await importService.ImportTransactions(request);
+                result.ShouldBe("No transactions imported - is the file formatted properly?");
             }
         }
         private ImportService GetImportService(AppDbContext db)

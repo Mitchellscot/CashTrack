@@ -58,7 +58,13 @@ namespace CashTrack.Services.ImportService
             }
             catch (ReaderException)
             {
-                return "No transactions imported - is the file empty?";
+                File.Delete(filePath);
+                return "No transactions imported - is the file formatted properly?";
+            }
+            if (!imports.Any())
+            {
+                File.Delete(filePath);
+                return "No transactions imported";
             }
 
             IEnumerable<ImportTransaction> filteredImports = await FilterTransactions(imports);
