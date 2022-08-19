@@ -123,6 +123,8 @@ public class MerchantService : IMerchantService
     public async Task<MerchantDetail> GetMerchantDetailAsync(int id)
     {
         var merchant = await _merchantRepo.FindById(id);
+        if (merchant == null)
+            throw new MerchantNotFoundException(id.ToString());
         var expenses = await _expenseRepo.GetExpensesAndCategoriesByMerchantId(id);
         if (!expenses.Any())
             return new MerchantDetail()
@@ -182,7 +184,7 @@ public class MerchantService : IMerchantService
             }).ToList()
         };
     }
-    private Dictionary<string, int> GetExpenseCategoryOccurances(SubCategoryEntity[] subCategories, ExpenseEntity[] expenses)
+    internal Dictionary<string, int> GetExpenseCategoryOccurances(SubCategoryEntity[] subCategories, ExpenseEntity[] expenses)
     {
         return subCategories.GroupJoin(expenses,
         c => c.Id, e => e.Category.Id, (c, g) => new
@@ -195,7 +197,7 @@ public class MerchantService : IMerchantService
             Count = x.Expenses.Count()
         }).OrderByDescending(x => x.Count).ToDictionary(k => k.Category, v => v.Count);
     }
-    private Dictionary<string, decimal> GetExpenseCategoryTotals(SubCategoryEntity[] subCategories, ExpenseEntity[] expenses)
+    internal Dictionary<string, decimal> GetExpenseCategoryTotals(SubCategoryEntity[] subCategories, ExpenseEntity[] expenses)
     {
         return subCategories.GroupJoin(expenses,
             c => c.Id, e => e.Category.Id, (c, g) => new
