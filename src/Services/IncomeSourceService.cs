@@ -76,21 +76,24 @@ public class IncomeSourceService : IIncomeSourceService
     {
         var sources = await _sourceRepo.Find(x => true);
         var income = await _incomeRepo.Find(x => true);
+        //only categories that have incomes associated with them
+        //So if you create a new category, and no income is associated with it, it won't
+        //show up on the category list. Maybe I should fix that.. TODO: ????
         var categories = income.Select(x => x.Category).Distinct().ToArray();
         var count = await _sourceRepo.GetCount(x => true);
         var sourceListItems = income.GroupBy(i => i.SourceId).Select(g =>
+        {
+            var results = g.Aggregate(new SourceListItemAggregator(g.Key, categories, sources), (acc, i) => acc.Accumulate(i), acc => acc.Compute());
+            return new IncomeSourceListItem()
             {
-                var results = g.Aggregate(new SourceListItemAggregator(g.Key, categories, sources), (acc, i) => acc.Accumulate(i), acc => acc.Compute());
-                return new IncomeSourceListItem()
-                {
-                    Id = g.Key.HasValue ? g.Key.Value : 0,
-                    Name = results.Source != null ? results.Source.Name : null,
-                    Payments = results.Payments,
-                    Amount = results.Amount,
-                    LastPayment = results.LastPayment,
-                    Category = results.MostUsedCategory
-                };
-            }).Where(x => x.Id > 0).OrderByDescending(x => x.LastPayment).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
+                Id = g.Key.HasValue ? g.Key.Value : 0,
+                Name = results.Source != null ? results.Source.Name : null,
+                Payments = results.Payments,
+                Amount = results.Amount,
+                LastPayment = results.LastPayment,
+                Category = results.MostUsedCategory
+            };
+        }).Where(x => x.Id > 0).OrderByDescending(x => x.LastPayment).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
 
         return new IncomeSourceResponse(request.PageNumber, request.PageSize, count, sourceListItems);
     }
@@ -105,7 +108,7 @@ public class IncomeSourceService : IIncomeSourceService
         var sources = await _sourceRepo.Find(x => x.Name == request.Name);
         if (sources.Any(x => x.Id != request.Id))
             throw new DuplicateNameException(request.Name, nameof(IncomeSourceEntity));
-        var source = sources.First(x => x.Id == request.Id.Value);
+        var source = await _sourceRepo.FindById(request.Id.Value);
 
         source.Name = request.Name;
         source.SuggestOnLookup = request.SuggestOnLookup;
@@ -159,7 +162,7 @@ public class IncomeSourceService : IIncomeSourceService
             }).ToList()
         };
     }
-    private Dictionary<string, decimal> GetIncomeCategoryTotals(IncomeCategoryEntity[] categories, IncomeEntity[] incomes)
+    internal Dictionary<string, decimal> GetIncomeCategoryTotals(IncomeCategoryEntity[] categories, IncomeEntity[] incomes)
     {
         return categories.GroupJoin(incomes,
             c => c.Id, e => e.Category.Id, (c, g) => new
@@ -172,7 +175,7 @@ public class IncomeSourceService : IIncomeSourceService
                 Sum = x.Incomes.Sum(e => e.Amount)
             }).Where(x => x.Sum > 0).OrderByDescending(x => x.Sum).ToDictionary(k => k.Category, v => v.Sum);
     }
-    private Dictionary<string, int> GetIncomeCategoryOccurances(IncomeCategoryEntity[] categories, IncomeEntity[] incomes)
+    internal Dictionary<string, int> GetIncomeCategoryOccurances(IncomeCategoryEntity[] categories, IncomeEntity[] incomes)
     {
         return categories.GroupJoin(incomes,
             c => c.Id, i => i.Category.Id, (c, g) => new
