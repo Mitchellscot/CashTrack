@@ -1,9 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using CashTrack.Data.Entities;
-using CashTrack.Models.ImportCsvModels;
-using CsvHelper;
 
 namespace CashTrack.Data.CsvFiles
 {
