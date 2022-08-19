@@ -16,13 +16,13 @@ using Xunit.Abstractions;
 
 namespace CashTrack.Tests.Web;
 
-public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTrack.Program>>
+public class SecurePageTests : IClassFixture<CustomWebApplicationFactory<CashTrack.Program>>
 {
     private readonly CustomWebApplicationFactory<CashTrack.Program> _factory;
     private readonly HttpClient _client;
     private ITestOutputHelper _output;
 
-    public ControllerTests(CustomWebApplicationFactory<CashTrack.Program> factory, ITestOutputHelper output)
+    public SecurePageTests(CustomWebApplicationFactory<CashTrack.Program> factory, ITestOutputHelper output)
     {
         _output = output;
         _factory = factory;

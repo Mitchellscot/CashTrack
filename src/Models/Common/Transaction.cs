@@ -17,8 +17,8 @@ namespace CashTrack.Models.Common
     public abstract class TransactionRequest : PaginationRequest
     {
         public DateOptions DateOptions { get; set; }
-        public DateTime BeginDate { get; set; } = DateTime.UtcNow;
-        public DateTime EndDate { get; set; } = DateTime.UtcNow;
+        public DateTime BeginDate { get; set; } = DateTime.Now;
+        public DateTime EndDate { get; set; } = DateTime.Now;
     }
     public abstract class TransactionResponse<T> : PaginationResponse<T> where T : Transaction
     {

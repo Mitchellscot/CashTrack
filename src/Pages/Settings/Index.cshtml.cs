@@ -1,3 +1,4 @@
+using CashTrack.Common;
 using CashTrack.Models.Common;
 using CashTrack.Models.ExportModels;
 using CashTrack.Services.ExportService;
@@ -34,7 +35,7 @@ namespace CashTrack.Pages.Settings
         public async Task<ActionResult> OnPostExport(int ExportOption, bool ExportAsReadable)
         {
             var filePath = await _exportService.ExportData(ExportOption, ExportAsReadable);
-            byte[] fileBytes = GetFileBytes(filePath);
+            byte[] fileBytes = FileUtils.GetFileBytesAndDeleteFile(filePath);
 
             if (filePath.Contains("archive"))
             {
@@ -45,16 +46,6 @@ namespace CashTrack.Pages.Settings
 
         }
 
-        private byte[] GetFileBytes(string filePath)
-        {
-            FileStream fileStream = System.IO.File.OpenRead(filePath);
-            byte[] data = new byte[fileStream.Length];
-            int buffer = fileStream.Read(data, 0, data.Length);
-            if (buffer != fileStream.Length)
-                throw new IOException(filePath);
-            fileStream.Close();
-            System.IO.File.Delete(filePath);
-            return data;
-        }
+
     }
 }
