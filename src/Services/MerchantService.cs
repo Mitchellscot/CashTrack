@@ -227,7 +227,7 @@ public class MerchantService : IMerchantService
         if (merchants.Any(x => x.Id != request.Id))
             throw new DuplicateNameException(request.Name, nameof(MerchantEntity));
 
-        var merchant = merchants.FirstOrDefault(x => x.Id == request.Id.Value);
+        var merchant = await _merchantRepo.FindById(request.Id.Value);
 
         merchant.Name = request.Name;
         merchant.City = request.IsOnline ? null : request.City;
