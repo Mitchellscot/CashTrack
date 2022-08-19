@@ -1,0 +1,10 @@
+Transaction ID,Posting Date,Effective Date,Transaction Type,AmountZ,Check Number,Reference Number,Description,Transaction Category,Type,Balance,Memo,Extended Description
+"20220409 95083 1,100 202,204,090,001",4/9/2012,4/9/2012,Debit,-11,,79586145,,Food & Dining,Debit/Withdrawal Transactions,841.49,,
+"20220408 95083 500 202,204,080,001",4/8/2012,4/8/2012,Debit,-5,,79586146,,,Debit/Withdrawal Transactions,852.49,,
+"20220406 95083 6,000 202,204,060,005",4/6/2012,4/6/2012,Check,-60,10,79517797,rent,,Debit/Withdrawal Transactions,857.49,,rent
+"20220406 95083 375 202,204,060,004",4/6/2012,4/6/2012,Debit,-12,,79517795,this gets filtered out as it exists in test data,Shopping,Debit/Withdrawal Transactions,917.49,,this gets filtered out as it exists in test data
+"20220406 95083 455 202,204,060,003",4/6/2012,4/6/2012,Debit,-4.55,,79517798,,,Debit/Withdrawal Transactions,921.24,,
+"20220406 95083 408 202,204,060,002",4/6/2012,4/6/2012,Debit,-4.08,,79517799,,,Debit/Withdrawal Transactions,925.79,,
+"20220406 95083 449,500 202,204,060,001",4/5/2012,4/5/2012,Credit,1862.52,,79517800,this gets filtered out as it exists in test data,,Credit/Deposit Transactions,929.87,,this gets filtered out as it exists in test data
+"20220405 95083 6,336 202,204,050,002",4/5/2012,4/5/2012,Debit,-63.36,,79517801,,,,434.87,,
+"20220495 95083 6,336 202,204,050,002",4/7/2012,4/7/2012,Credit,20,,79517802,tip for guiding,,Credit/Deposit Transactions,454.87,,tip for guiding
