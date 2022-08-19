@@ -8,6 +8,7 @@ using CashTrack.Repositories.IncomeReviewRepository;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Hosting;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -55,10 +56,10 @@ namespace CashTrack.Services.ImportService
                 File.Delete(filePath);
                 return "Please inspect the csv file for the correct headers.";
             }
-
-
-            if (!imports.Any())
-                return "No transactions imported";
+            catch (ReaderException)
+            {
+                return "No transactions imported - is the file empty?";
+            }
 
             IEnumerable<ImportTransaction> filteredImports = await FilterTransactions(imports);
 
@@ -168,7 +169,9 @@ namespace CashTrack.Services.ImportService
                 }
                 else if (fileType == CsvFileType.Other)
                 {
-                    otherImports = csv.GetRecords<OtherTransactionImport>().ToList();
+                    //TODO: FIgure this out
+                    throw new NotImplementedException();
+                    //otherImports = csv.GetRecords<OtherTransactionImport>().ToList();
                 }
             }
             IEnumerable<ImportTransaction> imports = bankImports.Any() ? bankImports :
