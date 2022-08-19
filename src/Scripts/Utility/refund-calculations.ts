@@ -62,7 +62,6 @@ function findTotal(incomeAmount: number): number {
     let sumOfTotals = 0;
     allTotalElements.forEach(x => sumOfTotals += parseFloat(x.value));
     sumOfTotals = isNaN(sumOfTotals) ? 0 : sumOfTotals;
-    console.log(`sumOfTotals: ${sumOfTotals}`);
     return formatAmount((incomeAmount - sumOfTotals));
 }
 
