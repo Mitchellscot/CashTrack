@@ -1,5 +1,6 @@
 ﻿using CashTrack.Common;
 using CashTrack.Data;
+using CashTrack.Data.Entities;
 using CashTrack.Models.ImportCsvModels;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.ExpenseReviewRepository;
@@ -10,6 +11,8 @@ using CashTrack.Services.ImportService;
 using CashTrack.Tests.Services.Common;
 using Microsoft.AspNetCore.Http;
 using Shouldly;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -308,7 +311,148 @@ namespace CashTrack.Tests.Services
                 result.Count().ShouldBe(7);
             }
         }
-        //FilterTransactions next
+        [Fact]
+        public async Task Filter_Transactions_From_Database()
+        {
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var service = GetImportService(db);
+                var ImportTransactions = new List<ImportTransaction>()
+                {
+                    new ImportTransaction()
+                    {
+                        Date = new DateTime(2012, 04, 24),
+                        Amount = 42.53m,
+                        Notes = "Just kidding",
+                        IsIncome = false
+                    },
+                    new ImportTransaction()
+                    {
+                        Date = new DateTime(2012, 04, 24),
+                        Amount = new Decimal(42.52),
+                        Notes = "This works",
+                        IsIncome = false
+                    },
+                    new ImportTransaction()
+                    {
+                        Date = new DateTime(2012, 04, 23),
+                        Amount = new Decimal(50),
+                        Notes = "Just kidding",
+                        IsIncome = true
+                    },
+                    new ImportTransaction()
+                    {
+                        Date = new DateTime(2012, 04, 24),
+                        Amount = new Decimal(50),
+                        Notes = "This works",
+                        IsIncome = true
+                    },
+
+                };
+                var result = (await service.FilterTransactions(ImportTransactions)).ToList();
+                result.Count().ShouldBe(2);
+                foreach (var transaction in result)
+                {
+                    transaction.Notes.ShouldBe("this works");
+                }
+            }
+        }
+        [Fact]
+        public async Task Filter_Transactions_From_Database_In_Review_Table()
+        {
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var incomeReviewRepo = new IncomeReviewRepository(db);
+                var expenseReviewRepo = new ExpenseReviewRepository(db);
+                var incomeRepo = new IncomeRepository(db);
+                var expenseRepo = new ExpenseRepository(db);
+                var rulesRepo = new ImportRulesRepository(db);
+                var service = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+
+                await incomeReviewRepo.Create(new IncomeReviewEntity()
+                {
+                    Date = new DateTime(2012, 04, 24),
+                    Amount = new Decimal(50),
+                    Notes = "This works"
+                });
+
+                await expenseReviewRepo.Create(new ExpenseReviewEntity()
+                {
+                    Date = new DateTime(2012, 04, 24),
+                    Amount = new Decimal(42.52),
+                    Notes = "This works"
+                });
+                var ImportTransactions = new List<ImportTransaction>(){
+                    new ImportTransaction()
+                    {
+                        Date = new DateTime(2012, 04, 24),
+                        Amount = new Decimal(42.52),
+                        Notes = "This won't work",
+                        IsIncome = false
+                    },
+                    new ImportTransaction()
+                    {
+                        Date = new DateTime(2012, 04, 24),
+                        Amount = new Decimal(50),
+                        Notes = "This won't work",
+                        IsIncome = true
+                    },
+                };
+                var result = (await service.FilterTransactions(ImportTransactions)).ToList();
+                result.ShouldBeEmpty();
+            }
+        }
+        [Fact]
+        public async Task Set_Import_Rules_Sets_Properties()
+        {
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var incomeReviewRepo = new IncomeReviewRepository(db);
+                var expenseReviewRepo = new ExpenseReviewRepository(db);
+                var incomeRepo = new IncomeRepository(db);
+                var expenseRepo = new ExpenseRepository(db);
+                var rulesRepo = new ImportRulesRepository(db);
+                var service = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+                var rules = await rulesRepo.Find(x => true);
+                var imports = new List<ImportTransaction>()
+                {
+                    new ImportTransaction()
+                    {
+                        Date = new DateTime(2012, 04, 24),
+                        Amount = 25m,
+                        Notes = "tip",
+                        IsIncome = true
+                    },
+                    new ImportTransaction()
+                    {
+                        Date = new DateTime(2012, 04, 24),
+                        Amount = 5m,
+                        Notes = "amazon",
+                        IsIncome = true
+                    },
+                    new ImportTransaction()
+                    {
+                        Date = new DateTime(2012, 04, 24),
+                        Amount = 850m,
+                        Notes = "rent",
+                        IsIncome = false
+                    },
+                    new ImportTransaction()
+                    {
+                        Date = new DateTime(2012, 04, 24),
+                        Amount = 1000m,
+                        Notes = "Kaiser",
+                        IsIncome = false
+                    }
+                };
+                var results = service.SetImportRules(imports, rules).ToList();
+                foreach (var result in results)
+                {
+                    result.MerchantSourceId.HasValue.ShouldBeTrue();
+                    result.CategoryId.HasValue.ShouldBeTrue();
+                }
+            }
+        }
         private async Task<string> CopyTestFileToRootForTesting(string testFileName)
         {
             //need to copy file to root so because the SUT deletes the file after reading it
