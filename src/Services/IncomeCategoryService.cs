@@ -1,20 +1,19 @@
-﻿using AutoMapper;
-using CashTrack.Data.Entities;
+﻿using CashTrack.Data.Entities;
 using CashTrack.Common.Exceptions;
 using CashTrack.Models.IncomeCategoryModels;
 using CashTrack.Repositories.IncomeCategoryRepository;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using CashTrack.Repositories.IncomeRepository;
 
 namespace CashTrack.Services.IncomeCategoryService;
 
 public interface IIncomeCategoryService
 {
     Task<IncomeCategoryResponse> GetIncomeCategoriesAsync(IncomeCategoryRequest request);
-    Task<AddEditIncomeCategory> CreateIncomeCategoryAsync(AddEditIncomeCategory request);
+    Task<int> CreateIncomeCategoryAsync(AddEditIncomeCategory request);
     Task<int> UpdateIncomeCategoryAsync(AddEditIncomeCategory request);
     Task<bool> DeleteIncomeCategoryAsync(int id);
     Task<IncomeCategoryDropdownSelection[]> GetIncomeCategoryDropdownListAsync();
@@ -24,21 +23,23 @@ public interface IIncomeCategoryService
 public class IncomeCategoryService : IIncomeCategoryService
 {
     private readonly IIncomeCategoryRepository _repo;
-    private readonly IMapper _mapper;
+    private readonly IIncomeRepository _incomeRepo;
 
-    public IncomeCategoryService(IIncomeCategoryRepository repo, IMapper mapper) => (_repo, _mapper) = (repo, mapper);
+    public IncomeCategoryService(IIncomeCategoryRepository repo, IIncomeRepository incomeRepo) => (_repo, _incomeRepo) = (repo, incomeRepo);
 
-    public async Task<AddEditIncomeCategory> CreateIncomeCategoryAsync(AddEditIncomeCategory request)
+    public async Task<int> CreateIncomeCategoryAsync(AddEditIncomeCategory request)
     {
         var categories = await _repo.Find(x => true);
         if (categories.Any(x => x.Name == request.Name))
             throw new DuplicateNameException(nameof(IncomeCategoryEntity), request.Name);
         //this obviously needs to be rewritten
-        var incomeCategoryEntity = _mapper.Map<IncomeCategoryEntity>(request);
-        incomeCategoryEntity.Id = await _repo.GetCount(x => true) + 1;
-
-        request.Id = incomeCategoryEntity.Id;
-        return request;
+        var incomeCategoryEntity = new IncomeCategoryEntity()
+        {
+            Name = request.Name,
+            Notes = request.Notes,
+            InUse = request.InUse
+        };
+        return await _repo.Create(incomeCategoryEntity);
     }
 
     public async Task<bool> DeleteIncomeCategoryAsync(int id)
@@ -46,6 +47,19 @@ public class IncomeCategoryService : IIncomeCategoryService
         var category = await _repo.FindById(id);
         if (category == null)
             throw new CategoryNotFoundException(id.ToString());
+        if (category.Name == "Uncategorized")
+            throw new Exception("You cannot delete this category. It's kind of important.");
+
+        var uncategorizedCategory = (await _repo.Find(x => x.Name == "Uncategorized")).FirstOrDefault();
+        if (uncategorizedCategory == null)
+        {
+            throw new Exception("You need to create a new category called 'Uncategorized' before you can delete a category. This will assigned all income associated with this category to the 'Uncategorized' category.");
+        }
+        var incomes = await _incomeRepo.Find(x => x.CategoryId == id);
+        foreach (var income in incomes)
+        {
+            income.CategoryId = uncategorizedCategory.Id;
+        }
 
         return await _repo.Delete(category);
     }
@@ -60,7 +74,13 @@ public class IncomeCategoryService : IIncomeCategoryService
         var categories = await _repo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _repo.GetCount(predicate);
 
-        var response = new IncomeCategoryResponse(request.PageNumber, request.PageSize, count, _mapper.Map<IncomeCategoryListItem[]>(categories));
+        var categoryListItems = categories.Select(x => new IncomeCategoryListItem()
+        {
+            Id = x.Id,
+            Name = x.Name
+        }).ToArray();
+
+        var response = new IncomeCategoryResponse(request.PageNumber, request.PageSize, count, categoryListItems);
 
         return response;
     }
@@ -85,7 +105,7 @@ public class IncomeCategoryService : IIncomeCategoryService
         if (categories.Any(x => x.Id != request.Id))
             throw new DuplicateNameException(request.Name, nameof(IncomeCategoryEntity));
 
-        var category = categories.First(x => x.Id == request.Id.Value);
+        var category = (await _repo.Find(x => x.Id == request.Id.Value)).FirstOrDefault();
         if (category == null)
             throw new CategoryNotFoundException(request.Id.Value.ToString());
 
@@ -100,26 +120,6 @@ public class IncomeCategoryService : IIncomeCategoryService
     {
         var refundCategoryId = (await _repo.Find(x => x.Name == "Refund")).FirstOrDefault().Id;
         return refundCategoryId == categoryId;
-    }
-}
-
-public class IncomeCategoryProfile : Profile
-{
-    public IncomeCategoryProfile()
-    {
-        //Maybe add a property on the List Item that associates the item with a number of incomes ???? 
-        //You would have to get rid of this map then.
-        CreateMap<IncomeCategoryEntity, IncomeCategoryListItem>()
-            .ForMember(x => x.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(x => x.Name, o => o.MapFrom(src => src.Name))
-            .ReverseMap();
-
-        CreateMap<AddEditIncomeCategory, IncomeCategoryEntity>()
-            .ForMember(dest => dest.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(dest => dest.Name, o => o.MapFrom(src => src.Name))
-            .ForMember(dest => dest.Notes, o => o.MapFrom(src => src.Notes))
-            .ForMember(dest => dest.InUse, o => o.MapFrom(src => src.InUse))
-            .ReverseMap();
     }
 }
 

@@ -1,16 +1,11 @@
 ﻿using AutoMapper;
 using CashTrack.Common.Exceptions;
 using CashTrack.Data;
-using CashTrack.Models.Common;
 using CashTrack.Models.IncomeSourceModels;
-using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.IncomeCategoryRepository;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.IncomeSourceRepository;
-using CashTrack.Repositories.MerchantRepository;
-using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Services.IncomeSourceService;
-using CashTrack.Services.MerchantService;
 using CashTrack.Tests.Services.Common;
 using Shouldly;
 using System;
@@ -223,7 +218,7 @@ namespace CashTrack.Tests.Services
                 var categories = await incomeCategoryRepo.Find(x => true);
                 var income = await incomeRepo.Find(x => true);
                 var result = sourceService.GetIncomeCategoryOccurances(categories, income);
-                result.Count.ShouldBe(10);
+                result.Count.ShouldBe(11);
                 var tipTotal = result.Where(x => x.Key == "Tip").Select(x => x.Value).FirstOrDefault();
                 tipTotal.ShouldBe(172);
             }
