@@ -29,7 +29,7 @@ namespace CashTrack.Tests.Unit
         public void Can_Parse_Sub_Category_File()
         {
             var result = CsvParser.ProcessSubCategoryFile(Path.Combine(_csvFileDirectory, "SubCategories.csv"));
-            result.Count().ShouldBe(37);
+            result.Count().ShouldBe(38);
         }
         [Fact]
         public void Can_Parse_Merchants_File()

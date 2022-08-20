@@ -159,7 +159,7 @@ namespace CashTrack.Tests.Services
         {
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
-                var repo = new MerchantRepository(db); 
+                var repo = new MerchantRepository(db);
                 var subCategoryRepo = new SubCategoryRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
                 var merchantService = new MerchantService(_mapper, repo, subCategoryRepo, expenseRepo);
@@ -183,7 +183,7 @@ namespace CashTrack.Tests.Services
                 var subCategories = await subCategoryRepo.Find(x => true);
                 var expenses = await expenseRepo.Find(x => true);
                 var result = merchantService.GetExpenseCategoryOccurances(subCategories, expenses);
-                result.Count.ShouldBe(37);
+                result.Count.ShouldBe(38);
                 var timesWeAteOut = result.Where(x => x.Key == "Dining Out").Select(x => x.Value).FirstOrDefault();
                 timesWeAteOut.ShouldBe(161);
             }
