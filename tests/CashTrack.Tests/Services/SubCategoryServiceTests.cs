@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CashTrack.Common.Exceptions;
 using CashTrack.Data;
 using CashTrack.Models.MerchantModels;
 using CashTrack.Models.SubCategoryModels;
@@ -71,6 +72,17 @@ namespace CashTrack.Tests.Services
                 var created = await service.CreateSubCategoryAsync(category);
                 created.ShouldBe(lastId);
             }
+        }
+        [Fact]
+        public async Task Throws_On_Duplicate_Names()
+        {
+            var category = new SubCategory()
+            {
+                Name = "Groceries",
+                Notes = "created",
+                MainCategoryId = 1
+            };
+            await Task.Run(() => Should.Throw<DuplicateNameException>(async () => await _service.CreateSubCategoryAsync(category)));
         }
         private SubCategoryService GetCategoryService(AppDbContext db)
         {
