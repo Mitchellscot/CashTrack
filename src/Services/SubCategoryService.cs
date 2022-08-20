@@ -6,9 +6,7 @@ using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.SubCategoriesRepository;
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using CashTrack.Services.Common;
 using CashTrack.Models.Common;
 
@@ -49,7 +47,7 @@ public class SubCategoryService : ISubCategoryService
                 //only pulls the first 20 from the DB instead of pulling all of them
                 //this is what is run when you first load the page
                 if (!request.Reversed)
-                { 
+                {
                     return await GetSubCategoriesFastPageLoad();
                 }
 
@@ -158,7 +156,7 @@ public class SubCategoryService : ISubCategoryService
         if (categories.Any(x => x.Id != request.Id))
             throw new DuplicateNameException(request.Name, nameof(SubCategoryEntity));
 
-        var category = categories.First(x => x.Id == request.Id.Value);
+        var category = await _subCategoryRepo.FindById(request.Id.Value);
         if (category == null)
             throw new CategoryNotFoundException(request.Id.Value.ToString());
 
@@ -175,6 +173,16 @@ public class SubCategoryService : ISubCategoryService
         if (category == null)
             throw new CategoryNotFoundException(id.ToString());
 
+        var expenses = await _expenseRepo.Find(x => x.CategoryId == id);
+        var uncategorizeCategoryd = (await _subCategoryRepo.Find(x => x.Name == "Uncategorized")).FirstOrDefault();
+        if (uncategorizeCategoryd == null)
+        {
+            throw new CategoryNotFoundException("You need to create a new category called 'Uncategorized' before you can delete a sub category. This will assigned all exepenses associated with this sub category to the 'Uncategorized' category.");
+        }
+        foreach (var expense in expenses)
+        {
+            expense.CategoryId = uncategorizeCategoryd.Id;
+        }
         return await _subCategoryRepo.Delete(category);
     }
     public Task<SubCategoryDetail> GetSubCategoryDetailsAsync(int id)
