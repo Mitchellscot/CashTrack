@@ -1,16 +1,11 @@
 ﻿using AutoMapper;
 using CashTrack.Common.Exceptions;
 using CashTrack.Data;
-using CashTrack.Models.Common;
 using CashTrack.Models.IncomeSourceModels;
-using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.IncomeCategoryRepository;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.IncomeSourceRepository;
-using CashTrack.Repositories.MerchantRepository;
-using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Services.IncomeSourceService;
-using CashTrack.Services.MerchantService;
 using CashTrack.Tests.Services.Common;
 using Shouldly;
 using System;
