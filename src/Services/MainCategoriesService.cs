@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CashTrack.Data.Entities;
+﻿using CashTrack.Data.Entities;
 using CashTrack.Common.Exceptions;
 using CashTrack.Models.MainCategoryModels;
 using CashTrack.Repositories.MainCategoriesRepository;
@@ -16,7 +15,7 @@ namespace CashTrack.Services.MainCategoriesService
         Task<MainCategoryResponse> GetMainCategoriesAsync(MainCategoryRequest request);
         Task<MainCategoryDetail> GetMainCategoryDetailAsync(int id);
         Task<string> GetMainCategoryNameBySubCategoryIdAsync(int id);
-        Task<AddEditMainCategory> CreateMainCategoryAsync(AddEditMainCategory request);
+        Task<int> CreateMainCategoryAsync(AddEditMainCategory request);
         Task<MainCategoryDropdownSelection[]> GetMainCategoriesForDropdownListAsync();
         Task<int> UpdateMainCategoryAsync(AddEditMainCategory request);
         Task<bool> DeleteMainCategoryAsync(int id);
@@ -25,26 +24,25 @@ namespace CashTrack.Services.MainCategoriesService
     {
         private readonly IMainCategoriesRepository _mainCategoryRepo;
         private readonly ISubCategoryRepository _subCategoryRepository;
-        private readonly IMapper _mapper;
 
-        public MainCategoriesService(IMainCategoriesRepository mainCategoryRepository, IMapper mapper, ISubCategoryRepository subCategoryRepository)
+        public MainCategoriesService(IMainCategoriesRepository mainCategoryRepository, ISubCategoryRepository subCategoryRepository)
         {
             _mainCategoryRepo = mainCategoryRepository;
             _subCategoryRepository = subCategoryRepository;
-            _mapper = mapper;
         }
 
-        public async Task<AddEditMainCategory> CreateMainCategoryAsync(AddEditMainCategory request)
+        public async Task<int> CreateMainCategoryAsync(AddEditMainCategory request)
         {
             var categories = await _mainCategoryRepo.Find(x => true);
             if (categories.Any(x => x.Name == request.Name))
                 throw new DuplicateNameException(nameof(MainCategoryEntity), request.Name);
 
-            var category = _mapper.Map<MainCategoryEntity>(request);
+            var categoryEntity = new MainCategoryEntity()
+            {
+                Name = request.Name,
+            };
 
-            request.Id = category.Id;
-
-            return request;
+            return await _mainCategoryRepo.Create(categoryEntity);
         }
 
         public async Task<bool> DeleteMainCategoryAsync(int id)
@@ -52,6 +50,19 @@ namespace CashTrack.Services.MainCategoriesService
             var category = await _mainCategoryRepo.FindById(id);
             if (category == null)
                 throw new CategoryNotFoundException(id.ToString());
+
+            if (category.Name == "Other")
+                throw new Exception("You cannot delete this category. It's kind of important.");
+            var otherCategory = (await _mainCategoryRepo.Find(x => x.Name == "Other")).FirstOrDefault();
+            if (otherCategory == null)
+            {
+                throw new CategoryNotFoundException("You need to create a new category called 'Other' before you can delete a sub category. This will assigned all exepenses associated with this main category to the 'Other' category.");
+            }
+            var subCategories = await _subCategoryRepository.Find(x => x.MainCategoryId == id);
+            foreach (var subCategory in subCategories)
+            {
+                subCategory.MainCategoryId = otherCategory.Id;
+            }
 
             return await _mainCategoryRepo.Delete(category);
         }
@@ -110,21 +121,12 @@ namespace CashTrack.Services.MainCategoriesService
             if (categories.Any(x => x.Id != request.Id))
                 throw new DuplicateNameException(request.Name, nameof(MainCategoryEntity));
 
-            var category = categories.First(x => x.Id == request.Id.Value);
+            var category = await _mainCategoryRepo.FindById(request.Id.Value);
             if (category == null)
                 throw new CategoryNotFoundException(request.Id.Value.ToString());
 
             category.Name = request.Name;
             return await _mainCategoryRepo.Update(category);
         }
-    }
-}
-public class MainCategoryProfile : Profile
-{
-    public MainCategoryProfile()
-    {
-        CreateMap<AddEditMainCategory, MainCategoryEntity>()
-            .ForMember(c => c.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(c => c.Name, o => o.MapFrom(src => src.Name));
     }
 }

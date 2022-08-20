@@ -145,7 +145,6 @@ public class SubCategoryService : ISubCategoryService
             InUse = request.InUse,
             MainCategoryId = request.MainCategoryId,
             Notes = request.Notes,
-
         };
 
         return await _subCategoryRepo.Create(entity);
@@ -172,6 +171,8 @@ public class SubCategoryService : ISubCategoryService
         var category = await _subCategoryRepo.FindById(id);
         if (category == null)
             throw new CategoryNotFoundException(id.ToString());
+        if (category.Name == "Uncategorized")
+            throw new Exception("You cannot delete this category. It's kind of important.");
 
         var expenses = await _expenseRepo.Find(x => x.CategoryId == id);
         var uncategorizeCategoryd = (await _subCategoryRepo.Find(x => x.Name == "Uncategorized")).FirstOrDefault();
