@@ -47,7 +47,7 @@ namespace CashTrack.Tests.Unit
         public void Can_Parse_Income_Category_File()
         {
             var result = CsvParser.ProcessIncomeCategoryFile(Path.Combine(_csvFileDirectory, "IncomeCategories.csv"));
-            result.Count().ShouldBe(10);
+            result.Count().ShouldBe(11);
         }
         [Fact]
         public void Can_Parse_Source_File()

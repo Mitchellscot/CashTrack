@@ -223,7 +223,7 @@ namespace CashTrack.Tests.Services
                 var categories = await incomeCategoryRepo.Find(x => true);
                 var income = await incomeRepo.Find(x => true);
                 var result = sourceService.GetIncomeCategoryOccurances(categories, income);
-                result.Count.ShouldBe(10);
+                result.Count.ShouldBe(11);
                 var tipTotal = result.Where(x => x.Key == "Tip").Select(x => x.Value).FirstOrDefault();
                 tipTotal.ShouldBe(172);
             }
