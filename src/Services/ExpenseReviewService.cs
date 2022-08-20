@@ -2,12 +2,7 @@
 using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.ExpenseReviewModels;
-using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.ExpenseReviewRepository;
-using CashTrack.Repositories.ImportRuleRepository;
-using CashTrack.Repositories.IncomeRepository;
-using CashTrack.Repositories.IncomeReviewRepository;
-using Microsoft.AspNetCore.Hosting;
 using System.Threading.Tasks;
 
 namespace CashTrack.Services.ExpenseReviewService;
@@ -27,7 +22,7 @@ public class ExpenseReviewService : IExpenseReviewService
     private readonly IMapper _mapper;
 
 
-    public ExpenseReviewService(IExpenseReviewRepository expenseReviewRepo, IIncomeReviewRepository incomeReviewRepo, IExpenseRepository expenseRepo, IIncomeRepository incomeRepo, IMapper mapper, IWebHostEnvironment env, IImportRulesRepository rulesRepo)
+    public ExpenseReviewService(IExpenseReviewRepository expenseReviewRepo, IMapper mapper)
     {
         _expenseReviewRepo = expenseReviewRepo;
         _mapper = mapper;
