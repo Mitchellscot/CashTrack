@@ -102,7 +102,9 @@ namespace CashTrack.Data.CsvFiles
         public class CsvImportRule
         {
             public int Id { get; set; }
-            public string? Transaction { get; set; }
+            public int? RuleType { get; set; }
+            public int? TransactionType { get; set; }
+            public int? FileType { get; set; }
             public string? Rule { get; set; }
             public int? MerchantSourceId { get; set; }
             public int? CategoryId { get; set; }

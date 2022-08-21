@@ -42,7 +42,7 @@ namespace CashTrack.Data
         {
             base.OnModelCreating(mb);
             //to seed a new dev or prod database, set this to true
-            mb.Initialize(_env.EnvironmentName, false);
+            mb.Initialize(_env.EnvironmentName, true);
             ConfigureForSqlLite(mb);
         }
         private void ConfigureForSqlLite(ModelBuilder modelBuilder)

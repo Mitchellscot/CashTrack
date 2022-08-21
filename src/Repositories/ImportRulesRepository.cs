@@ -79,7 +79,7 @@ namespace CashTrack.Repositories.ImportRuleRepository
             {
                 var income = await _ctx.ImportRules
                         .Where(predicate)
-                        .OrderByDescending(x => x.Transaction)
+                        .OrderByDescending(x => x.TransactionType)
                         .Skip((pageNumber - 1) * pageSize)
                         .Take(pageSize)
                         .ToArrayAsync();
