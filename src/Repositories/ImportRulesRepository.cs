@@ -63,8 +63,6 @@ namespace CashTrack.Repositories.ImportRuleRepository
             {
                 var rule = await _ctx.ImportRules
                     .SingleOrDefaultAsync(x => x.Id == id);
-                if (rule == null)
-                    throw new Exception($"Unable to find an import rule with the id of {id.ToString()}");
                 return rule;
             }
             catch (Exception)
