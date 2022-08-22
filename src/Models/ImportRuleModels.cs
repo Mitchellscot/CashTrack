@@ -1,4 +1,4 @@
-﻿using CashTrack.Models.ImportCsvModels;
+﻿using CashTrack.Models.Common;
 
 namespace CashTrack.Models.ImportRuleModels
 {
@@ -18,24 +18,33 @@ namespace CashTrack.Models.ImportRuleModels
         Credit,
         Other
     }
-    public class ImportRuleAssignmentModel
+    public class ImportRuleRequest : TransactionRequest
+    {
+    }
+    public class ImportRuleResponse : PaginationResponse<ImportRuleListItem>
+    {
+        public ImportRuleResponse(int pageNumber, int pageSize, int totalCount, ImportRuleListItem[] listItems) : base(pageNumber, pageSize, totalCount, listItems) { }
+    }
+    public class ImportRuleListItem
+    { 
+        public int Id { get; set; }
+        public string RuleType { get; set; }
+        public string FileType { get; set; }
+        public string TransactionType { get; set; }
+        public string Rule { get; set; }
+        public string MerchantSource { get; set; }
+        public int? MerchantSourceId { get; set; }
+        public string Category { get; set; }
+        public int? CategoryId { get; set; }
+    }
+    public class AddEditImportRule
     {
         public int? Id { get; set; }
-        public RuleType RuleType = RuleType.Assignment;
-        public CsvFileType FileType { get; set; }
-        public TransactionType TransactionType { get; set; }
+        public int RuleType { get; set; }
+        public int FileType { get; set; }
+        public int TransactionType { get; set; }
         public string Rule { get; set; }
         public int? MerchantSourceId { get; set; }
-        public int CategoryId { get; set; }
-    }
-    public class ImportRuleFilterModel
-    {
-        public int? Id { get; set; }
-        public RuleType RuleType = RuleType.Filter;
-        public CsvFileType FileType { get; set; }
-        public TransactionType TransactionType { get; set; }
-        public string Rule { get; set; }
+        public int? CategoryId { get; set; }
     }
 }
-
-//Id	Transaction	Rule	MerchantSourceId	CategoryId
