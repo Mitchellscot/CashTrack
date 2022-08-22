@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using CashTrack.Data.Entities;
 using CashTrack.Data.CsvFiles;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -7,12 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Security.Claims;
 using System.IO;
-using Microsoft.Extensions.Options;
-using CashTrack.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System.Reflection.Emit;
-using System.Reflection;
 using System.Linq;
 
 namespace CashTrack.Data
