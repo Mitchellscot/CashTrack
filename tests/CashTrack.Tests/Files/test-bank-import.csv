@@ -8,3 +8,4 @@ Transaction ID,Posting Date,Effective Date,Transaction Type,Amount,Check Number,
 "20220406 95083 449,500 202,204,060,001",4/5/2012,4/5/2012,Credit,1862.52,,79517800,this gets filtered out as it exists in test data,,Credit/Deposit Transactions,929.87,,this gets filtered out as it exists in test data
 "20220405 95083 6,336 202,204,050,002",4/5/2012,4/5/2012,Debit,-63.36,,79517801,,,,434.87,,
 "20220495 95083 6,336 202,204,050,002",4/7/2012,4/7/2012,Credit,20,,79517802,tip for guiding,,Credit/Deposit Transactions,454.87,,tip for guiding
+"20220495 95083 6,336 202,204,050,009",4/7/2012,4/7/2012,Debit,-20,,79517802,filter me bank expense,,Credit/Deposit Transactions,454.87,,filter me bank expense

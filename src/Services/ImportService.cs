@@ -197,19 +197,16 @@ namespace CashTrack.Services.ImportService
                 }
                 else if (fileType == CsvFileType.Other)
                 {
-                    //TODO: FIgure this out
+                    //TODO: Figure this out
+                    //might be something like
+                    //giving instructions on what to name the headers
+                    //and then parsing a csv file that looks like that
                     throw new NotImplementedException();
                     //otherImports = csv.GetRecords<OtherTransactionImport>().ToList();
                 }
             }
             IEnumerable<ImportTransaction> imports = bankImports.Any() ? bankImports :
                 creditImports.Any() ? creditImports : otherImports.Any() ? otherImports : new List<ImportTransaction>();
-
-            //remove unnecessary credit transactions
-            //TODO: add this as an option in settings.
-            //high priority
-            imports = imports.Where(x => !x.Notes.ToLower().Contains("thank you"));
-
 
             File.Delete(filePath);
             return imports;
