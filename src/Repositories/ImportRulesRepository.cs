@@ -20,9 +20,8 @@ namespace CashTrack.Repositories.ImportRuleRepository
         {
             try
             {
-                await _ctx.ImportRules.AddAsync(entity);
-                var success = await _ctx.SaveChangesAsync();
-                return success;
+                var rule = await _ctx.ImportRules.AddAsync(entity);
+                return await _ctx.SaveChangesAsync() > 0 ? rule.Entity.Id : throw new Exception("Unable to save the rule");
             }
             catch (Exception)
             {
@@ -107,9 +106,7 @@ namespace CashTrack.Repositories.ImportRuleRepository
         {
             try
             {
-                var success = await _ctx.SaveChangesAsync();
-
-                return entity.Id;
+                return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("unable to save the import rule");
             }
             catch (Exception)
             {

@@ -1,4 +1,5 @@
 ﻿using CashTrack.Models.Common;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CashTrack.Models.ImportRuleModels
 {
@@ -46,5 +47,13 @@ namespace CashTrack.Models.ImportRuleModels
         public string Rule { get; set; }
         public int? MerchantSourceId { get; set; }
         public int? CategoryId { get; set; }
+
+    }
+    public class AddEditImportRuleModal : AddEditImportRule
+    {
+        public bool IsEdit { get; set; }
+        public string Returnurl { get; set; }
+        public SelectList SubCategoryList { get; set; }
+        public SelectList IncomeCategoryList { get; set; }
     }
 }
