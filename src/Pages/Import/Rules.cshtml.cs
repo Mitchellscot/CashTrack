@@ -45,10 +45,15 @@ namespace CashTrack.Pages.Import
         public int PageNumber { get; set; } = 1;
         public  ImportRuleResponse RuleRespose { get; set; }
         [BindProperty]
-        public AddEditImportRule ImportRule { get; set; }
+        public AddEditImportRuleModal ImportRule { get; set; }
         public async Task<IActionResult> OnGet()
         {
             RuleRespose = await _service.GetImportRulesAsync(new ImportRuleRequest() { PageNumber = this.PageNumber});
+            return await PrepareAndRenderPage();
+        }
+        public async Task<IActionResult> OnPostAddEditImportRuleModal()
+        {
+
             return await PrepareAndRenderPage();
         }
         private async Task<IActionResult> PrepareAndRenderPage()

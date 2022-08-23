@@ -6,6 +6,11 @@
     white-space: nowrap;
 }
 
+.action-icon {
+    font-size: 1.25rem;
+}
+
+
 .location-column {
     min-width: 105px;
 }

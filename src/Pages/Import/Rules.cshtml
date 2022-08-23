@@ -22,11 +22,9 @@
         <div class="col-6">
             <button class="btn btn-primary float-end" id="addImportRuleButton" data-bs-toggle="modal" data-bs-target="#addImportRuleModal">Add Import Rule</button>
         </div>
-
-
-        @*            <div class="modal fade" id="addMerchantModal">
-        @await Html.PartialAsync("_AddImportRuleModal", new AddImportRuleModal() { Returnurl = "~/Import/Rules", SuggestOnLookup = true, IsEdit = false })
-        </div>*@
+        <div class="modal fade" id="addImportRuleModal">
+        @await Html.PartialAsync("_AddEditImportRuleModal", new AddEditImportRuleModal() { Returnurl = "~/Import/Rules", IsEdit = false })
+        </div>
         </div>
         @if (Model.RuleRespose != null && Model.RuleRespose.ListItems.Count() > 0)
         {
@@ -86,7 +84,62 @@
                                         @category
                                     </td>
                                     <td width="10%">
-                                        asdf
+                                        <button type="button"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#addEditImportRuleModal-@rule.Id"
+                                    class="icon-button px-2">
+                                        @*TODO: Write some javascript that pulls info from this button and determines what select lists to load, basically if it's an expense or not.*@
+                                        <i class="bi bi-pencil text-primary action-icon" data-transaction-type="@rule.TransactionType"></i>
+                                    </button>
+@*                                    TODO: these enums need to be parsed from strings
+*@@*                                            <div class="modal fade" id="addImportRuleModal">
+        @await Html.PartialAsync("_AddEditImportRuleModal", new AddEditImportRuleModal() { 
+            RuleType = rule.RuleType,
+            TransactionType = rule.TransactionType,
+            FileType = rule.FileType,
+            Rule = rule.Rule,
+            CategoryId = rule.CategoryId.Value?? null,
+            MerchantSourceId = rule.MerchantSourceId?? null,
+            IncomeCategoryList = Model.IncomeCategoryList,
+            SubCategoryList = Model.SubCategoryList,
+            Returnurl = "~/Import/Rules", 
+            IsEdit = true })
+        </div>*@
+                                        <button type="button" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal-@rule.Id" class="icon-button ps-2 ps-0 me-0">
+                                        <i class="bi bi-trash text-primary action-icon"></i>
+                                    </button>
+                                    @*Delete Model*@
+                                    <div class="modal fade" id="deleteModal-@rule.Id">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header text-center">
+                                                    <h5 class="modal-title text-center">
+                                                        <strong>Are you sure you want to delete this rule?</strong>
+                                                    </h5>
+                                                    <button 
+                                                        type="button" 
+                                                        class="btn-close" 
+                                                        data-bs-dismiss="modal">
+                                                    </button>
+                                                </div>
+
+                                                <div class="modal-footer d-flex justify-content-evenly">
+                                                    <button type="button" 
+                                                        class="btn btn-secondary" 
+                                                        data-bs-dismiss="modal">Cancel</button>
+                                                    <form method="post"
+                                                  asp-page="./Rules"
+                                                  asp-page-handler="Delete"
+                                                  asp-route-ruleId="@rule.Id"
+                                                  asp-route-pageNumber="@Model.PageNumber">
+                                                        <button type="submit" class="btn btn-danger">DELETE</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*End Delete Modal*@
                                     </td>
                                 </tr>
                             }

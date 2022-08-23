@@ -1,1 +1,96 @@
-﻿@model CashTrack.Models.ImportRuleModels.AddEditImportRule
+﻿@model CashTrack.Models.ImportRuleModels.AddEditImportRuleModal
+@{
+    var addOrEdit = Model.IsEdit ? "Edit" : "Add";
+}
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header text-center">
+
+            <h5 class="modal-title w-100">@addOrEdit an Import Rule</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal">
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <form method="post"
+                      asp-page="/Import/Rules"
+                      asp-page-handler="AddEditImportRuleModal"
+                      id="addEditImportRuleModalForm">
+                    @if (Model.IsEdit)
+                    {
+                        <input asp-for="@Model.Id" type="hidden" />
+                    }
+                    <input asp-for="@Model.IsEdit" type="hidden" />
+                    <input asp-for="@Model.Returnurl" type="hidden" />
+                    <div class="row mb-3">
+                        <div class="input-group-text">
+                            Rule Type
+                        </div>
+                        <label class="visually-hidden" asp-for="@Model.RuleType"></label>
+                        <select asp-for="@Model.RuleType" asp-items="@Model.SubCategoryList" class="form-control text-center">
+                        </select>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="input-group-text">
+                            Transaction Type
+                        </div>
+                        <label class="visually-hidden" asp-for="@Model.TransactionType"></label>
+                        <select asp-for="@Model.TransactionType" asp-items="@Model.SubCategoryList" class="form-control text-center">
+                        </select>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="input-group-text">
+                            File Type
+                        </div>
+                        <label class="visually-hidden" asp-for="@Model.FileType"></label>
+                        <select asp-for="@Model.FileType" asp-items="@Model.SubCategoryList" class="form-control text-center">
+                        </select>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="visually-hidden" asp-for="@Model.Rule">Rule</label>
+                        <div class="input-group">
+                            <div class="input-group-text text-center">Rule</div>
+                            <input data-val="true" asp-for=@Model.Rule type="text" class="form-control">
+                            <span asp-validation-for="@Model.Rule"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-8">
+                            <div class="input-group">
+                                <div class="input-group-text">Category</div>
+                                <label class="visually-hidden" asp-for="@Model.CategoryId">Category</label>
+                                <select asp-for=@Model.SubCategoryList asp-items=@Model.SubCategoryList class="form-control text-center">
+                                    @if (!Model.IsEdit)
+                                    {
+                                        <option value="" selected disabled hidden>Select</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-8">
+                            <div class="input-group">
+                                <div class="input-group-text">Category</div>
+                                <label class="visually-hidden" asp-for="@Model.CategoryId">Category</label>
+                                <select asp-for=@Model.IncomeCategoryList asp-items=@Model.IncomeCategoryList class="form-control text-center">
+                                    @if (!Model.IsEdit)
+                                    {
+                                        <option value="" selected disabled hidden>Select</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-evenly">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <form>
+                <button type="submit" class="btn btn-primary" form="addEditImportRuleModalForm">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
