@@ -1,7 +1,6 @@
 ﻿using CashTrack.Data.Entities;
 using CashTrack.Models.ImportRuleModels;
 using CashTrack.Repositories.ImportRuleRepository;
-using System;
 using System.Threading.Tasks;
 using System.Linq;
 using CashTrack.Repositories.MerchantRepository;
@@ -70,14 +69,18 @@ namespace CashTrack.Services.ImportRulesService
                 Rule = x.Rule,
                 MerchantSource = x.RuleType == RuleType.Assignment ?
                     x.TransactionType == TransactionType.Expense ?
-                    merchants.FirstOrDefault(m => m.Id == x.MerchantSourceId).Name :
-                    sources.FirstOrDefault(s => s.Id == x.MerchantSourceId).Name : null,
-                MerchantSourceId = x.MerchantSourceId,
+                    x.MerchantSourceId.HasValue ?
+                    merchants.FirstOrDefault(m => m.Id == x.MerchantSourceId.Value).Name : null :
+                    x.MerchantSourceId.HasValue ?
+                    sources.FirstOrDefault(s => s.Id == x.MerchantSourceId.Value).Name?? null : null : null,
+                MerchantSourceId = x.MerchantSourceId ?? null,
                 Category = x.RuleType == RuleType.Assignment ?
                     x.TransactionType == TransactionType.Expense ?
-                    subCategories.FirstOrDefault(m => m.Id == x.CategoryId).Name :
-                    incomeCategories.FirstOrDefault(s => s.Id == x.CategoryId).Name : null,
-                CategoryId = x.CategoryId,
+                    x.CategoryId.HasValue ?
+                    subCategories.FirstOrDefault(m => m.Id == x.CategoryId).Name : null :
+                    x.CategoryId.HasValue ?
+                    incomeCategories.FirstOrDefault(s => s.Id == x.CategoryId).Name : null : null,
+                CategoryId = x.CategoryId ?? null,
             }).OrderBy(x => x.RuleType).ThenBy(x => x.TransactionType).ThenBy(x => x.FileType).ToArray();
 
             var response = new ImportRuleResponse(request.PageNumber, request.PageSize, count, categoryListItems);

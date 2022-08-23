@@ -22,7 +22,7 @@ namespace CashTrack.Repositories.ImportRuleRepository
             {
                 await _ctx.ImportRules.AddAsync(entity);
                 var success = await _ctx.SaveChangesAsync();
-                return success > 0 ? entity.Id : throw new Exception();
+                return success;
             }
             catch (Exception)
             {
@@ -107,7 +107,9 @@ namespace CashTrack.Repositories.ImportRuleRepository
         {
             try
             {
-                return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("An error occured while trying to save the income.");
+                var success = await _ctx.SaveChangesAsync();
+
+                return entity.Id;
             }
             catch (Exception)
             {

@@ -1,4 +1,124 @@
 ﻿@page
+@using CashTrack.Models.ImportRuleModels
+@using CashTrack.Pages.Shared
 @model CashTrack.Pages.Import.RulesModel
 @{
+    Layout = "_Layout";
+}
+<div class="container-fluid">
+
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+
+    <div class="row mb-1d-flex justify-content-evenly">
+        <div class="col-6">
+            <a asp-page="./Expenses" class="btn btn-secondary text-center">Back</a>
+
+        </div>
+        <div class="col-6">
+            <button class="btn btn-primary float-end" id="addImportRuleButton" data-bs-toggle="modal" data-bs-target="#addImportRuleModal">Add Import Rule</button>
+        </div>
+
+
+        @*            <div class="modal fade" id="addMerchantModal">
+        @await Html.PartialAsync("_AddImportRuleModal", new AddImportRuleModal() { Returnurl = "~/Import/Rules", SuggestOnLookup = true, IsEdit = false })
+        </div>*@
+        </div>
+        @if (Model.RuleRespose != null && Model.RuleRespose.ListItems.Count() > 0)
+        {
+            <div class="row mt-2">
+                <div class="table-responsive table-sm">
+                    <table class="table table-bordered table-sm table-hover mb-0">
+                        <thead>
+                            <tr class="text-center table-primary rules-table-header-row">
+                                <th>
+                                    Rule Type
+                                </th>
+                                <th>
+                                    File Type
+                                </th>
+                                <th>
+                                    Transaction Type
+                                </th>
+                                <th>
+                                    Rule
+                                </th>
+                                <th>
+                                    Merchant / Source
+                                </th>
+                                <th>
+                                    Category
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var rule in Model.RuleRespose.ListItems)
+                            {
+                                <tr class="text-center">
+                                    <td width="10%">
+                                        @rule.RuleType
+                                    </td>
+                                    <td width="10%">
+                                        @rule.TransactionType
+                                    </td>
+                                    <td width="10%">
+                                        @rule.FileType
+                                    </td>
+                                    <td width="20%">
+                                        @rule.Rule
+                                    </td>
+                                    <td width="20%">
+                                        @{var merchantSource = rule.MerchantSourceId.HasValue ? rule.MerchantSource : null;}
+                                        @merchantSource
+                                    </td>
+                                    <td width="15%">
+                                        @{
+                                            var category = rule.CategoryId.HasValue ? rule.Category : null;
+                                        }
+                                        
+                                        @category
+                                    </td>
+                                    <td width="10%">
+                                        asdf
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div class="row my-1">
+                        <div class="col-sm-6 col-lg-2 col-xl-2 m-auto">
+                            @if (@Model.RuleRespose.TotalCount > 0)
+                            {
+                                var currentCount = Model.RuleRespose.PageNumber * @Model.RuleRespose.PageSize;
+                                <span class="text-muted" id="totalCount">@(Math.Min(currentCount, Model.RuleRespose.TotalCount)) of @Model.RuleRespose.TotalCount</span>
+                            }
+                        </div>
+                        <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
+                        </div>
+                        <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
+                            @await Html.PartialAsync("_PaginationPartial",
+                        new _PaginationPartialModel {
+                        PathLink = "../Import/Rules",
+                        IsExpensePage = false,
+                        PageNumber = Model.RuleRespose.PageNumber,
+                        TotalPages = Model.RuleRespose.TotalPages,
+                        //Query = (int)Model.Query,
+                        //q2 = Model.Q2.ToString()
+                        })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+    @section Scripts {
+<script src="~/js/rules.js" asp-append-version="true"></script>
 }
