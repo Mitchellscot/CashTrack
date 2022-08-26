@@ -21,6 +21,8 @@ namespace CashTrack.Models.ImportRuleModels
     }
     public class ImportRuleRequest : TransactionRequest
     {
+        public ImportRuleOrderBy OrderBy { get; set; }
+        public bool Reversed { get; set; }
     }
     public class ImportRuleResponse : PaginationResponse<ImportRuleListItem>
     {

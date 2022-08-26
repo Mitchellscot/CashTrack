@@ -9,6 +9,10 @@ using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Repositories.IncomeCategoryRepository;
 using System.Data;
 using CashTrack.Common.Exceptions;
+using CashTrack.Models.MerchantModels;
+using System.Collections.Generic;
+using CashTrack.Models.Common;
+using System;
 
 namespace CashTrack.Services.ImportRulesService
 {
@@ -53,14 +57,73 @@ namespace CashTrack.Services.ImportRulesService
 
         public async Task<ImportRuleResponse> GetImportRulesAsync(ImportRuleRequest request)
         {
-            var rules = await _repo.FindWithPagination(x => true, request.PageNumber, request.PageSize);
+            var categoryListItems = await ParseImportRuleQuery(request);
             var count = await _repo.GetCount(x => true);
+            var response = new ImportRuleResponse(request.PageNumber, request.PageSize, count, categoryListItems);
+            return response;
+        }
+        private async Task<ImportRuleListItem[]> ParseImportRuleQuery(ImportRuleRequest request)
+        {
+            var ImportRuleListItems = new List<ImportRuleListItem>();
+            switch (request.OrderBy)
+            {
+                case ImportRuleOrderBy.RuleType:
+                    var allRulesByRuleType = await GetImportRuleListItems();
+
+                    ImportRuleListItems = request.Reversed ?
+                        allRulesByRuleType.OrderByDescending(x => x.RuleType).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                        allRulesByRuleType.OrderBy(x => x.RuleType).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                    break;
+                case ImportRuleOrderBy.FileType:
+                    var allRulesByFileType = await GetImportRuleListItems();
+
+                    ImportRuleListItems = request.Reversed ?
+                        allRulesByFileType.OrderByDescending(x => x.FileType).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                        allRulesByFileType.OrderBy(x => x.FileType).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                    break;
+                case ImportRuleOrderBy.TransactionType:
+                    var allRulesByTransactionType = await GetImportRuleListItems();
+
+                    ImportRuleListItems = request.Reversed ?
+                        allRulesByTransactionType.OrderByDescending(x => x.TransactionType).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                        allRulesByTransactionType.OrderBy(x => x.TransactionType).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                    break;
+                case ImportRuleOrderBy.Rule:
+                    var allRulesByRule = await GetImportRuleListItems();
+
+                    ImportRuleListItems = request.Reversed ?
+                        allRulesByRule.OrderByDescending(x => x.Rule).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                        allRulesByRule.OrderBy(x => x.Rule).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                    break;
+                case ImportRuleOrderBy.MerchantSource:
+                    var allRulesByMerchantSource = await GetImportRuleListItems();
+
+                    ImportRuleListItems = request.Reversed ?
+                        allRulesByMerchantSource.OrderByDescending(x => x.MerchantSource).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                        allRulesByMerchantSource.OrderBy(x => x.MerchantSource).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                    break;
+                case ImportRuleOrderBy.Category:
+                    var allRulesByCategory = await GetImportRuleListItems();
+
+                    ImportRuleListItems = request.Reversed ?
+                        allRulesByCategory.OrderByDescending(x => x.MerchantSource).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                        allRulesByCategory.OrderBy(x => x.MerchantSource).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                    break;
+                default: throw new ArgumentOutOfRangeException();
+
+            }
+            return ImportRuleListItems.ToArray();
+        }
+
+        private async Task<List<ImportRuleListItem>> GetImportRuleListItems()
+        {
+            var rules = await _repo.Find(x => true);
             var merchants = await _merchantRepo.Find(x => true);
             var sources = await _sourceRepo.Find(x => true);
             var subCategories = await _subCategoryRepo.Find(x => true);
             var incomeCategories = await _incomeCategoryRepo.Find(x => true);
 
-            var categoryListItems = rules.Select(x => new ImportRuleListItem()
+            return rules.Select(x => new ImportRuleListItem()
             {
                 Id = x.Id,
                 FileType = x.FileType.ToString(),
@@ -72,7 +135,7 @@ namespace CashTrack.Services.ImportRulesService
                     x.MerchantSourceId.HasValue ?
                     merchants.FirstOrDefault(m => m.Id == x.MerchantSourceId.Value).Name : null :
                     x.MerchantSourceId.HasValue ?
-                    sources.FirstOrDefault(s => s.Id == x.MerchantSourceId.Value).Name?? null : null : null,
+                    sources.FirstOrDefault(s => s.Id == x.MerchantSourceId.Value).Name ?? null : null : null,
                 MerchantSourceId = x.MerchantSourceId ?? null,
                 Category = x.RuleType == RuleType.Assignment ?
                     x.TransactionType == TransactionType.Expense ?
@@ -81,11 +144,7 @@ namespace CashTrack.Services.ImportRulesService
                     x.CategoryId.HasValue ?
                     incomeCategories.FirstOrDefault(s => s.Id == x.CategoryId).Name : null : null,
                 CategoryId = x.CategoryId ?? null,
-            }).OrderBy(x => x.RuleType).ThenBy(x => x.TransactionType).ThenBy(x => x.FileType).ToArray();
-
-            var response = new ImportRuleResponse(request.PageNumber, request.PageSize, count, categoryListItems);
-
-            return response;
+            }).OrderBy(x => x.RuleType).ThenBy(x => x.TransactionType).ThenBy(x => x.FileType).ToList();
         }
 
         public async Task<int> UpdateImportRuleAsync(AddEditImportRule request)
