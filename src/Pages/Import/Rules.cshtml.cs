@@ -42,13 +42,17 @@ namespace CashTrack.Pages.Import
         public SubCategoryDropdownSelection[] SubCategoryList { get; set; }
         public IncomeCategoryDropdownSelection[] IncomeCategoryList { get; set; }
         [BindProperty(SupportsGet = true)]
+        public ImportRuleOrderBy Query { get; set; }
+        [BindProperty(SupportsGet = true)]
         public int PageNumber { get; set; } = 1;
+        [BindProperty(SupportsGet = true)]
+        public bool Q2 { get; set; }
         public  ImportRuleResponse RuleRespose { get; set; }
         [BindProperty]
         public AddEditImportRuleModal ImportRule { get; set; }
         public async Task<IActionResult> OnGet()
         {
-            RuleRespose = await _service.GetImportRulesAsync(new ImportRuleRequest() { PageNumber = this.PageNumber});
+
             return await PrepareAndRenderPage();
         }
         public async Task<IActionResult> OnPostAddEditImportRuleModal()
@@ -58,6 +62,7 @@ namespace CashTrack.Pages.Import
         }
         private async Task<IActionResult> PrepareAndRenderPage()
         {
+            RuleRespose = await _service.GetImportRulesAsync(new ImportRuleRequest() { PageNumber = this.PageNumber, OrderBy = this.Query, Reversed = this.Q2 });
             PageNumber = RuleRespose != null ? RuleRespose.PageNumber : PageNumber == 0 ? 1 : PageNumber;
             SubCategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
             IncomeCategoryList = await _incomeCategoryService.GetIncomeCategoryDropdownListAsync();

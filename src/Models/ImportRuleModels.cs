@@ -1,5 +1,6 @@
 ﻿using CashTrack.Models.Common;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 
 namespace CashTrack.Models.ImportRuleModels
 {
@@ -26,7 +27,7 @@ namespace CashTrack.Models.ImportRuleModels
     }
     public class ImportRuleResponse : PaginationResponse<ImportRuleListItem>
     {
-        public ImportRuleResponse(int pageNumber, int pageSize, int totalCount, ImportRuleListItem[] listItems) : base(pageNumber, pageSize, totalCount, listItems) { }
+        public ImportRuleResponse(int pageNumber, int pageSize, int totalCount, List<ImportRuleListItem> listItems) : base(pageNumber, pageSize, totalCount, listItems) { }
     }
     public class ImportRuleListItem
     { 

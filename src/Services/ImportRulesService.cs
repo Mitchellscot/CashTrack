@@ -62,7 +62,7 @@ namespace CashTrack.Services.ImportRulesService
             var response = new ImportRuleResponse(request.PageNumber, request.PageSize, count, categoryListItems);
             return response;
         }
-        private async Task<ImportRuleListItem[]> ParseImportRuleQuery(ImportRuleRequest request)
+        private async Task<List<ImportRuleListItem>> ParseImportRuleQuery(ImportRuleRequest request)
         {
             var ImportRuleListItems = new List<ImportRuleListItem>();
             switch (request.OrderBy)
@@ -112,7 +112,7 @@ namespace CashTrack.Services.ImportRulesService
                 default: throw new ArgumentOutOfRangeException();
 
             }
-            return ImportRuleListItems.ToArray();
+            return ImportRuleListItems;
         }
 
         private async Task<List<ImportRuleListItem>> GetImportRuleListItems()
@@ -144,7 +144,7 @@ namespace CashTrack.Services.ImportRulesService
                     x.CategoryId.HasValue ?
                     incomeCategories.FirstOrDefault(s => s.Id == x.CategoryId).Name : null : null,
                 CategoryId = x.CategoryId ?? null,
-            }).OrderBy(x => x.RuleType).ThenBy(x => x.TransactionType).ThenBy(x => x.FileType).ToList();
+            }).ToList();
         }
 
         public async Task<int> UpdateImportRuleAsync(AddEditImportRule request)
