@@ -106,8 +106,8 @@ namespace CashTrack.Services.ImportRulesService
                     var allRulesByCategory = await GetImportRuleListItems();
 
                     ImportRuleListItems = request.Reversed ?
-                        allRulesByCategory.OrderByDescending(x => x.MerchantSource).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
-                        allRulesByCategory.OrderBy(x => x.MerchantSource).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                        allRulesByCategory.OrderByDescending(x => x.Category).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                        allRulesByCategory.OrderBy(x => x.Category).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
                     break;
                 default: throw new ArgumentOutOfRangeException();
 

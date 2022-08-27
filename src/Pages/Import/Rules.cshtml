@@ -137,10 +137,10 @@
                                         @rule.RuleType
                                     </td>
                                     <td width="10%">
-                                        @rule.TransactionType
+                                        @rule.FileType
                                     </td>
                                     <td width="10%">
-                                        @rule.FileType
+                                        @rule.TransactionType
                                     </td>
                                     <td width="20%">
                                         @rule.Rule
@@ -235,8 +235,8 @@
                         IsExpensePage = false,
                         PageNumber = Model.RuleRespose.PageNumber,
                         TotalPages = Model.RuleRespose.TotalPages,
-                        //Query = (int)Model.Query,
-                        //q2 = Model.Q2.ToString()
+                        Query = (int)Model.Query,
+                        q2 = Model.Q2.ToString()
                         })
                         </div>
                     </div>
