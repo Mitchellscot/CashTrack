@@ -164,20 +164,20 @@
                                         @*TODO: Write some javascript that pulls info from this button and determines what select lists to load, basically if it's an expense or not.*@
                                         <i class="bi bi-pencil text-primary action-icon" data-transaction-type="@rule.TransactionType"></i>
                                     </button>
-@*                                    TODO: these enums need to be parsed from strings
-*@@*                                            <div class="modal fade" id="addImportRuleModal">
-        @await Html.PartialAsync("_AddEditImportRuleModal", new AddEditImportRuleModal() { 
-            RuleType = rule.RuleType,
-            TransactionType = rule.TransactionType,
-            FileType = rule.FileType,
+    <div class="modal fade" id="addEditImportRuleModal-@rule.Id">
+        @await Html.PartialAsync("_AddEditImportRuleModal", 
+        new AddEditImportRuleModal() {
+            RuleType = Enum.Parse<RuleType>(rule.RuleType, true),
+            TransactionType = Enum.Parse<TransactionType>(rule.TransactionType, true),
+            FileType = Enum.Parse<CsvFileType>(rule.FileType, true),
             Rule = rule.Rule,
-            CategoryId = rule.CategoryId.Value?? null,
+            CategoryId = rule.CategoryId?? null,
             MerchantSourceId = rule.MerchantSourceId?? null,
-            IncomeCategoryList = Model.IncomeCategoryList,
-            SubCategoryList = Model.SubCategoryList,
+            IncomeCategoryList = new SelectList(Model.IncomeCategoryList, "Id", "Category", rule.CategoryId?? null),
+            SubCategoryList = new SelectList(Model.SubCategoryList, "Id", "Category", rule.CategoryId?? null),
             Returnurl = "~/Import/Rules", 
             IsEdit = true })
-        </div>*@
+        </div>
                                         <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-@rule.Id" class="icon-button ps-2 ps-0 me-0">
                                         <i class="bi bi-trash text-primary action-icon"></i>

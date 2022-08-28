@@ -9,8 +9,8 @@ namespace CashTrack.Models.ImportRuleModels
         Expense,
         Income
     }
-    public enum RuleType 
-    { 
+    public enum RuleType
+    {
         Assignment,
         Filter
     }
@@ -30,7 +30,7 @@ namespace CashTrack.Models.ImportRuleModels
         public ImportRuleResponse(int pageNumber, int pageSize, int totalCount, List<ImportRuleListItem> listItems) : base(pageNumber, pageSize, totalCount, listItems) { }
     }
     public class ImportRuleListItem
-    { 
+    {
         public int Id { get; set; }
         public string RuleType { get; set; }
         public string FileType { get; set; }
@@ -44,9 +44,9 @@ namespace CashTrack.Models.ImportRuleModels
     public class AddEditImportRule
     {
         public int? Id { get; set; }
-        public int RuleType { get; set; }
-        public int FileType { get; set; }
-        public int TransactionType { get; set; }
+        public RuleType RuleType { get; set; }
+        public CsvFileType FileType { get; set; }
+        public TransactionType TransactionType { get; set; }
         public string Rule { get; set; }
         public int? MerchantSourceId { get; set; }
         public int? CategoryId { get; set; }

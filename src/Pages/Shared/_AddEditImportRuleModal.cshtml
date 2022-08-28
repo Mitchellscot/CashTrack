@@ -1,4 +1,5 @@
-﻿@model CashTrack.Models.ImportRuleModels.AddEditImportRuleModal
+﻿@using CashTrack.Models.ImportRuleModels
+@model CashTrack.Models.ImportRuleModels.AddEditImportRuleModal
 @{
     var addOrEdit = Model.IsEdit ? "Edit" : "Add";
 }
@@ -29,7 +30,7 @@
                                 Rule Type
                             </div>
                             <label class="visually-hidden" asp-for="@Model.RuleType"></label>
-                            <select asp-for="@Model.RuleType" asp-items="@Model.SubCategoryList" class="form-control text-center">
+                            <select asp-for="@Model.RuleType" asp-items="Html.GetEnumSelectList<RuleType>()" class="form-control text-center">
                             </select>
                         </div>
 
@@ -40,7 +41,10 @@
                                 Transaction Type
                             </div>
                             <label class="visually-hidden" asp-for="@Model.TransactionType"></label>
-                            <select asp-for="@Model.TransactionType" asp-items="@Model.SubCategoryList" class="form-control text-center">
+                            <select 
+                                asp-for="@Model.TransactionType"
+                                asp-items="Html.GetEnumSelectList<TransactionType>()" 
+                                class="form-control text-center">
                             </select>
                         </div>
                     </div>
@@ -49,8 +53,14 @@
                             <div class="input-group-text">
                                 File Type
                             </div>
-                            <label class="visually-hidden" asp-for="@Model.FileType"></label>
-                            <select asp-for="@Model.FileType" asp-items="@Model.SubCategoryList" class="form-control text-center">
+                            <label 
+                                class="visually-hidden" 
+                                asp-for="@Model.FileType">
+                            </label>
+                            <select 
+                                asp-for="@Model.FileType"
+                                    asp-items="Html.GetEnumSelectList<CsvFileType>()"
+                                    class="form-control text-center">
                             </select>
                         </div>
                     </div>
@@ -64,20 +74,27 @@
                         </div>
                         </div>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col d-flex">
-                            <div class="input-group">
-                                <div class="input-group-text">Category</div>
-                                <label class="visually-hidden" asp-for="@Model.CategoryId">Category</label>
-                                <select asp-for=@Model.SubCategoryList asp-items=@Model.SubCategoryList class="form-control text-center">
-                                    @if (!Model.IsEdit)
-                                    {
-                                        <option value="" selected disabled hidden>Select</option>
+                        <div class="row mb-3">
+                            <div class="col d-flex">
+                                <div class="input-group">
+                                    <div class="input-group-text">Category</div>
+                                    <label class="visually-hidden" asp-for="@Model.CategoryId">Category</label>
+                                    @{
+                                        var categoryList = Model.TransactionType == TransactionType.Expense ?
+                    Model.SubCategoryList : Model.IncomeCategoryList;
                                     }
-                                </select>
+                                    <select 
+                                        class="form-control"
+                                        asp-for=@Model.CategoryId 
+                                        asp-items=categoryList>
+                                        @if (!Model.IsEdit)
+                                        {
+                                            <option value="" selected disabled hidden>Select</option>
+                                        }
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     <div class="row mb-3">
                         <div class="col d-flex">
                             <div class="input-group">
