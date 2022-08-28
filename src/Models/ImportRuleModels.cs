@@ -50,7 +50,6 @@ namespace CashTrack.Models.ImportRuleModels
         public string Rule { get; set; }
         public int? MerchantSourceId { get; set; }
         public int? CategoryId { get; set; }
-
     }
     public class AddEditImportRuleModal : AddEditImportRule
     {
@@ -58,5 +57,7 @@ namespace CashTrack.Models.ImportRuleModels
         public string Returnurl { get; set; }
         public SelectList SubCategoryList { get; set; }
         public SelectList IncomeCategoryList { get; set; }
+        public SelectList MerchantList { get; set; }
+        public SelectList SourceList { get; set; }
     }
 }

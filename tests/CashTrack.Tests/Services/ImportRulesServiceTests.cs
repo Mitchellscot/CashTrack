@@ -105,8 +105,8 @@ namespace CashTrack.Tests.Services
                 var newRule = new AddEditImportRule()
                 {
                     Id = 1,
-                    FileType = (int)CsvFileType.Bank,
-                    RuleType = (int)RuleType.Filter,
+                    FileType = CsvFileType.Bank,
+                    RuleType = RuleType.Filter,
                     TransactionType = (int)TransactionType.Expense,
                     Rule = "blah blah",
                     MerchantSourceId = 1,
@@ -133,8 +133,8 @@ namespace CashTrack.Tests.Services
 
                 var newRule = new AddEditImportRule()
                 {
-                    FileType = (int)CsvFileType.Bank,
-                    RuleType = (int)RuleType.Filter,
+                    FileType = CsvFileType.Bank,
+                    RuleType = RuleType.Filter,
                     TransactionType = (int)TransactionType.Expense,
                     Rule = "blah blah",
                     MerchantSourceId = 1,
@@ -163,7 +163,7 @@ namespace CashTrack.Tests.Services
             {
                 var service = GetService(db);
                 var rule = new AddEditImportRule()
-                { Id = int.MaxValue, CategoryId = 1, TransactionType = 1, RuleType = 1, Rule = "adsfasdf" };
+                { Id = int.MaxValue, CategoryId = 1, TransactionType = TransactionType.Income, RuleType = RuleType.Filter, Rule = "adsfasdf" };
                 await Task.Run(() => Should.Throw<ImportRuleNotFoundException>(async () => await service.UpdateImportRuleAsync(rule)));
             }
         }

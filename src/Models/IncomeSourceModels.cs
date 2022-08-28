@@ -48,3 +48,8 @@ public record IncomeSourceDetail : IncomeSource
     public Dictionary<string, decimal> PaymentCategoryTotals { get; set; }
     public List<IncomeQuickView> RecentIncomes { get; set; }
 }
+public class SourceDropdownSelection
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+}

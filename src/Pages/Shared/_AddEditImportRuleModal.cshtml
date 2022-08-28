@@ -6,7 +6,7 @@
 
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
-        <div class="modal-header text-center">
+        <div class="modal-header">
 
             <h5 class="modal-title w-100">@addOrEdit an Import Rule</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal">
@@ -30,7 +30,10 @@
                                 Rule Type
                             </div>
                             <label class="visually-hidden" asp-for="@Model.RuleType"></label>
-                            <select asp-for="@Model.RuleType" asp-items="Html.GetEnumSelectList<RuleType>()" class="form-control text-center">
+                            <select 
+                                asp-for="@Model.RuleType" 
+                                asp-items="Html.GetEnumSelectList<RuleType>()" 
+                                    class="form-select text-center">
                             </select>
                         </div>
 
@@ -44,7 +47,7 @@
                             <select 
                                 asp-for="@Model.TransactionType"
                                 asp-items="Html.GetEnumSelectList<TransactionType>()" 
-                                class="form-control text-center">
+                                class="form-select text-center">
                             </select>
                         </div>
                     </div>
@@ -60,50 +63,59 @@
                             <select 
                                 asp-for="@Model.FileType"
                                     asp-items="Html.GetEnumSelectList<CsvFileType>()"
-                                    class="form-control text-center">
+                                    class="form-select text-center">
                             </select>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col d-flex">
-                        <label class="visually-hidden" asp-for="@Model.Rule">Rule</label>
-                        <div class="input-group">
-                            <div class="input-group-text text-center">Rule</div>
-                            <input data-val="true" asp-for=@Model.Rule type="text" class="form-control">
+                        <div class="col">
+                        <label 
+                            class="form-label" 
+                            asp-for="@Model.Rule">
+                            Rule
+                        </label>
+                            <textarea 
+                                data-val="true" 
+                                asp-for=@Model.Rule 
+                                type="text"
+                                class="form-control" rows="2">
+                            </textarea>
                             <span asp-validation-for="@Model.Rule"></span>
                         </div>
-                        </div>
                     </div>
-                        <div class="row mb-3">
-                            <div class="col d-flex">
-                                <div class="input-group">
-                                    <div class="input-group-text">Category</div>
-                                    <label class="visually-hidden" asp-for="@Model.CategoryId">Category</label>
-                                    @{
-                                        var categoryList = Model.TransactionType == TransactionType.Expense ?
-                    Model.SubCategoryList : Model.IncomeCategoryList;
+                    <div class="row mb-3">
+                        <div class="col d-flex">
+                            <div class="input-group">
+                                <div class="input-group-text">Category</div>
+                                <label class="visually-hidden" asp-for="@Model.CategoryId">Category</label>
+                                @{
+                                    var categoryList = Model.TransactionType == TransactionType.Expense ?
+                                    Model.SubCategoryList : Model.IncomeCategoryList;
                                     }
-                                    <select 
-                                        class="form-control"
+                                    <select class="form-select text-center"
                                         asp-for=@Model.CategoryId 
                                         asp-items=categoryList>
                                         @if (!Model.IsEdit)
                                         {
                                             <option value="" selected disabled hidden>Select</option>
-                                        }
+                                        } 
                                     </select>
                                 </div>
                             </div>
                         </div>
                     <div class="row mb-3">
                         <div class="col d-flex">
-                            <div class="input-group">
-                                <div class="input-group-text">Category</div>
-                                <label class="visually-hidden" asp-for="@Model.CategoryId">Category</label>
+                            <div class="input-group"> 
+                                <div class="input-group-text" id="merchantSourceLabel">Merchant</div>
+                                <label class="visually-hidden" asp-for="@Model.MerchantSourceId">MerchantSource</label>
+                                @{
+                                    var merchantSourceList = Model.TransactionType == TransactionType.Expense ?
+                                    Model.MerchantList : Model.SourceList;
+                                }
                                 <select 
-                                    asp-for=@Model.IncomeCategoryList 
-                                    asp-items=@Model.IncomeCategoryList 
-                                    class="form-control text-center">
+                                    asp-for=@Model.MerchantSourceId
+                                    asp-items=merchantSourceList
+                                        class="form-select text-center">
                                     @if (!Model.IsEdit)
                                     {
                                         <option value="" selected disabled hidden>Select</option>

@@ -162,7 +162,8 @@
                                     data-bs-target="#addEditImportRuleModal-@rule.Id"
                                     class="icon-button px-2">
                                         @*TODO: Write some javascript that pulls info from this button and determines what select lists to load, basically if it's an expense or not.*@
-                                        <i class="bi bi-pencil text-primary action-icon" data-transaction-type="@rule.TransactionType"></i>
+                                        <i class="bi bi-pencil text-primary action-icon" 
+                                        data-transaction-type="@rule.TransactionType"></i>
                                     </button>
     <div class="modal fade" id="addEditImportRuleModal-@rule.Id">
         @await Html.PartialAsync("_AddEditImportRuleModal", 
@@ -175,6 +176,8 @@
             MerchantSourceId = rule.MerchantSourceId?? null,
             IncomeCategoryList = new SelectList(Model.IncomeCategoryList, "Id", "Category", rule.CategoryId?? null),
             SubCategoryList = new SelectList(Model.SubCategoryList, "Id", "Category", rule.CategoryId?? null),
+            MerchantList = new SelectList(Model.MerchantList, "Id", "Name", rule.MerchantSourceId?? null),
+            SourceList = new SelectList(Model.SourceList, "Id", "Name", rule.MerchantSourceId?? null),
             Returnurl = "~/Import/Rules", 
             IsEdit = true })
         </div>
