@@ -35,7 +35,7 @@
                                 <div class="form-check">
                                     <label class="form-check-label" asp-for="RuleType">@rule.ToString()</label>
                                     <input type="radio"
-                                       class="form-check-input"
+                                       class="form-check-input filter-rule-radio-js"
                                        asp-for="RuleType"
                                        value=@((int)rule)
                                        checked="@((int)rule == (int)Model.RuleType)" />
@@ -49,9 +49,12 @@
                             @foreach (var transactionType in System.Enum.GetValues(typeof(TransactionType)))
                             {
                             <div class="form-check">
-                                    <label class="form-check-label" asp-for="TransactionType">@transactionType.ToString()</label>
+                                    <label class="form-check-label"
+                                   asp-for="TransactionType">
+                                        @transactionType.ToString()
+                                        </label>
                                     <input type="radio"
-                                       class="form-check-input"
+                                   class="form-check-input transaction-type-radio-js"
                                        asp-for="TransactionType"
                                        value=@((int)transactionType)
                                        checked="@((int)transactionType == (int)Model.TransactionType)" />
@@ -91,18 +94,21 @@
                             <span asp-validation-for="@Model.Rule"></span>
                         </div>
                     </div>
-                    <div class="row mb-3">
+                <div class="row mb-3 filter-rule-hides-this-js">
                         <div class="col d-flex">
                             <div class="input-group">
                                 <div class="input-group-text">Category</div>
                                 <label class="visually-hidden" asp-for="@Model.CategoryId">Category</label>
-                                @{
-                                    var categoryList = Model.TransactionType == TransactionType.Expense ?
+                            @{
+                                var categoryList = Model.TransactionType == TransactionType.Expense ?
                                     Model.SubCategoryList : Model.IncomeCategoryList;
-                                }
+                                var categorySelectListId = Model.IsEdit ? 
+                                $"categorySelectList-{Model.Id}" : "categorySelectList";
+                            }
                                 <select class="form-select text-center"
                                         asp-for=@Model.CategoryId
-                                        asp-items=categoryList>
+                                        asp-items=categoryList
+                                    id=@categorySelectListId>
                                     @if (!Model.IsEdit)
                                     {
                                         <option value="" selected disabled hidden>Select</option>
@@ -111,7 +117,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-3">
+                <div class="row mb-3 filter-rule-hides-this-js">
                         <div class="col d-flex">
                             <div class="input-group">
                                 <div class="input-group-text" id="merchantSourceLabel">@((int)Model.TransactionType == 0 ? "Merchant" : "Source")</div>
@@ -119,10 +125,13 @@
                                 @{
                                     var merchantSourceList = Model.TransactionType == TransactionType.Expense ?
                                     Model.MerchantList : Model.SourceList;
+                                    var merchantSourceSelectListId = Model.IsEdit ?
+                                $"merchantSourceSelectList-{Model.Id}" : "merchantSourceSelectList";
                                 }
                                 <select asp-for=@Model.MerchantSourceId
                                         asp-items=merchantSourceList
-                                        class="form-select text-center">
+                                        class="form-select text-center"
+                                    id="@merchantSourceSelectListId">
                                     @if (!Model.IsEdit)
                                     {
                                         <option value="" selected disabled hidden>Select</option>
