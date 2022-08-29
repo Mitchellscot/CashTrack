@@ -132,31 +132,31 @@
                         <tbody>
                             @foreach (var rule in Model.RuleRespose.ListItems)
                             {
-                                <tr class="text-center">
-                                    <td width="10%">
+                                <tr>
+                                    <td width="10%" class="text-center">
                                         @rule.RuleType
                                     </td>
-                                    <td width="10%">
+                                    <td width="10%" class="text-center">
                                         @rule.FileType
                                     </td>
-                                    <td width="10%">
+                                    <td width="10%" class="text-center">
                                         @rule.TransactionType
                                     </td>
-                                    <td width="20%">
+                                    <td width="20%" class="text-center">
                                         @rule.Rule
                                     </td>
-                                    <td width="20%">
+                                    <td width="20%" class="text-center">
                                         @{var merchantSource = rule.MerchantSourceId.HasValue ? rule.MerchantSource : null;}
                                         @merchantSource
                                     </td>
-                                    <td width="15%">
+                                    <td width="15%" class="text-center">
                                         @{
                                             var category = rule.CategoryId.HasValue ? rule.Category : null;
                                         }
                                         
                                         @category
                                     </td>
-                                    <td width="10%">
+                                    <td width="10%" class="text-center">
                                         <button type="button"
                                     data-bs-toggle="modal"
                                     data-bs-target="#addEditImportRuleModal-@rule.Id"
@@ -165,22 +165,6 @@
                                         <i class="bi bi-pencil text-primary action-icon" 
                                         data-transaction-type="@rule.TransactionType"></i>
                                     </button>
-    <div class="modal fade" id="addEditImportRuleModal-@rule.Id">
-        @await Html.PartialAsync("_AddEditImportRuleModal", 
-        new AddEditImportRuleModal() {
-            RuleType = Enum.Parse<RuleType>(rule.RuleType, true),
-            TransactionType = Enum.Parse<TransactionType>(rule.TransactionType, true),
-            FileType = Enum.Parse<CsvFileType>(rule.FileType, true),
-            Rule = rule.Rule,
-            CategoryId = rule.CategoryId?? null,
-            MerchantSourceId = rule.MerchantSourceId?? null,
-            IncomeCategoryList = new SelectList(Model.IncomeCategoryList, "Id", "Category", rule.CategoryId?? null),
-            SubCategoryList = new SelectList(Model.SubCategoryList, "Id", "Category", rule.CategoryId?? null),
-            MerchantList = new SelectList(Model.MerchantList, "Id", "Name", rule.MerchantSourceId?? null),
-            SourceList = new SelectList(Model.SourceList, "Id", "Name", rule.MerchantSourceId?? null),
-            Returnurl = "~/Import/Rules", 
-            IsEdit = true })
-        </div>
                                         <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-@rule.Id" class="icon-button ps-2 ps-0 me-0">
                                         <i class="bi bi-trash text-primary action-icon"></i>
@@ -217,6 +201,22 @@
                                     </div>
                                     @*End Delete Modal*@
                                     </td>
+                                        <div class="modal fade" id="addEditImportRuleModal-@rule.Id">
+        @await Html.PartialAsync("_AddEditImportRuleModal", 
+        new AddEditImportRuleModal() {
+            RuleType = Enum.Parse<RuleType>(rule.RuleType, true),
+            TransactionType = Enum.Parse<TransactionType>(rule.TransactionType, true),
+            FileType = Enum.Parse<CsvFileType>(rule.FileType, true),
+            Rule = rule.Rule,
+            CategoryId = rule.CategoryId?? null,
+            MerchantSourceId = rule.MerchantSourceId?? null,
+            IncomeCategoryList = new SelectList(Model.IncomeCategoryList, "Id", "Category", rule.CategoryId?? null),
+            SubCategoryList = new SelectList(Model.SubCategoryList, "Id", "Category", rule.CategoryId?? null),
+            MerchantList = new SelectList(Model.MerchantList, "Id", "Name", rule.MerchantSourceId?? null),
+            SourceList = new SelectList(Model.SourceList, "Id", "Name", rule.MerchantSourceId?? null),
+            Returnurl = "~/Import/Rules", 
+            IsEdit = true })
+        </div>
                                 </tr>
                             }
                         </tbody>

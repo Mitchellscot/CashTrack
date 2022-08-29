@@ -8,77 +8,85 @@
     <div class="modal-content">
         <div class="modal-header">
 
-            <h5 class="modal-title w-100">@addOrEdit an Import Rule</h5>
+            <h5 class="modal-title w-100 text-center">@addOrEdit an Import Rule</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal">
             </button>
         </div>
         <div class="modal-body">
-            <div class="container-fluid">
                 <form method="post"
                       asp-page="/Import/Rules"
                       asp-page-handler="AddEditImportRuleModal"
-                      id="addEditImportRuleModalForm">
+                      id="addEditImportRuleModalForm"
+                      class="container"
+                >
                     @if (Model.IsEdit)
                     {
                         <input asp-for="@Model.Id" type="hidden" />
                     }
                     <input asp-for="@Model.IsEdit" type="hidden" />
                     <input asp-for="@Model.Returnurl" type="hidden" />
-                    <div class="row mb-3">
-                        <div class="col d-flex">
-                            <div class="input-group-text">
+                <div class="row row-cols-3 justify-content-center mb-3">
+                        <div class="col">
+                            <div class="text-center fw-bold">
                                 Rule Type
                             </div>
-                            <label class="visually-hidden" asp-for="@Model.RuleType"></label>
-                            <select 
-                                asp-for="@Model.RuleType" 
-                                asp-items="Html.GetEnumSelectList<RuleType>()" 
-                                    class="form-select text-center">
-                            </select>
+                            @foreach (var rule in System.Enum.GetValues(typeof(RuleType)))
+                            {
+                                <div class="form-check">
+                                    <label class="form-check-label" asp-for="RuleType">@rule.ToString()</label>
+                                    <input type="radio"
+                                       class="form-check-input"
+                                       asp-for="RuleType"
+                                       value=@((int)rule)
+                                       checked="@((int)rule == (int)Model.RuleType)" />
+                                </div>
+                            }
                         </div>
-
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col d-flex">
-                            <div class="input-group-text">
+                    <div class="col">
+                            <div class="text-center fw-bold">
                                 Transaction Type
                             </div>
-                            <label class="visually-hidden" asp-for="@Model.TransactionType"></label>
-                            <select 
-                                asp-for="@Model.TransactionType"
-                                asp-items="Html.GetEnumSelectList<TransactionType>()" 
-                                class="form-select text-center">
-                            </select>
+                            @foreach (var transactionType in System.Enum.GetValues(typeof(TransactionType)))
+                            {
+                            <div class="form-check">
+                                    <label class="form-check-label" asp-for="TransactionType">@transactionType.ToString()</label>
+                                    <input type="radio"
+                                       class="form-check-input"
+                                       asp-for="TransactionType"
+                                       value=@((int)transactionType)
+                                       checked="@((int)transactionType == (int)Model.TransactionType)" />
+                                </div>
+                            }
                         </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col d-flex">
-                            <div class="input-group-text">
+                    <div class="col">
+                            <div class="text-center fw-bold">
                                 File Type
                             </div>
-                            <label 
-                                class="visually-hidden" 
-                                asp-for="@Model.FileType">
-                            </label>
-                            <select 
-                                asp-for="@Model.FileType"
-                                    asp-items="Html.GetEnumSelectList<CsvFileType>()"
-                                    class="form-select text-center">
-                            </select>
+                        <div class="row row-cols-auto">
+                            @foreach (var fileType in System.Enum.GetValues(typeof(CsvFileType)))
+                            {
+                                <div class="form-check col mx-3">
+                                    <label class="form-check-label" asp-for="FileType">@fileType.ToString()</label>
+                                    <input type="radio"
+                                       class="form-check-input"
+                                       asp-for="FileType"
+                                       value=@((int)fileType)
+                                       checked="@((int)fileType == (int)Model.FileType)" />
+                                </div>
+                            }
+                        </div>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                        <label 
-                            class="form-label" 
-                            asp-for="@Model.Rule">
-                            Rule
-                        </label>
-                            <textarea 
-                                data-val="true" 
-                                asp-for=@Model.Rule 
-                                type="text"
-                                class="form-control" rows="2">
+                            <label class="form-label fw-bold"
+                                   asp-for="@Model.Rule">
+                                Text found in the transaction notes that is used to execute the assignment or filter:
+                            </label>
+                            <textarea data-val="true"
+                                      asp-for=@Model.Rule
+                                      type="text"
+                                      class="form-control" rows="2">
                             </textarea>
                             <span asp-validation-for="@Model.Rule"></span>
                         </div>
@@ -91,30 +99,29 @@
                                 @{
                                     var categoryList = Model.TransactionType == TransactionType.Expense ?
                                     Model.SubCategoryList : Model.IncomeCategoryList;
-                                    }
-                                    <select class="form-select text-center"
-                                        asp-for=@Model.CategoryId 
+                                }
+                                <select class="form-select text-center"
+                                        asp-for=@Model.CategoryId
                                         asp-items=categoryList>
-                                        @if (!Model.IsEdit)
-                                        {
-                                            <option value="" selected disabled hidden>Select</option>
-                                        } 
-                                    </select>
-                                </div>
+                                    @if (!Model.IsEdit)
+                                    {
+                                        <option value="" selected disabled hidden>Select</option>
+                                    }
+                                </select>
                             </div>
                         </div>
+                    </div>
                     <div class="row mb-3">
                         <div class="col d-flex">
-                            <div class="input-group"> 
-                                <div class="input-group-text" id="merchantSourceLabel">Merchant</div>
+                            <div class="input-group">
+                                <div class="input-group-text" id="merchantSourceLabel">@((int)Model.TransactionType == 0 ? "Merchant" : "Source")</div>
                                 <label class="visually-hidden" asp-for="@Model.MerchantSourceId">MerchantSource</label>
                                 @{
                                     var merchantSourceList = Model.TransactionType == TransactionType.Expense ?
                                     Model.MerchantList : Model.SourceList;
                                 }
-                                <select 
-                                    asp-for=@Model.MerchantSourceId
-                                    asp-items=merchantSourceList
+                                <select asp-for=@Model.MerchantSourceId
+                                        asp-items=merchantSourceList
                                         class="form-select text-center">
                                     @if (!Model.IsEdit)
                                     {
@@ -125,7 +132,6 @@
                         </div>
                     </div>
                 </form>
-            </div>
         </div>
         <div class="modal-footer d-flex justify-content-evenly">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
