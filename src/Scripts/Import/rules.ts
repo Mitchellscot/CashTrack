@@ -53,6 +53,8 @@ function adjustSelectListOptions(isExpense: boolean, categorySelect: HTMLSelectE
         fetch('/api/subcategory')
             .then(response => response.json())
             .then((data: Array<Category>) => {
+                categorySelect.add(new Option('Select', undefined, true, false))
+                categorySelect.add(new Option('NULL', undefined, false, false))
                 for (var item of data) {
                     categorySelect.add(new Option(item.category, item.id.toString(), false, false))
                 }
@@ -61,6 +63,8 @@ function adjustSelectListOptions(isExpense: boolean, categorySelect: HTMLSelectE
         fetch('/api/merchants/dropdown')
             .then(response => response.json())
             .then((data: Array<MerchantSource>) => {
+                merchantSourceSelect.add(new Option('Select', undefined, true, false))
+                merchantSourceSelect.add(new Option('NULL', undefined, false, false))
                 for (var item of data) {
                     merchantSourceSelect.add(new Option(item.name, item.id.toString(), false, false))
                 }
@@ -76,6 +80,8 @@ function adjustSelectListOptions(isExpense: boolean, categorySelect: HTMLSelectE
         fetch('/api/IncomeCategory')
             .then(response => response.json())
             .then((data: Array<Category>) => {
+                categorySelect.add(new Option('Select', undefined, true, false))
+                categorySelect.add(new Option('NULL', undefined, false, false))
                 for (var item of data) {
                     categorySelect.add(new Option(item.category, item.id.toString(), false, false))
                 }
@@ -84,6 +90,8 @@ function adjustSelectListOptions(isExpense: boolean, categorySelect: HTMLSelectE
         fetch('/api/incomesource/dropdown')
             .then(response => response.json())
             .then((data: Array<MerchantSource>) => {
+                merchantSourceSelect.add(new Option('Select', undefined, true, false))
+                merchantSourceSelect.add(new Option('NULL', undefined, false, false))
                 for (var item of data) {
                     merchantSourceSelect.add(new Option(item.name, item.id.toString(), false, false))
                 }

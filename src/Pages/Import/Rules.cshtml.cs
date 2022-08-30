@@ -67,9 +67,19 @@ namespace CashTrack.Pages.Import
                 ModelState.AddModelError("", "Error adding import rule. Please try again");
                 return await PrepareAndRenderPage();
             }
+            if (ImportRule.RuleType == RuleType.Assignment &&
+                ImportRule.MerchantSourceId == null &&
+                ImportRule.CategoryId == null)
+            {
+                ModelState.AddModelError("", "Assignment rules must have either a Category or Merchant/Source assigned.");
+                return await PrepareAndRenderPage();
+            }
             try
             {
                 //TODO: You need to check if this works or not
+                //If you change the slect lists when selecting a differenct transaction type
+                //the selected value is not sent in the form for some reason
+                //seems to only be a problem when posting edits
                 var success = ImportRule.IsEdit ? await _service.UpdateImportRuleAsync(ImportRule) : await _service.CreateImportRuleAsync(ImportRule);
 
                 if (success > 0)
@@ -85,7 +95,6 @@ namespace CashTrack.Pages.Import
             }
             return LocalRedirect(ImportRule.Returnurl);
         }
-        //TODO: Test this
         public async Task<IActionResult> OnPostDelete(int ruleId, int Query, string q2, int pageNumber)
         {
             var success = await _service.DeleteImportRuleAsync(ruleId);

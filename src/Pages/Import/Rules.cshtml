@@ -193,6 +193,8 @@
                                                     <form method="post"
                                                   asp-page="./Rules"
                                                   asp-page-handler="Delete"
+                                                  asp-route-query="@Model.Query"
+                                                  asp-route-q2="@Model.Q2"
                                                   asp-route-ruleId="@rule.Id"
                                                   asp-route-pageNumber="@Model.PageNumber">
                                                         <button type="submit" class="btn btn-danger">DELETE</button>
