@@ -20,7 +20,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using System;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CashTrack.Pages.Import
 {
@@ -53,13 +55,47 @@ namespace CashTrack.Pages.Import
         public ImportRuleResponse RuleRespose { get; set; }
         [BindProperty]
         public AddEditImportRuleModal ImportRule { get; set; }
+
         public async Task<IActionResult> OnGet()
         {
             return await PrepareAndRenderPage();
         }
         public async Task<IActionResult> OnPostAddEditImportRuleModal()
         {
-            return await PrepareAndRenderPage();
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Error adding import rule. Please try again");
+                return await PrepareAndRenderPage();
+            }
+            try
+            {
+                //TODO: You need to check if this works or not
+                var success = ImportRule.IsEdit ? await _service.UpdateImportRuleAsync(ImportRule) : await _service.CreateImportRuleAsync(ImportRule);
+
+                if (success > 0)
+                {
+                    TempData["SuccessMessage"] = ImportRule.IsEdit ? "Successfully edited an Import Rule!" : "Successfully added a new Import Rule!";
+                    return RedirectToPage("./Rules", new { query = Query, q2 = Q2, pageNumber = PageNumber });
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return await PrepareAndRenderPage();
+            }
+            return LocalRedirect(ImportRule.Returnurl);
+        }
+        //TODO: Test this
+        public async Task<IActionResult> OnPostDelete(int ruleId, int Query, string q2, int pageNumber)
+        {
+            var success = await _service.DeleteImportRuleAsync(ruleId);
+            if (!success)
+            {
+                ModelState.AddModelError("", "Unable to delete the import rule");
+                return await PrepareAndRenderPage();
+            }
+            TempData["SuccessMessage"] = "Sucessfully deleted Import Rule!";
+            return RedirectToPage("./Rules", new { query = Query, q2 = q2, pageNumber = pageNumber });
         }
         private async Task<IActionResult> PrepareAndRenderPage()
         {

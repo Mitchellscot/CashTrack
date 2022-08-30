@@ -21,6 +21,7 @@ namespace CashTrack.Services.ImportRulesService
         Task<ImportRuleResponse> GetImportRulesAsync(ImportRuleRequest request);
         Task<int> CreateImportRuleAsync(AddEditImportRule request);
         Task<int> UpdateImportRuleAsync(AddEditImportRule request);
+        Task<bool> DeleteImportRuleAsync(int id);
     }
     public class ImportRulesService : IImportRulesService
     {
