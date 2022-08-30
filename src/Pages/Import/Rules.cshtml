@@ -157,13 +157,15 @@
                                         @category
                                     </td>
                                     <td width="10%" class="text-center">
-                                        <button type="button"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#addEditImportRuleModal-@rule.Id"
-                                    class="icon-button px-2">
-                                        @*TODO: Write some javascript that pulls info from this button and determines what select lists to load, basically if it's an expense or not.*@
-                                        <i class="bi bi-pencil text-primary action-icon" 
-                                        data-transaction-type="@rule.TransactionType"></i>
+                                        <button 
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#addEditImportRuleModal-@rule.Id"
+                                            class="icon-button px-2 edit-rule-button-js">
+@*when the icon is clicked, even though the javascript is on the button itself, the data is pulled from the icon...*@
+                                        <i class="bi bi-pencil text-primary action-icon"
+                                        data-rule-type=@rule.RuleType
+                                        data-transaction-type=@rule.TransactionType></i>
                                     </button>
                                         <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-@rule.Id" class="icon-button ps-2 ps-0 me-0">
@@ -204,6 +206,7 @@
                                         <div class="modal fade" id="addEditImportRuleModal-@rule.Id">
         @await Html.PartialAsync("_AddEditImportRuleModal", 
         new AddEditImportRuleModal() {
+            Id = rule.Id,
             RuleType = Enum.Parse<RuleType>(rule.RuleType, true),
             TransactionType = Enum.Parse<TransactionType>(rule.TransactionType, true),
             FileType = Enum.Parse<CsvFileType>(rule.FileType, true),

@@ -1,23 +1,49 @@
 ﻿import Category from "../Models/Categories";
 import MerchantSource from "../Models/MerchantSource";
 
-console.log('rules page');
-
 formatCategorySelectListOnAddButtonClick();
 removeSelectListsWhenFilterOptionIsChecked();
 setSelectListOptionsOnTransactionTypeChange();
+setSelectListOptionsOnEditButtonsClick();
 
-//this works fine for the add import rule modal but you need to make one for the edit modal that grabs the data-id
+//sets the select lists display status on edit button click
+function setSelectListOptionsOnEditButtonsClick() {
+    const editButtons = document.querySelectorAll('.edit-rule-button-js');
+    editButtons.forEach(x => x.addEventListener('click', handleEditButtonClick, false));
+}
+function handleEditButtonClick(e: Event) {
+    const element = e.target as HTMLElement;
+    const ruleType = element.dataset.ruleType;
+    const selectLists: HTMLElement[] = Array.from(document.querySelectorAll('.filter-rule-hides-this-js'));
+    ruleType === 'Filter' ?
+        selectLists.forEach((x) => x.classList.add('display-none')) :
+        selectLists.forEach((x) => x.classList.remove('display-none'));
+}
+
 function setSelectListOptionsOnTransactionTypeChange() {
     const checkboxes = document.querySelectorAll('.transaction-type-radio-js');
     checkboxes.forEach(x => x.addEventListener('change', handleTransactionTypeChange, false));
 }
 
 function handleTransactionTypeChange(e: Event) {
-    const radioValue = (e.target as HTMLInputElement).value;
-    const categorySelect = <HTMLSelectElement>document.getElementById('categorySelectList');
-    const merchantSourceSelect = <HTMLSelectElement>document.getElementById('merchantSourceSelectList');
-    if (radioValue === "0") {
+    const isExpense = Boolean((e.target as HTMLInputElement).value === "0");
+    const isEdit = Boolean((e.target as HTMLElement).dataset.isEdit === "True");
+    if (isEdit) {
+        const Id = (e.target as HTMLElement).dataset.id;
+        const categorySelect = <HTMLSelectElement>document.getElementById(`categorySelectList-${Id}`);
+        const merchantSourceSelect = <HTMLSelectElement>document.getElementById(`merchantSourceSelectList-${Id}`);
+        adjustSelectListOptions(isExpense, categorySelect, merchantSourceSelect);
+    }
+    if (!isEdit) {
+        const categorySelect = <HTMLSelectElement>document.getElementById('categorySelectList');
+        const merchantSourceSelect = <HTMLSelectElement>document.getElementById('merchantSourceSelectList');
+        adjustSelectListOptions(isExpense, categorySelect, merchantSourceSelect);
+    }
+
+}
+//private helper function
+function adjustSelectListOptions(isExpense: boolean, categorySelect: HTMLSelectElement, merchantSourceSelect: HTMLSelectElement): void {
+    if (isExpense) {
         while (categorySelect.firstChild) {
             categorySelect.removeChild(categorySelect.firstChild);
         }
@@ -65,6 +91,7 @@ function handleTransactionTypeChange(e: Event) {
     }
 }
 
+//Removes Select Lists When Filter Option Is Checked
 function removeSelectListsWhenFilterOptionIsChecked() {
     const ruleTypeRadio = document.querySelectorAll('.filter-rule-radio-js');
     ruleTypeRadio.forEach(x => x.addEventListener('change', handleRuleTypeChange, false));
