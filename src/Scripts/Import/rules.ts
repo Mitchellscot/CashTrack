@@ -19,7 +19,7 @@ function handleEditButtonClick(e: Event) {
         selectLists.forEach((x) => x.classList.add('display-none')) :
         selectLists.forEach((x) => x.classList.remove('display-none'));
 }
-
+//sets the select list options when you select the transaction type radio button
 function setSelectListOptionsOnTransactionTypeChange() {
     const checkboxes = document.querySelectorAll('.transaction-type-radio-js');
     checkboxes.forEach(x => x.addEventListener('change', handleTransactionTypeChange, false));

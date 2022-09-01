@@ -1,28 +1,18 @@
 using CashTrack.Models.Common;
-using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.ImportRuleModels;
 using CashTrack.Models.IncomeCategoryModels;
 using CashTrack.Models.IncomeSourceModels;
 using CashTrack.Models.MerchantModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Pages.Shared;
-using CashTrack.Repositories.ImportRuleRepository;
-using CashTrack.Repositories.IncomeCategoryRepository;
-using CashTrack.Repositories.IncomeSourceRepository;
-using CashTrack.Repositories.MerchantRepository;
-using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Services.ImportRulesService;
 using CashTrack.Services.IncomeCategoryService;
 using CashTrack.Services.IncomeSourceService;
 using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CashTrack.Pages.Import
 {
@@ -76,10 +66,6 @@ namespace CashTrack.Pages.Import
             }
             try
             {
-                //TODO: You need to check if this works or not
-                //If you change the slect lists when selecting a differenct transaction type
-                //the selected value is not sent in the form for some reason
-                //seems to only be a problem when posting edits
                 var success = ImportRule.IsEdit ? await _service.UpdateImportRuleAsync(ImportRule) : await _service.CreateImportRuleAsync(ImportRule);
 
                 if (success > 0)
