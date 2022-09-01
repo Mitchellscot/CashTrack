@@ -1,7 +1,5 @@
 ﻿using CashTrack.Models.IncomeCategoryModels;
-using CashTrack.Models.IncomeSourceModels;
 using CashTrack.Models.MainCategoryModels;
-using CashTrack.Models.MerchantModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Tests.Common;
 using Microsoft.AspNetCore.Authentication;
@@ -55,30 +53,6 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
         responseObject.Last().Category.ShouldBe("Travel Misc");
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         PrintRequestAndResponse("/api/SubCategory", result);
-    }
-    [Fact]
-    public async Task Merchant_Controller_Returns_Merchants_For_Dropdown()
-    {
-        var response = await _client.GetAsync("/api/merchants/dropdown");
-
-        var result = await response.Content.ReadAsStringAsync();
-        var responseObject = JsonConvert.DeserializeObject<MerchantDropdownSelection[]>(result);
-        responseObject.Length.ShouldBe(16);
-        responseObject.Last().Name.ShouldBe("Torch of India");
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        PrintRequestAndResponse("/api/Merchants/dropdown", result);
-    }
-    [Fact]
-    public async Task Source_Controller_Returns_Sources_For_Dropdown()
-    {
-        var response = await _client.GetAsync("/api/incomesource/dropdown");
-
-        var result = await response.Content.ReadAsStringAsync();
-        var responseObject = JsonConvert.DeserializeObject<SourceDropdownSelection[]>(result);
-        responseObject.Length.ShouldBe(14);
-        responseObject.Last().Name.ShouldBe("Hessel Church");
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        PrintRequestAndResponse("/api/incomesource/dropdown", result);
     }
     [Fact]
     public async Task Main_Category_Controller_Returns_Categories()

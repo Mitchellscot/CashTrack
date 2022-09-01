@@ -1,5 +1,4 @@
 ﻿using CashTrack.Models.Common;
-using CashTrack.Models.ImportRuleModels;
 using Microsoft.AspNetCore.Http;
 using System;
 
@@ -62,5 +61,11 @@ namespace CashTrack.Models.ImportCsvModels
     public class OtherTransactionImport : ImportTransaction
     {
         //TODO: figure this one out
+    }
+    public enum CsvFileType
+    {
+        Bank,
+        Credit,
+        Other
     }
 }

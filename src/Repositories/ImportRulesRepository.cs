@@ -20,8 +20,9 @@ namespace CashTrack.Repositories.ImportRuleRepository
         {
             try
             {
-                var rule = await _ctx.ImportRules.AddAsync(entity);
-                return await _ctx.SaveChangesAsync() > 0 ? rule.Entity.Id : throw new Exception("Unable to save the rule");
+                await _ctx.ImportRules.AddAsync(entity);
+                var success = await _ctx.SaveChangesAsync();
+                return success > 0 ? entity.Id : throw new Exception();
             }
             catch (Exception)
             {
@@ -62,6 +63,8 @@ namespace CashTrack.Repositories.ImportRuleRepository
             {
                 var rule = await _ctx.ImportRules
                     .SingleOrDefaultAsync(x => x.Id == id);
+                if (rule == null)
+                    throw new Exception($"Unable to find an import rule with the id of {id.ToString()}");
                 return rule;
             }
             catch (Exception)
@@ -76,7 +79,7 @@ namespace CashTrack.Repositories.ImportRuleRepository
             {
                 var income = await _ctx.ImportRules
                         .Where(predicate)
-                        .OrderByDescending(x => x.TransactionType)
+                        .OrderByDescending(x => x.Transaction)
                         .Skip((pageNumber - 1) * pageSize)
                         .Take(pageSize)
                         .ToArrayAsync();
@@ -106,7 +109,7 @@ namespace CashTrack.Repositories.ImportRuleRepository
         {
             try
             {
-                return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("unable to save the import rule");
+                return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("An error occured while trying to save the income.");
             }
             catch (Exception)
             {
