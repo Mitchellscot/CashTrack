@@ -70,7 +70,9 @@ public class ExportRepository : IExportRepository
 
             return importRuleEntities.Select(x => new ImportRuleExport(
                 Id: x.Id.ToString(),
-                Transaction: x.Transaction,
+                RuleType: x.RuleType,
+                FileType: x.FileType,
+                Transaction: x.TransactionType,
                 Rule: x.Rule,
                 CategoryId: x.CategoryId.ToString(),
                 MerchantSourceId: x.MerchantSourceId?.ToString()

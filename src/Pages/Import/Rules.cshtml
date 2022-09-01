@@ -1,0 +1,258 @@
+﻿@page
+@using CashTrack.Models.Common
+@using CashTrack.Models.ImportRuleModels
+@using CashTrack.Pages.Shared
+@model CashTrack.Pages.Import.RulesModel
+@{
+    Layout = "_Layout";
+}
+<div class="container-fluid">
+
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+
+    <div class="row mb-1d-flex justify-content-evenly">
+        <div class="col-6">
+            <a asp-page="./Expenses" class="btn btn-secondary text-center">Back</a>
+
+        </div>
+        <div class="col-6">
+            <button class="btn btn-primary float-end" id="addImportRuleButton" data-bs-toggle="modal" data-bs-target="#addImportRuleModal">Add Import Rule</button>
+        </div>
+        <div class="modal fade" id="addImportRuleModal">
+        @await Html.PartialAsync("_AddEditImportRuleModal", new AddEditImportRuleModal() { Returnurl = "~/Import/Rules", IsEdit = false })
+        </div>
+        </div>
+        @if (Model.RuleRespose != null && Model.RuleRespose.ListItems.Count() > 0)
+        {
+            <div class="row mt-2">
+                <div class="table-responsive table-sm">
+                    <table class="table table-bordered table-sm table-hover mb-0">
+                        <thead>
+                            <tr class="text-center table-primary rules-table-header-row">
+                                <th>
+                                    Rule Type
+                                @{
+                                    var currentFilter1 = Model.Query == 0 && Model.Q2 == true ? "text-success" : "text-white";
+                                }
+                                <a asp-page="./Rules" asp-route-Query="0" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                    <i class="bi bi-arrow-up icon-size @currentFilter1"></i>
+                                </a>
+                                @{
+                                    var currentFilter2 = Model.Query == 0 && Model.Q2 == false ? "text-success" : "text-white";
+                                }
+                                <a asp-page="./Rules" asp-route-Query="0" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                    <i class="bi bi-arrow-down icon-size @currentFilter2"></i>
+                                </a>
+                                </th>
+                                <th>
+                                    File Type
+                                @{
+                                    var currentFilter3 = Model.Query == ImportRuleOrderBy.FileType && Model.Q2 == true ? "text-success" : "text-white";
+                                }
+                                <a asp-page="./Rules" asp-route-Query="1" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                    <i class="bi bi-arrow-up icon-size @currentFilter3"></i>
+                                </a>
+                                @{
+                                    var currentFilter4 = Model.Query == ImportRuleOrderBy.FileType && Model.Q2 == false ? "text-success" : "text-white";
+                                }
+                                <a asp-page="./Rules" asp-route-Query="1" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                    <i class="bi bi-arrow-down icon-size @currentFilter4"></i>
+                                </a>
+                                </th>
+                                <th>
+                                    Transaction Type
+                                @{
+                                    var currentFilter5 = Model.Query == ImportRuleOrderBy.TransactionType && Model.Q2 == true ? "text-success" : "text-white";
+                                }
+                                <a asp-page="./Rules" asp-route-Query="2" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                    <i class="bi bi-arrow-up icon-size @currentFilter5"></i>
+                                </a>
+                                @{
+                                    var currentFilter6 = Model.Query == ImportRuleOrderBy.TransactionType && Model.Q2 == false ? "text-success" : "text-white";
+                                }
+                                <a asp-page="./Rules" asp-route-Query="2" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                    <i class="bi bi-arrow-down icon-size @currentFilter6"></i>
+                                </a>
+                                </th>
+                                <th>
+                                    Rule
+                                @{
+                                    var currentFilter7 = Model.Query == ImportRuleOrderBy.Rule && Model.Q2 == true ? "text-success" : "text-white";
+                                }
+                                <a asp-page="./Rules" asp-route-Query="3" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                    <i class="bi bi-arrow-up icon-size @currentFilter7"></i>
+                                </a>
+                                @{
+                                    var currentFilter8 = Model.Query == ImportRuleOrderBy.Rule && Model.Q2 == false ? "text-success" : "text-white";
+                                }
+                                <a asp-page="./Rules" asp-route-Query="3" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                    <i class="bi bi-arrow-down icon-size @currentFilter8"></i>
+                                </a>
+                                </th>
+                                <th>
+                                    Merchant / Source
+                                @{
+                                    var currentFilter9 = Model.Query == ImportRuleOrderBy.MerchantSource && Model.Q2 == true ? "text-success" : "text-white";
+                                }
+                                <a asp-page="./Rules" asp-route-Query="4" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                    <i class="bi bi-arrow-up icon-size @currentFilter9"></i>
+                                </a>
+                                @{
+                                    var currentFilter10 = Model.Query == ImportRuleOrderBy.MerchantSource && Model.Q2 == false ? "text-success" : "text-white";
+                                }
+                                <a asp-page="./Rules" asp-route-Query="4" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                    <i class="bi bi-arrow-down icon-size @currentFilter10"></i>
+                                </a>
+                                </th>
+                                <th>
+                                    Category
+                                @{
+                                    var currentFilter11 = Model.Query == ImportRuleOrderBy.Category && Model.Q2 == true ? "text-success" : "text-white";
+                                }
+                                <a asp-page="./Rules" asp-route-Query="5" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                    <i class="bi bi-arrow-up icon-size @currentFilter11"></i>
+                                </a>
+                                @{
+                                    var currentFilter12 = Model.Query == ImportRuleOrderBy.Category && Model.Q2 == false ? "text-success" : "text-white";
+                                }
+                                <a asp-page="./Rules" asp-route-Query="5" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                    <i class="bi bi-arrow-down icon-size @currentFilter12"></i>
+                                </a>
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var rule in Model.RuleRespose.ListItems)
+                            {
+                                <tr>
+                                    <td width="10%" class="text-center">
+                                        @rule.RuleType
+                                    </td>
+                                    <td width="10%" class="text-center">
+                                        @rule.FileType
+                                    </td>
+                                    <td width="15%" class="text-center">
+                                        @rule.TransactionType
+                                    </td>
+                                    <td width="20%" class="text-center">
+                                        @rule.Rule
+                                    </td>
+                                    <td width="20%" class="text-center">
+                                        @{var merchantSource = rule.MerchantSourceId.HasValue ? rule.MerchantSource : null;}
+                                        @merchantSource
+                                    </td>
+                                    <td width="15%" class="text-center">
+                                        @{
+                                            var category = rule.CategoryId.HasValue ? rule.Category : null;
+                                        }
+                                        
+                                        @category
+                                    </td>
+                                    <td width="10%" class="text-center">
+                                        <button 
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#addEditImportRuleModal-@rule.Id"
+                                            class="icon-button px-2 edit-rule-button-js">
+@*when the icon is clicked, even though the javascript is on the button itself, the data is pulled from the icon...*@
+                                        <i class="bi bi-pencil text-primary action-icon"
+                                        data-rule-type=@rule.RuleType
+                                        data-transaction-type=@rule.TransactionType></i>
+                                    </button>
+                                        <button type="button" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal-@rule.Id" class="icon-button ps-2 ps-0 me-0">
+                                        <i class="bi bi-trash text-primary action-icon"></i>
+                                    </button>
+                                    @*Delete Model*@
+                                    <div class="modal fade" id="deleteModal-@rule.Id">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header text-center">
+                                                    <h5 class="modal-title text-center">
+                                                        <strong class="text-center">Are you sure you want to delete this rule?</strong>
+                                                    </h5>
+                                                    <button 
+                                                        type="button" 
+                                                        class="btn-close" 
+                                                        data-bs-dismiss="modal">
+                                                    </button>
+                                                </div>
+
+                                                <div class="modal-footer d-flex justify-content-evenly">
+                                                    <button type="button" 
+                                                        class="btn btn-secondary" 
+                                                        data-bs-dismiss="modal">Cancel</button>
+                                                    <form method="post"
+                                                  asp-page="./Rules"
+                                                  asp-page-handler="Delete"
+                                                  asp-route-query="@Model.Query"
+                                                  asp-route-q2="@Model.Q2"
+                                                  asp-route-ruleId="@rule.Id"
+                                                  asp-route-pageNumber="@Model.PageNumber">
+                                                        <button type="submit" class="btn btn-danger">DELETE</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*End Delete Modal*@
+                                    </td>
+                                        <div class="modal fade" id="addEditImportRuleModal-@rule.Id">
+        @await Html.PartialAsync("_AddEditImportRuleModal", 
+        new AddEditImportRuleModal() {
+            Id = rule.Id,
+            RuleType = Enum.Parse<RuleType>(rule.RuleType, true),
+            TransactionType = Enum.Parse<TransactionType>(rule.TransactionType, true),
+            FileType = Enum.Parse<CsvFileType>(rule.FileType, true),
+            Rule = rule.Rule,
+            CategoryId = rule.CategoryId?? null,
+            MerchantSourceId = rule.MerchantSourceId?? null,
+            IncomeCategoryList = new SelectList(Model.IncomeCategoryList, "Id", "Category", rule.CategoryId?? null),
+            SubCategoryList = new SelectList(Model.SubCategoryList, "Id", "Category", rule.CategoryId?? null),
+            MerchantList = new SelectList(Model.MerchantList, "Id", "Name", rule.MerchantSourceId?? null),
+            SourceList = new SelectList(Model.SourceList, "Id", "Name", rule.MerchantSourceId?? null),
+            Returnurl = "~/Import/Rules", 
+            IsEdit = true })
+        </div>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div class="row my-1">
+                        <div class="col-sm-6 col-lg-2 col-xl-2 m-auto">
+                            @if (@Model.RuleRespose.TotalCount > 0)
+                            {
+                                var currentCount = Model.RuleRespose.PageNumber * @Model.RuleRespose.PageSize;
+                                <span class="text-muted" id="totalCount">@(Math.Min(currentCount, Model.RuleRespose.TotalCount)) of @Model.RuleRespose.TotalCount</span>
+                            }
+                        </div>
+                        <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
+                        </div>
+                        <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
+                            @await Html.PartialAsync("_PaginationPartial",
+                        new _PaginationPartialModel {
+                        PathLink = "../Import/Rules",
+                        IsExpensePage = false,
+                        PageNumber = Model.RuleRespose.PageNumber,
+                        TotalPages = Model.RuleRespose.TotalPages,
+                        Query = (int)Model.Query,
+                        q2 = Model.Q2.ToString()
+                        })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+    @section Scripts {
+<script src="~/js/rules.js" asp-append-version="true"></script>
+}

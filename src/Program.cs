@@ -12,7 +12,7 @@ using CashTrack.Repositories.IncomeSourceRepository;
 using CashTrack.Repositories.MainCategoriesRepository;
 using CashTrack.Repositories.MerchantRepository;
 using CashTrack.Repositories.SubCategoriesRepository;
-using CashTrack.Repositories.TagRepository;
+using CashTrack.Services.ImportRulesService;
 using CashTrack.Repositories.UserRepository;
 using CashTrack.Services.ExpenseReviewService;
 using CashTrack.Services.ExpenseService;
@@ -126,9 +126,11 @@ namespace CashTrack
             services.AddScoped<IIncomeSourceService, IncomeSourceService>();
             services.AddScoped<IIncomeService, IncomeService>();
             services.AddScoped<IImportService, ImportService>();
+            services.AddScoped<IImportRulesService, ImportRulesService>();
             services.AddScoped<IExpenseReviewService, ExpenseReviewService>();
             services.AddScoped<IIncomeReviewService, IncomeReviewService>();
             services.AddScoped<IExportService, ExportService>();
+            
 
         }
         private static void ConfigureMiddleware(IApplicationBuilder app, IServiceProvider services, IWebHostEnvironment env)
