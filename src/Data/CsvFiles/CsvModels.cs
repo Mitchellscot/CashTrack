@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using CashTrack.Data.Entities.Common;
+using CashTrack.Models.ImportRuleModels;
 using System;
 
 namespace CashTrack.Data.CsvFiles
@@ -102,7 +103,9 @@ namespace CashTrack.Data.CsvFiles
         public class CsvImportRule
         {
             public int Id { get; set; }
-            public string? Transaction { get; set; }
+            public RuleType RuleType { get; set; }
+            public TransactionType TransactionType { get; set; }
+            public CsvFileType FileType { get; set; }
             public string? Rule { get; set; }
             public int? MerchantSourceId { get; set; }
             public int? CategoryId { get; set; }

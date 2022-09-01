@@ -1,0 +1,36 @@
+﻿.rules-table-header-row {
+    height: 34px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 34px;
+    white-space: nowrap;
+}
+
+.action-icon {
+    font-size: 1.25rem;
+}
+
+
+.location-column {
+    min-width: 105px;
+}
+
+.purchases-column {
+    min-width: 117px;
+}
+
+.amount-column {
+    min-width: 100px;
+}
+
+.last-purchase-column {
+    min-width: 142px;
+}
+
+.category-column {
+    min-width: 108px;
+}
+
+.orderIcon:hover * {
+    color: #18bc9c !important;
+}

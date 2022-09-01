@@ -32,7 +32,6 @@ public class IncomeCategoryService : IIncomeCategoryService
         var categories = await _repo.Find(x => true);
         if (categories.Any(x => x.Name == request.Name))
             throw new DuplicateNameException(nameof(IncomeCategoryEntity), request.Name);
-        //this obviously needs to be rewritten
         var incomeCategoryEntity = new IncomeCategoryEntity()
         {
             Name = request.Name,

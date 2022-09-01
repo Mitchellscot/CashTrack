@@ -12,6 +12,7 @@ const config = {
         split: './Scripts/Expenses/split.ts',
         importExpenses: './Scripts/Import/importExpenses.ts',
         importIncome: './Scripts/Import/importIncome.ts',
+        rules: './Scripts/Import/rules.ts',
         income: './Scripts/Income/income.ts',
         refund: './Scripts/Income/refund.ts',
         merchantDetail: './Scripts/Merchants/merchantDetail.ts',

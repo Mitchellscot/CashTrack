@@ -1,4 +1,6 @@
-﻿namespace CashTrack.Models.ExportModels;
+﻿using CashTrack.Models.ImportRuleModels;
+
+namespace CashTrack.Models.ExportModels;
 
 public abstract record TransactionExport(string Id, string Date, string Amount, string CategoryId, string Notes);
 public abstract record SourceExport(string Id, string Name, string SuggestOnLookup, string City, string State, string IsOnline);
@@ -19,7 +21,7 @@ public record ExpenseExport(string Id, string MerchantId, string RefundNotes, st
 
 public record IncomeExport(string Id, string Date, string Amount, string CategoryId, string SourceId, string Notes, string IsRefund, string RefundNotes)
     : TransactionExport(Id, Date, Amount, CategoryId, Notes);
-public record ImportRuleExport(string Id, string Transaction, string Rule, string MerchantSourceId, string CategoryId);
+public record ImportRuleExport(string Id, RuleType RuleType, CsvFileType FileType, TransactionType Transaction, string Rule, string MerchantSourceId, string CategoryId);
 
 
 public record ReadableExpenseExport(string Date, string Amount, string Category, string Merchant, string Notes);

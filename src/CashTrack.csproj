@@ -34,11 +34,13 @@
 		<None Remove="Migrations\**" />
 	</ItemGroup>
 	<ItemGroup>
+		<None Remove="Scripts\Import\rules.ts" />
 		<None Remove="Scripts\Settings\settings.ts" />
 		<None Remove="Scripts\SubCategories\subCategoryDetail.ts" />
 		<None Remove="Scripts\Utility\force-refund.ts" />
 		<None Remove="Scripts\Utility\format-amount.ts" />
 		<None Remove="Scripts\Utility\handle-expense-dropdown.ts" />
+		<None Remove="Scripts\Utility\importrule-modal.ts" />
 		<None Remove="Scripts\Utility\load-main-category.ts" />
 		<None Remove="Scripts\Utility\merchant-autocomplete.ts" />
 		<None Remove="Scripts\Utility\online-merchant.ts" />
@@ -52,6 +54,7 @@
 	<ItemGroup>
 		<TypeScriptCompile Include="Scripts\Expenses\expenses.ts" />
 		<TypeScriptCompile Include="Scripts\Expenses\split.ts" />
+		<TypeScriptCompile Include="Scripts\Import\rules.ts" />
 		<TypeScriptCompile Include="Scripts\Income\income.ts" />
 		<TypeScriptCompile Include="Scripts\Income\refund.ts" />
 		<TypeScriptCompile Include="Scripts\Merchants\merchantDetail.ts" />
@@ -63,6 +66,7 @@
 		<TypeScriptCompile Include="Scripts\Utility\force-refund.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\format-amount.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\handle-expense-dropdown.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\importrule-modal.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\load-main-category.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\merchant-autocomplete.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\online-merchant.ts" />
@@ -77,9 +81,7 @@
 		<Folder Include="wwwroot\js\" />
 	</ItemGroup>
 	<ProjectExtensions>
-		<VisualStudio>
-			<UserProperties appsettings_1json__JsonSchema="" />
-		</VisualStudio>
+		<VisualStudio><UserProperties /></VisualStudio>
 	</ProjectExtensions>
 	<Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
 		<PropertyGroup>
