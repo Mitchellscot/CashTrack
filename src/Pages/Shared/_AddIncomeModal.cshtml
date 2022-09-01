@@ -41,12 +41,7 @@
                             <label class="visually-hidden" asp-for="@Model.Date">Date</label>
                             <div class="input-group">
                                 <div class="input-group-text text-center">Date</div>
-                                <input 
-                                    data-val="true" 
-                                    asp-for=@Model.Date 
-                                    type="date" 
-                                    class="form-control" 
-                                    asp-format="{0:yyyy-MM-dd}">
+                                <input data-val="true" asp-for=@Model.Date type="date" class="form-control" asp-format="{0:yyyy-MM-dd}">
                                 <span asp-validation-for="@Model.Date"></span>
                             </div>
                         </div>

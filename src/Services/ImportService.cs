@@ -1,6 +1,5 @@
 ﻿using CashTrack.Data.Entities;
 using CashTrack.Models.ImportCsvModels;
-using CashTrack.Models.ImportRuleModels;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.ExpenseReviewRepository;
 using CashTrack.Repositories.ImportRuleRepository;
@@ -48,10 +47,9 @@ namespace CashTrack.Services.ImportService
                 await request.File.CopyToAsync(fileStream);
             }
             IEnumerable<ImportTransaction> imports = new List<ImportTransaction>();
-            var rules = await _rulesRepo.Find(x => true);
             try
             {
-                imports = GetTransactionsFromFile(filePath, request.FileType, rules);
+                imports = GetTransactionsFromFile(filePath, request.FileType);
             }
             catch (HeaderValidationException)
             {
@@ -69,13 +67,12 @@ namespace CashTrack.Services.ImportService
                 return "No transactions imported";
             }
 
-            
-            IEnumerable<ImportTransaction> filteredImports = await FilterTransactionsInDatabase(imports);
+            IEnumerable<ImportTransaction> filteredImports = await FilterTransactions(imports);
 
             if (!filteredImports.Any())
                 return "Transactions have already been imported.";
 
-            
+            var rules = await _rulesRepo.Find(x => true);
             IEnumerable<ImportTransaction> importRulesApplied = SetImportRules(filteredImports, rules);
 
             var expensesToImport = importRulesApplied.Where(x => !x.IsIncome).Select(x => new ExpenseReviewEntity()
@@ -113,7 +110,7 @@ namespace CashTrack.Services.ImportService
             return results;
         }
 
-        internal async Task<IEnumerable<ImportTransaction>> FilterTransactionsInDatabase(IEnumerable<ImportTransaction> imports)
+        internal async Task<IEnumerable<ImportTransaction>> FilterTransactions(IEnumerable<ImportTransaction> imports)
         {
             var oldestExpenseDate = imports.OrderBy(x => x.Date).FirstOrDefault().Date;
             var expenseImports = imports.Where(x => !x.IsIncome).ToList();
@@ -145,14 +142,8 @@ namespace CashTrack.Services.ImportService
             return importsNotInDatabase;
         }
 
-        internal IEnumerable<ImportTransaction> GetTransactionsFromFile(string filePath, CsvFileType fileType, ImportRuleEntity[] rules)
+        internal IEnumerable<ImportTransaction> GetTransactionsFromFile(string filePath, CsvFileType fileType)
         {
-            var bankFilterRules = rules.Where(x => 
-            x.FileType == CsvFileType.Bank && 
-            x.RuleType == RuleType.Filter).ToList();
-            var creditFilterRules = rules.Where(x =>
-            x.FileType == CsvFileType.Credit &&
-            x.RuleType == RuleType.Filter).ToList();
             using var reader = new StreamReader(filePath);
             var bankImports = new List<BankImport>();
             var creditImports = new List<CreditImport>();
@@ -162,21 +153,13 @@ namespace CashTrack.Services.ImportService
                 if (fileType == CsvFileType.Bank)
                 {
                     csv.Context.RegisterClassMap<BankTransactionMap>();
-                    var csvResult = csv.GetRecords<BankImport>().ToList();
-                    foreach (var line in csvResult)
-                    {
-                        var rule = bankFilterRules.FirstOrDefault(x => line.Notes.ToLower().Contains(x.Rule.ToLower()));
-                        if (rule == null)
-                        {
-                            bankImports.Add(line);
-                        }
-                    }
+                    bankImports = csv.GetRecords<BankImport>().ToList();
                 }
                 else if (fileType == CsvFileType.Credit)
                 {
                     csv.Context.RegisterClassMap<CreditTransactionMap>();
-                    var csvResult = csv.GetRecords<CreditImport>().ToList();
-                    foreach (var item in csvResult)
+                    creditImports = csv.GetRecords<CreditImport>().ToList();
+                    foreach (var item in creditImports)
                     {
                         if (item.Credit > 0)
                         {
@@ -188,25 +171,23 @@ namespace CashTrack.Services.ImportService
                             item.Amount = item.Debit.Value;
                             item.IsIncome = false;
                         }
-                        var rule = creditFilterRules.FirstOrDefault(x => item.Notes.ToLower().Contains(x.Rule.ToLower()));
-                        if (rule == null)
-                        {
-                            creditImports.Add(item);
-                        }
                     }
                 }
                 else if (fileType == CsvFileType.Other)
                 {
-                    //TODO: Figure this out
-                    //might be something like
-                    //giving instructions on what to name the headers
-                    //and then parsing a csv file that looks like that
+                    //TODO: FIgure this out
                     throw new NotImplementedException();
                     //otherImports = csv.GetRecords<OtherTransactionImport>().ToList();
                 }
             }
             IEnumerable<ImportTransaction> imports = bankImports.Any() ? bankImports :
                 creditImports.Any() ? creditImports : otherImports.Any() ? otherImports : new List<ImportTransaction>();
+
+            //remove unnecessary credit transactions
+            //TODO: add this as an option in settings.
+            //high priority
+            imports = imports.Where(x => !x.Notes.ToLower().Contains("thank you"));
+
 
             File.Delete(filePath);
             return imports;
@@ -216,7 +197,7 @@ namespace CashTrack.Services.ImportService
         internal IEnumerable<ImportTransaction> SetImportRules(IEnumerable<ImportTransaction> imports, ImportRuleEntity[] rules)
         {
             var expenseImports = imports.Where(x => !x.IsIncome).ToList();
-            var expenseRules = rules.Where(x => x.TransactionType == TransactionType.Expense && x.RuleType == RuleType.Assignment).ToList();
+            var expenseRules = rules.Where(x => x.Transaction == "Expense").ToList();
             foreach (var import in expenseImports)
             {
                 var rule = expenseRules.FirstOrDefault(x => import.Notes.ToLower().Contains(x.Rule.ToLower()));
@@ -231,7 +212,7 @@ namespace CashTrack.Services.ImportService
                 }
             }
             var incomeImports = imports.Where(x => x.IsIncome).ToList();
-            var incomeRules = rules.Where(x => x.TransactionType == TransactionType.Income && x.RuleType == RuleType.Assignment).ToList();
+            var incomeRules = rules.Where(x => x.Transaction == "Income").ToList();
             foreach (var import in incomeImports)
             {
                 var rule = incomeRules.FirstOrDefault(x => import.Notes.ToLower().Contains(x.Rule.ToLower()));

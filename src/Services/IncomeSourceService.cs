@@ -9,8 +9,6 @@ using System.Collections.Generic;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Services.Common;
 using CashTrack.Models.IncomeModels;
-using CashTrack.Models.MerchantModels;
-using CashTrack.Models.SubCategoryModels;
 
 namespace CashTrack.Services.IncomeSourceService;
 
@@ -24,7 +22,6 @@ public interface IIncomeSourceService
     Task<bool> DeleteIncomeSourceAsync(int id);
     Task<string[]> GetMatchingIncomeSourcesAsync(string name);
     Task<string[]> GetAllIncomeSourceNames();
-    Task<SourceDropdownSelection[]> GetSourceDropdownListAsync();
 }
 public class IncomeSourceService : IIncomeSourceService
 {
@@ -190,15 +187,6 @@ public class IncomeSourceService : IIncomeSourceService
                 Category = x.Category,
                 Count = x.Incomes.Count()
             }).OrderByDescending(x => x.Count).ToDictionary(k => k.Category, v => v.Count);
-    }
-
-    public async Task<SourceDropdownSelection[]> GetSourceDropdownListAsync()
-    {
-        return (await _sourceRepo.Find(x => x.SuggestOnLookup == true)).Select(x => new SourceDropdownSelection()
-        {
-            Id = x.Id,
-            Name = x.Name
-        }).ToArray();
     }
 }
 

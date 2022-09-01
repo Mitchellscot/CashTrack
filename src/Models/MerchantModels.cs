@@ -50,8 +50,4 @@ public record MerchantDetail : Merchant
     public Dictionary<string, decimal> PurchaseCategoryTotals { get; set; }
     public List<ExpenseQuickView> RecentExpenses { get; set; }
 }
-public class MerchantDropdownSelection
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-}
+

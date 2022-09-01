@@ -1,6 +1,4 @@
-﻿using CashTrack.Models.IncomeSourceModels;
-using CashTrack.Models.MerchantModels;
-using CashTrack.Services.IncomeSourceService;
+﻿using CashTrack.Services.IncomeSourceService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,19 +22,6 @@ namespace CashTrack.Controllers
             {
                 var result = await _service.GetMatchingIncomeSourcesAsync(sourceName);
                 return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
-        [HttpGet("dropdown")]
-        public async Task<ActionResult<SourceDropdownSelection[]>> GetAllSourcesForDropDownList()
-        {
-            try
-            {
-                var sources = await _service.GetSourceDropdownListAsync();
-                return Ok(sources);
             }
             catch (Exception ex)
             {

@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using CashTrack.Models.Common;
 using System;
-using CashTrack.Models.SubCategoryModels;
 
 namespace CashTrack.Services.MerchantService;
 public interface IMerchantService
@@ -25,7 +24,6 @@ public interface IMerchantService
     Task<bool> DeleteMerchantAsync(int id);
     Task<MerchantEntity> GetMerchantByNameAsync(string name);
     Task<string[]> GetAllMerchantNames();
-    Task<MerchantDropdownSelection[]> GetMerchantDropdownListAsync();
 }
 public class MerchantService : IMerchantService
 {
@@ -276,15 +274,6 @@ public class MerchantService : IMerchantService
     public async Task<string[]> GetAllMerchantNames()
     {
         return (await _merchantRepo.Find(x => true)).Select(x => x.Name).ToArray();
-    }
-
-    public async Task<MerchantDropdownSelection[]> GetMerchantDropdownListAsync()
-    {
-        return (await _merchantRepo.Find(x => x.SuggestOnLookup == true)).Select(x => new MerchantDropdownSelection()
-        {
-            Id = x.Id,
-            Name = x.Name
-        }).ToArray();
     }
 }
 public class MerchantMapperProfile : Profile
