@@ -40,6 +40,7 @@
 		<None Remove="Scripts\Utility\force-refund.ts" />
 		<None Remove="Scripts\Utility\format-amount.ts" />
 		<None Remove="Scripts\Utility\handle-expense-dropdown.ts" />
+		<None Remove="Scripts\Utility\importrule-modal.ts" />
 		<None Remove="Scripts\Utility\load-main-category.ts" />
 		<None Remove="Scripts\Utility\merchant-autocomplete.ts" />
 		<None Remove="Scripts\Utility\online-merchant.ts" />
@@ -65,6 +66,7 @@
 		<TypeScriptCompile Include="Scripts\Utility\force-refund.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\format-amount.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\handle-expense-dropdown.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\importrule-modal.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\load-main-category.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\merchant-autocomplete.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\online-merchant.ts" />
