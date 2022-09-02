@@ -154,7 +154,7 @@ namespace CashTrack.Pages.Expenses
             TempData["SuccessMessage"] = "Sucessfully deleted expense!";
             return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
         }
-        public async Task<IActionResult> OnPostAddEditExpenseModal()
+        public async Task<IActionResult> OnPostAddEditExpenseModal(int pageNumber, int query, string q, string q2)
         {
             if (!ModelState.IsValid)
             {
@@ -170,7 +170,7 @@ namespace CashTrack.Pages.Expenses
                 var success = Expense.IsEdit ? await _expenseService.UpdateExpenseAsync(Expense) : await _expenseService.CreateExpenseAsync(Expense);
 
                 TempData["SuccessMessage"] = Expense.Id.HasValue ? "Sucessfully updated the Expense!" : "Sucessfully added a new Expense!";
-                return RedirectToPage("./Index", new { query = Query, q = Q, q2 = Q2, pageNumber = PageNumber });
+                return RedirectToPage("./Index", new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
             }
             catch (CategoryNotFoundException)
             {

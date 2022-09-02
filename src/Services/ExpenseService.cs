@@ -160,6 +160,8 @@ public class ExpenseService : IExpenseService
         currentExpense.CategoryId = categoryId;
         currentExpense.ExcludeFromStatistics = request.ExcludeFromStatistics;
         currentExpense.RefundNotes = request.RefundNotes;
+        currentExpense.RefundNotes = request.RefundNotes;
+        currentExpense.MerchantId = request.MerchantId;
 
         if (request.Merchant != null)
             currentExpense.MerchantId = (await _merchantRepo.Find(x => x.Name == request.Merchant)).FirstOrDefault().Id;
