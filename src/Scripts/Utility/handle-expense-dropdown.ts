@@ -85,6 +85,7 @@ const adjustFormBasedOnQueryValue = (queryValue: number) => {
             break;
         //subcategory
         case 8:
+            resetCategorySelect();
             resetNumbersForm();
             resetSecondInputForm();
             firstInput.classList.add('display-none');
@@ -96,13 +97,16 @@ const adjustFormBasedOnQueryValue = (queryValue: number) => {
                         if (category.id.toString() === Q) {
                             categorySelect.add(new Option(category.category, category.id.toString(), true, true))
                         }
-                        categorySelect.add(new Option(category.category, category.id.toString()))
+                        else {
+                            categorySelect.add(new Option(category.category, category.id.toString()))
+                        }
                     }
                 }).catch(err => console.log(err));
             firstInput.type = 'text';
             break;
         //main category
         case 9:
+            resetCategorySelect();
             resetNumbersForm();
             resetSecondInputForm();
             firstInput.classList.add('display-none');

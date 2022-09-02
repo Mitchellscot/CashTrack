@@ -74,7 +74,6 @@ public class ExpenseSplit
     public decimal Tax { get; set; }
     [Required]
     public DateTime Date { get; set; }
-    [Required]
     public string Merchant { get; set; }
 }
 public class ExpenseRefund
