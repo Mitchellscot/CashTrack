@@ -63,7 +63,7 @@ public class ExpenseSplit
     public decimal Amount
     {
         get => _amount;
-        set => _amount = Decimal.Round(value, 2);
+        set => _amount = this.Taxed ? Decimal.Round(value + (value * this.Tax), 2) : Decimal.Round(value, 2);
     }
     [Required]
     public int SubCategoryId { get; set; }
@@ -75,7 +75,6 @@ public class ExpenseSplit
     [Required]
     public DateTime Date { get; set; }
     public string Merchant { get; set; }
-    public void SetTaxIfTaxed() => _amount = this.Taxed ? Decimal.Round(_amount + (_amount * this.Tax), 2) : _amount;
 }
 public class ExpenseRefund
 {

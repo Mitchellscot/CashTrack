@@ -125,7 +125,6 @@ public class ExpenseService : IExpenseService
     }
     public async Task<int> CreateExpenseFromSplitAsync(ExpenseSplit request)
     {
-        request.SetTaxIfTaxed();
         var expenseEntity = new ExpenseEntity()
         {
             Date = request.Date,

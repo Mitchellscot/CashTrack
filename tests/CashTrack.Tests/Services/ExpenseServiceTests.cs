@@ -426,60 +426,6 @@ namespace CashTrack.Tests.Services
             }
         }
         [Fact]
-        public async Task Create_An_Expense_From_Split_Adds_Tax()
-        {
-            var expense = new ExpenseSplit()
-            {
-                Amount = 10.00M,
-                Date = new DateTime(2012, 04, 24),
-                Notes = "hi",
-                Merchant = "Costco",
-                SubCategoryId = 1,
-                Taxed = true,
-                Tax = 0.5m
-            };
-            using (var db = new AppDbContextFactory().CreateDbContext())
-            {
-                var repo = new ExpenseRepository(db);
-                var incomerepo = new IncomeRepository(db);
-                var merchantRepo = new MerchantRepository(db);
-                var subCategoryRepo = new SubCategoryRepository(db);
-                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo);
-                var expectedId = (repo.GetCount(x => true).Result) + 1;
-                var result = await service.CreateExpenseFromSplitAsync(expense);
-                result.ShouldBe(expectedId);
-                var resultAmount = await repo.FindById(expectedId);
-                resultAmount.Amount.ShouldBe(15m);
-            }
-        }
-        [Fact]
-        public async Task Create_An_Expense_From_Split_Should_Not_Add_Tax_If_Not_Taxed()
-        {
-            var expense = new ExpenseSplit()
-            {
-                Amount = 10.00M,
-                Date = new DateTime(2012, 04, 24),
-                Notes = "hi",
-                Merchant = "Costco",
-                SubCategoryId = 1,
-                Taxed = false,
-                Tax = 0.5m
-            };
-            using (var db = new AppDbContextFactory().CreateDbContext())
-            {
-                var repo = new ExpenseRepository(db);
-                var incomerepo = new IncomeRepository(db);
-                var merchantRepo = new MerchantRepository(db);
-                var subCategoryRepo = new SubCategoryRepository(db);
-                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo);
-                var expectedId = (repo.GetCount(x => true).Result) + 1;
-                var result = await service.CreateExpenseFromSplitAsync(expense);
-                result.ShouldBe(expectedId);
-                var resultAmount = await repo.FindById(expectedId);
-                resultAmount.Amount.ShouldBe(10m);
-            }
-        }
-        [Fact]
         public async Task Update_An_Expense()
         {
             const string testnotes = "blah blah blah";
