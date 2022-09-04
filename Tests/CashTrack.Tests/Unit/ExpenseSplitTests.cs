@@ -1,10 +1,10 @@
-﻿using Bogus.DataSets;
-using CashTrack.Models.ExpenseModels;
-using CashTrack.Models.MerchantModels;
-using CashTrack.Models.SubCategoryModels;
+﻿using CashTrack.Models.ExpenseModels;
 using Shouldly;
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Drawing;
+using System.Linq;
 using Xunit;
 
 namespace CashTrack.Tests.Unit
@@ -27,6 +27,7 @@ namespace CashTrack.Tests.Unit
                 Merchant = "mitchell"
             };
             var expectedValue = decimal.Round(Convert.ToDecimal((randomAmount * randomTax) + randomAmount), 2);
+            sut.SetTaxIfTaxed();
             sut.Amount.ShouldBe(expectedValue);
         }
         [Fact]
@@ -44,7 +45,70 @@ namespace CashTrack.Tests.Unit
                 Date = DateTime.Today,
                 Merchant = "mitchell"
             };
+            sut.SetTaxIfTaxed();
             sut.Amount.ShouldBe(randomAmount);
+        }
+        [Fact]
+        public void Error_When_Tax_Is_Too_High()
+        {
+            var sut = new ExpenseSplit()
+            {
+                Taxed = false,
+                Tax = 1M,
+                Amount = 100m,
+                SubCategoryId = 1,
+                Date = DateTime.Today,
+                Merchant = "mitchell"
+            };
+
+            ValidateModel(sut).Any(
+                x => x!.MemberNames.Contains("Tax") &&
+                x!.ErrorMessage!.Contains("must be between"))
+                .ShouldBeTrue();
+        }
+        [Fact]
+        public void Error_When_Tax_Is_Too_low()
+        {
+            var sut = new ExpenseSplit()
+            {
+                Taxed = false,
+                Tax = 0m,
+                Amount = 100m,
+                SubCategoryId = 1,
+                Date = DateTime.Today,
+                Merchant = "mitchell"
+            };
+
+            ValidateModel(sut).Any(
+                x => x!.MemberNames.Contains("Tax") &&
+                x!.ErrorMessage!.Contains("must be between"))
+                .ShouldBeTrue();
+        }
+        [Fact]
+        public void Error_When_Amount_Is_Too_low()
+        {
+            var sut = new ExpenseSplit()
+            {
+                Taxed = false,
+                Tax = 0.1m,
+                Amount = -100m,
+                SubCategoryId = 1,
+                Date = DateTime.Today,
+                Merchant = "mitchell"
+            };
+
+            ValidateModel(sut).Any(
+                x => x!.MemberNames.Contains("Amount") &&
+                x!.ErrorMessage!.Contains("must be between"))
+                .ShouldBeTrue();
+        }
+        //handy method for testing validation requirements of System.ComponentModel.DataAnnotations !
+        private IList<ValidationResult> ValidateModel(object model)
+        {
+            var validationResults = new List<ValidationResult>();
+            var ctx = new ValidationContext(model, null, null);
+            var valid = Validator.TryValidateObject(model, ctx, validationResults, true);
+            return validationResults;
         }
     }
 }

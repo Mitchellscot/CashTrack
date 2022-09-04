@@ -57,24 +57,26 @@ public class ExpenseQuickView : Transaction
 }
 public class ExpenseSplit
 {
-    private decimal _amount;
+    public decimal _amount;
     [Required]
     [Range(0, int.MaxValue, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
     public decimal Amount
     {
         get => _amount;
-        set => _amount = this.Taxed ? Decimal.Round(value + (value * this.Tax), 2) : Decimal.Round(value, 2);
+        set => _amount = Decimal.Round(value, 2);
     }
     [Required]
     public int SubCategoryId { get; set; }
     public string Notes { get; set; }
     public bool Taxed { get; set; }
-    [Range(0, 1, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+    [Range(0.00001, 0.99999, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
     [Required]
     public decimal Tax { get; set; }
     [Required]
     public DateTime Date { get; set; }
     public string Merchant { get; set; }
+    public bool IsTaxed() => this.Taxed;
+    public void SetTaxIfTaxed() => _amount = this.IsTaxed() ? Decimal.Round((_amount + (_amount * this.Tax)), 2) : _amount;
 }
 public class ExpenseRefund
 {
