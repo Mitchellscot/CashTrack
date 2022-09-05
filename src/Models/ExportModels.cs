@@ -31,3 +31,13 @@ public record ReadableIncomeSourceExport(string Name, string City, string State,
 public record ReadableMainCategoryExport(string Name);
 public record ReadableMerchantExport(string Name, string City, string State, string Notes);
 public record ReadableSubCategoryExport(string Name, string MainCategory, string InUse, string Notes);
+public class ReadableImportRuleExport
+{
+    public string Id { get; set; }
+    public RuleType RuleType { get; set; }
+    public CsvFileType FileType { get; set; }
+    public TransactionType TransactionType { get; set; }
+    public string Rule { get; set; }
+    public string MerchantSource { get; set; }
+    public string Category { get; set; }
+}

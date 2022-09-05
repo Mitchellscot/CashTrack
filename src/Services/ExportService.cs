@@ -38,7 +38,7 @@ public class ExportService : IExportService
                 await CreateExpensesFile(filePath, asReadable);
                 return filePath;
             case 2:
-                await CreateImportRulesFile(filePath);
+                await CreateImportRulesFile(filePath, asReadable);
                 return filePath;
             case 3:
                 await CreateIncomeFile(filePath, asReadable);
@@ -85,16 +85,26 @@ public class ExportService : IExportService
             await WriteFileAsync<ExpenseExport>(filePath, expenses);
         }
     }
-    private async Task CreateImportRulesFile(string filePath)
+    private async Task CreateImportRulesFile(string filePath, bool asReadable)
     {
-        //Not writing an "as readable" for this
-        var importRules = await _exportRepo.GetImportRules();
+        if (asReadable)
+        {
+            var readableImportRules = await _exportRepo.GetReadableImportRules();
 
-        if (importRules.Length == 0)
-            return;
+            if (readableImportRules.Length == 0)
+                return;
 
-        await WriteFileAsync<ImportRuleExport>(filePath, importRules);
+            await WriteFileAsync(filePath, readableImportRules);
+        }
+        else
+        {
+            var importRules = await _exportRepo.GetImportRules();
 
+            if (importRules.Length == 0)
+                return;
+
+            await WriteFileAsync<ImportRuleExport>(filePath, importRules);
+        }
     }
     private async Task CreateIncomeFile(string filePath, bool asReadable)
     {
