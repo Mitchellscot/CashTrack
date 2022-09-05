@@ -1,9 +1,13 @@
 ﻿using CashTrack.Data;
 using CashTrack.Data.Entities;
 using CashTrack.Models.ExportModels;
+using CashTrack.Models.ImportRuleModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace CashTrack.Repositories.ExportRepository;
@@ -19,6 +23,7 @@ public interface IExportRepository
     Task<SubCategoryExport[]> GetSubCategories();
 
     Task<ReadableExpenseExport[]> GetReadableExpenses();
+    Task<ReadableImportRuleExport[]> GetReadableImportRules();
     Task<ReadableIncomeExport[]> GetReadableIncome();
     Task<ReadableIncomeCategoryExport[]> GetReadableIncomeCategories();
     Task<ReadableIncomeSourceExport[]> GetReadableIncomeSources();
@@ -72,7 +77,7 @@ public class ExportRepository : IExportRepository
                 Id: x.Id.ToString(),
                 RuleType: x.RuleType,
                 FileType: x.FileType,
-                Transaction: x.TransactionType,
+                TransactionType: x.TransactionType,
                 Rule: x.Rule,
                 CategoryId: x.CategoryId.ToString(),
                 MerchantSourceId: x.MerchantSourceId?.ToString()
@@ -152,7 +157,8 @@ public class ExportRepository : IExportRepository
                 SuggestOnLookup: x.SuggestOnLookup ? "1" : "0",
                 City: x.City,
                 State: x.State,
-                IsOnline: x.IsOnline ? "1" : "0"
+                IsOnline: x.IsOnline ? "1" : "0",
+                Notes: x.Notes
                 )).ToArray();
         }
         catch (Exception)
@@ -194,7 +200,8 @@ public class ExportRepository : IExportRepository
                 SuggestOnLookup: x.SuggestOnLookup ? "1" : "0",
                 City: x.City,
                 State: x.State,
-                IsOnline: x.IsOnline ? "1" : "0"
+                IsOnline: x.IsOnline ? "1" : "0",
+                Notes: x.Notes
                 )).ToArray();
         }
         catch (Exception)
@@ -313,7 +320,8 @@ public class ExportRepository : IExportRepository
             return incomeSourceEntities.Select(x => new ReadableIncomeSourceExport(
                 Name: x.Name,
                 City: x.City,
-                State: x.State
+                State: x.State,
+                Notes: x.Notes
                 )).ToArray();
         }
         catch (Exception)
@@ -352,7 +360,8 @@ public class ExportRepository : IExportRepository
             return merchantEntities.Select(x => new ReadableMerchantExport(
                 Name: x.Name,
                 City: x.City,
-                State: x.State
+                State: x.State,
+                Notes: x.Notes
                 )).ToArray();
         }
         catch (Exception)
@@ -377,6 +386,70 @@ public class ExportRepository : IExportRepository
                 InUse: x.InUse ? "Yes" : "No",
                 Notes: x.Notes
                 )).ToArray();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<ReadableImportRuleExport[]> GetReadableImportRules()
+    {
+        try
+        {
+            var importRuleEntities = await _ctx.ImportRules.OrderBy(x => x.Id).ToArrayAsync();
+            if (!importRuleEntities.Any())
+            {
+                return new ReadableImportRuleExport[] { };
+            }
+
+            var importRulesWithoutAssignmentData = importRuleEntities.Select(x => new ReadableImportRuleExport()
+            {
+                Id = x.Id.ToString(),
+                RuleType = x.RuleType,
+                FileType = x.FileType,
+                TransactionType = x.TransactionType,
+                Rule = x.Rule,
+                MerchantSource = x.MerchantSourceId.ToString(),
+                Category = x.CategoryId.ToString()
+            }
+            ).ToList();
+
+            var importRules = new List<ReadableImportRuleExport>();
+
+            foreach (var rule in importRulesWithoutAssignmentData)
+            {
+                if (rule.RuleType == RuleType.Assignment &&
+                    rule.TransactionType == TransactionType.Expense &&
+                    !string.IsNullOrEmpty(rule.MerchantSource))
+                {
+                    rule.MerchantSource = (await _ctx.Merchants.Where(x => x.Id ==
+                    Convert.ToInt32(rule.MerchantSource)).FirstOrDefaultAsync()).Name;
+                }
+                if (rule.RuleType == RuleType.Assignment &&
+                    rule.TransactionType == TransactionType.Expense &&
+                    !string.IsNullOrEmpty(rule.Category))
+                {
+                    rule.Category = (await _ctx.SubCategories.Where(x => x.Id ==
+                    Convert.ToInt32(rule.Category)).FirstOrDefaultAsync()).Name;
+                }
+                if (rule.RuleType == RuleType.Assignment &&
+                    rule.TransactionType == TransactionType.Income &&
+                    !string.IsNullOrEmpty(rule.MerchantSource))
+                {
+                    rule.MerchantSource = (await _ctx.IncomeSources.Where(x => x.Id ==
+                    Convert.ToInt32(rule.MerchantSource)).FirstOrDefaultAsync()).Name;
+                }
+                if (rule.RuleType == RuleType.Assignment &&
+                    rule.TransactionType == TransactionType.Income &&
+                    !string.IsNullOrEmpty(rule.Category))
+                {
+                    rule.Category = (await _ctx.IncomeCategories.Where(x => x.Id ==
+                    Convert.ToInt32(rule.Category)).FirstOrDefaultAsync()).Name;
+                }
+                importRules.Add(rule);
+            }
+            return importRules.ToArray();
         }
         catch (Exception)
         {

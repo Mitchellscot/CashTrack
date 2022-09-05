@@ -9,6 +9,7 @@ using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.MerchantRepository;
 using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Services.Common;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -125,6 +126,7 @@ public class ExpenseService : IExpenseService
     }
     public async Task<int> CreateExpenseFromSplitAsync(ExpenseSplit request)
     {
+        request.SetTaxIfTaxed();
         var expenseEntity = new ExpenseEntity()
         {
             Date = request.Date,

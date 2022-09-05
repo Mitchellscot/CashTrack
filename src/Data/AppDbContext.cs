@@ -38,29 +38,27 @@ namespace CashTrack.Data
             base.OnModelCreating(mb);
             //to seed a new dev or prod database, set this to true
             mb.Initialize(_env.EnvironmentName, false);
-            ConfigureForSqlLite(mb);
+            //used to convert decimals and DateTime for the sqllite in memory database.
+            if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
+                ConfigureForSqlLite(mb);
         }
         private void ConfigureForSqlLite(ModelBuilder modelBuilder)
         {
-            //used to convert decimals and DateTime for the sqllite in memory database.
-            if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
-                foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+                var properties = entityType.ClrType.GetProperties().Where(p => p.PropertyType == typeof(decimal));
+                var dateTimeProperties = entityType.ClrType.GetProperties()
+                    .Where(p => p.PropertyType == typeof(DateTime));
+
+                foreach (var property in properties)
                 {
-                    var properties = entityType.ClrType.GetProperties().Where(p => p.PropertyType == typeof(decimal));
-                    var dateTimeProperties = entityType.ClrType.GetProperties()
-                        .Where(p => p.PropertyType == typeof(DateTime));
+                    modelBuilder.Entity(entityType.Name).Property(property.Name).HasConversion<double>();
+                }
 
-                    foreach (var property in properties)
-                    {
-                        modelBuilder.Entity(entityType.Name).Property(property.Name).HasConversion<double>();
-                    }
-
-                    foreach (var property in dateTimeProperties)
-                    {
-                        modelBuilder.Entity(entityType.Name).Property(property.Name)
-                            .HasConversion(new DateTimeToBinaryConverter());
-                    }
+                foreach (var property in dateTimeProperties)
+                {
+                    modelBuilder.Entity(entityType.Name).Property(property.Name)
+                        .HasConversion(new DateTimeToBinaryConverter());
                 }
             }
         }
@@ -133,8 +131,6 @@ namespace CashTrack.Data
                 mb.Entity<IncomeEntity>().HasData(CsvParser.ProcessIncomeFile(Path.Combine(csvFileDirectory, "Income.csv")));
                 mb.Entity<ImportRuleEntity>().HasData(CsvParser.ProcessImportRuleFile(Path.Combine(csvFileDirectory, "ImportRules.csv")));
             }
-
         }
     }
-
 }

@@ -9,7 +9,7 @@
         @await Html.PartialAsync("_ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Import/Expenses" })
                   </div>
 <div class="container mt-3">
-    <div class="row mb-3">
+    <form class="row mb-3" method="post">
         <div class="col-6">
             <div class="input-group">
                 <div class="input-group-prepend d-none d-sm-block">
@@ -23,7 +23,7 @@
                 </button>
             </div>
         </div>
-        <form class="col-4 d-flex" method="post">
+        <div class="col-4 d-flex" method="post">
             <div class="form-check me-3 d-flex align-items-center">
                 <input class="form-check-input me-2" type="radio" asp-for="ExportAsReadable" value="false">
                 <label asp-for="ExportAsReadable" class="form-check-label">Raw Data</label>
@@ -32,8 +32,8 @@
                 <input class="form-check-input me-2" type="radio" asp-for="ExportAsReadable" value="true">
                 <label asp-for="ExportAsReadable" class="form-check-label">Readable Data</label>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
     <div class="row">
                 <div>
                     <button class="btn btn-primary" type="button" id="importButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">Import</button>

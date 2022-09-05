@@ -48,7 +48,7 @@ public class SubCategoryService : ISubCategoryService
                 //this is what is run when you first load the page
                 if (!request.Reversed)
                 {
-                    return await GetSubCategoriesFastPageLoad();
+                    return await GetSubCategoriesFastPageLoad(request);
                 }
 
                 var categoriesByName = await GetSubCategoryListItems();
@@ -109,9 +109,9 @@ public class SubCategoryService : ISubCategoryService
             };
         }).ToArray();
     }
-    private async Task<SubCategoryListItem[]> GetSubCategoriesFastPageLoad()
+    private async Task<SubCategoryListItem[]> GetSubCategoriesFastPageLoad(SubCategoryRequest request)
     {
-        var categories = await _subCategoryRepo.FindWithPaginationIncludeExpenses(x => true, 1, 20);
+        var categories = await _subCategoryRepo.FindWithPaginationIncludeExpenses(x => true, request.PageNumber, request.PageSize);
 
         var expenses = categories.SelectMany(x => x.Expenses).ToArray();
         return expenses.GroupBy(e => e.CategoryId).Select(g =>

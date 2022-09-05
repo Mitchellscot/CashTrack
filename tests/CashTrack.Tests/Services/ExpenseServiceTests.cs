@@ -426,6 +426,69 @@ namespace CashTrack.Tests.Services
             }
         }
         [Fact]
+        public async Task Creating_An_Expense_From_Split_Sets_Tax()
+        {
+            var rando = new Random();
+            var randomTax = Convert.ToDecimal(rando.NextDouble());
+            var randomAmount = rando.Next(0, 10000);
+            var expense = new ExpenseSplit()
+            {
+                Amount = randomAmount,
+                Date = new DateTime(2012, 04, 24),
+                Notes = "hi",
+                Merchant = "Costco",
+                SubCategoryId = 1,
+                Tax = randomTax,
+                Taxed = true
+            };
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var repo = new ExpenseRepository(db);
+                var incomerepo = new IncomeRepository(db);
+                var merchantRepo = new MerchantRepository(db);
+                var subCategoryRepo = new SubCategoryRepository(db);
+                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo);
+                var expectedId = (repo.GetCount(x => true).Result) + 1;
+                var result = await service.CreateExpenseFromSplitAsync(expense);
+                result.ShouldBe(expectedId);
+
+                var resultAmount = (await repo.FindById(result)).Amount;
+                var expectedValue = decimal.Round(Convert.ToDecimal((randomAmount * randomTax) + randomAmount), 2);
+                resultAmount.ShouldBe(expectedValue);
+            }
+        }
+        [Fact]
+        public async Task Creating_An_Expense_From_Split_Doesnt_Set_Tax_If_Untaxed()
+        {
+            var rando = new Random();
+            var randomTax = Convert.ToDecimal(rando.NextDouble());
+            var randomAmount = rando.Next(0, 10000);
+            var expense = new ExpenseSplit()
+            {
+                Amount = randomAmount,
+                Date = new DateTime(2012, 04, 24),
+                Notes = "hi",
+                Merchant = "Costco",
+                SubCategoryId = 1,
+                Tax = randomTax,
+                Taxed = false
+            };
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var repo = new ExpenseRepository(db);
+                var incomerepo = new IncomeRepository(db);
+                var merchantRepo = new MerchantRepository(db);
+                var subCategoryRepo = new SubCategoryRepository(db);
+                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo);
+                var expectedId = (repo.GetCount(x => true).Result) + 1;
+                var result = await service.CreateExpenseFromSplitAsync(expense);
+                result.ShouldBe(expectedId);
+
+                var resultAmount = (await repo.FindById(result)).Amount;
+                resultAmount.ShouldBe(randomAmount);
+            }
+        }
+        [Fact]
         public async Task Update_An_Expense()
         {
             const string testnotes = "blah blah blah";
