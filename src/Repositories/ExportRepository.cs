@@ -72,7 +72,7 @@ public class ExportRepository : IExportRepository
                 Id: x.Id.ToString(),
                 RuleType: x.RuleType,
                 FileType: x.FileType,
-                Transaction: x.TransactionType,
+                TransactionType: x.TransactionType,
                 Rule: x.Rule,
                 CategoryId: x.CategoryId.ToString(),
                 MerchantSourceId: x.MerchantSourceId?.ToString()
@@ -152,7 +152,8 @@ public class ExportRepository : IExportRepository
                 SuggestOnLookup: x.SuggestOnLookup ? "1" : "0",
                 City: x.City,
                 State: x.State,
-                IsOnline: x.IsOnline ? "1" : "0"
+                IsOnline: x.IsOnline ? "1" : "0",
+                Notes: x.Notes
                 )).ToArray();
         }
         catch (Exception)
@@ -194,7 +195,8 @@ public class ExportRepository : IExportRepository
                 SuggestOnLookup: x.SuggestOnLookup ? "1" : "0",
                 City: x.City,
                 State: x.State,
-                IsOnline: x.IsOnline ? "1" : "0"
+                IsOnline: x.IsOnline ? "1" : "0",
+                Notes: x.Notes
                 )).ToArray();
         }
         catch (Exception)
@@ -313,7 +315,8 @@ public class ExportRepository : IExportRepository
             return incomeSourceEntities.Select(x => new ReadableIncomeSourceExport(
                 Name: x.Name,
                 City: x.City,
-                State: x.State
+                State: x.State,
+                Notes: x.Notes
                 )).ToArray();
         }
         catch (Exception)
@@ -352,7 +355,8 @@ public class ExportRepository : IExportRepository
             return merchantEntities.Select(x => new ReadableMerchantExport(
                 Name: x.Name,
                 City: x.City,
-                State: x.State
+                State: x.State,
+                Notes: x.Notes
                 )).ToArray();
         }
         catch (Exception)
