@@ -49,7 +49,7 @@ namespace CashTrack.Pages.Expenses
             Total = originalExpense.Amount;
             Date = originalExpense.Date;
             Merchant = originalExpense.Merchant;
-            this.Tax = Tax ?? 0.0875M; //TODO: Set Default Tax in Application Settings page
+            this.Tax = Tax ?? 0.07875M; //TODO: Set Default Tax in Application Settings page
             this.Split = Split ?? 2;
             SplitOptions = new SelectList(Enumerable.Range(2, 7));
             return Page();
