@@ -50,8 +50,10 @@ namespace CashTrack.Pages.Import
                 await PrepareData();
                 return Page();
             }
-            if (!(await _incomeSourceService.GetAllIncomeSourceNames()).Any(x => x == SelectedIncome.Source))
+            if (!string.IsNullOrEmpty(SelectedIncome.Source) && 
+                !(await _incomeSourceService.GetAllIncomeSourceNames()).Any(x => x == SelectedIncome.Source))
             {
+                ModelState.AddModelError("", "That income Source does not exist.");
                 await PrepareData();
                 return Page();
             }

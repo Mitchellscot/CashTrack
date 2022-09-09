@@ -34,7 +34,9 @@ namespace CashTrack.Pages.Expenses
         public int SubCategoryId { get; set; }
         public SelectList SplitOptions { get; set; }
         public SelectList SubCategories { get; set; }
-        public async Task<IActionResult> OnGet(int id, int? Split, decimal? Tax)
+        [BindProperty(SupportsGet = true)]
+        public string ReturnUrl { get; set; }
+        public async Task<IActionResult> OnGet(int id, int? Split, decimal? Tax, string? ReturnUrl)
         {
             var originalExpense = await _expenseService.GetExpenseByIdAsync(id);
             if (originalExpense == null)
@@ -52,9 +54,10 @@ namespace CashTrack.Pages.Expenses
             this.Tax = Tax ?? 0.07875M; //TODO: Set Default Tax in Application Settings page
             this.Split = Split ?? 2;
             SplitOptions = new SelectList(Enumerable.Range(2, 7));
+            this.ReturnUrl = ReturnUrl ?? "~/Expenses/Index";
             return Page();
         }
-        public async Task<IActionResult> OnPost(List<ExpenseSplit> expenseSplits)
+        public async Task<IActionResult> OnPost(List<ExpenseSplit> expenseSplits, string? ReturnUrl)
         {
             if (!ModelState.IsValid)
             {
@@ -78,7 +81,7 @@ namespace CashTrack.Pages.Expenses
                 return Page();
             }
             TempData["Message"] = "Sucessfully Split the Expense!";
-            return LocalRedirect("~/Expenses/Index");
+            return LocalRedirect(ReturnUrl ?? "~/Expenses/Index");
         }
     }
 }

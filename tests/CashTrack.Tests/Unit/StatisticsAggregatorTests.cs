@@ -42,7 +42,8 @@ namespace CashTrack.Tests.Unit
             var result = AggregateUtilities<ExpenseEntity>.GetMonthlyStatistics(_expenses);
             foreach (var month in result)
             {
-                month.Date.Year.ShouldBe(2012);
+                month.Month.ShouldNotBeEmpty();
+                month.MonthNumber.ShouldBeGreaterThan(0);
                 month.Count.ShouldBeGreaterThan(0);
                 month.Average.ShouldBeGreaterThan(0);
                 month.Min.ShouldBeGreaterThan(0);

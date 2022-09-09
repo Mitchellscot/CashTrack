@@ -56,7 +56,7 @@ namespace CashTrack.Services.Common
             DateOptions.All => (T x) => true,
             //2
             DateOptions.SpecificDate => (T x) =>
-                x.Date == request.BeginDate,
+                x.Date.Date.CompareTo(request.BeginDate) == 0,
             //3
             DateOptions.SpecificMonthAndYear => (T x) =>
                x.Date >= DateHelpers.GetMonthDatesFromDate(request.BeginDate).startDate &&

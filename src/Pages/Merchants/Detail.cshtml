@@ -216,7 +216,7 @@
     ChartType = ChartType.Bar,
     UseDefaultColor = true,
     ElementId = "expensesChart",
-    Labels = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Date.ToString("MM/yyyy")).ToArray()),
+    Labels = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Month).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Total).ToArray()),
     Title = "Expense Totals",
     Responsive = true
@@ -226,7 +226,7 @@
     ChartType = ChartType.LineMultiAxis,
     UseDefaultColor = true,
     ElementId = "statisticsChart",
-    Labels = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Date.ToString("MM/yyyy")).ToArray()),
+    Labels = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Month).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Count).ToArray()),
     Dataset2 = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Average).ToArray()),
     Dataset3 = JsonSerializer.Serialize(Model.Merchant.MonthlyExpenseStatistics.Select(x => x.Min).ToArray()),

@@ -11,10 +11,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using CashTrack.Models.Common;
-using System;
-using CashTrack.Models.SubCategoryModels;
 
 namespace CashTrack.Services.MerchantService;
+
 public interface IMerchantService
 {
     Task<MerchantResponse> GetMerchantsAsync(MerchantRequest request);
@@ -146,6 +145,7 @@ public class MerchantService : IMerchantService
                 PurchaseCategoryTotals = new Dictionary<string, decimal>(),
                 RecentExpenses = new List<ExpenseQuickView>(),
             };
+
         var subCategories = expenses.Select(x => x.Category).Distinct().ToArray();
 
         var expensesSpanMultipleYears = expenses.GroupBy(e => e.Date.Year).ToList().Count() > 1;

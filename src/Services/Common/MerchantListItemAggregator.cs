@@ -43,7 +43,7 @@ namespace CashTrack.Services.Common
             Location = Merchant != null ?
                 Merchant.IsOnline ? "Online" :
                 Merchant.City == "Various" ? "Various" :
-                string.IsNullOrEmpty(Merchant.City) && string.IsNullOrEmpty(Merchant.State) ? $"{Merchant.City}, {Merchant.State}"
+                !string.IsNullOrEmpty(Merchant.City) && !string.IsNullOrEmpty(Merchant.State) ? $"{Merchant.City}, {Merchant.State}"
             : null : null;
             return this;
         }

@@ -1,6 +1,6 @@
 ﻿using CashTrack.Data.Entities.Common;
 using System;
-
+using System.Globalization;
 
 namespace CashTrack.Services.Common
 {
@@ -39,9 +39,37 @@ namespace CashTrack.Services.Common
         public decimal Max { get; set; }
         public decimal Total { get; set; }
     }
+    public class MonthlyStatisticsAggregator
+    {
+        public decimal Max { get; set; }
+        public decimal Min { get; set; }
+        public decimal MonthlyTotal { get; set; }
+        public int Count { get; set; }
+        public decimal Average { get; set; }
+        public MonthlyStatisticsAggregator()
+        {
+            Max = decimal.MinValue;
+            Min = decimal.MaxValue;
+        }
+        public MonthlyStatisticsAggregator Accumulate(MonthlyStatistics m)
+        {
+            MonthlyTotal += m.Total;
+            Count = m.Count;
+            Max = Math.Max(Max, m.Max);
+            Min = Math.Min(Min, m.Min);
+            return this;
+        }
+        public MonthlyStatisticsAggregator Compute()
+        {
+            Average = Math.Round(MonthlyTotal / Count, 2);
+            return this;
+        }
+    }
+
     public record MonthlyStatistics
     {
-        public DateTime Date { get; set; }
+        public int MonthNumber { get; set; }
+        public string Month { get; set; }
         public int Count { get; set; }
         public decimal Average { get; set; }
         public decimal Min { get; set; }

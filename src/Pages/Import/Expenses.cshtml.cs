@@ -116,7 +116,7 @@ namespace CashTrack.Pages.Import
             TempData["SuccessMessage"] = "Successfully Removed the Expense!";
             return RedirectToPage($"../Import/Expenses", new { pageNumber = pageNumber });
         }
-        public async Task<IActionResult> OnPostSplitExpense()
+        public async Task<IActionResult> OnPostSplitExpense(string ReturnUrl)
         {
             if (SelectedExpense.SubCategoryId == 0)
             {
@@ -139,7 +139,7 @@ namespace CashTrack.Pages.Import
                 ModelState.AddModelError("", ex.Message);
                 return await PrepareAndRenderPage();
             }
-            return RedirectToPage($"../Expenses/Split", new { id = expenseId });
+            return RedirectToPage($"../Expenses/Split", new { id = expenseId, ReturnUrl = ReturnUrl });
         }
         private async Task<IActionResult> PrepareAndRenderPage()
         {
