@@ -21,8 +21,9 @@
         </div>
     </div>
     <hr />
-
+    
     <form method="get">
+        <input asp-for="@Model.ReturnUrl" type="hidden" />
         <div class="row">
             <div class="col-lg-6 col-12 order-lg-1 order-3">
                 <div class="input-group">
@@ -50,7 +51,7 @@
                     <span class="input-group-text d-none d-sm-block">Tax</span>
                     <input class="form-control text-center"
                            type="number"
-                           min="0.00" step=".0001" asp-for="@Model.Tax" />
+                           min="0.00" step=".00001" asp-for="@Model.Tax" />
                     <button class="btn btn-secondary"
                             type="submit">
                         Change
@@ -61,7 +62,9 @@
     </form>
     <div class="row mt-3">
         <form class="form-horizontal"
-              method="post" id="splitExpenseForm">
+        method="post" 
+        id="splitExpenseForm">
+                <input asp-for="@Model.ReturnUrl" type="hidden" />
             <div class="table-responsive">
                 <table class="table table-bordered table-hover">
                     <thead>

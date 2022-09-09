@@ -82,8 +82,9 @@ namespace CashTrack.Pages.Import
                 ModelState.AddModelError("", "Expense must have an assigned category");
                 return await PrepareAndRenderPage();
             }
-            if (!(await _merchantService.GetAllMerchantNames()).Any(x => x == SelectedExpense.Merchant))
+            if (!string.IsNullOrEmpty(SelectedExpense.Merchant) && !(await _merchantService.GetAllMerchantNames()).Any(x => x == SelectedExpense.Merchant))
             {
+                ModelState.AddModelError("", $"Merchant name {SelectedExpense.Merchant} doesn't exist. Try adding a new merchant and try again.");
                 return await PrepareAndRenderPage();
             }
 
@@ -115,14 +116,14 @@ namespace CashTrack.Pages.Import
             TempData["SuccessMessage"] = "Successfully Removed the Expense!";
             return RedirectToPage($"../Import/Expenses", new { pageNumber = pageNumber });
         }
-        public async Task<IActionResult> OnPostSplitExpense(int pageNumber)
+        public async Task<IActionResult> OnPostSplitExpense(string ReturnUrl)
         {
-            if (string.IsNullOrEmpty(SelectedExpense.SubCategory))
+            if (SelectedExpense.SubCategoryId == 0)
             {
-                ModelState.AddModelError("", "Expense must have an assigned category");
+                ModelState.AddModelError("", "Expense must have an assigned category before splitting");
                 return await PrepareAndRenderPage();
             }
-            if (!(await _merchantService.GetAllMerchantNames()).Any(x => x == SelectedExpense.Merchant))
+            if (!string.IsNullOrEmpty(SelectedExpense.Merchant) && !(await _merchantService.GetAllMerchantNames()).Any(x => x == SelectedExpense.Merchant))
             {
                 return await PrepareAndRenderPage();
             }
@@ -138,7 +139,7 @@ namespace CashTrack.Pages.Import
                 ModelState.AddModelError("", ex.Message);
                 return await PrepareAndRenderPage();
             }
-            return RedirectToPage($"../Expenses/Split", new { id = expenseId });
+            return RedirectToPage($"../Expenses/Split", new { id = expenseId, ReturnUrl = ReturnUrl });
         }
         private async Task<IActionResult> PrepareAndRenderPage()
         {

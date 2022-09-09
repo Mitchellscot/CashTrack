@@ -213,7 +213,7 @@
     ChartType = ChartType.Bar,
     UseDefaultColor = true,
     ElementId = "incomeChart",
-    Labels = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Date.ToString("MM/yyyy")).ToArray()),
+    Labels = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Month).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Total).ToArray()),
     Title = "Income Totals",
     Responsive = true
@@ -223,7 +223,7 @@
     ChartType = ChartType.LineMultiAxis,
     UseDefaultColor = true,
     ElementId = "statisticsChart",
-    Labels = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Date.ToString("MM/yyyy")).ToArray()),
+    Labels = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Month).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Count).ToArray()),
     Dataset2 = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Average).ToArray()),
     Dataset3 = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Min).ToArray()),

@@ -38,7 +38,7 @@ namespace CashTrack.Tests.Services
             var merchantRepo = new MerchantRepository(sharedDB);
             var subCategoryRepo = new SubCategoryRepository(sharedDB);
             _mapper = expenseMapper.CreateMapper();
-            _service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo);
+            _service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo, new TestWebHostEnvironment());
         }
         [Fact]
         public async Task Delete_An_Expense_By_Id()
@@ -338,7 +338,7 @@ namespace CashTrack.Tests.Services
                 var incomerepo = new IncomeRepository(db);
                 var merchantRepo = new MerchantRepository(db);
                 var subCategoryRepo = new SubCategoryRepository(db);
-                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo);
+                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo, new TestWebHostEnvironment());
 
                 var result = await service.RefundExpensesAsync(expenses, 86);
                 result.ShouldBeTrue();
@@ -394,7 +394,7 @@ namespace CashTrack.Tests.Services
                 var incomerepo = new IncomeRepository(db);
                 var merchantRepo = new MerchantRepository(db);
                 var subCategoryRepo = new SubCategoryRepository(db);
-                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo);
+                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo, new TestWebHostEnvironment());
                 var expectedId = (repo.GetCount(x => true).Result) + 1;
                 var result = await service.CreateExpenseAsync(expense);
 
@@ -418,7 +418,7 @@ namespace CashTrack.Tests.Services
                 var incomerepo = new IncomeRepository(db);
                 var merchantRepo = new MerchantRepository(db);
                 var subCategoryRepo = new SubCategoryRepository(db);
-                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo);
+                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo, new TestWebHostEnvironment());
                 var expectedId = (repo.GetCount(x => true).Result) + 1;
                 var result = await service.CreateExpenseFromSplitAsync(expense);
 
@@ -447,7 +447,7 @@ namespace CashTrack.Tests.Services
                 var incomerepo = new IncomeRepository(db);
                 var merchantRepo = new MerchantRepository(db);
                 var subCategoryRepo = new SubCategoryRepository(db);
-                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo);
+                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo, new TestWebHostEnvironment());
                 var expectedId = (repo.GetCount(x => true).Result) + 1;
                 var result = await service.CreateExpenseFromSplitAsync(expense);
                 result.ShouldBe(expectedId);
@@ -479,7 +479,7 @@ namespace CashTrack.Tests.Services
                 var incomerepo = new IncomeRepository(db);
                 var merchantRepo = new MerchantRepository(db);
                 var subCategoryRepo = new SubCategoryRepository(db);
-                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo);
+                var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo, new TestWebHostEnvironment());
                 var expectedId = (repo.GetCount(x => true).Result) + 1;
                 var result = await service.CreateExpenseFromSplitAsync(expense);
                 result.ShouldBe(expectedId);
@@ -575,7 +575,7 @@ namespace CashTrack.Tests.Services
             var incomerepo = new IncomeRepository(db);
             var merchantRepo = new MerchantRepository(db);
             var subCategoryRepo = new SubCategoryRepository(db);
-            var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo);
+            var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo, new TestWebHostEnvironment());
             return service;
         }
     }

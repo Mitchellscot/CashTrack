@@ -32,7 +32,7 @@ namespace CashTrack.Tests.Services
             var repo = new IncomeRepository(sharedDB);
             var sourceRepo = new IncomeSourceRepository(sharedDB);
             var categoryRepo = new IncomeCategoryRepository(sharedDB);
-            _service = new IncomeService(repo, sourceRepo, _mapper, categoryRepo);
+            _service = new IncomeService(repo, sourceRepo, _mapper, categoryRepo, new TestWebHostEnvironment());
         }
         [Fact]
         public async Task Get_Income_By_Id()
@@ -307,7 +307,7 @@ namespace CashTrack.Tests.Services
                 var repo = new IncomeRepository(db);
                 var sourceRepo = new IncomeSourceRepository(db);
                 var categoryRepo = new IncomeCategoryRepository(db);
-                var service = new IncomeService(repo, sourceRepo, _mapper, categoryRepo);
+                var service = new IncomeService(repo, sourceRepo, _mapper, categoryRepo, new TestWebHostEnvironment());
 
                 var expectedId = (repo.GetCount(x => true).Result) + 1;
                 var result = await service.CreateIncomeAsync(income);
@@ -416,7 +416,7 @@ namespace CashTrack.Tests.Services
             var repo = new IncomeRepository(db);
             var sourceRepo = new IncomeSourceRepository(db);
             var categoryRepo = new IncomeCategoryRepository(db);
-            var service = new IncomeService(repo, sourceRepo, _mapper, categoryRepo);
+            var service = new IncomeService(repo, sourceRepo, _mapper, categoryRepo, new TestWebHostEnvironment());
             return service;
         }
     }

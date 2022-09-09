@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
+using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.IncomeModels;
 using CashTrack.Repositories.IncomeCategoryRepository;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.IncomeSourceRepository;
 using CashTrack.Services.Common;
+using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -33,8 +35,9 @@ public class IncomeService : IIncomeService
     private readonly IIncomeRepository _incomeRespository;
     private readonly IIncomeSourceRepository _sourceRepository;
     private readonly IIncomeCategoryRepository _categoryRepository;
+    private readonly IWebHostEnvironment _env;
 
-    public IncomeService(IIncomeRepository incomeRepository, IIncomeSourceRepository sourceRepository, IMapper mapper, IIncomeCategoryRepository incomeCategoryRepository) => (_incomeRespository, _sourceRepository, _mapper, _categoryRepository) = (incomeRepository, sourceRepository, mapper, incomeCategoryRepository);
+    public IncomeService(IIncomeRepository incomeRepository, IIncomeSourceRepository sourceRepository, IMapper mapper, IIncomeCategoryRepository incomeCategoryRepository, IWebHostEnvironment env) => (_incomeRespository, _sourceRepository, _mapper, _categoryRepository, _env) = (incomeRepository, sourceRepository, mapper, incomeCategoryRepository, env);
 
     public async Task<bool> DeleteIncomeAsync(int id)
     {
@@ -82,6 +85,11 @@ public class IncomeService : IIncomeService
     public async Task<IncomeResponse> GetIncomeAsync(IncomeRequest request)
     {
         var predicate = DateOption<IncomeEntity, IncomeRequest>.Parse(request);
+        //sqllite DB treats dates differently...
+        if (_env.EnvironmentName == "Test" && request.DateOptions == DateOptions.SpecificDate)
+        {
+            predicate = x => x.Date == request.BeginDate;
+        }
         var income = await _incomeRespository.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _incomeRespository.GetCount(predicate);
         //not including refunds in the total amount because that's cheating...

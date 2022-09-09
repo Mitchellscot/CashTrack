@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
+using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.IncomeModels;
 using CashTrack.Models.TagModels;
@@ -9,7 +10,7 @@ using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.MerchantRepository;
 using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Services.Common;
-using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,14 +43,16 @@ public class ExpenseService : IExpenseService
     private readonly IExpenseRepository _expenseRepo;
     private readonly IMerchantRepository _merchantRepo;
     private readonly IMapper _mapper;
+    private readonly IWebHostEnvironment _env;
 
-    public ExpenseService(IExpenseRepository expenseRepository, IIncomeRepository incomeRepository, IMerchantRepository merchantRepository, IMapper mapper, ISubCategoryRepository subCategoryRepository)
+    public ExpenseService(IExpenseRepository expenseRepository, IIncomeRepository incomeRepository, IMerchantRepository merchantRepository, IMapper mapper, ISubCategoryRepository subCategoryRepository, IWebHostEnvironment env)
     {
         _subCategoryRepo = subCategoryRepository;
         _incomeRepo = incomeRepository;
         _expenseRepo = expenseRepository;
         _merchantRepo = merchantRepository;
         _mapper = mapper;
+        _env = env;
     }
     public async Task<Expense> GetExpenseByIdAsync(int id)
     {
@@ -64,6 +67,11 @@ public class ExpenseService : IExpenseService
     public async Task<ExpenseResponse> GetExpensesAsync(ExpenseRequest request)
     {
         var predicate = DateOption<ExpenseEntity, ExpenseRequest>.Parse(request);
+        //sqllite DB treats dates differently...
+        if (_env.EnvironmentName == "Test" && request.DateOptions == DateOptions.SpecificDate)
+        {
+            predicate = x => x.Date == request.BeginDate;
+        }
         var expenses = await _expenseRepo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _expenseRepo.GetCount(predicate);
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);
@@ -193,7 +201,13 @@ public class ExpenseService : IExpenseService
     }
     public async Task<Expense[]> GetExpensesByDateWithoutPaginationAsync(DateTime request)
     {
-        var expenses = await _expenseRepo.Find(x => x.Date == request);
+        Expression<Func<ExpenseEntity, bool>> predicate = x => x.Date.Date.CompareTo(request.Date) == 0;
+        if (_env.EnvironmentName == "Test")
+        {
+            //sqllite DB treats dates differently...
+            predicate = x => x.Date == request.Date;
+        }
+        var expenses = await _expenseRepo.Find(predicate);
         return _mapper.Map<Expense[]>(expenses);
     }
     public async Task<bool> RefundExpensesAsync(List<ExpenseRefund> refunds, int incomeId)

@@ -246,7 +246,7 @@ namespace CashTrack.Tests.Services
                 Reversed = true
             };
             var result = await _service.GetMerchantsAsync(request);
-            result.ListItems.FirstOrDefault()!.Location.ShouldBe("Online");
+            result.ListItems.FirstOrDefault()!.Location.ShouldBe("Sebastopol, CA");
         }
         [Fact]
         public async Task Get_Merchant_List_Items_By_Purchases()
