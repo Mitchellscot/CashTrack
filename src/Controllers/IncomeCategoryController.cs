@@ -28,5 +28,18 @@ namespace CashTrack.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+        [HttpGet("autocomplete")]
+        public async Task<ActionResult<string[]>> GetMatchingIncomeCategoryNames([FromQuery] string categoryName)
+        {
+            try
+            {
+                var response = await _service.GetMatchingIncomeCategoryNamesAsync(categoryName);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }

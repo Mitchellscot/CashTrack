@@ -5,18 +5,10 @@ namespace CashTrack.Models.IncomeCategoryModels;
 
 public class IncomeCategoryRequest : PaginationRequest
 {
-    public bool Reversed { get; set; }
-    public IncomeCategoryOrderBy Order { get; set; }
 }
 public class IncomeCategoryResponse : PaginationResponse<IncomeCategoryListItem>
 {
     public IncomeCategoryResponse(int pageNumber, int pageSize, int totalCount, IncomeCategoryListItem[] listItems) : base(pageNumber, pageSize, totalCount, listItems) { }
-}
-public class IncomeCategory : Category
-{
-    new public int? Id { get; set; }
-    public string Notes { get; set; }
-    public bool InUse { get; set; } = true;
 }
 public class IncomeCategoryListItem : Category
 {
@@ -33,8 +25,11 @@ public class IncomeCategoryDetail : Category
     //Get all expenses by income category and compare with income sources. How many gifts came from my parents, etc.
 }
 
-public class AddEditIncomeCategoryModal : IncomeCategory
+public class AddEditIncomeCategoryModal : Category
 {
+    new public int? Id { get; set; }
+    public string Notes { get; set; }
+    public bool InUse { get; set; } = true;
     public bool IsEdit { get; set; }
     public string Returnurl { get; set; }
 }

@@ -7,19 +7,22 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using CashTrack.Repositories.IncomeRepository;
+using CashTrack.Services.Common;
+using System.Security.Cryptography.X509Certificates;
 
 namespace CashTrack.Services.IncomeCategoryService;
 
 public interface IIncomeCategoryService
 {
     Task<IncomeCategoryResponse> GetIncomeCategoriesAsync(IncomeCategoryRequest request);
-    Task<int> CreateIncomeCategoryAsync(IncomeCategory request);
-    Task<int> UpdateIncomeCategoryAsync(IncomeCategory request);
+    Task<int> CreateIncomeCategoryAsync(AddEditIncomeCategoryModal request);
+    Task<int> UpdateIncomeCategoryAsync(AddEditIncomeCategoryModal request);
     Task<bool> DeleteIncomeCategoryAsync(int id);
     Task<IncomeCategoryDropdownSelection[]> GetIncomeCategoryDropdownListAsync();
     Task<string[]> GetIncomeCategoryNames();
     Task<bool> CheckIfIncomeCategoryIsRefund(int categoryId);
     Task<IncomeCategoryEntity> GetIncomeCategoryByNameAsync(string name);
+    Task<string[]> GetMatchingIncomeCategoryNamesAsync(string match);
 }
 public class IncomeCategoryService : IIncomeCategoryService
 {
@@ -28,7 +31,7 @@ public class IncomeCategoryService : IIncomeCategoryService
 
     public IncomeCategoryService(IIncomeCategoryRepository repo, IIncomeRepository incomeRepo) => (_repo, _incomeRepo) = (repo, incomeRepo);
 
-    public async Task<int> CreateIncomeCategoryAsync(IncomeCategory request)
+    public async Task<int> CreateIncomeCategoryAsync(AddEditIncomeCategoryModal request)
     {
         var categories = await _repo.Find(x => true);
         if (categories.Any(x => x.Name == request.Name))
@@ -66,23 +69,41 @@ public class IncomeCategoryService : IIncomeCategoryService
 
     public async Task<IncomeCategoryResponse> GetIncomeCategoriesAsync(IncomeCategoryRequest request)
     {
-        Expression<Func<IncomeCategoryEntity, bool>> returnAll = (IncomeCategoryEntity x) => true;
-        Expression<Func<IncomeCategoryEntity, bool>> searchCategories = (IncomeCategoryEntity x) => x.Name.ToLower().Contains(request.Query.ToLower());
-
-        var predicate = request.Query == null ? returnAll : searchCategories;
-
-        var categories = await _repo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
-        var count = await _repo.GetCount(predicate);
-
-        var categoryListItems = categories.Select(x => new IncomeCategoryListItem()
+        var categories = await _repo.FindWithPaginationIncludeIncome(x => true, request.PageNumber, request.PageSize);
+        var income = categories.SelectMany(x => x.Income).ToArray();
+        var categoryListItems = income.GroupBy(i => i.CategoryId).Select(g =>
         {
-            Id = x.Id,
-            Name = x.Name
-        }).ToArray();
+            var results = g.Aggregate(new IncomeCategoryListItemAggregator(g.Key.Value, categories), (acc, i) => acc.Accumulate(i), acc => acc.Compute());
+            return new IncomeCategoryListItem()
+            {
+                Id = g.Key.Value,
+                Name = results.Category.Name,
+                Payments = results.Payments,
+                Amount = results.Amount,
+                LastPayment = results.LastPayment,
+                InUse = results.Category.InUse
+            };
 
-        var response = new IncomeCategoryResponse(request.PageNumber, request.PageSize, count, categoryListItems);
+        }).ToList();
+        //adds in all the categories with no assigned income
+        categoryListItems.AddRange(categories
+            .Where(x => x.Income.Count == 0 && x.Name != "Uncategorized")
+            .Select(x => new IncomeCategoryListItem()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Amount = 0,
+                Payments = 0,
+                LastPayment = DateTime.MinValue,
+                InUse = x.InUse
+            }));
 
-        return response;
+        var count = await _repo.GetCount(x => true);
+
+        return new IncomeCategoryResponse(request.PageNumber,
+            request.PageSize,
+            count,
+            categoryListItems.OrderBy(x => x.Name).ToArray());
     }
 
     public async Task<string[]> GetIncomeCategoryNames()
@@ -99,7 +120,7 @@ public class IncomeCategoryService : IIncomeCategoryService
         }).ToArray();
     }
 
-    public async Task<int> UpdateIncomeCategoryAsync(IncomeCategory request)
+    public async Task<int> UpdateIncomeCategoryAsync(AddEditIncomeCategoryModal request)
     {
         var categories = await _repo.Find(x => x.Name == request.Name);
         if (categories.Any(x => x.Id != request.Id))
@@ -128,6 +149,11 @@ public class IncomeCategoryService : IIncomeCategoryService
         if (category == null)
             throw new CategoryNotFoundException(name);
         return category;
+    }
+
+    public async Task<string[]> GetMatchingIncomeCategoryNamesAsync(string match)
+    {
+        return (await _repo.Find(x => x.Name.StartsWith(match))).Select(x => x.Name).Take(10).ToArray();
     }
 }
 

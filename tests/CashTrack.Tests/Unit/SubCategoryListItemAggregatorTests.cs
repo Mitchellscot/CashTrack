@@ -1,14 +1,10 @@
 ﻿using CashTrack.Data.Entities;
-using CashTrack.Models.ExpenseModels;
-using CashTrack.Models.SubCategoryModels;
-using CashTrack.Pages.Expenses.Categories;
 using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Services.Common;
 using CashTrack.Tests.Services.Common;
 using Shouldly;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace CashTrack.Tests.Unit

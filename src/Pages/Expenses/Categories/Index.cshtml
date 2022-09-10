@@ -158,31 +158,62 @@
                                  @category.MainCategoryName
                              </td>
                              <td>
-                                 <a asp-page="/Expenses/Index" 
-                                 asp-route-Query="8" 
-                                 asp-route-Q=@category.Id 
-                                 asp-route-pageNumber="1"
-                                 class="text-black no-hyperlink-underline">
-                                 @category.Purchases
-                             </a>
+                                    @{
+                                        var displayPurchases = category.Purchases != 0;
+                                        if (displayPurchases)
+                                        {
+                                                <a asp-page="/Expenses/Index" 
+                                            asp-route-Query="8" 
+                                            asp-route-Q=@category.Id
+                                            asp-route-pageNumber="1"
+                                            class="text-black no-hyperlink-underline">
+                                                    @category.Purchases
+                                                </a>
+                                        }
+                                        else 
+                                        { 
+                                            <span>0</span>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @{
+                                        var displayAmount = category.Amount != 0;
+                                        if (displayAmount)
+                                        {
+                                            <a asp-page="/Expenses/Index" 
+                                            asp-route-Query="8" 
+                                            asp-route-Q=@category.Id
+                                            asp-route-pageNumber="1"
+                                            class="text-black no-hyperlink-underline">
+                                                @String.Format("{0:n}", category.Amount)
+                                            </a>
+                                        }
+                                        else
+                                        { 
+                                            <span>0</span>
+                                        }
+                                    }
                              </td>
                              <td>
-                                 <a asp-page="/Expenses/Index" 
-                                 asp-route-Query="8" 
-                                 asp-route-Q=@category.Id 
-                                 asp-route-pageNumber="1"
-                                 class="text-black no-hyperlink-underline">
-                                 @String.Format("{0:n}", category.Amount)
-                                 </a>
-                             </td>
-                             <td>
-                                 <a asp-page="/Expenses/Index" 
-                                 asp-route-Query="0" 
-                                 asp-route-Q=@category.LastPurchase.Date.ToString("yyyy-MM-dd") 
-                                 asp-route-pageNumber="1"
-                                 class="text-black no-hyperlink-underline">
-                                 @category.LastPurchase.Date.ToShortDateString()
-                                 </a>
+                                    @{
+                                        var displayDate = category.LastPurchase != DateTime.MinValue;
+                                        if (displayDate)
+                                        {
+                                                    <a asp-page="/Expenses/Index" 
+                                            asp-route-Query="0" 
+                                            asp-route-Q=@category.LastPurchase.Date.ToString("yyyy-MM-dd") 
+                                            asp-route-pageNumber="1"
+                                            class="text-black no-hyperlink-underline">
+                                                        @category.LastPurchase.Date.ToShortDateString()
+                                                    </a>
+                                        }
+                                        else 
+                                        {
+                                                    <span>Never</span>
+                                        }
+                                    }
+
                              </td>
                              <td>
                                  @if(category.InUse)

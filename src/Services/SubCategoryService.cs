@@ -9,6 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using CashTrack.Services.Common;
 using CashTrack.Models.Common;
+using Microsoft.AspNetCore.Rewrite;
+using System.Xml.Linq;
 
 namespace CashTrack.Services.SubCategoryService;
 
@@ -91,9 +93,9 @@ public class SubCategoryService : ISubCategoryService
 
     private async Task<SubCategoryListItem[]> GetSubCategoryListItems()
     {
-        var expenses = await _expenseRepo.Find(x => true);
-        var categories = await _subCategoryRepo.Find(x => true);
-        return expenses.GroupBy(e => e.CategoryId).Select(g =>
+        var categories = await _subCategoryRepo.FindWithExpenses(x => true);
+        var expenses = categories.SelectMany(x => x.Expenses);
+        var categoryListItems = expenses.GroupBy(e => e.CategoryId).Select(g =>
         {
             var results = g.Aggregate(new SubCategoryListItemAggregator(g.Key.Value, categories), (acc, e) => acc.Accumulate(e), acc => acc.Compute());
             return new SubCategoryListItem()
@@ -107,14 +109,29 @@ public class SubCategoryService : ISubCategoryService
                 InUse = results.Category.InUse
 
             };
-        }).ToArray();
+        }).ToList();
+        var categoriesWithoutExpenses = categories.Where(x => x.Expenses.Count == 0).ToList();
+
+        categoryListItems.AddRange(categoriesWithoutExpenses.Where(x => x.Name != "Uncategorized").Select(x => new SubCategoryListItem()
+        {
+            Id = x.Id,
+            Name = x.Name,
+            MainCategoryName = x.MainCategory.Name,
+            Purchases = 0,
+            LastPurchase = DateTime.MinValue,
+            Amount = 0,
+            InUse = x.InUse
+        }
+        ));
+
+        return categoryListItems.ToArray();
     }
     private async Task<SubCategoryListItem[]> GetSubCategoriesFastPageLoad(SubCategoryRequest request)
     {
         var categories = await _subCategoryRepo.FindWithPaginationIncludeExpenses(x => true, request.PageNumber, request.PageSize);
 
         var expenses = categories.SelectMany(x => x.Expenses).ToArray();
-        return expenses.GroupBy(e => e.CategoryId).Select(g =>
+        var categoryListItems = expenses.GroupBy(e => e.CategoryId).Select(g =>
         {
             var results = g.Aggregate(new SubCategoryListItemAggregator(g.Key.Value, categories), (acc, e) => acc.Accumulate(e), acc => acc.Compute());
             return new SubCategoryListItem()
@@ -128,7 +145,20 @@ public class SubCategoryService : ISubCategoryService
                 InUse = results.Category.InUse
 
             };
-        }).ToArray();
+        }).ToList();
+        categoryListItems.AddRange(categories
+            .Where(x => x.Expenses.Count == 0 && x.Name != "Uncategorized")
+            .Select(x => new SubCategoryListItem()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                MainCategoryName = x.MainCategory.Name,
+                Purchases = 0,
+                LastPurchase = DateTime.MinValue,
+                Amount = 0,
+                InUse = x.InUse
+            }));
+        return categoryListItems.OrderBy(x => x.Name).ToArray();
     }
     public async Task<int> CreateSubCategoryAsync(SubCategory request)
     {
