@@ -12,6 +12,7 @@ namespace CashTrack.Repositories.IncomeCategoryRepository;
 
 public interface IIncomeCategoryRepository : IRepository<IncomeCategoryEntity>
 {
+    Task<IncomeCategoryEntity[]> FindWithPaginationIncludeIncome(Expression<Func<IncomeCategoryEntity, bool>> predicate, int pageNumber, int pageSize);
 }
 
 public class IncomeCategoryRepository : IIncomeCategoryRepository
@@ -85,6 +86,25 @@ public class IncomeCategoryRepository : IIncomeCategoryRepository
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .OrderBy(x => x.Name)
+                .ToArrayAsync();
+            return categories;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<IncomeCategoryEntity[]> FindWithPaginationIncludeIncome(Expression<Func<IncomeCategoryEntity, bool>> predicate, int pageNumber, int pageSize)
+    {
+        try
+        {
+            var categories = await _ctx.IncomeCategories
+                .Where(predicate)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .OrderBy(x => x.Name)
+                .Include(x => x.Income)
                 .ToArrayAsync();
             return categories;
         }

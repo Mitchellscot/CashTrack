@@ -24,13 +24,39 @@ namespace CashTrack.Tests.Services
             var incomeRepo = new IncomeRepository(db);
             _service = new IncomeCategoryService(repo, incomeRepo);
         }
-        //[Fact(Skip = "Needs refactoring after UI setup")]
-        //public async Task Get_Income_Categories()
-        //{
-        //    var request = new IncomeCategoryRequest();
-        //    var result = await _service.GetIncomeCategoriesAsync(request);
-        //    result.ShouldNotBeNull();
-        //}
+        [Fact]
+        public async Task Get_Income_Categories()
+        {
+            var request = new IncomeCategoryRequest();
+            var result = await _service.GetIncomeCategoriesAsync(request);
+            result.ShouldNotBeNull();
+            result.TotalCount.ShouldBe(11);
+            result.PageNumber.ShouldBe(1);
+            result.PageSize.ShouldBe(20);
+            var items = result.ListItems.ToArray();
+            foreach (var item in items)
+            {
+                item.Name.ShouldNotBeNullOrEmpty();
+            }
+        }
+        [Theory]
+        [InlineData("Paycheck")]
+        [InlineData("Tip")]
+        [InlineData("Gift")]
+        public async Task Get_Category_Matches(string category)
+        {
+            var result = await _service.GetMatchingIncomeCategoryNamesAsync(category);
+            result[0].ShouldBe(category);
+        }
+        [Theory]
+        [InlineData("Paycheck")]
+        [InlineData("Tip")]
+        [InlineData("Gift")]
+        public async Task Get_Categories_By_name(string category)
+        {
+            var result = await _service.GetIncomeCategoryByNameAsync(category);
+            result.Name.ShouldBe(category);
+        }
         [Fact]
         public async Task Get_Categories_For_Dropdown_List()
         {
@@ -57,7 +83,7 @@ namespace CashTrack.Tests.Services
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
                 var service = GetService(db);
-                var newCategory = new AddEditIncomeCategory()
+                var newCategory = new AddEditIncomeCategoryModal()
                 {
                     Name = "new Category",
                     Notes = "New!",
@@ -71,7 +97,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Throws_On_Duplicate_Name_Creating()
         {
-            var newCategory = new AddEditIncomeCategory()
+            var newCategory = new AddEditIncomeCategoryModal()
             {
                 Name = "Paycheck",
                 Notes = "New!",
@@ -116,7 +142,7 @@ namespace CashTrack.Tests.Services
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
                 var service = GetService(db);
-                var request = new AddEditIncomeCategory()
+                var request = new AddEditIncomeCategoryModal()
                 {
                     Id = 1,
                     Name = "Updated Name",
@@ -132,7 +158,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Throws_On_Duplicate_Name_Updating()
         {
-            var request = new AddEditIncomeCategory()
+            var request = new AddEditIncomeCategoryModal()
             {
                 Id = 1,
                 Name = "Paycheck",
@@ -144,7 +170,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Throws_On_Invalid_Id_Updating()
         {
-            var request = new AddEditIncomeCategory()
+            var request = new AddEditIncomeCategoryModal()
             {
                 Id = int.MaxValue,
                 Name = "Paycheck",

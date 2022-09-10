@@ -137,6 +137,20 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
         PrintRequestAndResponse("/api/subcategory/autocomplete?categoryName=", result);
     }
     [Theory]
+    [InlineData("Paycheck")]
+    [InlineData("Tip")]
+    [InlineData("Gift")]
+    public async Task Incomecategory_Controller_Returns_Matching_Categories(string name)
+    {
+        var response = await _client.GetAsync($"/api/incomecategory/autocomplete?categoryName={name}");
+
+        var result = await response.Content.ReadAsStringAsync();
+        var responseObject = JsonConvert.DeserializeObject<string[]>(result);
+        responseObject[0].ShouldBe(name);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        PrintRequestAndResponse("/api/incomecategory/autocomplete?categoryName=", result);
+    }
+    [Theory]
     [InlineData("Costco")]
     [InlineData("In N Out")]
     [InlineData("Target")]

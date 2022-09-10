@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CashTrack.Data.Entities
@@ -11,7 +12,8 @@ namespace CashTrack.Data.Entities
         [Required]
         public string Name { get; set; }
         public string Notes { get; set; }
-        public bool InUse { get; set; }
+        public bool InUse { get; set; } = true;
+        public ICollection<IncomeEntity> Income { get; set; }
 
     }
 }

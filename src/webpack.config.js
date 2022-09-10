@@ -14,6 +14,7 @@ const config = {
         importIncome: './Scripts/Import/importIncome.ts',
         rules: './Scripts/Import/rules.ts',
         income: './Scripts/Income/income.ts',
+        incomeCategories: './Scripts/IncomeCategories/incomeCategories',
         refund: './Scripts/Income/refund.ts',
         merchantDetail: './Scripts/Merchants/merchantDetail.ts',
         merchants: './Scripts/Merchants/merchants.ts',
