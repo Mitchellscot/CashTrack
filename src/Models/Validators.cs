@@ -133,7 +133,7 @@ public class AuthenticationValidator : AbstractValidator<AuthenticationModels.Re
 //    }
 //}
 ///* INCOME CATEGORY */
-//public class AddEditIncomeCategoryValidator : AbstractValidator<AddEditIncomeCategory>
+//public class AddEditIncomeCategoryValidator : AbstractValidator<IncomeCategory>
 //{
 //    public AddEditIncomeCategoryValidator()
 //    {

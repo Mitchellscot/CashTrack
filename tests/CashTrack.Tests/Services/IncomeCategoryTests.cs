@@ -31,6 +31,15 @@ namespace CashTrack.Tests.Services
         //    var result = await _service.GetIncomeCategoriesAsync(request);
         //    result.ShouldNotBeNull();
         //}
+        [Theory]
+        [InlineData("Paycheck")]
+        [InlineData("Tip")]
+        [InlineData("Gift")]
+        public async Task Get_Categories_By_name(string category)
+        {
+            var result = await _service.GetIncomeCategoryByNameAsync(category);
+            result.Name.ShouldBe(category);
+        }
         [Fact]
         public async Task Get_Categories_For_Dropdown_List()
         {
@@ -57,7 +66,7 @@ namespace CashTrack.Tests.Services
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
                 var service = GetService(db);
-                var newCategory = new AddEditIncomeCategory()
+                var newCategory = new IncomeCategory()
                 {
                     Name = "new Category",
                     Notes = "New!",
@@ -71,7 +80,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Throws_On_Duplicate_Name_Creating()
         {
-            var newCategory = new AddEditIncomeCategory()
+            var newCategory = new IncomeCategory()
             {
                 Name = "Paycheck",
                 Notes = "New!",
@@ -116,7 +125,7 @@ namespace CashTrack.Tests.Services
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
                 var service = GetService(db);
-                var request = new AddEditIncomeCategory()
+                var request = new IncomeCategory()
                 {
                     Id = 1,
                     Name = "Updated Name",
@@ -132,7 +141,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Throws_On_Duplicate_Name_Updating()
         {
-            var request = new AddEditIncomeCategory()
+            var request = new IncomeCategory()
             {
                 Id = 1,
                 Name = "Paycheck",
@@ -144,7 +153,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Throws_On_Invalid_Id_Updating()
         {
-            var request = new AddEditIncomeCategory()
+            var request = new IncomeCategory()
             {
                 Id = int.MaxValue,
                 Name = "Paycheck",

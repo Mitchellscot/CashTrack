@@ -13,12 +13,13 @@ namespace CashTrack.Services.IncomeCategoryService;
 public interface IIncomeCategoryService
 {
     Task<IncomeCategoryResponse> GetIncomeCategoriesAsync(IncomeCategoryRequest request);
-    Task<int> CreateIncomeCategoryAsync(AddEditIncomeCategory request);
-    Task<int> UpdateIncomeCategoryAsync(AddEditIncomeCategory request);
+    Task<int> CreateIncomeCategoryAsync(IncomeCategory request);
+    Task<int> UpdateIncomeCategoryAsync(IncomeCategory request);
     Task<bool> DeleteIncomeCategoryAsync(int id);
     Task<IncomeCategoryDropdownSelection[]> GetIncomeCategoryDropdownListAsync();
     Task<string[]> GetIncomeCategoryNames();
     Task<bool> CheckIfIncomeCategoryIsRefund(int categoryId);
+    Task<IncomeCategoryEntity> GetIncomeCategoryByNameAsync(string name);
 }
 public class IncomeCategoryService : IIncomeCategoryService
 {
@@ -27,7 +28,7 @@ public class IncomeCategoryService : IIncomeCategoryService
 
     public IncomeCategoryService(IIncomeCategoryRepository repo, IIncomeRepository incomeRepo) => (_repo, _incomeRepo) = (repo, incomeRepo);
 
-    public async Task<int> CreateIncomeCategoryAsync(AddEditIncomeCategory request)
+    public async Task<int> CreateIncomeCategoryAsync(IncomeCategory request)
     {
         var categories = await _repo.Find(x => true);
         if (categories.Any(x => x.Name == request.Name))
@@ -98,7 +99,7 @@ public class IncomeCategoryService : IIncomeCategoryService
         }).ToArray();
     }
 
-    public async Task<int> UpdateIncomeCategoryAsync(AddEditIncomeCategory request)
+    public async Task<int> UpdateIncomeCategoryAsync(IncomeCategory request)
     {
         var categories = await _repo.Find(x => x.Name == request.Name);
         if (categories.Any(x => x.Id != request.Id))
@@ -119,6 +120,14 @@ public class IncomeCategoryService : IIncomeCategoryService
     {
         var refundCategoryId = (await _repo.Find(x => x.Name == "Refund")).FirstOrDefault().Id;
         return refundCategoryId == categoryId;
+    }
+
+    public async Task<IncomeCategoryEntity> GetIncomeCategoryByNameAsync(string name)
+    {
+        var category = (await _repo.Find(x => x.Name == name)).FirstOrDefault();
+        if (category == null)
+            throw new CategoryNotFoundException(name);
+        return category;
     }
 }
 
