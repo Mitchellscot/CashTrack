@@ -3,9 +3,9 @@
     public enum IncomeCategoryOrderBy
     {
         Name,
-        Purchases,
+        Payments,
         Amount,
-        LastPurchase,
+        LastPayment,
         InUse
     }
 }

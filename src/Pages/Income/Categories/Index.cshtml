@@ -1,4 +1,224 @@
 ﻿@page
+@using CashTrack.Models.Common
+@using CashTrack.Models.IncomeCategoryModels
+@using CashTrack.Pages.Shared
 @model CashTrack.Pages.Income.Categories.IndexModel
 @{
+}
+<div class="container-fluid">
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+
+    <div class="row mb-1">
+        <div class="row mb-1">
+            <div class="col-xs-9 order-2 order-md-1 col-md-6 col-xxl-4">
+                <form method="get">
+                    <div class="input-group">
+                        <div class="input-group-prepend d-none d-sm-block">
+                            <div class="input-group-text">Search</div>
+                        </div>
+                        <input id="QueryInput" 
+                            data-val="true" 
+                            asp-for="@Model.SearchTerm" 
+                            type="text" 
+                            class="form-control income-category-autosuggest-js">
+                        <button 
+                            class="btn btn-secondary rounded-end" 
+                            type="submit" asp-route-pageNumber="1">
+                            <i class="bi bi-search text-white mx-3 icon-size-md"></i>
+                        </button>
+                        <input 
+                            type="hidden" 
+                            asp-for="@Model.PageNumber" value="1" />
+                    </div>
+                </form>
+            </div>
+            <div class="col-xs-3 order-1 order-md-2 col-md-6 mb-1 mb-md-0 col-xxl-8">
+                <button class="btn btn-primary float-end" id="addIncomeCategoryButton" data-bs-toggle="modal" data-bs-target="#addIncomeCategoryModal">Add Category</button>
+                <div class="modal fade" id="addIncomeCategoryModal">
+                    @await Html.PartialAsync("_AddEditIncomeCategoryModal", 
+                    new AddEditIncomeCategoryModal() { 
+                        Returnurl = "~/Income/Categories/Index", 
+                        InUse = true, 
+                        IsEdit = false, 
+                    })
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (Model.IncomeCategoryResponse != null && Model.IncomeCategoryResponse.ListItems.Count() > 0)
+    {
+        <div class="row mt-2">
+            <div class="table-responsive table-sm">
+                <table class="table table-bordered table-sm table-hover mb-0">
+                    <thead>
+                        <tr class="text-center table-primary Income-category-table-header-row">
+                            <th>
+                                Name
+                                @{
+                                    var currentFilter1 = Model.Query == 0 && Model.Q2 == true ? "text-success" : "text-white";
+                                }
+                                        <a asp-page="./Index" asp-route-Query="0" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                            <i class="bi bi-arrow-up icon-size @currentFilter1"></i>
+                                        </a>
+                                @{
+                                    var currentFilter2 = Model.Query == 0 && Model.Q2 == false ? "text-success" : "text-white";
+                                }
+                                        <a asp-page="./Index" asp-route-Query="0" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                            <i class="bi bi-arrow-down icon-size @currentFilter2"></i>
+                                        </a>
+                                </th>
+                                <th>
+                                Payments
+                                @{
+                                    var currentFilter5 = Model.Query == IncomeCategoryOrderBy.Payments && Model.Q2 == true ? "text-success" : "text-white";
+                                }
+                                        <a asp-page="./Index" asp-route-Query="2" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                            <i class="bi bi-arrow-up icon-size @currentFilter5"></i>
+                                        </a>
+                                @{
+                                    var currentFilter6 = Model.Query == IncomeCategoryOrderBy.Payments && Model.Q2 == false ? "text-success" : "text-white";
+                                }
+                                        <a asp-page="./Index" asp-route-Query="2" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                            <i class="bi bi-arrow-down icon-size @currentFilter6"></i>
+                                        </a>
+                                </th>
+                                <th>
+                                Amount
+                                @{
+                                    var currentFilter7 = Model.Query == IncomeCategoryOrderBy.Amount && Model.Q2 == true ? "text-success" : "text-white";
+                                }
+                                        <a asp-page="./Index" asp-route-Query="3" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                            <i class="bi bi-arrow-up icon-size @currentFilter7"></i>
+                                        </a>
+                                @{
+                                    var currentFilter8 = Model.Query == IncomeCategoryOrderBy.Amount && Model.Q2 == false ? "text-success" : "text-white";
+                                }
+                                        <a asp-page="./Index" asp-route-Query="3" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                            <i class="bi bi-arrow-down icon-size @currentFilter8"></i>
+                                        </a>
+                                </th>
+                                <th>
+                                Last Payment
+                                @{
+                                    var currentFilter9 = Model.Query == IncomeCategoryOrderBy.LastPayment && Model.Q2 == true ? "text-success" : "text-white";
+                                }
+                                        <a asp-page="./Index" asp-route-Query="4" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                            <i class="bi bi-arrow-up icon-size @currentFilter9"></i>
+                                        </a>
+                                @{
+                                    var currentFilter10 = Model.Query == IncomeCategoryOrderBy.LastPayment && Model.Q2 == false ? "text-success" : "text-white";
+                                }
+                                        <a asp-page="./Index" asp-route-Query="4" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                            <i class="bi bi-arrow-down icon-size @currentFilter10"></i>
+                                        </a>
+                                </th>
+                                <th>
+                                In Use
+                                @{
+                                    var currentFilter11 = Model.Query == IncomeCategoryOrderBy.InUse && Model.Q2 == true ? "text-success" : "text-white";
+                                }
+                                        <a asp-page="./Index" asp-route-Query="5" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                            <i class="bi bi-arrow-up icon-size @currentFilter11"></i>
+                                        </a>
+                                @{
+                                    var currentFilter12 = Model.Query == IncomeCategoryOrderBy.InUse && Model.Q2 == false ? "text-success" : "text-white";
+                                }
+                                        <a asp-page="./Index" asp-route-Query="5" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                            <i class="bi bi-arrow-down icon-size @currentFilter12"></i>
+                                        </a>
+                                </th>
+                                <th>
+                                Details
+                                </th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         @foreach (var category in Model.IncomeCategoryResponse.ListItems)
+                        {
+                         <tr class="text-center">
+                             <td>
+                                 <a asp-page="./Detail" asp-route-id="@category.Id" class="text-black no-hyperlink-underline">@category.Name
+                                 </a>
+                             </td>
+                             <td>
+                                 <a asp-page="~/Income/Index" 
+                                 asp-route-Query="7" 
+                                 asp-route-Q=@category.Id 
+                                 asp-route-pageNumber="1"
+                                 class="text-black no-hyperlink-underline">
+                                 @category.Payments
+                             </a>
+                             </td>
+                             <td>
+                                 <a asp-page="~/Income/Index" 
+                                 asp-route-Query="7" 
+                                 asp-route-Q=@category.Id 
+                                 asp-route-pageNumber="1"
+                                 class="text-black no-hyperlink-underline">
+                                 @String.Format("{0:n}", category.Amount)
+                                 </a>
+                             </td>
+                             <td>
+                                 <a asp-page="~/Income/Index" 
+                                 asp-route-Query="0" 
+                                 asp-route-Q=@category.LastPayment.Date.ToString("yyyy-MM-dd") 
+                                 asp-route-pageNumber="1"
+                                 class="text-black no-hyperlink-underline">
+                                 @category.LastPayment.Date.ToShortDateString()
+                                 </a>
+                             </td>
+                             <td>
+                                 @if(category.InUse)
+                                 {
+                                     <span>Yes</span>    
+                                 }
+                                 else
+                                 {
+                                     <span>No</span>
+                                 }
+                             </td>
+                             <td>
+                                 <a asp-page="./Detail" asp-route-id="@category.Id" class="text-primary">
+                                     <i class="bi bi-zoom-in detail-zoom"></i>
+                                     </a>
+                             </td>
+                         </tr>
+                        }
+                    </tbody>
+                 </table>
+                 <div class="row mt-2">
+                     <div class="col-sm-6 col-lg-2 col-xl-2 m-auto">
+                         @if (@Model.IncomeCategoryResponse.TotalCount > 0)
+                         {
+                             var currentCount = Model.IncomeCategoryResponse.PageNumber * @Model.IncomeCategoryResponse.PageSize;
+                             <span class="text-muted" id="totalCount">@(Math.Min(currentCount, Model.IncomeCategoryResponse.TotalCount)) of @Model.IncomeCategoryResponse.TotalCount</span>
+                        }
+                            </div>
+                            <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
+                            </div>
+                            <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
+                    @await Html.PartialAsync("_PaginationPartial",
+                    new _PaginationPartialModel {
+                    PathLink = "/Income/Categories/Index",
+                    IsExpensePage = false,
+                    PageNumber = Model.IncomeCategoryResponse.PageNumber,
+                    TotalPages = Model.IncomeCategoryResponse.TotalPages,
+                    Query = (int)Model.Query,
+                    q2 = Model.Q2.ToString()
+                    })
+                    </div>
+                    </div>
+             </div>
+         </div>
+
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/IncomeCategories.js"></script>
 }
