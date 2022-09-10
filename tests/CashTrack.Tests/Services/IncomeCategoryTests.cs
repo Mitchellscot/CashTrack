@@ -37,9 +37,6 @@ namespace CashTrack.Tests.Services
             foreach (var item in items)
             {
                 item.Name.ShouldNotBeNullOrEmpty();
-                item.Amount.ShouldBeGreaterThan(0);
-                item.LastPayment.ShouldBeGreaterThan(new DateTime(2011, 12, 31));
-                item.Payments.ShouldBeGreaterThan(0);
             }
         }
         [Theory]
