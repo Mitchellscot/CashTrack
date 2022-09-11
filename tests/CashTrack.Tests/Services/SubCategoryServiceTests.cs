@@ -39,6 +39,12 @@ namespace CashTrack.Tests.Services
             await Task.Run(() => Should.Throw<NotImplementedException>(async () => await _service.GetSubCategoryDetailsAsync(1)));
         }
         [Fact]
+        public async Task Get_All_Category_Names()
+        {
+            var result = await _service.GetAllSubCategoryNames();
+            result.Length.ShouldBe(38);
+        }
+        [Fact]
         public async Task Get_All_Categories_For_Dropdown()
         {
             var result = await _service.GetSubCategoryDropdownListAsync();

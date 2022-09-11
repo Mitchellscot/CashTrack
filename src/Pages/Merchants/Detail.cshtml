@@ -47,7 +47,6 @@
                         Cancel
                     </button>
                     <form method="post">
-                        @*This might not work, need to test this. If it doesn't you need to create a new page property of MerchantId instead of just using the curent id*@
                         <button name="id" value="@Model.Merchant.Id" type="submit" class="btn btn-danger" asp-page-handler="Delete">DELETE</button>
                     </form>
                 </div>

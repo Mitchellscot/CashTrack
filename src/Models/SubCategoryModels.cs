@@ -50,6 +50,21 @@ public class SubCategoryDetail : Category
     //might have more ideas when I get the app up and running
     //recent expenses in a give category with link to view all expenses by given category
 
+    //        Id = merchant.Id,
+    //        Name = merchant.Name,
+    //        SuggestOnLookup = merchant.SuggestOnLookup,
+    //        City = merchant.City,
+    //        State = merchant.State,
+    //        Notes = merchant.Notes,
+    //        IsOnline = merchant.IsOnline,
+    //        ExpenseTotals = new Totals(),
+    //        MostUsedCategory = "No expenses yet.",
+    //        AnnualExpenseStatistics = new List<AnnualStatistics>(),
+    //        MonthlyExpenseStatistics = new List<MonthlyStatistics>(),
+    //        PurchaseCategoryOccurances = new Dictionary<string, int>(),
+    //        PurchaseCategoryTotals = new Dictionary<string, decimal>(),
+    //        RecentExpenses = new List<ExpenseQuickView>(),
+
 }
 public class SubCategoryDropdownSelection
 {
