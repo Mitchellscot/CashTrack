@@ -97,7 +97,7 @@ public class SubCategoryService : ISubCategoryService
 
     private async Task<SubCategoryListItem[]> GetSubCategoryListItems()
     {
-        var categories = await _subCategoryRepo.FindWithExpenses(x => true);
+        var categories = await _subCategoryRepo.FindWithExpensesAndMerchants(x => true);
         var expenses = categories.SelectMany(x => x.Expenses);
         var categoryListItems = expenses.GroupBy(e => e.CategoryId).Select(g =>
         {
@@ -222,73 +222,86 @@ public class SubCategoryService : ISubCategoryService
     }
     public async Task<SubCategoryDetail> GetSubCategoryDetailsAsync(int id)
     {
-        var category = (await _subCategoryRepo.FindWithExpenses(x => x.Id == id)).FirstOrDefault();
+        var category = (await _subCategoryRepo.FindWithExpensesAndMerchants(x => x.Id == id)).FirstOrDefault();
         if (category == null)
             throw new CategoryNotFoundException(id.ToString());
-        //think on this one
-        throw new NotImplementedException();
-        //var merchant = await _merchantRepo.FindById(id);
-        //if (merchant == null)
-        //    throw new MerchantNotFoundException(id.ToString());
-        //var expenses = await _expenseRepo.GetExpensesAndCategoriesByMerchantId(id);
-        //if (!expenses.Any())
-        //    return new MerchantDetail()
-        //    {
-        //        Id = merchant.Id,
-        //        Name = merchant.Name,
-        //        SuggestOnLookup = merchant.SuggestOnLookup,
-        //        City = merchant.City,
-        //        State = merchant.State,
-        //        Notes = merchant.Notes,
-        //        IsOnline = merchant.IsOnline,
-        //        ExpenseTotals = new Totals(),
-        //        MostUsedCategory = "No expenses yet.",
-        //        AnnualExpenseStatistics = new List<AnnualStatistics>(),
-        //        MonthlyExpenseStatistics = new List<MonthlyStatistics>(),
-        //        PurchaseCategoryOccurances = new Dictionary<string, int>(),
-        //        PurchaseCategoryTotals = new Dictionary<string, decimal>(),
-        //        RecentExpenses = new List<ExpenseQuickView>(),
-        //    };
 
-        //var subCategories = expenses.Select(x => x.Category).Distinct().ToArray();
+        if (!category.Expenses.Any())
+            return new SubCategoryDetail()
+            {
+                Id = category.Id,
+                Name = category.Name,
+                InUse = category.InUse,
+                Notes = category.Notes,
+                ExpenseTotals = new Totals(),
+                MainCategoryName = category.MainCategory.Name,
+                AnnualExpenseStatistics = new List<AnnualStatistics>(),
+                MonthlyExpenseStatistics = new List<MonthlyStatistics>(),
+                RecentExpenses = new List<ExpenseQuickViewForSubCategoryDetail>(),
+                MerchantPurchaseOccurances = new Dictionary<string, int>(),
+                MerchantPurchaseTotals = new Dictionary<string, decimal>()
+            };
+        var expensesSpanMultipleYears = category.Expenses.GroupBy(e => e.Date.Year).ToList().Count() > 1;
+        var merchants = category.Expenses.Where(x => x.Merchant != null).Select(x => x.Merchant).Distinct().ToArray();
+        var expenseTotals = category.Expenses.Aggregate(new TotalsAggregator<ExpenseEntity>(),
+            (acc, e) => acc.Accumulate(e),
+            acc => acc.Compute());
+        var annualStatistics = expensesSpanMultipleYears ? AggregateUtilities<ExpenseEntity>.GetAnnualStatistics(category.Expenses.ToArray()) : new List<AnnualStatistics>();
+        var monthlyStatistics = expensesSpanMultipleYears ? new List<MonthlyStatistics>() : AggregateUtilities<ExpenseEntity>.GetMonthlyStatistics(category.Expenses.ToArray());
+        var recentExpenses = category.Expenses.OrderByDescending(e => e.Date)
+            .Take(8)
+            .Select(x => new ExpenseQuickViewForSubCategoryDetail()
+            {
+                Id = x.Id,
+                Date = x.Date.Date.ToShortDateString(),
+                Amount = x.Amount,
+                Merchant = x.Merchant == null ? "" : x.Merchant.Name
+            }).ToList();
+        var merchantPurchaseOccurances = GetMerchantPurchaseOccurances(merchants, category.Expenses.ToArray());
+        var merchantPurchaseTotals = GetMerchantPurchaseTotals(merchants, category.Expenses.ToArray());
 
-        //var expensesSpanMultipleYears = expenses.GroupBy(e => e.Date.Year).ToList().Count() > 1;
-
-        //return new MerchantDetail()
-        //{
-        //    Id = merchant.Id,
-        //    Name = merchant.Name,
-        //    SuggestOnLookup = merchant.SuggestOnLookup,
-        //    City = merchant.City,
-        //    State = merchant.State,
-        //    Notes = merchant.Notes,
-        //    IsOnline = merchant.IsOnline,
-
-        //    ExpenseTotals = expenses.Aggregate(new TotalsAggregator<ExpenseEntity>(),
-        //        (acc, e) => acc.Accumulate(e),
-        //        acc => acc.Compute()),
-
-        //    MostUsedCategory = GetExpenseCategoryOccurances(subCategories, expenses).FirstOrDefault().Key,
-
-        //    AnnualExpenseStatistics = expensesSpanMultipleYears ?
-        //    AggregateUtilities<ExpenseEntity>.GetAnnualStatistics(expenses) : new List<AnnualStatistics>(),
-
-        //    MonthlyExpenseStatistics = expensesSpanMultipleYears ?
-        //    new List<MonthlyStatistics>() : AggregateUtilities<ExpenseEntity>.GetMonthlyStatistics(expenses),
-
-        //    PurchaseCategoryOccurances = GetExpenseCategoryOccurances(subCategories, expenses),
-        //    PurchaseCategoryTotals = GetExpenseCategoryTotals(subCategories, expenses),
-
-        //    RecentExpenses = expenses.OrderByDescending(e => e.Date)
-        //    .Take(9)
-        //    .Select(x => new ExpenseQuickView()
-        //    {
-        //        Id = x.Id,
-        //        Date = x.Date.Date.ToShortDateString(),
-        //        Amount = x.Amount,
-        //        SubCategory = x.Category == null ? "none" : x.Category.Name
-        //    }).ToList()
-        //};
+        return new SubCategoryDetail()
+        {
+            Id = category.Id,
+            Name = category.Name,
+            InUse = category.InUse,
+            Notes = category.Notes,
+            ExpenseTotals = expenseTotals,
+            MainCategoryName = category.MainCategory.Name,
+            AnnualExpenseStatistics = annualStatistics,
+            MonthlyExpenseStatistics = monthlyStatistics,
+            RecentExpenses = recentExpenses,
+            MerchantPurchaseOccurances = merchantPurchaseOccurances,
+            MerchantPurchaseTotals = merchantPurchaseTotals
+        };
+    }
+    internal Dictionary<string, int> GetMerchantPurchaseOccurances(MerchantEntity[] merchants, ExpenseEntity[] expenses)
+    {
+        var expensesWithMerchants = expenses.Where(x => x.MerchantId.HasValue).ToList();
+        return merchants.GroupJoin(expensesWithMerchants,
+        c => c.Id, e => e.Merchant.Id, (m, g) => new
+        {
+            Merchant = m.Name,
+            Expenses = g
+        }).Select(x => new
+        {
+            Merchant = x.Merchant,
+            Count = x.Expenses.Count()
+        }).OrderByDescending(x => x.Count).ToDictionary(k => k.Merchant, v => v.Count);
+    }
+    internal Dictionary<string, decimal> GetMerchantPurchaseTotals(MerchantEntity[] merchants, ExpenseEntity[] expenses)
+    {
+        var expensesWithMerchants = expenses.Where(x => x.MerchantId.HasValue).ToList();
+        return merchants.GroupJoin(expensesWithMerchants,
+            m => m.Id, e => e.Merchant.Id, (m, g) => new
+            {
+                Merchant = m.Name,
+                Expenses = g
+            }).Select(x => new
+            {
+                Merchant = x.Merchant,
+                Sum = x.Expenses.Sum(e => e.Amount)
+            }).Where(x => x.Sum > 0).OrderByDescending(x => x.Sum).ToDictionary(k => k.Merchant, v => v.Sum);
     }
 
     public async Task<SubCategoryDropdownSelection[]> GetSubCategoryDropdownListAsync()

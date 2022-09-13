@@ -240,9 +240,10 @@
     ChartType = ChartType.Pie,
     UseDefaultColor = false,
     ElementId = "categoryTotalsPie",
-    Labels = JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Key).ToArray()),
+    Labels =  JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Key).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Value).ToArray()),
     Title = "Amount By Category",
+    DisplayLabels = Model.Merchant.AnnualExpenseStatistics.Count() < 11,
     Responsive = true
 })
 }
@@ -255,6 +256,7 @@
     Labels = JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryOccurances.Select(x => x.Key).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryOccurances.Select(x => x.Value).ToArray()),
     Title = "Purchase Frequency By Category",
+    DisplayLabels = Model.Merchant.AnnualExpenseStatistics.Count() < 11,
     Responsive = true
 })
 }

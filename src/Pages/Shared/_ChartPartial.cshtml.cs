@@ -13,6 +13,7 @@ namespace CashTrack.Pages.Shared
             ColorArray = GetColors();
         }
         public string DefaultColor = JsonSerializer.Serialize("rgba(24, 188, 156, .8)");
+        public bool DisplayLabels { get; set; } = true;
         public string ColorArray { get; private set; }
         public bool UseDefaultColor { get; set; }
         public bool Responsive { get; set; }
