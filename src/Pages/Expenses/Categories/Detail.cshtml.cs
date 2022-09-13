@@ -1,6 +1,8 @@
 using CashTrack.Common.Exceptions;
+using CashTrack.Models.MainCategoryModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Pages.Shared;
+using CashTrack.Services.MainCategoriesService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,11 +15,14 @@ namespace CashTrack.Pages.Expenses.Categories
     public class DetailModel : PageModelBase
     {
         private readonly ISubCategoryService _subCategoryService;
-        public DetailModel(ISubCategoryService categoryService) => _subCategoryService = categoryService;
+        private readonly IMainCategoriesService _mainCategoryService;
+
+        public DetailModel(ISubCategoryService categoryService, IMainCategoriesService mainCategoryService) => (_subCategoryService, _mainCategoryService) = (categoryService, mainCategoryService);
         [BindProperty(SupportsGet = true)]
         public int id { get; set; }
         public SubCategoryDetail SubCategory { get; set; }
-        public SelectList SubCategorySelectList { get; set; }
+        public SubCategoryDropdownSelection[] SubCategoryList { get; set; }
+        public MainCategoryDropdownSelection[] MainCategoryList { get; set; }
         [BindProperty(SupportsGet = true)]
         public string SearchTerm { get; set; }
         public async Task<IActionResult> OnGet()
@@ -35,9 +40,9 @@ namespace CashTrack.Pages.Expenses.Categories
                     return Page();
                 }
             }
-            var categoryNames = await _subCategoryService.GetSubCategoryDropdownListAsync();
+            SubCategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
+            MainCategoryList = await _mainCategoryService.GetMainCategoriesForDropdownListAsync();
             SubCategory = await _subCategoryService.GetSubCategoryDetailsAsync(id);
-            SubCategorySelectList = new SelectList(categoryNames, SubCategory.Name);
             return Page();
         }
         public async Task<IActionResult> OnPostDelete()
@@ -48,7 +53,7 @@ namespace CashTrack.Pages.Expenses.Categories
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                TempData["InfoMessage"] = ex.Message;
                 return LocalRedirect("~/Expenses/Categories/Index");
             }
             TempData["SuccessMessage"] = "Successfully Deleted a Category!";

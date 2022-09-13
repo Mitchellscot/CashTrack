@@ -230,6 +230,7 @@ public class SubCategoryService : ISubCategoryService
             return new SubCategoryDetail()
             {
                 Id = category.Id,
+                MainCategoryId = category.MainCategoryId,
                 Name = category.Name,
                 InUse = category.InUse,
                 Notes = category.Notes,
@@ -268,6 +269,7 @@ public class SubCategoryService : ISubCategoryService
             Notes = category.Notes,
             ExpenseTotals = expenseTotals,
             MainCategoryName = category.MainCategory.Name,
+            MainCategoryId = category.MainCategoryId,
             AnnualExpenseStatistics = annualStatistics,
             MonthlyExpenseStatistics = monthlyStatistics,
             RecentExpenses = recentExpenses,

@@ -1,4 +1,5 @@
 ﻿@page "{id}"
+@using CashTrack.Models.SubCategoryModels
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Expenses.Categories.DetailModel
 @{
@@ -14,5 +15,60 @@
     new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+
+    <div class="row mb-0">
+        <div class="d-flex align-content-center justify-content-center col ms-5 ps-5">
+            <h3 class="fw-bold">@Model.SubCategory.Name</h3>
+            <div class="text-muted align-self-center ms-2 fst-italic">@Model.SubCategory.MainCategoryName</div>
+        </div>
+        <div class="col-auto d-flex align-content-center justify-content-center mb-0 mt-2">
+            <a class="link-primary text-decoration-underline" href="#" data-bs-toggle="modal" data-bs-target="#editSubCategoryModal">
+                Edit
+            </a>&nbsp; | &nbsp;
+            <a class="link-danger text-decoration-underline" href="#" data-bs-toggle="modal" data-bs-target="#deleteSubCategoryModal">
+                Delete
+            </a>
+        </div>
+    </div>
+
+    @*Delete Model*@
+    <div class="modal fade" id="deleteSubCategoryModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h5 class="modal-title text-center">
+                        <strong>Are you sure you want to Delete this Category?</strong>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-footer d-flex justify-content-evenly">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <form method="post">
+                        <button name="id" 
+                            value="@Model.SubCategory.Id" 
+                            type="submit" 
+                            class="btn btn-danger" 
+                            asp-page-handler="Delete">DELETE</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*End Delete Modal*@
+    <div class="modal fade" id="editSubCategoryModal">
+        @await Html.PartialAsync("_AddEditSubCategoryModal", new AddEditSubCategoryModal() {
+        Name = Model.SubCategory.Name,
+        InUse = Model.SubCategory.InUse,
+        Notes = Model.SubCategory.Notes,
+        MainCategoryList = new SelectList(Model.MainCategoryList, "Id", "Category", Model.SubCategory.MainCategoryId),
+        IsEdit = true,
+        MainCategoryId = Model.SubCategory.MainCategoryId,
+        Returnurl="~/Expenses/Categories/Index"
+        })
+    </div>
 
 </div>

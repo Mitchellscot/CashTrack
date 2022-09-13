@@ -43,6 +43,7 @@ public class SubCategoryListItem : Category
 public class SubCategoryDetail : Category
 {
     public string MainCategoryName { get; set; }
+    public int MainCategoryId { get; set; }
     public string Notes { get; set; }
     public bool InUse { get; set; }
     public Totals ExpenseTotals { get; set; }
