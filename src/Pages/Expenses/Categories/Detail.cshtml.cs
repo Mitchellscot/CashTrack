@@ -21,7 +21,7 @@ namespace CashTrack.Pages.Expenses.Categories
         [BindProperty(SupportsGet = true)]
         public int id { get; set; }
         public SubCategoryDetail SubCategory { get; set; }
-        public SubCategoryDropdownSelection[] SubCategoryList { get; set; }
+        public SelectList SubCategoryList { get; set; }
         public MainCategoryDropdownSelection[] MainCategoryList { get; set; }
         [BindProperty(SupportsGet = true)]
         public string SearchTerm { get; set; }
@@ -40,9 +40,9 @@ namespace CashTrack.Pages.Expenses.Categories
                     return Page();
                 }
             }
-            SubCategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
-            MainCategoryList = await _mainCategoryService.GetMainCategoriesForDropdownListAsync();
             SubCategory = await _subCategoryService.GetSubCategoryDetailsAsync(id);
+            SubCategoryList = new SelectList((await _subCategoryService.GetSubCategoryDropdownListAsync()), "Category", "Category", SubCategory.Name);
+            MainCategoryList = await _mainCategoryService.GetMainCategoriesForDropdownListAsync();
             return Page();
         }
         public async Task<IActionResult> OnPostDelete()
