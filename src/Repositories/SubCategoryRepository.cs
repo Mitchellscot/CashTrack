@@ -13,7 +13,7 @@ namespace CashTrack.Repositories.SubCategoriesRepository;
 public interface ISubCategoryRepository : IRepository<SubCategoryEntity>
 {
     Task<SubCategoryEntity[]> FindWithPaginationIncludeExpenses(Expression<Func<SubCategoryEntity, bool>> predicate, int pageNumber, int pageSize);
-    Task<SubCategoryEntity[]> FindWithExpenses(Expression<Func<SubCategoryEntity, bool>> predicate);
+    Task<SubCategoryEntity[]> FindWithExpensesAndMerchants(Expression<Func<SubCategoryEntity, bool>> predicate);
 }
 public class SubCategoryRepository : ISubCategoryRepository
 {
@@ -22,13 +22,15 @@ public class SubCategoryRepository : ISubCategoryRepository
     {
         _context = context;
     }
-    public async Task<SubCategoryEntity[]> FindWithExpenses(Expression<Func<SubCategoryEntity, bool>> predicate)
+    public async Task<SubCategoryEntity[]> FindWithExpensesAndMerchants(Expression<Func<SubCategoryEntity, bool>> predicate)
     {
         try
         {
             return await _context.SubCategories.Where(predicate)
                 .Include(x => x.MainCategory)
-                .Include(x => x.Expenses).ToArrayAsync();
+                .Include(x => x.Expenses)
+                .ThenInclude(x => x.Merchant)
+                .ToArrayAsync();
         }
         catch (Exception)
         {

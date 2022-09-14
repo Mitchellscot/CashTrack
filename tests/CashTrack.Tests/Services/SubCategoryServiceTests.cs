@@ -35,8 +35,23 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Get_SubCategory_Detail()
         {
-            //TODO!!!!
-            await Task.Run(() => Should.Throw<NotImplementedException>(async () => await _service.GetSubCategoryDetailsAsync(1)));
+            var result = await _service.GetSubCategoryDetailsAsync(22);
+            result.Name.ShouldBe("Groceries");
+            result.MainCategoryName.ShouldBe("Food");
+            result.MonthlyExpenseStatistics.ShouldNotBeEmpty();
+            result.RecentExpenses.ShouldNotBeEmpty();
+            result.MerchantPurchaseTotals.ShouldNotBeEmpty();
+            result.MerchantPurchaseOccurances.ShouldNotBeEmpty();
+            result.ExpenseTotals.Average.ShouldNotBe(0);
+            result.ExpenseTotals.Count.ShouldNotBe(0);
+            result.ExpenseTotals.Max.ShouldNotBe(0);
+            result.ExpenseTotals.Min.ShouldNotBe(0);
+        }
+        [Fact]
+        public async Task Get_All_Category_Names()
+        {
+            var result = await _service.GetAllSubCategoryNames();
+            result.Length.ShouldBe(38);
         }
         [Fact]
         public async Task Get_All_Categories_For_Dropdown()

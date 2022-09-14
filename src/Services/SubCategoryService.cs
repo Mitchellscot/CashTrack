@@ -11,6 +11,9 @@ using CashTrack.Services.Common;
 using CashTrack.Models.Common;
 using Microsoft.AspNetCore.Rewrite;
 using System.Xml.Linq;
+using CashTrack.Models.ExpenseModels;
+using CashTrack.Models.MerchantModels;
+using System.Collections.Generic;
 
 namespace CashTrack.Services.SubCategoryService;
 
@@ -24,6 +27,7 @@ public interface ISubCategoryService
     Task<bool> DeleteSubCategoryAsync(int id);
     Task<SubCategoryEntity> GetSubCategoryByNameAsync(string name);
     Task<string[]> GetMatchingSubCategoryNamesAsync(string match);
+    Task<string[]> GetAllSubCategoryNames();
 }
 public class SubCategoryService : ISubCategoryService
 {
@@ -93,7 +97,7 @@ public class SubCategoryService : ISubCategoryService
 
     private async Task<SubCategoryListItem[]> GetSubCategoryListItems()
     {
-        var categories = await _subCategoryRepo.FindWithExpenses(x => true);
+        var categories = await _subCategoryRepo.FindWithExpensesAndMerchants(x => true);
         var expenses = categories.SelectMany(x => x.Expenses);
         var categoryListItems = expenses.GroupBy(e => e.CategoryId).Select(g =>
         {
@@ -216,10 +220,90 @@ public class SubCategoryService : ISubCategoryService
         }
         return await _subCategoryRepo.Delete(category);
     }
-    public Task<SubCategoryDetail> GetSubCategoryDetailsAsync(int id)
+    public async Task<SubCategoryDetail> GetSubCategoryDetailsAsync(int id)
     {
-        //think on this one
-        throw new NotImplementedException();
+        var category = (await _subCategoryRepo.FindWithExpensesAndMerchants(x => x.Id == id)).FirstOrDefault();
+        if (category == null)
+            throw new CategoryNotFoundException(id.ToString());
+
+        if (!category.Expenses.Any())
+            return new SubCategoryDetail()
+            {
+                Id = category.Id,
+                MainCategoryId = category.MainCategoryId,
+                Name = category.Name,
+                InUse = category.InUse,
+                Notes = category.Notes,
+                ExpenseTotals = new Totals(),
+                MainCategoryName = category.MainCategory.Name,
+                AnnualExpenseStatistics = new List<AnnualStatistics>(),
+                MonthlyExpenseStatistics = new List<MonthlyStatistics>(),
+                RecentExpenses = new List<ExpenseQuickViewForSubCategoryDetail>(),
+                MerchantPurchaseOccurances = new Dictionary<string, int>(),
+                MerchantPurchaseTotals = new Dictionary<string, decimal>()
+            };
+        var expensesSpanMultipleYears = category.Expenses.GroupBy(e => e.Date.Year).ToList().Count() > 1;
+        var merchants = category.Expenses.Where(x => x.Merchant != null).Select(x => x.Merchant).Distinct().ToArray();
+        var expenseTotals = category.Expenses.Aggregate(new TotalsAggregator<ExpenseEntity>(),
+            (acc, e) => acc.Accumulate(e),
+            acc => acc.Compute());
+        var annualStatistics = expensesSpanMultipleYears ? AggregateUtilities<ExpenseEntity>.GetAnnualStatistics(category.Expenses.ToArray()) : new List<AnnualStatistics>();
+        var monthlyStatistics = expensesSpanMultipleYears ? new List<MonthlyStatistics>() : AggregateUtilities<ExpenseEntity>.GetMonthlyStatistics(category.Expenses.ToArray());
+        var recentExpenses = category.Expenses.OrderByDescending(e => e.Date)
+            .Take(8)
+            .Select(x => new ExpenseQuickViewForSubCategoryDetail()
+            {
+                Id = x.Id,
+                Date = x.Date.Date.ToShortDateString(),
+                Amount = x.Amount,
+                Merchant = x.Merchant == null ? "" : x.Merchant.Name
+            }).ToList();
+        var merchantPurchaseOccurances = GetMerchantPurchaseOccurances(merchants, category.Expenses.ToArray());
+        var merchantPurchaseTotals = GetMerchantPurchaseTotals(merchants, category.Expenses.ToArray());
+
+        return new SubCategoryDetail()
+        {
+            Id = category.Id,
+            Name = category.Name,
+            InUse = category.InUse,
+            Notes = category.Notes,
+            ExpenseTotals = expenseTotals,
+            MainCategoryName = category.MainCategory.Name,
+            MainCategoryId = category.MainCategoryId,
+            AnnualExpenseStatistics = annualStatistics,
+            MonthlyExpenseStatistics = monthlyStatistics,
+            RecentExpenses = recentExpenses,
+            MerchantPurchaseOccurances = merchantPurchaseOccurances,
+            MerchantPurchaseTotals = merchantPurchaseTotals
+        };
+    }
+    internal Dictionary<string, int> GetMerchantPurchaseOccurances(MerchantEntity[] merchants, ExpenseEntity[] expenses)
+    {
+        var expensesWithMerchants = expenses.Where(x => x.MerchantId.HasValue).ToList();
+        return merchants.GroupJoin(expensesWithMerchants,
+        c => c.Id, e => e.Merchant.Id, (m, g) => new
+        {
+            Merchant = m.Name,
+            Expenses = g
+        }).Select(x => new
+        {
+            Merchant = x.Merchant,
+            Count = x.Expenses.Count()
+        }).OrderByDescending(x => x.Count).ToDictionary(k => k.Merchant, v => v.Count);
+    }
+    internal Dictionary<string, decimal> GetMerchantPurchaseTotals(MerchantEntity[] merchants, ExpenseEntity[] expenses)
+    {
+        var expensesWithMerchants = expenses.Where(x => x.MerchantId.HasValue).ToList();
+        return merchants.GroupJoin(expensesWithMerchants,
+            m => m.Id, e => e.Merchant.Id, (m, g) => new
+            {
+                Merchant = m.Name,
+                Expenses = g
+            }).Select(x => new
+            {
+                Merchant = x.Merchant,
+                Sum = x.Expenses.Sum(e => e.Amount)
+            }).Where(x => x.Sum > 0).OrderByDescending(x => x.Sum).ToDictionary(k => k.Merchant, v => v.Sum);
     }
 
     public async Task<SubCategoryDropdownSelection[]> GetSubCategoryDropdownListAsync()
@@ -242,6 +326,11 @@ public class SubCategoryService : ISubCategoryService
     public async Task<string[]> GetMatchingSubCategoryNamesAsync(string match)
     {
         return (await _subCategoryRepo.Find(x => x.Name.StartsWith(match))).Select(x => x.Name).Take(10).ToArray();
+    }
+
+    public async Task<string[]> GetAllSubCategoryNames()
+    {
+        return (await _subCategoryRepo.Find(x => true)).Select(x => x.Name).ToArray();
     }
 }
 

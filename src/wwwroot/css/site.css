@@ -70,7 +70,9 @@ ul.ui-autocomplete {
     font-size: 1.2rem;
     font-weight: 500;
 }
-
+.chart-height {
+    max-height: 400px;
+}
 
 /*CLASSES ON TAG HELPERS ON OTHER PAGES*/
 /*THEY NEED TO GO HERE BECAUSE THEY DON'T GET COMPILED*/

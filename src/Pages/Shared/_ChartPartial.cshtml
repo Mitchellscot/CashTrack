@@ -24,8 +24,8 @@
             options: {
                 responsive: @Model.Responsive.ToString().ToLower(),
                 plugins: {
-          legend: {
-            display: true,
+                    legend: {
+                        display: @Model.DisplayLabels.ToString().ToLower(),
             position: 'top',
           },
           title: {
@@ -93,7 +93,7 @@
                 stacked: true,
                 plugins: {
                     legend: {
-                        display: true,
+                        display: @Model.DisplayLabels.ToString().ToLower(),
                         position: 'top',
                     },
                     title: {
@@ -145,7 +145,7 @@
                 responsive: @Model.Responsive.ToString().ToLower(),
                 plugins: {
           legend: {
-            display: true,
+            display: @Model.DisplayLabels.ToString().ToLower(),
             position: 'bottom',
           },
           title: {
@@ -178,7 +178,7 @@
                 responsive: @Model.Responsive.ToString().ToLower(),
                 plugins: {
           legend: {
-            display: true,
+            display: @Model.DisplayLabels.ToString().ToLower(),
             position: 'bottom',
           },
           title: {
@@ -250,7 +250,7 @@
         },
         plugins: {
             legend: {
-                display: false,
+                display: @Model.DisplayLabels.ToString().ToLower(),
                 position: 'top',
               },
               title: {

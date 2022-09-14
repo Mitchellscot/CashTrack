@@ -50,10 +50,15 @@ public class AddEditExpenseModal : Expense
     public string? Q { get; set; }
     public string? Q2 { get; set; }
 }
-public class ExpenseQuickView : Transaction
+public class ExpenseQuickViewForMerchantDetail : Transaction
 {
     new public string Date { get; set; }
     public string SubCategory { get; set; }
+}
+public class ExpenseQuickViewForSubCategoryDetail : Transaction
+{
+    new public string Date { get; set; }
+    public string Merchant { get; set; }
 }
 public class ExpenseSplit
 {
