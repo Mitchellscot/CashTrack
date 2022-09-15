@@ -247,8 +247,8 @@ public class SubCategoryService : ISubCategoryService
         var expenseTotals = category.Expenses.Aggregate(new TotalsAggregator<ExpenseEntity>(),
             (acc, e) => acc.Accumulate(e),
             acc => acc.Compute());
-        var annualStatistics = expensesSpanMultipleYears ? AggregateUtilities<ExpenseEntity>.GetAnnualStatistics(category.Expenses.ToArray()) : new List<AnnualStatistics>();
-        var monthlyStatistics = expensesSpanMultipleYears ? new List<MonthlyStatistics>() : AggregateUtilities<ExpenseEntity>.GetMonthlyStatistics(category.Expenses.ToArray());
+        var annualStatistics = AggregateUtilities<ExpenseEntity>.GetAnnualStatistics(category.Expenses.ToArray());
+        var monthlyStatistics = AggregateUtilities<ExpenseEntity>.GetStatisticsLast12Months(category.Expenses.ToArray());
         var recentExpenses = category.Expenses.OrderByDescending(e => e.Date)
             .Take(8)
             .Select(x => new ExpenseQuickViewForSubCategoryDetail()

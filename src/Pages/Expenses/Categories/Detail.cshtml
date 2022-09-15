@@ -212,10 +212,18 @@
         <hr />
         <div class="row">
             <div class="col-12 col-xl-6">
-                <canvas id="expensesChart" height="400" class="chart-height"></canvas>
+                <canvas id="annualExpensesChart" height="400" class="chart-height"></canvas>
             </div>
             <div class="col-12 col-xl-6">
-                <canvas id="statisticsChart" height="400" class="chart-height"></canvas>
+                <canvas id="monthlyExpensesChart" height="400" class="chart-height"></canvas>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-xl-6">
+                <canvas id="annualStatisticsChart" height="400" class="chart-height"></canvas>
+            </div>
+            <div class="col-12 col-xl-6">
+                <canvas id="monthlyStatisticsChart" height="400" class="chart-height"></canvas>
             </div>
         </div>
         <div class="row">
@@ -237,7 +245,7 @@
 {
     ChartType = ChartType.Bar,
     UseDefaultColor = true,
-    ElementId = "expensesChart",
+    ElementId = "annualExpensesChart",
     Labels = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Year).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Total).ToArray()),
     Title = "Expense Totals",
@@ -245,9 +253,21 @@
 })
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
+    ChartType = ChartType.Bar,
+    UseDefaultColor = true,
+    ElementId = "monthlyExpensesChart",
+    Labels = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Month).ToArray()),
+    Dataset = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Total).ToArray()),
+    Title = "Expense Totals",
+    Responsive = true
+})
+}
+@if(Model.SubCategory.MonthlyExpenseStatistics.Any()){
+        @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+{
     ChartType = ChartType.LineMultiAxis,
     UseDefaultColor = true,
-    ElementId = "statisticsChart",
+    ElementId = "annualStatisticsChart",
     Labels = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Year).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Count).ToArray()),
     Dataset2 = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Average).ToArray()),
@@ -256,23 +276,11 @@
     Title = "Expense Statistics",
     Responsive = true
 })
-}
-@if(Model.SubCategory.MonthlyExpenseStatistics.Any()){
-@await Html.PartialAsync("_ChartPartial", new _ChartPartial()
-{
-    ChartType = ChartType.Bar,
-    UseDefaultColor = true,
-    ElementId = "expensesChart",
-    Labels = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Month).ToArray()),
-    Dataset = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Total).ToArray()),
-    Title = "Expense Totals",
-    Responsive = true
-})
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
     ChartType = ChartType.LineMultiAxis,
     UseDefaultColor = true,
-    ElementId = "statisticsChart",
+    ElementId = "monthlyStatisticsChart",
     Labels = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Month).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Count).ToArray()),
     Dataset2 = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Average).ToArray()),
