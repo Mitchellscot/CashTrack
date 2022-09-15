@@ -92,16 +92,47 @@ namespace CashTrack.Services.Common
         public static List<MonthlyStatistics> GetStatisticsLast12Months(T[] transactions)
         {
             var thisYear = DateTime.Now.Year;
+            var monthlyStatistics = new List<MonthlyStatistics>();
+            var currentMonth = DateTime.Now.Month;
+            for (var i = 0; i < 12; i++)
+            {
+                var month = currentMonth - i;
+                var year = thisYear;
+                if (month < 1)
+                {
+                    month = 12 - Math.Abs(currentMonth - i);
+                    year = thisYear - 1;
+                }
 
-            var thisYearsTransactions = transactions.Where(x => x.Date.Year == thisYear).ToList();
-
-            var thisYearsStats = thisYearsTransactions.GroupBy(e => e.Date.Month)
-            .Select(g =>
+                var stats = GetMonthlyStatisticsFromMonthYear(year, month, transactions);
+                if (stats.Any(x => x.MonthNumber == month))
+                {
+                    monthlyStatistics.Add(stats.FirstOrDefault(m => m.MonthNumber == month));
+                }
+                else
+                {
+                    monthlyStatistics.Add(new MonthlyStatistics()
+                    {
+                        MonthNumber = month,
+                        Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month).Remove(3),
+                        Average = 0,
+                        Min = 0,
+                        Max = 0,
+                        Total = 0,
+                        Count = 0
+                    });
+                }
+            }
+            monthlyStatistics.Reverse();
+            return monthlyStatistics;
+        }
+        private static List<MonthlyStatistics> GetMonthlyStatisticsFromMonthYear(int year, int month, T[] transactions)
+        {
+            var thisYearsTransactions = transactions.Where(x => x.Date.Year == year).ToList();
+            return thisYearsTransactions.GroupBy(e => e.Date.Month).Select(g =>
             {
                 var results = g.Aggregate(new StatisticsAggregator<T>(),
-                    (acc, x) => acc.Accumulate(x),
-                    acc => acc.Compute());
-
+                    (acc, x) => acc.Accumulate(x), acc => acc.Compute());
                 return new MonthlyStatistics()
                 {
                     MonthNumber = g.Key,
@@ -128,37 +159,7 @@ namespace CashTrack.Services.Common
                     Count = results.Count
                 };
             }).OrderByDescending(x => x.MonthNumber).ToList();
-
-            var monthlyStatistics = new List<MonthlyStatistics>();
-            var currentMonth = DateTime.Now.Month;
-            for (var i = 0; i < 12; i++)
-            {
-                var month = currentMonth - i;
-                if (month < 1)
-                {
-                    month = 12 - Math.Abs(currentMonth - i);
-                }
-
-                if (thisYearsStats.Any(x => x.MonthNumber == month))
-                {
-                    monthlyStatistics.Add(thisYearsStats.FirstOrDefault(m => m.MonthNumber == month));
-                }
-                else
-                {
-                    monthlyStatistics.Add(new MonthlyStatistics()
-                    {
-                        MonthNumber = month,
-                        Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month).Remove(3),
-                        Average = 0,
-                        Min = 0,
-                        Max = 0,
-                        Total = 0,
-                        Count = 0
-                    });
-                }
-            }
-            monthlyStatistics.Reverse();
-            return monthlyStatistics;
         }
     }
+
 }
