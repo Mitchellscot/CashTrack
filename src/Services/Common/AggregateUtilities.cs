@@ -29,8 +29,6 @@ namespace CashTrack.Services.Common
         }
         public static List<MonthlyStatistics> GetMonthlyStatistics(T[] transactions)
         {
-            var monthlyStatistics = new List<MonthlyStatistics>();
-
             var monthlyStats = transactions.GroupBy(e => e.Date.Month)
             .Select(g =>
             {
@@ -47,8 +45,7 @@ namespace CashTrack.Services.Common
                     Total = results.Total,
                     Count = results.Count
                 };
-            }).OrderBy(x => x.Month).ToList();
-            var statisticsCompressedByMonth = monthlyStats.GroupBy(m => m.MonthNumber).Select(g =>
+            }).GroupBy(m => m.MonthNumber).Select(g =>
             {
                 var results = g.Aggregate(new MonthlyStatisticsAggregator(),
                     (acc, x) => acc.Accumulate(x),
@@ -66,12 +63,13 @@ namespace CashTrack.Services.Common
                 };
             }).OrderByDescending(m => m.MonthNumber).ToList();
             var year = transactions.FirstOrDefault().Date.Year;
+            var monthlyStatistics = new List<MonthlyStatistics>();
             for (var i = 1; i <= 12; i++)
             {
-                if (statisticsCompressedByMonth.Any(x => x.MonthNumber == i))
+                if (monthlyStats.Any(x => x.MonthNumber == i))
                 {
 
-                    monthlyStatistics.Add(statisticsCompressedByMonth.FirstOrDefault(m => m.MonthNumber == i));
+                    monthlyStatistics.Add(monthlyStats.FirstOrDefault(m => m.MonthNumber == i));
                 }
                 else
                 {
@@ -92,8 +90,8 @@ namespace CashTrack.Services.Common
         public static List<MonthlyStatistics> GetStatisticsLast12Months(T[] transactions)
         {
             var thisYear = DateTime.Now.Year;
-            var monthlyStatistics = new List<MonthlyStatistics>();
             var currentMonth = DateTime.Now.Month;
+            var monthlyStatistics = new List<MonthlyStatistics>();
             for (var i = 0; i < 12; i++)
             {
                 var month = currentMonth - i;
