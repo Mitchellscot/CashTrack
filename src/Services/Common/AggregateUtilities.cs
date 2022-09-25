@@ -121,7 +121,12 @@ namespace CashTrack.Services.Common
                     });
                 }
             }
+            if (monthlyStatistics.Select(x => x.Total).Sum() == 0)
+                return new List<MonthlyStatistics>();
+
             monthlyStatistics.Reverse();
+
+
             return monthlyStatistics;
         }
         private static List<MonthlyStatistics> GetMonthlyStatisticsFromMonthYear(int year, int month, T[] transactions)
