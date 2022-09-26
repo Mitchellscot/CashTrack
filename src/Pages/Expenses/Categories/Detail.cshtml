@@ -49,11 +49,13 @@
                         Cancel
                     </button>
                     <form method="post">
-                        <button name="id" 
-                            value="@Model.SubCategory.Id" 
-                            type="submit" 
-                            class="btn btn-danger" 
-                            asp-page-handler="Delete">DELETE</button>
+                        <button name="id"
+                                value="@Model.SubCategory.Id"
+                                type="submit"
+                                class="btn btn-danger"
+                                asp-page-handler="Delete">
+                            DELETE
+                        </button>
                     </form>
                 </div>
             </div>
@@ -72,7 +74,7 @@
         })
     </div>
 
-        <div class="container border">
+    <div class="container border">
         <div class="row">
             <div class="col-4 col-lg-3 mt-3">
                 <ul class="list-group text-center">
@@ -88,32 +90,32 @@
                         <span class="d-none d-md-block">Total: &nbsp;</span>
                         <span class="fw-bold text-primary responsive-text">
                             @String.Format("{0:n}", Model.SubCategory.ExpenseTotals.TotalSpentAllTime)
-                            </span>
+                        </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span class="d-none d-md-block">Min: &nbsp;</span>
                         <span class="fw-bold text-primary responsive-text">
                             @String.Format("{0:n}", Model.SubCategory.ExpenseTotals.Min)
-                            </span>
-                            </li>
+                        </span>
+                    </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span class="d-none d-md-block">Max: &nbsp;</span>
                         <span class="fw-bold text-primary responsive-text">
                             @String.Format("{0:n}", Model.SubCategory.ExpenseTotals.Max)
-                            </span>
-                            </li>
+                        </span>
+                    </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span class="d-none d-md-block">Average: &nbsp;</span>
                         <span class="fw-bold text-primary responsive-text">
                             @String.Format("{0:n}", Model.SubCategory.ExpenseTotals.Average)
-                            </span>
-                            </li>
+                        </span>
+                    </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span class="d-none d-md-block">Count: &nbsp;</span>
                         <span class="fw-bold text-primary responsive-text">
                             @Model.SubCategory.ExpenseTotals.Count
-                            </span>
-                            </li>
+                        </span>
+                    </li>
                 </ul>
             </div>
 
@@ -121,13 +123,13 @@
                 <form method="get">
                     <div class="input-group mx-auto m-3">
                         <span class="input-group-text d-none d-lg-block">Name</span>
-                        <select data-val="true" 
-                        onchange="this.form.submit()" 
-                        asp-for=@Model.SearchTerm 
-                        asp-items="@Model.SubCategoryList" 
-                        class="form-select text-center" 
-                        id="addEditSubCategoryState">
-@*                            <option value="@Model.SubCategory.Name" selected disabled hidden></option>*@
+                        <select data-val="true"
+                                onchange="this.form.submit()"
+                                asp-for=@Model.SearchTerm
+                                asp-items="@Model.SubCategoryList"
+                                class="form-select text-center"
+                                id="addEditSubCategoryState">
+                            @*                            <option value="@Model.SubCategory.Name" selected disabled hidden></option>*@
                         </select>
                     </div>
                 </form>
@@ -144,17 +146,17 @@
                         var isActiveText = Model.SubCategory.InUse ? "Active" : "Inactive";
                     }
                     <span class="input-group-text d-none d-lg-block">In Use</span>
-                    <input type="text" 
-                        class="white-on-disabled form-control text-center"
-                           asp-for="@Model.SubCategory.InUse" 
-                           disabled 
+                    <input type="text"
+                           class="white-on-disabled form-control text-center"
+                           asp-for="@Model.SubCategory.InUse"
+                           disabled
                            value="@isActiveText" />
                 </div>
                 <div class="form-floating mx-auto">
-                    <textarea type="text" 
-                        class="form-control white-on-disabled py-0 subcategory-notes" 
-                        id="categoryNotes" 
-                        asp-for="@Model.SubCategory.Notes" disabled></textarea>
+                    <textarea type="text"
+                              class="form-control white-on-disabled py-0 subcategory-notes"
+                              id="categoryNotes"
+                              asp-for="@Model.SubCategory.Notes" disabled></textarea>
                     @if (string.IsNullOrEmpty(Model.SubCategory.Notes))
                     {
                         <label for="categoryNotes">Description</label>
@@ -165,12 +167,13 @@
             <div class="col-4">
                 <div class="d-flex justify-content-center">
                     <span class="mb-0 fw-bold d-none d-lg-block">
-                        Recent Expenses</span>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <a class="link-success float-end text-decoration-underline"
-                        asp-page="/Expenses/Index" asp-route-Query="8"
-                        asp-route-Q="@Model.SubCategory.Id" 
-                        asp-route-pageNumber="1">
+                        Recent Expenses
+                    </span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a class="link-success float-end text-decoration-underline"
+                       asp-page="/Expenses/Index" asp-route-Query="8"
+                       asp-route-Q="@Model.SubCategory.Id"
+                       asp-route-pageNumber="1">
                         View All
                     </a>
                 </div>
@@ -211,101 +214,112 @@
         </div>
         <hr />
         <div class="row">
-            <div class="col-12 col-xl-6">
-                <canvas id="expensesChart" height="400" class="chart-height"></canvas>
+            @if (Model.SubCategory.AnnualExpenseStatistics.Any())
+            {
+                <div class="col-12 col-xl-6">
+                    <canvas id="annualExpensesChart" height="400" class="chart-height"></canvas>
             </div>
-            <div class="col-12 col-xl-6">
-                <canvas id="statisticsChart" height="400" class="chart-height"></canvas>
+            }
+            @if(Model.SubCategory.MonthlyExpenseStatistics.Any())
+            {
+                <div class="col-12 col-xl-6">
+                    <canvas id="monthlyExpensesChart" height="400" class="chart-height"></canvas>
+                </div>
+            }
+            @if (Model.SubCategory.AnnualExpenseStatistics.Any())
+            {
+                <div class="col-12 col-xl-6">
+                    <canvas id="annualStatisticsChart" height="400" class="chart-height"></canvas>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-6">
-                <canvas id="categoryTotalsPie" height="400" class="chart-height"></canvas>
+            }
+            @if (Model.SubCategory.MonthlyExpenseStatistics.Any())
+            {
+                <div class="col-12 col-xl-6">
+                    <canvas id="monthlyStatisticsChart" height="400" class="chart-height"></canvas>
             </div>
+            }
+            @if (Model.SubCategory.MerchantPurchaseTotals.Count() > 1)
+            {
+                <div class="col-12 col-md-6">
+                    <canvas id="categoryTotalsPie" height="400" class="chart-height"></canvas>
+            </div>
+            }
+            @if (Model.SubCategory.MerchantPurchaseOccurances.Count() > 1)
+            {
             <div class="col-12 col-md-6">
                 <canvas id="categoryOccurancesDonut" height="400" class="chart-height"></canvas>
             </div>
-
+            }
         </div>
-    </div>
 
-</div>
-@section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
-@if(Model.SubCategory.AnnualExpenseStatistics.Any()){
-@await Html.PartialAsync("_ChartPartial", new _ChartPartial()
-{
-    ChartType = ChartType.Bar,
-    UseDefaultColor = true,
-    ElementId = "expensesChart",
-    Labels = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Year).ToArray()),
-    Dataset = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Total).ToArray()),
-    Title = "Expense Totals",
-    Responsive = true
-})
-@await Html.PartialAsync("_ChartPartial", new _ChartPartial()
-{
-    ChartType = ChartType.LineMultiAxis,
-    UseDefaultColor = true,
-    ElementId = "statisticsChart",
-    Labels = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Year).ToArray()),
-    Dataset = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Count).ToArray()),
-    Dataset2 = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Average).ToArray()),
-    Dataset3 = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Min).ToArray()),
-    Dataset4 = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Max).ToArray()),
-    Title = "Expense Statistics",
-    Responsive = true
-})
-}
-@if(Model.SubCategory.MonthlyExpenseStatistics.Any()){
-@await Html.PartialAsync("_ChartPartial", new _ChartPartial()
-{
-    ChartType = ChartType.Bar,
-    UseDefaultColor = true,
-    ElementId = "expensesChart",
-    Labels = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Month).ToArray()),
-    Dataset = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Total).ToArray()),
-    Title = "Expense Totals",
-    Responsive = true
-})
-@await Html.PartialAsync("_ChartPartial", new _ChartPartial()
-{
-    ChartType = ChartType.LineMultiAxis,
-    UseDefaultColor = true,
-    ElementId = "statisticsChart",
-    Labels = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Month).ToArray()),
-    Dataset = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Count).ToArray()),
-    Dataset2 = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Average).ToArray()),
-    Dataset3 = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Min).ToArray()),
-    Dataset4 = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Max).ToArray()),
-    Title = "Expense Statistics",
-    Responsive = true
-})
-}
-@if(Model.SubCategory.MerchantPurchaseTotals.Count() > 1){
-@await Html.PartialAsync("_ChartPartial", new _ChartPartial()
-{
-    ChartType = ChartType.Pie,
-    UseDefaultColor = false,
-    ElementId = "categoryTotalsPie",
-    Labels =  JsonSerializer.Serialize(Model.SubCategory.MerchantPurchaseTotals.Select(x => x.Key).ToArray()),
-    Dataset = JsonSerializer.Serialize(Model.SubCategory.MerchantPurchaseTotals.Select(x => x.Value).ToArray()),
-    Title = "Amount By Category",
-    DisplayLabels = true,//Model.SubCategory.AnnualExpenseStatistics.Count() < 11,
-    Responsive = true
-})
-}
-@if(Model.SubCategory.MerchantPurchaseOccurances.Count() > 1){
-@await Html.PartialAsync("_ChartPartial", new _ChartPartial()
-{
-    ChartType = ChartType.Donut,
-    UseDefaultColor = false,
-    ElementId = "categoryOccurancesDonut",
-    Labels = JsonSerializer.Serialize(Model.SubCategory.MerchantPurchaseOccurances.Select(x => x.Key).ToArray()),
-    Dataset = JsonSerializer.Serialize(Model.SubCategory.MerchantPurchaseOccurances.Select(x => x.Value).ToArray()),
-    Title = "Purchase Frequency By Category",
-    DisplayLabels = true, //Model.SubCategory.AnnualExpenseStatistics.Count() < 11,
-    Responsive = true
-})
-}
-}
+    </div>
+    @section Scripts {
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
+            @await Html.PartialAsync("_ChartPartial", new _ChartPartial(){
+                ChartType = ChartType.Bar,
+                UseDefaultColor = true,
+                ElementId = "annualExpensesChart",
+                Labels = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Year).ToArray()),
+                Dataset = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Total).ToArray()),
+                Title = "Annual Expense Totals",
+                Responsive = true
+           })
+            @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+            {
+                ChartType = ChartType.LineMultiAxis,
+                UseDefaultColor = true,
+                ElementId = "annualStatisticsChart",
+                Labels = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Year).ToArray()),
+                Dataset = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Count).ToArray()),
+                Dataset2 = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Average).ToArray()),
+                Dataset3 = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Min).ToArray()),
+                Dataset4 = JsonSerializer.Serialize(Model.SubCategory.AnnualExpenseStatistics.Select(x => x.Max).ToArray()),
+                Title = "Annual Expense Statistics",
+                Responsive = true
+            })
+            @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+            {
+                ChartType = ChartType.Bar,
+                UseDefaultColor = true,
+                ElementId = "monthlyExpensesChart",
+                Labels = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Month).ToArray()),
+                Dataset = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Total).ToArray()),
+                Title = "Monthly Expense Totals",
+                Responsive = true
+            })
+            @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+            {
+                ChartType = ChartType.LineMultiAxis,
+                UseDefaultColor = true,
+                ElementId = "monthlyStatisticsChart",
+                Labels = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Month).ToArray()),
+                Dataset = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Count).ToArray()),
+                Dataset2 = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Average).ToArray()),
+                Dataset3 = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Min).ToArray()),
+                Dataset4 = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Max).ToArray()),
+                Title = "Expense Statistics",
+                Responsive = true
+            })
+            @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+            {
+                ChartType = ChartType.Pie,
+                UseDefaultColor = false,
+                ElementId = "categoryTotalsPie",
+                Labels =  JsonSerializer.Serialize(Model.SubCategory.MerchantPurchaseTotals.Select(x => x.Key).ToArray()),
+                Dataset = JsonSerializer.Serialize(Model.SubCategory.MerchantPurchaseTotals.Select(x => x.Value).ToArray()),
+                Title = "Amount By Category",
+                DisplayLabels = Model.SubCategory.AnnualExpenseStatistics.Count() < 11,
+                Responsive = true
+        })
+            @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+            {
+                ChartType = ChartType.Donut,
+                UseDefaultColor = false,
+                ElementId = "categoryOccurancesDonut",
+                Labels = JsonSerializer.Serialize(Model.SubCategory.MerchantPurchaseOccurances.Select(x => x.Key).ToArray()),
+                Dataset = JsonSerializer.Serialize(Model.SubCategory.MerchantPurchaseOccurances.Select(x => x.Value).ToArray()),
+                Title = "Purchase Frequency By Category",
+                DisplayLabels = Model.SubCategory.AnnualExpenseStatistics.Count() < 11,
+                Responsive = true
+        })
+    }
