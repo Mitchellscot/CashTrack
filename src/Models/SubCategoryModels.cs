@@ -52,9 +52,6 @@ public class SubCategoryDetail : Category
     public List<ExpenseQuickViewForSubCategoryDetail> RecentExpenses { get; set; }
     public Dictionary<string, int> MerchantPurchaseOccurances { get; set; }
     public Dictionary<string, decimal> MerchantPurchaseTotals { get; set; }
-
-    //Chart showing average monthly cost ? (for budgeting)
-
 }
 public class SubCategoryDropdownSelection
 {
