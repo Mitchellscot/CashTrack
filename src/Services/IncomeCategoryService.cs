@@ -4,16 +4,15 @@ using CashTrack.Models.IncomeCategoryModels;
 using CashTrack.Repositories.IncomeCategoryRepository;
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Services.Common;
-using System.Security.Cryptography.X509Certificates;
 
 namespace CashTrack.Services.IncomeCategoryService;
 
 public interface IIncomeCategoryService
 {
+    Task<IncomeCategoryDetail> GetCategoryDetailAsync(int id);
     Task<IncomeCategoryResponse> GetIncomeCategoriesAsync(IncomeCategoryRequest request);
     Task<int> CreateIncomeCategoryAsync(AddEditIncomeCategoryModal request);
     Task<int> UpdateIncomeCategoryAsync(AddEditIncomeCategoryModal request);
@@ -154,6 +153,11 @@ public class IncomeCategoryService : IIncomeCategoryService
     public async Task<string[]> GetMatchingIncomeCategoryNamesAsync(string match)
     {
         return (await _repo.Find(x => x.Name.StartsWith(match))).Select(x => x.Name).Take(10).ToArray();
+    }
+
+    public Task<IncomeCategoryDetail> GetCategoryDetailAsync(int id)
+    {
+        throw new NotImplementedException();
     }
 }
 
