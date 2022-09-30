@@ -183,8 +183,7 @@ namespace CashTrack.Tests.Services
             result.IncomeTotals.Min.ShouldBeGreaterThan(0);
             result.IncomeTotals.TotalSpentAllTime.ShouldBeGreaterThan(0);
             result.MostUsedCategory.ShouldNotBeNullOrEmpty();
-            result.MonthlyIncomeStatistcis.Count().ShouldBeGreaterThan(0);
-            result.AnnualIncomeStatistcis.ShouldBeEmpty();
+            result.AnnualIncomeStatistcis.ShouldNotBeEmpty();
             result.PaymentCategoryOcurances.ShouldNotBeEmpty();
             result.PaymentCategoryTotals.ShouldNotBeEmpty();
             result.RecentIncomes.ShouldNotBeEmpty();

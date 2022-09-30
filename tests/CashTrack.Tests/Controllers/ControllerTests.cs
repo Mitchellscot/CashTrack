@@ -76,7 +76,7 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<SourceDropdownSelection[]>(result);
         responseObject.Length.ShouldBe(14);
-        responseObject.Last().Name.ShouldBe("Hessel Church");
+        responseObject.Last().Name.ShouldBe("SCT Tips");
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         PrintRequestAndResponse("/api/incomesource/dropdown", result);
     }
