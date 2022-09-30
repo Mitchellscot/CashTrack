@@ -7,6 +7,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Services.Common;
+using CashTrack.Models.ExpenseModels;
+using CashTrack.Models.SubCategoryModels;
+using System.Collections.Generic;
+using CashTrack.Models.MerchantModels;
 
 namespace CashTrack.Services.IncomeCategoryService;
 
@@ -155,9 +159,88 @@ public class IncomeCategoryService : IIncomeCategoryService
         return (await _repo.Find(x => x.Name.StartsWith(match))).Select(x => x.Name).Take(10).ToArray();
     }
 
-    public Task<IncomeCategoryDetail> GetCategoryDetailAsync(int id)
+    public async Task<IncomeCategoryDetail> GetCategoryDetailAsync(int id)
     {
-        throw new NotImplementedException();
+        var category = (await _repo.FindWithIncomeAndSources(x => x.Id == id)).FirstOrDefault();
+        if (category == null)
+            throw new CategoryNotFoundException(id.ToString());
+
+        if (!category.Income.Any())
+            return new IncomeCategoryDetail()
+            {
+                Id = category.Id,
+                Name = category.Name,
+                InUse = category.InUse,
+                Notes = category.Notes,
+                IncomeTotals = new Totals(),
+                AnnualIncomeStatistics = new List<AnnualStatistics>(),
+                MonthlyIncomeStatistics = new List<MonthlyStatistics>(),
+                RecentIncome = new List<IncomeQuickViewForCategoryDetail>(),
+                SourcePurchaseOccurances = new Dictionary<string, int>(),
+                SourcePurchaseTotals = new Dictionary<string, decimal>()
+            };
+
+        var incomeSpansMultipleYears = category.Income.GroupBy(e => e.Date.Year).ToList().Count() > 1;
+        var sources = category.Income.Where(x => x.Source != null).Select(x => x.Source).Distinct().ToArray();
+        var incomeTotals = category.Income.Aggregate(new TotalsAggregator<IncomeEntity>(),
+            (acc, e) => acc.Accumulate(e),
+            acc => acc.Compute());
+        var annualStatistics = AggregateUtilities<IncomeEntity>.GetAnnualStatistics(category.Income.ToArray());
+        var monthlyStatistics = AggregateUtilities<IncomeEntity>.GetStatisticsLast12Months(category.Income.ToArray());
+        var recentIncome = category.Income.OrderByDescending(i => i.Date)
+            .Take(8)
+            .Select(x => new IncomeQuickViewForCategoryDetail()
+            {
+                Id = x.Id,
+                Date = x.Date.Date.ToShortDateString(),
+                Amount = x.Amount,
+                Source = x.Source == null ? "" : x.Source.Name
+            }).ToList();
+        var sourcePurchaseOccurances = GetSourcePurchaseOccurances(sources, category.Income.ToArray());
+        var sourcePurchaseTotals = GetSourcePurchaseTotals(sources, category.Income.ToArray());
+        return new IncomeCategoryDetail()
+        {
+            Id = category.Id,
+            Name = category.Name,
+            InUse = category.InUse,
+            Notes = category.Notes,
+            IncomeTotals = incomeTotals,
+            AnnualIncomeStatistics = annualStatistics,
+            MonthlyIncomeStatistics = monthlyStatistics,
+            RecentIncome = recentIncome,
+            SourcePurchaseOccurances = sourcePurchaseOccurances,
+            SourcePurchaseTotals = sourcePurchaseTotals
+        };
+    }
+
+    private Dictionary<string, decimal> GetSourcePurchaseTotals(IncomeSourceEntity[] sources, IncomeEntity[] income)
+    {
+        var incomeWithSources = income.Where(x => x.SourceId.HasValue).ToList();
+        return sources.GroupJoin(incomeWithSources,
+            m => m.Id, i => i.Source.Id, (s, g) => new
+            {
+                Source = s.Name,
+                Income = g
+            }).Select(x => new
+            {
+                Source = x.Source,
+                Sum = x.Income.Sum(i => i.Amount)
+            }).Where(x => x.Sum > 0).OrderByDescending(x => x.Sum).ToDictionary(k => k.Source, v => v.Sum);
+    }
+
+    private Dictionary<string, int> GetSourcePurchaseOccurances(IncomeSourceEntity[] sources, IncomeEntity[] income)
+    {
+        var incomeWithSources = income.Where(x => x.SourceId.HasValue).ToList();
+        return sources.GroupJoin(incomeWithSources,
+        c => c.Id, i => i.Source.Id, (s, g) => new
+        {
+            Source = s.Name,
+            Income = g
+        }).Select(x => new
+        {
+            Source = x.Source,
+            Count = x.Income.Count()
+        }).OrderByDescending(x => x.Count).ToDictionary(k => k.Source, v => v.Count);
     }
 }
 
