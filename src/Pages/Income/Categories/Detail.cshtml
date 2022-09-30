@@ -308,7 +308,7 @@
                 ElementId = "categoryOccurancesDonut",
                 Labels = JsonSerializer.Serialize(Model.IncomeCategory.SourcePurchaseOccurances.Select(x => x.Key).ToArray()),
                 Dataset = JsonSerializer.Serialize(Model.IncomeCategory.SourcePurchaseOccurances.Select(x => x.Value).ToArray()),
-                Title = "Purchase Frequency By Category",
+                Title = "Category Frequency",
                 DisplayLabels = Model.IncomeCategory.AnnualIncomeStatistics.Count() < 11,
                 Responsive = true
         })

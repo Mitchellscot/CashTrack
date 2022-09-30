@@ -194,7 +194,6 @@ namespace CashTrack.Tests.Services
             var result = await _service.GetMerchantDetailAsync(5);
             result.Name.ShouldBe("Costco");
             result.MostUsedCategory.ShouldBe("Groceries");
-            result.MonthlyExpenseStatistics.ShouldNotBeEmpty();
             result.RecentExpenses.ShouldNotBeEmpty();
             result.PurchaseCategoryTotals.ShouldNotBeEmpty();
             result.PurchaseCategoryOccurances.ShouldNotBeEmpty();
