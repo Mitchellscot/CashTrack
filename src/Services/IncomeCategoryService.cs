@@ -180,7 +180,6 @@ public class IncomeCategoryService : IIncomeCategoryService
                 SourcePurchaseTotals = new Dictionary<string, decimal>()
             };
 
-        var incomeSpansMultipleYears = category.Income.GroupBy(e => e.Date.Year).ToList().Count() > 1;
         var sources = category.Income.Where(x => x.Source != null).Select(x => x.Source).Distinct().ToArray();
         var incomeTotals = category.Income.Aggregate(new TotalsAggregator<IncomeEntity>(),
             (acc, e) => acc.Accumulate(e),
