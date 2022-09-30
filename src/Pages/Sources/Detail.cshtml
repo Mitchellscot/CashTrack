@@ -160,69 +160,89 @@
         </div>
         <hr />
         <div class="row">
-            <div class="col-12 col-xl-6">
-                <canvas id="incomeChart" height="400" class="chart-height"></canvas>
+            @if (Model.Source.AnnualIncomeStatistcis.Any())
+            {
+                <div class="col-12 col-xl-6">
+                    <canvas id="annualIncomesChart" height="400" class="chart-height"></canvas>
             </div>
-            <div class="col-12 col-xl-6">
-                <canvas id="statisticsChart" height="400" class="chart-height"></canvas>
+            }
+            @if(Model.Source.MonthlyIncomeStatistcis.Any())
+            {
+                <div class="col-12 col-xl-6">
+                    <canvas id="monthlyIncomesChart" height="400" class="chart-height"></canvas>
+                </div>
+            }
+            @if (Model.Source.AnnualIncomeStatistcis.Any())
+            {
+                <div class="col-12 col-xl-6">
+                    <canvas id="annualStatisticsChart" height="400" class="chart-height"></canvas>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-6">
-                <canvas id="categoryTotalsPie" height="400" class="chart-height"></canvas>
+            }
+            @if (Model.Source.MonthlyIncomeStatistcis.Any())
+            {
+                <div class="col-12 col-xl-6">
+                    <canvas id="monthlyStatisticsChart" height="400" class="chart-height"></canvas>
             </div>
+            }
+            @if (Model.Source.PaymentCategoryTotals.Count() > 1)
+            {
+                <div class="col-12 col-md-6">
+                    <canvas id="categoryTotalsPie" height="400" class="chart-height"></canvas>
+            </div>
+            }
+            @if (Model.Source.PaymentCategoryOcurances.Count() > 1)
+            {
             <div class="col-12 col-md-6">
                 <canvas id="categoryOccurancesDonut" height="400" class="chart-height"></canvas>
             </div>
-
-        </div>
+            }
     </div>
 </div>
 @section Scripts {
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
 <script src="~/js/sourceDetail.js" asp-append-version="true"></script>
 
-@if(Model.Source.AnnualIncomeStatistcis.Any()){
+
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
     ChartType = ChartType.Bar,
     UseDefaultColor = true,
-    ElementId = "incomeChart",
+    ElementId = "annualIncomesChart",
     Labels = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Year).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Total).ToArray()),
-    Title = "Income Totals",
+    Title = "Annual Income Totals",
     Responsive = true
 })
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
     ChartType = ChartType.LineMultiAxis,
     UseDefaultColor = true,
-    ElementId = "statisticsChart",
+    ElementId = "annualStatisticsChart",
     Labels = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Year).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Count).ToArray()),
     Dataset2 = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Average).ToArray()),
     Dataset3 = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Min).ToArray()),
     Dataset4 = JsonSerializer.Serialize(Model.Source.AnnualIncomeStatistcis.Select(x => x.Max).ToArray()),
-    Title = "Income Statistics",
+    Title = "Annual Income Statistics",
     Responsive = true
 })
-}
+
 @if(Model.Source.MonthlyIncomeStatistcis.Any()){
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
     ChartType = ChartType.Bar,
     UseDefaultColor = true,
-    ElementId = "incomeChart",
+    ElementId = "monthlyIncomesChart",
     Labels = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Month).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Total).ToArray()),
-    Title = "Income Totals",
+    Title = "Monthly Income Totals",
     Responsive = true
 })
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
     ChartType = ChartType.LineMultiAxis,
     UseDefaultColor = true,
-    ElementId = "statisticsChart",
+    ElementId = "monthlyStatisticsChart",
     Labels = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Month).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Count).ToArray()),
     Dataset2 = JsonSerializer.Serialize(Model.Source.MonthlyIncomeStatistcis.Select(x => x.Average).ToArray()),
@@ -232,7 +252,7 @@
     Responsive = true
 })
 }
-@if(Model.Source.PaymentCategoryTotals.Count() > 1){
+
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
     ChartType = ChartType.Pie,
@@ -243,8 +263,7 @@
     Title = "Amount By Category",
     Responsive = true
 })
-}
-@if(Model.Source.PaymentCategoryOcurances.Count() > 1){
+
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
 {
     ChartType = ChartType.Donut,
@@ -255,5 +274,4 @@
     Title = "Category Frequency",
     Responsive = true
 })
-}
 }

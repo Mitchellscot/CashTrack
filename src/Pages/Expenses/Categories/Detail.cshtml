@@ -297,7 +297,7 @@
                 Dataset2 = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Average).ToArray()),
                 Dataset3 = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Min).ToArray()),
                 Dataset4 = JsonSerializer.Serialize(Model.SubCategory.MonthlyExpenseStatistics.Select(x => x.Max).ToArray()),
-                Title = "Expense Statistics",
+                Title = "Monthly Expense Statistics",
                 Responsive = true
             })
             @await Html.PartialAsync("_ChartPartial", new _ChartPartial()

@@ -38,7 +38,6 @@ namespace CashTrack.Tests.Services
             var result = await _service.GetSubCategoryDetailsAsync(22);
             result.Name.ShouldBe("Groceries");
             result.MainCategoryName.ShouldBe("Food");
-            result.MonthlyExpenseStatistics.ShouldNotBeEmpty();
             result.RecentExpenses.ShouldNotBeEmpty();
             result.MerchantPurchaseTotals.ShouldNotBeEmpty();
             result.MerchantPurchaseOccurances.ShouldNotBeEmpty();

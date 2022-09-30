@@ -50,7 +50,7 @@ namespace CashTrack.Tests.Unit
             var dates = DateHelpers.GetQuarterDatesFromDate(DateTime.Now);
             dates.startDate.ShouldBeLessThanOrEqualTo(DateTime.Now);
             dates.startDate.Day.ShouldBe(1);
-            dates.endDate.ShouldBeGreaterThanOrEqualTo(DateTime.Now);
+            dates.endDate.Date.ShouldBeGreaterThanOrEqualTo(DateTime.Now.Date);
             dates.endDate.Day.ShouldBeOneOf<int>(new int[] { 28, 29, 30, 31 });
             dates.startDate.Year.ShouldBe(DateTime.Now.Year);
             dates.endDate.Year.ShouldBe(DateTime.Now.Year);

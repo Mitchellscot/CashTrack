@@ -1,4 +1,315 @@
-﻿@page
+﻿@page "{id}"
+@using CashTrack.Models.IncomeCategoryModels
+@using CashTrack.Pages.Shared
+@using System.Text.Json
 @model CashTrack.Pages.Income.Categories.DetailModel
 @{
 }
+@{
+    Layout = "_Layout";
+}
+
+<div class="container">
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+
+    <div class="row mb-0">
+        <div class="d-flex align-content-center justify-content-center col ms-5 ps-5">
+            <h3 class="fw-bold">@Model.IncomeCategory.Name</h3>
+
+        </div>
+        <div class="col-auto d-flex align-content-center justify-content-center mb-0 mt-2">
+            <a class="link-primary text-decoration-underline" href="#" data-bs-toggle="modal" data-bs-target="#editIncomeCategoryModal">
+                Edit
+            </a>&nbsp; | &nbsp;
+            <a class="link-danger text-decoration-underline" href="#" data-bs-toggle="modal" data-bs-target="#deleteIncomeCategoryModal">
+                Delete
+            </a>
+        </div>
+    </div>
+
+    @*Delete Model*@
+    <div class="modal fade" id="deleteIncomeCategoryModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h5 class="modal-title text-center">
+                        <strong>Are you sure you want to Delete this Category?</strong>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-footer d-flex justify-content-evenly">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <form method="post">
+                        <button name="id"
+                                value="@Model.IncomeCategory.Id"
+                                type="submit"
+                                class="btn btn-danger"
+                                asp-page-handler="Delete">
+                            DELETE
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*End Delete Modal*@
+    <div class="modal fade" id="editIncomeCategoryModal">
+        @await Html.PartialAsync("_AddEditIncomeCategoryModal", new AddEditIncomeCategoryModal() {
+        Name = Model.IncomeCategory.Name,
+        InUse = Model.IncomeCategory.InUse,
+        Notes = Model.IncomeCategory.Notes,
+        IsEdit = true,
+        Returnurl="~/Income/Categories/Index"
+        })
+    </div>
+
+    <div class="container border">
+        <div class="row">
+            <div class="col-4 col-lg-3 mt-3">
+                <ul class="list-group text-center">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">Month: &nbsp;</span>
+                        <span class="fw-bold text-primary">@Model.IncomeCategory.IncomeTotals.TotalSpentThisMonth</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">Year: &nbsp;</span>
+                        <span class="fw-bold text-primary responsive-text">@Model.IncomeCategory.IncomeTotals.TotalSpentThisYear</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">Total: &nbsp;</span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.IncomeCategory.IncomeTotals.TotalSpentAllTime)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">Min: &nbsp;</span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.IncomeCategory.IncomeTotals.Min)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">Max: &nbsp;</span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.IncomeCategory.IncomeTotals.Max)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">Average: &nbsp;</span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.IncomeCategory.IncomeTotals.Average)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">Count: &nbsp;</span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @Model.IncomeCategory.IncomeTotals.Count
+                        </span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-4 col-lg-5">
+                <form method="get">
+                    <div class="input-group mx-auto m-3">
+                        <span class="input-group-text d-none d-lg-block">Name</span>
+                        <select data-val="true"
+                                onchange="this.form.submit()"
+                                asp-for=@Model.SearchTerm
+                                asp-items="@Model.IncomeCategoryList"
+                                class="form-select text-center">
+                        </select>
+                    </div>
+                </form>
+
+                <div class="input-group mx-auto m-3">
+                    @{
+                        var isActiveText = Model.IncomeCategory.InUse ? "Active" : "Inactive";
+                    }
+                    <span class="input-group-text d-none d-lg-block">In Use</span>
+                    <input type="text"
+                           class="white-on-disabled form-control text-center"
+                           asp-for="@Model.IncomeCategory.InUse"
+                           disabled
+                           value="@isActiveText" />
+                </div>
+                <div class="form-floating mx-auto">
+                    <textarea type="text"
+                              class="form-control white-on-disabled py-0 income-category-notes"
+                              id="categoryNotes"
+                              asp-for="@Model.IncomeCategory.Notes" disabled></textarea>
+                    @if (string.IsNullOrEmpty(Model.IncomeCategory.Notes))
+                    {
+                        <label for="categoryNotes">Description</label>
+                    }
+                </div>
+            </div>
+
+            <div class="col-4">
+                <div class="d-flex justify-content-center">
+                    <span class="mb-0 fw-bold d-none d-lg-block">
+                        Recent Income
+                    </span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a class="link-success float-end text-decoration-underline"
+                       asp-page="/Income/Index" asp-route-Query="8"
+                       asp-route-Q="@Model.IncomeCategory.Id"
+                       asp-route-pageNumber="1">
+                        View All
+                    </a>
+                </div>
+                <div class="table-responsive-lg">
+                    <table class="table table-sm align-middle text-center mb-0">
+                        <thead class="p-0 m-0">
+                            <tr>
+                                <th class="p-0 m-0">
+                                    Date
+                                </th>
+                                <th class="p-0 m-0">
+                                    Amount
+                                </th>
+                                <th class="p-0 m-0">
+                                    Source
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var income in @Model.IncomeCategory.RecentIncome)
+                            {
+                                <tr>
+                                    <td>
+                                        @income.Date
+                                    </td>
+                                    <td>
+                                        @String.Format("{0:n}", income.Amount)
+                                    </td>
+                                    <td>
+                                        @income.Source
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            @if (Model.IncomeCategory.AnnualIncomeStatistics.Any())
+            {
+                <div class="col-12 col-xl-6">
+                    <canvas id="annualIncomesChart" height="400" class="chart-height"></canvas>
+            </div>
+            }
+            @if(Model.IncomeCategory.MonthlyIncomeStatistics.Any())
+            {
+                <div class="col-12 col-xl-6">
+                    <canvas id="monthlyIncomesChart" height="400" class="chart-height"></canvas>
+                </div>
+            }
+            @if (Model.IncomeCategory.AnnualIncomeStatistics.Any())
+            {
+                <div class="col-12 col-xl-6">
+                    <canvas id="annualStatisticsChart" height="400" class="chart-height"></canvas>
+            </div>
+            }
+            @if (Model.IncomeCategory.MonthlyIncomeStatistics.Any())
+            {
+                <div class="col-12 col-xl-6">
+                    <canvas id="monthlyStatisticsChart" height="400" class="chart-height"></canvas>
+            </div>
+            }
+            @if (Model.IncomeCategory.SourcePurchaseTotals.Count() > 1)
+            {
+                <div class="col-12 col-md-6">
+                    <canvas id="categoryTotalsPie" height="400" class="chart-height"></canvas>
+            </div>
+            }
+            @if (Model.IncomeCategory.SourcePurchaseOccurances.Count() > 1)
+            {
+            <div class="col-12 col-md-6">
+                <canvas id="categoryOccurancesDonut" height="400" class="chart-height"></canvas>
+            </div>
+            }
+        </div>
+
+    </div>
+    </div>
+    @section Scripts {
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
+            @await Html.PartialAsync("_ChartPartial", new _ChartPartial(){
+                ChartType = ChartType.Bar,
+                UseDefaultColor = true,
+                ElementId = "annualIncomesChart",
+                Labels = JsonSerializer.Serialize(Model.IncomeCategory.AnnualIncomeStatistics.Select(x => x.Year).ToArray()),
+                Dataset = JsonSerializer.Serialize(Model.IncomeCategory.AnnualIncomeStatistics.Select(x => x.Total).ToArray()),
+                Title = "Annual Income Totals",
+                Responsive = true
+           })
+            @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+            {
+                ChartType = ChartType.LineMultiAxis,
+                UseDefaultColor = true,
+                ElementId = "annualStatisticsChart",
+                Labels = JsonSerializer.Serialize(Model.IncomeCategory.AnnualIncomeStatistics.Select(x => x.Year).ToArray()),
+                Dataset = JsonSerializer.Serialize(Model.IncomeCategory.AnnualIncomeStatistics.Select(x => x.Count).ToArray()),
+                Dataset2 = JsonSerializer.Serialize(Model.IncomeCategory.AnnualIncomeStatistics.Select(x => x.Average).ToArray()),
+                Dataset3 = JsonSerializer.Serialize(Model.IncomeCategory.AnnualIncomeStatistics.Select(x => x.Min).ToArray()),
+                Dataset4 = JsonSerializer.Serialize(Model.IncomeCategory.AnnualIncomeStatistics.Select(x => x.Max).ToArray()),
+                Title = "Annual Income Statistics",
+                Responsive = true
+            })
+            @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+            {
+                ChartType = ChartType.Bar,
+                UseDefaultColor = true,
+                ElementId = "monthlyIncomesChart",
+                Labels = JsonSerializer.Serialize(Model.IncomeCategory.MonthlyIncomeStatistics.Select(x => x.Month).ToArray()),
+                Dataset = JsonSerializer.Serialize(Model.IncomeCategory.MonthlyIncomeStatistics.Select(x => x.Total).ToArray()),
+                Title = "Monthly Income Totals",
+                Responsive = true
+            })
+            @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+            {
+                ChartType = ChartType.LineMultiAxis,
+                UseDefaultColor = true,
+                ElementId = "monthlyStatisticsChart",
+                Labels = JsonSerializer.Serialize(Model.IncomeCategory.MonthlyIncomeStatistics.Select(x => x.Month).ToArray()),
+                Dataset = JsonSerializer.Serialize(Model.IncomeCategory.MonthlyIncomeStatistics.Select(x => x.Count).ToArray()),
+                Dataset2 = JsonSerializer.Serialize(Model.IncomeCategory.MonthlyIncomeStatistics.Select(x => x.Average).ToArray()),
+                Dataset3 = JsonSerializer.Serialize(Model.IncomeCategory.MonthlyIncomeStatistics.Select(x => x.Min).ToArray()),
+                Dataset4 = JsonSerializer.Serialize(Model.IncomeCategory.MonthlyIncomeStatistics.Select(x => x.Max).ToArray()),
+                Title = "Income Statistics",
+                Responsive = true
+            })
+            @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+            {
+                ChartType = ChartType.Pie,
+                UseDefaultColor = false,
+                ElementId = "categoryTotalsPie",
+                Labels =  JsonSerializer.Serialize(Model.IncomeCategory.SourcePurchaseTotals.Select(x => x.Key).ToArray()),
+                Dataset = JsonSerializer.Serialize(Model.IncomeCategory.SourcePurchaseTotals.Select(x => x.Value).ToArray()),
+                Title = "Amount By Category",
+                DisplayLabels = Model.IncomeCategory.AnnualIncomeStatistics.Count() < 11,
+                Responsive = true
+        })
+            @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+            {
+                ChartType = ChartType.Donut,
+                UseDefaultColor = false,
+                ElementId = "categoryOccurancesDonut",
+                Labels = JsonSerializer.Serialize(Model.IncomeCategory.SourcePurchaseOccurances.Select(x => x.Key).ToArray()),
+                Dataset = JsonSerializer.Serialize(Model.IncomeCategory.SourcePurchaseOccurances.Select(x => x.Value).ToArray()),
+                Title = "Category Frequency",
+                DisplayLabels = Model.IncomeCategory.AnnualIncomeStatistics.Count() < 11,
+                Responsive = true
+        })
+    }

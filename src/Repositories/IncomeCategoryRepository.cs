@@ -13,6 +13,8 @@ namespace CashTrack.Repositories.IncomeCategoryRepository;
 public interface IIncomeCategoryRepository : IRepository<IncomeCategoryEntity>
 {
     Task<IncomeCategoryEntity[]> FindWithPaginationIncludeIncome(Expression<Func<IncomeCategoryEntity, bool>> predicate, int pageNumber, int pageSize);
+    Task<IncomeCategoryEntity[]> FindWithIncomeAndSources(Expression<Func<IncomeCategoryEntity, bool>> predicate);
+
 }
 
 public class IncomeCategoryRepository : IIncomeCategoryRepository
@@ -20,6 +22,21 @@ public class IncomeCategoryRepository : IIncomeCategoryRepository
     private readonly AppDbContext _ctx;
 
     public IncomeCategoryRepository(AppDbContext context) => _ctx = context;
+
+    public async Task<IncomeCategoryEntity[]> FindWithIncomeAndSources(Expression<Func<IncomeCategoryEntity, bool>> predicate)
+    {
+        try
+        {
+            return await _ctx.IncomeCategories.Where(predicate)
+                .Include(x => x.Income)
+                .ThenInclude(x => x.Source)
+                .ToArrayAsync();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 
     public async Task<int> Create(IncomeCategoryEntity entity)
     {

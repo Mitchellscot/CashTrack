@@ -66,7 +66,7 @@ public class IncomeSourceService : IIncomeSourceService
 
     public async Task<string[]> GetAllIncomeSourceNames()
     {
-        return (await _sourceRepo.Find(x => true)).Select(x => x.Name).ToArray();
+        return (await _sourceRepo.Find(x => true)).Select(x => x.Name).OrderBy(x => x).ToArray();
     }
     public async Task<IncomeSourceEntity> GetIncomeSourceByName(string name)
     {
@@ -128,8 +128,6 @@ public class IncomeSourceService : IIncomeSourceService
         var incomes = await _incomeRepo.GetIncomeAndCategoriesBySourceId(id);
         var categories = incomes.Select(x => x.Category).Distinct().ToArray();
 
-        var incomeSpansMultipleYears = incomes.GroupBy(x => x.Date.Year).ToList().Count > 1;
-
         return new IncomeSourceDetail()
         {
             Id = source.Id,
@@ -147,9 +145,9 @@ public class IncomeSourceService : IIncomeSourceService
 
             MostUsedCategory = GetIncomeCategoryOccurances(categories, incomes).FirstOrDefault().Key,
 
-            AnnualIncomeStatistcis = incomeSpansMultipleYears ? AggregateUtilities<IncomeEntity>.GetAnnualStatistics(incomes) : new List<AnnualStatistics>(),
+            AnnualIncomeStatistcis = AggregateUtilities<IncomeEntity>.GetAnnualStatistics(incomes),
 
-            MonthlyIncomeStatistcis = incomeSpansMultipleYears ? new List<MonthlyStatistics>() : AggregateUtilities<IncomeEntity>.GetMonthlyStatistics(incomes),
+            MonthlyIncomeStatistcis = AggregateUtilities<IncomeEntity>.GetStatisticsLast12Months(incomes),
 
             PaymentCategoryOcurances = GetIncomeCategoryOccurances(categories, incomes),
             PaymentCategoryTotals = GetIncomeCategoryTotals(categories, incomes),
@@ -198,7 +196,7 @@ public class IncomeSourceService : IIncomeSourceService
         {
             Id = x.Id,
             Name = x.Name
-        }).ToArray();
+        }).OrderBy(x => x.Name).ToArray();
     }
 }
 

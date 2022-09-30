@@ -25,6 +25,19 @@ namespace CashTrack.Tests.Services
             _service = new IncomeCategoryService(repo, incomeRepo);
         }
         [Fact]
+        public async Task Get_Category_Detail()
+        {
+            var result = await _service.GetCategoryDetailAsync(10);
+            result.Name.ShouldBe("Bonus");
+            result.RecentIncome.ShouldNotBeEmpty();
+            result.SourcePurchaseTotals.ShouldNotBeEmpty();
+            result.SourcePurchaseOccurances.ShouldNotBeEmpty();
+            result.IncomeTotals.Average.ShouldNotBe(0);
+            result.IncomeTotals.Count.ShouldNotBe(0);
+            result.IncomeTotals.Max.ShouldNotBe(0);
+            result.IncomeTotals.Min.ShouldNotBe(0);
+        }
+        [Fact]
         public async Task Get_Income_Categories()
         {
             var request = new IncomeCategoryRequest();

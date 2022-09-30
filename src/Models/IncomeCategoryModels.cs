@@ -1,5 +1,8 @@
 ﻿using CashTrack.Models.Common;
+using CashTrack.Models.ExpenseModels;
+using CashTrack.Services.Common;
 using System;
+using System.Collections.Generic;
 
 namespace CashTrack.Models.IncomeCategoryModels;
 
@@ -17,13 +20,6 @@ public class IncomeCategoryListItem : Category
     public DateTime LastPayment { get; set; }
     public bool InUse { get; set; }
 }
-public class IncomeCategoryDetail : Category
-{
-    public string Notes { get; set; }
-    public bool InUse { get; set; } = true;
-    //maybe some other cool properties... how many incomes related to this, total amount... maybe a yearly graph?
-    //Get all expenses by income category and compare with income sources. How many gifts came from my parents, etc.
-}
 
 public class AddEditIncomeCategoryModal : Category
 {
@@ -33,10 +29,25 @@ public class AddEditIncomeCategoryModal : Category
     public bool IsEdit { get; set; }
     public string Returnurl { get; set; }
 }
+public class IncomeCategoryDetail : Category
+{
+    public string Notes { get; set; }
+    public bool InUse { get; set; } = true;
+    public Totals IncomeTotals { get; set; }
+    public List<AnnualStatistics> AnnualIncomeStatistics { get; set; }
+    public List<MonthlyStatistics> MonthlyIncomeStatistics { get; set; }
+    public List<IncomeQuickViewForCategoryDetail> RecentIncome { get; set; }
+    public Dictionary<string, int> SourcePurchaseOccurances { get; set; }
+    public Dictionary<string, decimal> SourcePurchaseTotals { get; set; }
+}
 
 public class IncomeCategoryDropdownSelection
 {
     public int Id { get; set; }
     public string Category { get; set; }
 }
-
+public class IncomeQuickViewForCategoryDetail : Transaction
+{
+    new public string Date { get; set; }
+    public string Source { get; set; }
+}

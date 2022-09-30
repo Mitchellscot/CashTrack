@@ -148,8 +148,6 @@ public class MerchantService : IMerchantService
 
         var subCategories = expenses.Select(x => x.Category).Distinct().ToArray();
 
-        var expensesSpanMultipleYears = expenses.GroupBy(e => e.Date.Year).ToList().Count() > 1;
-
         return new MerchantDetail()
         {
             Id = merchant.Id,
@@ -166,11 +164,8 @@ public class MerchantService : IMerchantService
 
             MostUsedCategory = GetExpenseCategoryOccurances(subCategories, expenses).FirstOrDefault().Key,
 
-            AnnualExpenseStatistics = expensesSpanMultipleYears ?
-            AggregateUtilities<ExpenseEntity>.GetAnnualStatistics(expenses) : new List<AnnualStatistics>(),
-
-            MonthlyExpenseStatistics = expensesSpanMultipleYears ?
-            new List<MonthlyStatistics>() : AggregateUtilities<ExpenseEntity>.GetMonthlyStatistics(expenses),
+            AnnualExpenseStatistics = AggregateUtilities<ExpenseEntity>.GetAnnualStatistics(expenses),
+            MonthlyExpenseStatistics = AggregateUtilities<ExpenseEntity>.GetStatisticsLast12Months(expenses),
 
             PurchaseCategoryOccurances = GetExpenseCategoryOccurances(subCategories, expenses),
             PurchaseCategoryTotals = GetExpenseCategoryTotals(subCategories, expenses),
