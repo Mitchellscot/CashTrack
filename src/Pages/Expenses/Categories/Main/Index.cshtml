@@ -1,9 +1,18 @@
 ﻿@page
+@using CashTrack.Pages.Shared
 @model CashTrack.Pages.Expenses.Categories.Main.IndexModel
 @{
 }
-<div>
-    INIT
+<div class="container-fluid">
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+        <div class="row mb-1">
+
+            </div>
 </div>
 
 @section Scripts {
