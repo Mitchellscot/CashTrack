@@ -262,3 +262,51 @@
             });
     </script>
 }
+@if (Model.ChartType == ChartType.StackedBar)
+{
+    <script>
+        const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+        const @Model.ElementId = new Chart(@Model.VariableName, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(@Model.Labels),
+                datasets: [
+                @foreach(var data in Model.MultipleDataSets)
+                {
+                    <text>
+                    {
+                    label: @data.Key,
+                    data: @data.Value,
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: @Html.Raw(color),
+                    borderColor:@Html.Raw(color),
+                    borderWidth: 1
+                    },
+                    </text>
+                }
+                ]
+            },
+            options: {
+                responsive: @Model.Responsive.ToString().ToLower(),
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true
+                    },
+                },
+                plugins: {
+                    legend: {
+                        display: @Model.DisplayLabels.ToString().ToLower(),
+                        position: 'top',
+                    },
+                    title: {
+                        display: @titleExists.ToString().ToLower(),
+                        text: '@Model.Title'
+                    }
+                }
+            }
+        });
+    </script>
+}

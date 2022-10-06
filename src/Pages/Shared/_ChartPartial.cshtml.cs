@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
@@ -23,6 +24,7 @@ namespace CashTrack.Pages.Shared
         public string Dataset2 { get; set; }
         public string Dataset3 { get; set; }
         public string Dataset4 { get; set; }
+        public Dictionary<string, string> MultipleDataSets { get; set; }
         public ChartType ChartType { get; set; }
         public string Title { get; set; }
         private string GetColors()
@@ -41,7 +43,8 @@ namespace CashTrack.Pages.Shared
         BarAndLine,
         LineMultiAxis,
         Pie,
-        Donut
+        Donut,
+        StackedBar
     }
 
 }
