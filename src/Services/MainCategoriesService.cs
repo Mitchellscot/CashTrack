@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace CashTrack.Services.MainCategoriesService
 {
@@ -69,23 +70,16 @@ namespace CashTrack.Services.MainCategoriesService
 
         public async Task<MainCategoryResponse> GetMainCategoriesAsync(MainCategoryRequest request)
         {
-            Expression<Func<MainCategoryEntity, bool>> search = (MainCategoryEntity x) => x.Name.ToLower().Contains(request.Query);
-            Expression<Func<MainCategoryEntity, bool>> returnAll = (MainCategoryEntity x) => true;
+            var categories = await _mainCategoryRepo.Find(x => true);
 
-            var predicate = request.Query == null ? returnAll : search;
-            var categories = await _mainCategoryRepo.Find(predicate);
-            var listItems = categories.Select(mc => new MainCategoryListItem()
-            {
-                Id = mc.Id,
-                Name = mc.Name,
-                NumberOfSubCategories = (int)_subCategoryRepository.GetCount(c => c.MainCategoryId == mc.Id).Result
-            }).ToArray();
+            var listItems = await _mainCategoryRepo.GetMainCategoryListItems();
 
             var response = new MainCategoryResponse()
             {
                 TotalMainCategories = categories.Count(),
                 MainCategories = listItems
             };
+
             return response;
         }
 

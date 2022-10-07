@@ -7,16 +7,58 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using CashTrack.Repositories.Common;
+using CashTrack.Models.MainCategoryModels;
+using System.Collections.Generic;
 
 namespace CashTrack.Repositories.MainCategoriesRepository
 {
     public interface IMainCategoriesRepository : IRepository<MainCategoryEntity>
     {
+        Task<MainCategoryListItem[]> GetMainCategoryListItems();
     }
     public class MainCategoriesRepository : IMainCategoriesRepository
     {
         private readonly AppDbContext _context;
         public MainCategoriesRepository(AppDbContext dbContext) => (_context) = (dbContext);
+
+        //my attempt to produce a fast query with an aggregate on a navigation property
+        public async Task<MainCategoryListItem[]> GetMainCategoryListItems()
+        {
+            var categories = await _context.SubCategories
+                .Where(x => x.Name != "Uncategorized")
+                .ToListAsync();
+
+            return categories.GroupBy(c => c.MainCategoryId).Select(g =>
+            {
+                var subCategoryEntities = categories.Where(x => x.MainCategoryId == g.Key).ToList();
+
+                var subCategoryAmounts = subCategoryEntities.Select(subCategory =>
+                {
+                    var totalAmountofSubCategory = _context.Entry(subCategory)
+                    .Collection(x => x.Expenses)
+                    .Query()
+                    .Where(sc => sc.Category.Name != "Uncategorized")
+                    .Sum(x => x.Amount);
+
+                    return (Name: subCategory.Name, Amount: totalAmountofSubCategory);
+                }).ToDictionary(k => k.Name, v => v.Amount);
+
+                var mainCategoryTotal = (int)decimal.Round(subCategoryAmounts.Values.Sum(), 0);
+
+                var subCategoryPercentages = subCategoryAmounts.Select(x =>
+                (Name: x.Key, Percentage: (int)decimal.Round((x.Value / mainCategoryTotal) * 100)))
+                .ToDictionary(k => k.Name, v => v.Percentage);
+
+                return new MainCategoryListItem()
+                {
+                    Id = g.Key,
+                    Name = subCategoryEntities.First().MainCategory.Name,
+                    NumberOfSubCategories = subCategoryEntities.Count(),
+                    SubCategoryExpenses = subCategoryPercentages
+                };
+
+            }).ToArray();
+        }
 
         public async Task<int> Create(MainCategoryEntity entity)
         {

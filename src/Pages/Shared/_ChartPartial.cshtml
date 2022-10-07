@@ -7,8 +7,8 @@
 @if (Model.ChartType == ChartType.Bar)
 {
     <script>
-            const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
-            const @Model.ElementId = new Chart(@Model.VariableName, {
+        const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+        const @Model.ElementId = new Chart(@Model.VariableName, {
             type: 'bar',
             data: {
                 labels: @Html.Raw(@Model.Labels),
@@ -17,7 +17,7 @@
                     data: @Model.Dataset,
                     color: 'rgba(0, 0, 0, 0)',
                     backgroundColor: @Html.Raw(color),
-                    borderColor:@Html.Raw(color),
+                    borderColor: @Html.Raw(color),
                     borderWidth: 1
                 }]
             },
@@ -26,13 +26,13 @@
                 plugins: {
                     legend: {
                         display: @Model.DisplayLabels.ToString().ToLower(),
-            position: 'top',
-          },
-          title: {
-            display: @titleExists.ToString().ToLower(),
-            text: '@Model.Title'
-          }
-        }
+                        position: 'top',
+                    },
+                    title: {
+                        display: @titleExists.ToString().ToLower(),
+                        text: '@Model.Title'
+                    }
+                }
             }
         });
     </script>
@@ -40,8 +40,8 @@
 @if (Model.ChartType == ChartType.LineMultiAxis)
 {
     <script>
-            const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
-            const @Model.ElementId = new Chart(@Model.VariableName, {
+        const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+        const @Model.ElementId = new Chart(@Model.VariableName, {
             type: 'line',
             data: {
                 labels: @Html.Raw(@Model.Labels),
@@ -52,9 +52,9 @@
                     order: 4,
                     color: 'rgba(0, 0, 0, 0)',
                     backgroundColor: "rgba(44, 62, 88, 1)",
-                    borderColor:"rgba(44, 62, 88, 1)",
+                    borderColor: "rgba(44, 62, 88, 1)",
                     borderWidth: 2
-                },{
+                }, {
                     label: 'Average',
                     data: @Model.Dataset2,
                     borderDash: [5, 5],
@@ -64,7 +64,7 @@
                     backgroundColor: "rgba(52, 152, 219, 1)",
                     borderColor: "rgba(52, 152, 219, 1)",
                     borderWidth: 2
-                },{
+                }, {
                     label: 'Min',
                     data: @Model.Dataset3,
                     yAxisID: 'y',
@@ -73,7 +73,7 @@
                     backgroundColor: "rgba(243, 156, 18, 1)",
                     borderColor: "rgba(243, 156, 18, 1)",
                     borderWidth: 2
-                },{
+                }, {
                     label: 'Max',
                     data: @Model.Dataset4,
                     yAxisID: 'y',
@@ -119,16 +119,16 @@
                             drawOnChartArea: false,
                         },
                     },
-                    },
-                }
-                });
+                },
+            }
+        });
     </script>
 }
 @if (Model.ChartType == ChartType.Pie)
 {
     <script>
-            const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
-            const @Model.ElementId = new Chart(@Model.VariableName, {
+        const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+        const @Model.ElementId = new Chart(@Model.VariableName, {
             type: 'pie',
             data: {
                 labels: @Html.Raw(@Model.Labels),
@@ -136,23 +136,23 @@
                     label: 'Total',
                     data: @Model.Dataset,
                     color: 'rgba(0, 0, 0, 0)',
-                    backgroundColor:@Html.Raw(color),
-                    borderColor:@Html.Raw(color),
+                    backgroundColor: @Html.Raw(color),
+                    borderColor: @Html.Raw(color),
                     borderWidth: 1
                 }]
             },
             options: {
                 responsive: @Model.Responsive.ToString().ToLower(),
                 plugins: {
-          legend: {
-            display: @Model.DisplayLabels.ToString().ToLower(),
-            position: 'bottom',
-          },
-          title: {
-            display: @titleExists.ToString().ToLower(),
-            text: '@Model.Title'
-          }
-        }
+                    legend: {
+                        display: @Model.DisplayLabels.ToString().ToLower(),
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: @titleExists.ToString().ToLower(),
+                        text: '@Model.Title'
+                    }
+                }
             }
         });
     </script>
@@ -160,8 +160,8 @@
 @if (Model.ChartType == ChartType.Donut)
 {
     <script>
-            const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
-            const @Model.ElementId = new Chart(@Model.VariableName, {
+        const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+        const @Model.ElementId = new Chart(@Model.VariableName, {
             type: 'doughnut',
             data: {
                 labels: @Html.Raw(@Model.Labels),
@@ -169,23 +169,23 @@
                     label: 'Total',
                     data: @Model.Dataset,
                     color: 'rgba(0, 0, 0, 0)',
-                    backgroundColor:@Html.Raw(color),
-                    borderColor:@Html.Raw(color),
+                    backgroundColor: @Html.Raw(color),
+                    borderColor: @Html.Raw(color),
                     borderWidth: 1
                 }]
             },
             options: {
                 responsive: @Model.Responsive.ToString().ToLower(),
                 plugins: {
-          legend: {
-            display: @Model.DisplayLabels.ToString().ToLower(),
-            position: 'bottom',
-          },
-          title: {
-            display: @titleExists.ToString().ToLower(),
-            text: '@Model.Title'
-          }
-        }
+                    legend: {
+                        display: @Model.DisplayLabels.ToString().ToLower(),
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: @titleExists.ToString().ToLower(),
+                        text: '@Model.Title'
+                    }
+                }
             }
         });
     </script>
@@ -193,73 +193,73 @@
 @if (Model.ChartType == ChartType.BarAndLine)
 {
     <script>
-                const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
-                const @Model.ElementId = new Chart(@Model.VariableName, {
+        const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+        const @Model.ElementId = new Chart(@Model.VariableName, {
+            type: 'bar',
+            data: {
+                labels: @Model.Labels,
+                datasets: [{
+                    label: 'Total',
+                    yAxisID: 'y',
+                    order: 2,
+                    data: @Model.Dataset,
                     type: 'bar',
-                data: {
-                    labels: @Model.Labels,
-                    datasets: [{
-                        label: 'Total',
-                        yAxisID: 'y',
-                        order: 2,
-                        data: @Model.Dataset,
-                        type: 'bar',
-                        color: 'rgba(0, 0, 0, 0)',
-                        backgroundColor: @Html.Raw(color),
-                        borderColor: @Html.Raw(color),
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Count',
-                        yAxisID: 'y1',
-                        order: 1,
-                        data: @Model.Dataset2,
-                        type: 'line',
-                        color: 'rgba(0, 0, 0, 0)',
-                        backgroundColor: "rgba(44, 62, 88, .8)",
-                        borderColor:"rgba(44, 62, 88, .8)",
-                        borderWidth: 1
-                    }]
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: @Html.Raw(color),
+                    borderColor: @Html.Raw(color),
+                    borderWidth: 1
                 },
-                options: {
-                    responsive: @Model.Responsive.ToString().ToLower(),
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
+                {
+                    label: 'Count',
+                    yAxisID: 'y1',
+                    order: 1,
+                    data: @Model.Dataset2,
+                    type: 'line',
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: "rgba(44, 62, 88, .8)",
+                    borderColor: "rgba(44, 62, 88, .8)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: @Model.Responsive.ToString().ToLower(),
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                stacked: true,
+                scales: {
+                    xAxes: [{ display: true, stacked: true, scaleLabel: { display: false, labelString: '' } }],
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        grid: {
+                            drawOnChartArea: false,
+                        },
                     },
-                    stacked: true,
-         scales: {
-             xAxes: [{display: true, stacked:true, scaleLabel: {display: false, labelString: ''}}],
-          y: {
-            type: 'linear',
-            display: true,
-            position: 'left',
-            grid: {
-              drawOnChartArea: false,
-            },
-          },
-          y1: {
-            type: 'linear',
-            display: true,
-            position: 'right',
-            offset: true,
-            grid: {
-              drawOnChartArea: false,
-            },
-          },
-        },
-        plugins: {
-            legend: {
-                display: @Model.DisplayLabels.ToString().ToLower(),
-                position: 'top',
-              },
-              title: {
-                display: @titleExists.ToString().ToLower(),
-                text: '@Model.Title'
-              }
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        offset: true,
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    },
+                },
+                plugins: {
+                    legend: {
+                        display: @Model.DisplayLabels.ToString().ToLower(),
+                        position: 'top',
+                    },
+                    title: {
+                        display: @titleExists.ToString().ToLower(),
+                        text: '@Model.Title'
+                    }
+                }
             }
-            }
-            });
+        });
     </script>
 }
 @if (Model.ChartType == ChartType.StackedBar)
@@ -271,20 +271,20 @@
             data: {
                 labels: @Html.Raw(@Model.Labels),
                 datasets: [
-                @foreach(var data in Model.MultipleDataSets)
-                {
-                    <text>
-                    {
-                    label: @data.Key,
-                    data: @data.Value,
-                    color: 'rgba(0, 0, 0, 0)',
-                    backgroundColor: @Html.Raw(color),
-                    borderColor:@Html.Raw(color),
-                    borderWidth: 1
-                    },
-                    </text>
-                }
-                ]
+        @foreach (var data in Model.MultipleDataSets)
+        {
+            <text>
+                        {
+                            label: @data.Key,
+                            data: @data.Value,
+                            color: 'rgba(0, 0, 0, 0)',
+                            backgroundColor: @Html.Raw(color),
+                            borderColor: @Html.Raw(color),
+                            borderWidth: 1
+                        },
+            </text>
+        }
+                        ]
             },
             options: {
                 responsive: @Model.Responsive.ToString().ToLower(),
