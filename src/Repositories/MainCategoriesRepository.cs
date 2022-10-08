@@ -17,6 +17,7 @@ namespace CashTrack.Repositories.MainCategoriesRepository
         Task<MainCategoryListItem[]> GetMainCategoryListItems(Expression<Func<ExpenseEntity, bool>> predicate);
         Task<Dictionary<string, int>> GetSubCategoryCounts(Expression<Func<ExpenseEntity, bool>> predicate);
         Task<Dictionary<string, decimal>> GetSubCategoryAmounts(Expression<Func<ExpenseEntity, bool>> predicate);
+        Task<Dictionary<string, int>> GetMainCategoryPercentages(Expression<Func<ExpenseEntity, bool>> predicate);
     }
     public class MainCategoriesRepository : IMainCategoriesRepository
     {
@@ -61,6 +62,27 @@ namespace CashTrack.Repositories.MainCategoriesRepository
                 };
 
             }).Where(x => x.NumberOfSubCategories > 0).OrderBy(x => x.Name).ToArray();
+        }
+
+        public async Task<Dictionary<string, int>> GetMainCategoryPercentages(Expression<Func<ExpenseEntity, bool>> predicate)
+        {
+            var categories = await _context.SubCategories
+                .Where(x => x.Name != "Uncategorized")
+                .Include(x => x.Expenses)
+                .ToListAsync();
+
+            var amounts =  categories.GroupBy(x => x.MainCategory.Name).Select(x =>
+            {
+                return(Name: x.Key, Amount: x.SelectMany(x => x.Expenses)
+                .AsQueryable()
+                .Where(predicate)
+                .Sum(x => x.Amount));
+            }).ToDictionary(k => k.Name, v => v.Amount);
+            var total = amounts.Values.Sum();
+            return amounts.Where(x => x.Value > 0).Select(x =>
+            {
+                return (Name: x.Key, Percentage: (int)decimal.Round((x.Value / total) * 100));
+            }).Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
         }
 
         public async Task<int> Create(MainCategoryEntity entity)
@@ -152,6 +174,7 @@ namespace CashTrack.Repositories.MainCategoriesRepository
                 throw;
             }
         }
+
 
         public async Task<Dictionary<string, decimal>> GetSubCategoryAmounts(Expression<Func<ExpenseEntity, bool>> predicate)
         {

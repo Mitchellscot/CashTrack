@@ -85,11 +85,14 @@ namespace CashTrack.Services.MainCategoriesService
                 return (Name: x.Key, Percentage: percentageOfTotalForCategory);
             }).Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
 
+            var mainCategoryPercentages = await _mainCategoryRepo.GetMainCategoryPercentages(predicate);
+
             var response = new MainCategoryResponse()
             {
                 TotalMainCategories = categories.Count(),
                 MainCategories = listItems,
-                CategoryPercentages = subCategoryPercentagesOfTotal,
+                MainCategoryPercentages = mainCategoryPercentages,
+                SubCategoryPercentages = subCategoryPercentagesOfTotal,
                 CategoryPurchaseOccurances = subCategoryOccurances
             };
 

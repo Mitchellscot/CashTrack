@@ -13,7 +13,8 @@ public record MainCategoryResponse
 {
     public int TotalMainCategories { get; set; }
     public MainCategoryListItem[] MainCategories { get; set; }
-    public Dictionary<string, int> CategoryPercentages { get; set; }
+    public Dictionary<string, int> MainCategoryPercentages {get;set;}
+    public Dictionary<string, int> SubCategoryPercentages { get; set; }
     public Dictionary<string, int> CategoryPurchaseOccurances { get; set; }
 
     //For the MainCategoryExpenseChart
