@@ -7,6 +7,7 @@ namespace CashTrack.Models.MainCategoryModels;
 public record MainCategoryRequest
 {
     public string Query { get; set; }
+    public MainCategoryTimeOptions TimeOption {get;set;}
 }
 public record MainCategoryResponse
 {
@@ -52,3 +53,11 @@ public class MainCategoryDropdownSelection
     public string Category { get; set; }
 }
 
+public enum MainCategoryTimeOptions
+{ 
+    AllTime,
+    FiveYears,
+    ThreeYears,
+    OneYear,
+    SixMonths
+}

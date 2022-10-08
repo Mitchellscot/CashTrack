@@ -14,9 +14,9 @@ namespace CashTrack.Repositories.MainCategoriesRepository
 {
     public interface IMainCategoriesRepository : IRepository<MainCategoryEntity>
     {
-        Task<MainCategoryListItem[]> GetMainCategoryListItems();
-        Task<Dictionary<string, int>> GetSubCategoryCounts();
-        Task<Dictionary<string, decimal>> GetSubCategoryAmounts();
+        Task<MainCategoryListItem[]> GetMainCategoryListItems(Expression<Func<ExpenseEntity, bool>> predicate);
+        Task<Dictionary<string, int>> GetSubCategoryCounts(Expression<Func<ExpenseEntity, bool>> predicate);
+        Task<Dictionary<string, decimal>> GetSubCategoryAmounts(Expression<Func<ExpenseEntity, bool>> predicate);
     }
     public class MainCategoriesRepository : IMainCategoriesRepository
     {
@@ -24,7 +24,7 @@ namespace CashTrack.Repositories.MainCategoriesRepository
         public MainCategoriesRepository(AppDbContext dbContext) => (_context) = (dbContext);
 
         //my attempt to produce a fast query with an aggregate on a navigation property
-        public async Task<MainCategoryListItem[]> GetMainCategoryListItems()
+        public async Task<MainCategoryListItem[]> GetMainCategoryListItems(Expression<Func<ExpenseEntity, bool>> predicate)
         {
             var categories = await _context.SubCategories
                 .Where(x => x.Name != "Uncategorized")
@@ -40,6 +40,7 @@ namespace CashTrack.Repositories.MainCategoriesRepository
                     .Collection(x => x.Expenses)
                     .Query()
                     .Where(sc => sc.Category.Name != "Uncategorized")
+                    .Where(predicate)
                     .Sum(x => x.Amount);
 
                     return (Name: subCategory.Name, Amount: totalAmountofSubCategory);
@@ -47,7 +48,7 @@ namespace CashTrack.Repositories.MainCategoriesRepository
 
                 var mainCategoryTotal = (int)decimal.Round(subCategoryAmounts.Values.Sum(), 0);
 
-                var subCategoryPercentages = subCategoryAmounts.Select(x =>
+                var subCategoryPercentages = subCategoryAmounts.Where(sc => sc.Value > 0).Select(x =>
                 (Name: x.Key, Percentage: (int)decimal.Round((x.Value / mainCategoryTotal) * 100)))
                 .ToDictionary(k => k.Name, v => v.Percentage);
 
@@ -55,11 +56,11 @@ namespace CashTrack.Repositories.MainCategoriesRepository
                 {
                     Id = g.Key,
                     Name = subCategoryEntities.First().MainCategory.Name,
-                    NumberOfSubCategories = subCategoryEntities.Count(),
+                    NumberOfSubCategories = subCategoryPercentages.Keys.Count(),
                     SubCategoryExpenses = subCategoryPercentages
                 };
 
-            }).ToArray();
+            }).Where(x => x.NumberOfSubCategories > 0).OrderBy(x => x.Name).ToArray();
         }
 
         public async Task<int> Create(MainCategoryEntity entity)
@@ -152,7 +153,7 @@ namespace CashTrack.Repositories.MainCategoriesRepository
             }
         }
 
-        public async Task<Dictionary<string, decimal>> GetSubCategoryAmounts()
+        public async Task<Dictionary<string, decimal>> GetSubCategoryAmounts(Expression<Func<ExpenseEntity, bool>> predicate)
         {
             var subCategories = await _context.SubCategories.Where(x => x.Name != "Uncategorized").ToListAsync();
             return subCategories.Select(subCategory =>
@@ -161,12 +162,13 @@ namespace CashTrack.Repositories.MainCategoriesRepository
                 .Collection(x => x.Expenses)
                 .Query()
                 .Where(sc => sc.Category.Name != "Uncategorized")
+                .Where(predicate)
                 .Sum(x => x.Amount);
 
                 return (Name: subCategory.Name, Amount: totalAmountofSubCategory);
             }).ToDictionary(k => k.Name, v => v.Amount);
         }
-        public async Task<Dictionary<string, int>> GetSubCategoryCounts()
+        public async Task<Dictionary<string, int>> GetSubCategoryCounts(Expression<Func<ExpenseEntity, bool>> predicate)
         {
             var subCategories = await _context.SubCategories.Where(x => x.Name != "Uncategorized").ToListAsync();
             return subCategories.Select(subCategory =>
@@ -174,11 +176,12 @@ namespace CashTrack.Repositories.MainCategoriesRepository
                 var totalOfSubCategory = _context.Entry(subCategory)
                 .Collection(x => x.Expenses)
                 .Query()
-                .Where(sc => sc.Category.Name != "Uncategorized")
+                .Where(x => x.Category.Name != "Uncategorized")
+                .Where(predicate)
                 .Count();
 
                 return (Name: subCategory.Name, Count: totalOfSubCategory);
-            }).ToDictionary(k => k.Name, v => v.Count);
+            }).Where(x => x.Count > 0).ToDictionary(k => k.Name, v => v.Count);
         }
     }
 }

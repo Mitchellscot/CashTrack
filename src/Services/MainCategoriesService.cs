@@ -6,6 +6,7 @@ using CashTrack.Repositories.SubCategoriesRepository;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace CashTrack.Services.MainCategoriesService
 {
@@ -68,13 +69,14 @@ namespace CashTrack.Services.MainCategoriesService
 
         public async Task<MainCategoryResponse> GetMainCategoriesAsync(MainCategoryRequest request)
         {
+            var predicate = ParseTimeOptions(request);
             var categories = await _mainCategoryRepo.Find(x => true);
-            var subCategoryOccurances = await _mainCategoryRepo.GetSubCategoryCounts();
-            
+            var subCategoryOccurances = await _mainCategoryRepo.GetSubCategoryCounts(predicate);
+    
 
-            var listItems = await _mainCategoryRepo.GetMainCategoryListItems();
+            var listItems = await _mainCategoryRepo.GetMainCategoryListItems(predicate);
 
-            var subCategoryAmounts = await _mainCategoryRepo.GetSubCategoryAmounts();
+            var subCategoryAmounts = await _mainCategoryRepo.GetSubCategoryAmounts(predicate);
             var totalAmountOfExpenses = subCategoryAmounts.Values.Sum();
             var subCategoryPercentagesOfTotal = subCategoryAmounts.Select(x =>
             {
@@ -93,6 +95,16 @@ namespace CashTrack.Services.MainCategoriesService
 
             return response;
         }
+
+        private Expression<Func<ExpenseEntity, bool>> ParseTimeOptions(MainCategoryRequest request) => request.TimeOption switch
+        {
+            MainCategoryTimeOptions.AllTime => (ExpenseEntity x) => true,
+            MainCategoryTimeOptions.FiveYears => (ExpenseEntity x) => x.Date >= DateTime.Now.AddYears(-5),
+            MainCategoryTimeOptions.ThreeYears => (ExpenseEntity x) => x.Date >= DateTime.Now.AddYears(-3),
+            MainCategoryTimeOptions.OneYear => (ExpenseEntity x) => x.Date >= DateTime.Now.AddYears(-1),
+            MainCategoryTimeOptions.SixMonths => (ExpenseEntity x) => x.Date >= DateTime.Now.AddMonths(-6),
+            _ => throw new ArgumentException($"TimeOption type not supported {request.TimeOption}", nameof(request.TimeOption))
+        };
 
         public async Task<MainCategoryDropdownSelection[]> GetMainCategoriesForDropdownListAsync()
         {

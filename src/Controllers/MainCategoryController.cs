@@ -44,11 +44,11 @@ namespace CashTrack.Controllers
             }
         }
         [HttpGet("test")]
-        public async Task<ActionResult<string>> TestIT()
+        public async Task<ActionResult<string>> TestIT([FromQuery]int option)
         {
             try
             {
-                var result = await _service.GetMainCategoriesAsync(new MainCategoryRequest());
+                var result = await _service.GetMainCategoriesAsync(new MainCategoryRequest() { TimeOption=(MainCategoryTimeOptions)option});
                 return Ok(result);
             }
             catch (Exception ex)
