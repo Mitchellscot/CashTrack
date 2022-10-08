@@ -157,8 +157,8 @@ namespace CashTrack.Services.MainCategoriesService
             return new MainCategoryListItem()
             {
                 Id = g.Key,
-                Name = subCategories.First().MainCategory.Name,
-                NumberOfSubCategories = subCategories.Length,
+                Name = subCategoriesByMainCategory.First().MainCategory.Name,
+                NumberOfSubCategories = subCategoryPercentages.Count,
                 SubCategoryExpenses = subCategoryPercentages
             };
         }).Where(x => x.NumberOfSubCategories > 0).OrderBy(x => x.Name).ToArray();
