@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CashTrack.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
     [Route("api/[controller]")]
     public class MainCategoryController : ControllerBase
@@ -34,6 +36,19 @@ namespace CashTrack.Controllers
             try
             {
                 var result = await _service.GetMainCategoryNameBySubCategoryIdAsync(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpGet("test")]
+        public async Task<ActionResult<string>> TestIT()
+        {
+            try
+            {
+                var result = await _service.GetMainCategoriesAsync(new MainCategoryRequest());
                 return Ok(result);
             }
             catch (Exception ex)

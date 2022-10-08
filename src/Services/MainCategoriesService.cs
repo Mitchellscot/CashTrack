@@ -5,9 +5,7 @@ using CashTrack.Repositories.MainCategoriesRepository;
 using CashTrack.Repositories.SubCategoriesRepository;
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace CashTrack.Services.MainCategoriesService
 {
@@ -71,13 +69,26 @@ namespace CashTrack.Services.MainCategoriesService
         public async Task<MainCategoryResponse> GetMainCategoriesAsync(MainCategoryRequest request)
         {
             var categories = await _mainCategoryRepo.Find(x => true);
+            var subCategoryOccurances = await _mainCategoryRepo.GetSubCategoryCounts();
+            
 
             var listItems = await _mainCategoryRepo.GetMainCategoryListItems();
+
+            var subCategoryAmounts = await _mainCategoryRepo.GetSubCategoryAmounts();
+            var totalAmountOfExpenses = subCategoryAmounts.Values.Sum();
+            var subCategoryPercentagesOfTotal = subCategoryAmounts.Select(x =>
+            {
+                var percentageOfTotalForCategory = 
+                (int)decimal.Round((x.Value / totalAmountOfExpenses) * 100);
+                return (Name: x.Key, Percentage: percentageOfTotalForCategory);
+            }).Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
 
             var response = new MainCategoryResponse()
             {
                 TotalMainCategories = categories.Count(),
-                MainCategories = listItems
+                MainCategories = listItems,
+                CategoryPercentages = subCategoryPercentagesOfTotal,
+                CategoryPurchaseOccurances = subCategoryOccurances
             };
 
             return response;

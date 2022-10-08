@@ -15,6 +15,8 @@ namespace CashTrack.Repositories.MainCategoriesRepository
     public interface IMainCategoriesRepository : IRepository<MainCategoryEntity>
     {
         Task<MainCategoryListItem[]> GetMainCategoryListItems();
+        Task<Dictionary<string, int>> GetSubCategoryCounts();
+        Task<Dictionary<string, decimal>> GetSubCategoryAmounts();
     }
     public class MainCategoriesRepository : IMainCategoriesRepository
     {
@@ -148,6 +150,35 @@ namespace CashTrack.Repositories.MainCategoriesRepository
 
                 throw;
             }
+        }
+
+        public async Task<Dictionary<string, decimal>> GetSubCategoryAmounts()
+        {
+            var subCategories = await _context.SubCategories.Where(x => x.Name != "Uncategorized").ToListAsync();
+            return subCategories.Select(subCategory =>
+            {
+                var totalAmountofSubCategory = _context.Entry(subCategory)
+                .Collection(x => x.Expenses)
+                .Query()
+                .Where(sc => sc.Category.Name != "Uncategorized")
+                .Sum(x => x.Amount);
+
+                return (Name: subCategory.Name, Amount: totalAmountofSubCategory);
+            }).ToDictionary(k => k.Name, v => v.Amount);
+        }
+        public async Task<Dictionary<string, int>> GetSubCategoryCounts()
+        {
+            var subCategories = await _context.SubCategories.Where(x => x.Name != "Uncategorized").ToListAsync();
+            return subCategories.Select(subCategory =>
+            {
+                var totalOfSubCategory = _context.Entry(subCategory)
+                .Collection(x => x.Expenses)
+                .Query()
+                .Where(sc => sc.Category.Name != "Uncategorized")
+                .Count();
+
+                return (Name: subCategory.Name, Count: totalOfSubCategory);
+            }).ToDictionary(k => k.Name, v => v.Count);
         }
     }
 }
