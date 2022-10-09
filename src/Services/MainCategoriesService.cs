@@ -72,26 +72,35 @@ namespace CashTrack.Services.MainCategoriesService
         {
             var predicate = ParseTimeOptions(request);
             var subCategories = await _mainCategoryRepo.GetCategoriesWithExpenses(predicate);
+
             var overallTotal = subCategories.SelectMany(x => x.Expenses).Sum(x => x.Amount);
 
             var listItems = GetMainCategoryListItems(subCategories);
 
-            var mainCategoryPercentages = GetMainCategoryPercentages(subCategories, predicate);
-
-            var subCategoryPercentages = GetSubCategoryPercentages(subCategories, predicate, overallTotal);
-
-            var subCategoryOccurances = GetSubCategoryOccurances(subCategories, predicate);
-
-            var response = new MainCategoryResponse()
-        {
-            TotalMainCategories = listItems.Length,
-            MainCategories = listItems,
-            MainCategoryPercentages = mainCategoryPercentages,
-            SubCategoryPercentages = subCategoryPercentages,
-            CategoryPurchaseOccurances = subCategoryOccurances
+            return new MainCategoryResponse()
+            {
+                TotalMainCategories = listItems.Length,
+                MainCategories = listItems,
+                MainCategoryPercentages = GetMainCategoryPercentages(subCategories, predicate),
+                SubCategoryPercentages = GetSubCategoryPercentages(subCategories, predicate, overallTotal),
+                CategoryPurchaseOccurances = GetSubCategoryOccurances(subCategories, predicate),
+                MainCategoryChartData = GetDataForMainGraph(subCategories)
             };
+        }
 
-            return response;
+        private MainCategoryChartData GetDataForMainGraph(SubCategoryEntity[] subCategories)
+        {
+            var mainCategoryNames = subCategories.Select(x => x.MainCategory.Name).Distinct().OrderBy(x => x).ToArray();
+            var chartData =  subCategories.Select(x => {
+                var sumOfTotals = x.Expenses.Sum(x => x.Amount);
+                var mainCategoryIndex = Array.IndexOf(mainCategoryNames, x.MainCategory.Name);
+                return new SubCategoryAmountDataset(x.Name, mainCategoryNames.Length, sumOfTotals, mainCategoryIndex);
+            }).ToList();
+            return new MainCategoryChartData()
+            {
+                MainCategoryNames = mainCategoryNames,
+                SubCategoryData = chartData
+            };
         }
 
         private Dictionary<string, int> GetSubCategoryOccurances(SubCategoryEntity[] subCategories, Expression<Func<ExpenseEntity, bool>> predicate)
@@ -120,7 +129,7 @@ namespace CashTrack.Services.MainCategoriesService
             }).ToDictionary(k => k.Name, v => v.Amount);
             return amounts.Select(x =>
             {
-                var percentageOfTotalForCategory = 
+                var percentageOfTotalForCategory =
                 (int)decimal.Round((x.Value / overallTotal) * 100);
                 return (Name: x.Key, Percentage: percentageOfTotalForCategory);
             }).Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
@@ -144,74 +153,74 @@ namespace CashTrack.Services.MainCategoriesService
         }
 
         private MainCategoryListItem[] GetMainCategoryListItems(SubCategoryEntity[] subCategories)
-    {
-        return subCategories.GroupBy(x => x.MainCategory.Id).Select(g =>
         {
-            var subCategoriesByMainCategory = subCategories.Where(x => x.MainCategoryId == g.Key).ToList();
-
-            var amounts = subCategoriesByMainCategory.Select(x => (Name: x.Name, Amount: x.Expenses.Sum(x => x.Amount))).ToDictionary(k => k.Name, v => v.Amount);
-
-            var mainCategoryTotal = (int)decimal.Round(amounts.Values.Sum(), 0);
-
-            var subCategoryPercentages = amounts.Where(x => x.Value > 0).Select(x => (Name: x.Key, Percentage: (int)decimal.Round((x.Value / mainCategoryTotal) * 100))).ToDictionary(k => k.Name, v => v.Percentage);
-            return new MainCategoryListItem()
+            return subCategories.GroupBy(x => x.MainCategory.Id).Select(g =>
             {
-                Id = g.Key,
-                Name = subCategoriesByMainCategory.First().MainCategory.Name,
-                NumberOfSubCategories = subCategoryPercentages.Count,
-                SubCategoryExpenses = subCategoryPercentages
-            };
-        }).Where(x => x.NumberOfSubCategories > 0).OrderBy(x => x.Name).ToArray();
-    }
+                var subCategoriesByMainCategory = subCategories.Where(x => x.MainCategoryId == g.Key).ToList();
 
-    private Expression<Func<ExpenseEntity, bool>> ParseTimeOptions(MainCategoryRequest request) => request.TimeOption switch
-    {
-        MainCategoryTimeOptions.AllTime => (ExpenseEntity x) => true,
-        MainCategoryTimeOptions.FiveYears => (ExpenseEntity x) => x.Date >= DateTime.Now.AddYears(-5),
-        MainCategoryTimeOptions.ThreeYears => (ExpenseEntity x) => x.Date >= DateTime.Now.AddYears(-3),
-        MainCategoryTimeOptions.OneYear => (ExpenseEntity x) => x.Date >= DateTime.Now.AddYears(-1),
-        MainCategoryTimeOptions.SixMonths => (ExpenseEntity x) => x.Date >= DateTime.Now.AddMonths(-6),
-        _ => throw new ArgumentException($"TimeOption type not supported {request.TimeOption}", nameof(request.TimeOption))
-    };
+                var amounts = subCategoriesByMainCategory.Select(x => (Name: x.Name, Amount: x.Expenses.Sum(x => x.Amount))).ToDictionary(k => k.Name, v => v.Amount);
 
-    public async Task<MainCategoryDropdownSelection[]> GetMainCategoriesForDropdownListAsync()
-    {
-        return (await _mainCategoryRepo.Find(x => true)).Select(x => new MainCategoryDropdownSelection()
+                var mainCategoryTotal = (int)decimal.Round(amounts.Values.Sum(), 0);
+
+                var subCategoryPercentages = amounts.Where(x => x.Value > 0).Select(x => (Name: x.Key, Percentage: (int)decimal.Round((x.Value / mainCategoryTotal) * 100))).ToDictionary(k => k.Name, v => v.Percentage);
+                return new MainCategoryListItem()
+                {
+                    Id = g.Key,
+                    Name = subCategoriesByMainCategory.First().MainCategory.Name,
+                    NumberOfSubCategories = subCategoryPercentages.Count,
+                    SubCategoryExpenses = subCategoryPercentages
+                };
+            }).Where(x => x.NumberOfSubCategories > 0).OrderBy(x => x.Name).ToArray();
+        }
+
+        private Expression<Func<ExpenseEntity, bool>> ParseTimeOptions(MainCategoryRequest request) => request.TimeOption switch
         {
-            Id = x.Id,
-            Category = x.Name
-        }).ToArray();
+            MainCategoryTimeOptions.AllTime => (ExpenseEntity x) => true,
+            MainCategoryTimeOptions.FiveYears => (ExpenseEntity x) => x.Date >= DateTime.Now.AddYears(-5),
+            MainCategoryTimeOptions.ThreeYears => (ExpenseEntity x) => x.Date >= DateTime.Now.AddYears(-3),
+            MainCategoryTimeOptions.OneYear => (ExpenseEntity x) => x.Date >= DateTime.Now.AddYears(-1),
+            MainCategoryTimeOptions.SixMonths => (ExpenseEntity x) => x.Date >= DateTime.Now.AddMonths(-6),
+            _ => throw new ArgumentException($"TimeOption type not supported {request.TimeOption}", nameof(request.TimeOption))
+        };
+
+        public async Task<MainCategoryDropdownSelection[]> GetMainCategoriesForDropdownListAsync()
+        {
+            return (await _mainCategoryRepo.Find(x => true)).Select(x => new MainCategoryDropdownSelection()
+            {
+                Id = x.Id,
+                Category = x.Name
+            }).ToArray();
+        }
+
+        public Task<MainCategoryDetail> GetMainCategoryDetailAsync(int id)
+        {
+            //think on this one
+            throw new NotImplementedException();
+        }
+
+        public async Task<string> GetMainCategoryNameBySubCategoryIdAsync(int id)
+        {
+            var subCategory = await _subCategoryRepository.FindById(id);
+            if (subCategory == null)
+                throw new CategoryNotFoundException(id.ToString());
+            var mainCategory = await _mainCategoryRepo.FindById(subCategory.MainCategoryId);
+            if (mainCategory == null)
+                throw new CategoryNotFoundException(id.ToString());
+            return mainCategory.Name;
+        }
+
+        public async Task<int> UpdateMainCategoryAsync(AddEditMainCategory request)
+        {
+            var categories = await _mainCategoryRepo.Find(x => x.Name == request.Name);
+            if (categories.Any(x => x.Id != request.Id))
+                throw new DuplicateNameException(request.Name, nameof(MainCategoryEntity));
+
+            var category = await _mainCategoryRepo.FindById(request.Id.Value);
+            if (category == null)
+                throw new CategoryNotFoundException(request.Id.Value.ToString());
+
+            category.Name = request.Name;
+            return await _mainCategoryRepo.Update(category);
+        }
     }
-
-    public Task<MainCategoryDetail> GetMainCategoryDetailAsync(int id)
-    {
-        //think on this one
-        throw new NotImplementedException();
-    }
-
-    public async Task<string> GetMainCategoryNameBySubCategoryIdAsync(int id)
-    {
-        var subCategory = await _subCategoryRepository.FindById(id);
-        if (subCategory == null)
-            throw new CategoryNotFoundException(id.ToString());
-        var mainCategory = await _mainCategoryRepo.FindById(subCategory.MainCategoryId);
-        if (mainCategory == null)
-            throw new CategoryNotFoundException(id.ToString());
-        return mainCategory.Name;
-    }
-
-    public async Task<int> UpdateMainCategoryAsync(AddEditMainCategory request)
-    {
-        var categories = await _mainCategoryRepo.Find(x => x.Name == request.Name);
-        if (categories.Any(x => x.Id != request.Id))
-            throw new DuplicateNameException(request.Name, nameof(MainCategoryEntity));
-
-        var category = await _mainCategoryRepo.FindById(request.Id.Value);
-        if (category == null)
-            throw new CategoryNotFoundException(request.Id.Value.ToString());
-
-        category.Name = request.Name;
-        return await _mainCategoryRepo.Update(category);
-    }
-}
 }
