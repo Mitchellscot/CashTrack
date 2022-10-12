@@ -1,5 +1,6 @@
 ﻿@page
 @using CashTrack.Pages.Shared
+@using System.Text.Json
 @model CashTrack.Pages.Expenses.Categories.Main.IndexModel
 @{
 }
@@ -11,10 +12,39 @@
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
         <div class="row mb-1">
-
+            @if (Model.MainCategoryResponse.MainCategoryChartData != null)
+            {
+            <div class="col">
+                <canvas id="mainCategoryExpenseChart" class="chart-height"></canvas>
+            </div>
+            }
             </div>
 </div>
 
+@{
+    var modelData = Model.MainCategoryResponse.MainCategoryChartData.SubCategoryData;
+    var data = new Dictionary<string, string>();
+    foreach (var stuff in modelData)
+    {
+        var jsonData = JsonSerializer.Serialize(stuff.DataSet);
+        var label = stuff.SubCategoryName;
+        data.Add(label, jsonData);
+    }
+
+}
+
 @section Scripts {
     <script src="~/js/mainCategories.js"></script>
-}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
+    @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+            {
+                ChartType = ChartType.StackedBar,
+                UseDefaultColor = false,
+                ElementId = "mainCategoryExpenseChart",
+                Labels = JsonSerializer.Serialize(Model.MainCategoryResponse.MainCategoryChartData.MainCategoryNames),
+                MultipleDataSets = data,
+                Title = "Category Expenses",
+                DisplayLabels = false,
+                Responsive = true
+        })
+        }

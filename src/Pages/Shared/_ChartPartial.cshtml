@@ -3,6 +3,7 @@
 @{
     var color = Model.UseDefaultColor ? Model.DefaultColor : Model.ColorArray;
     var titleExists = string.IsNullOrEmpty(Model.Title) ? false : true;
+    var index = 0;
 }
 @if (Model.ChartType == ChartType.Bar)
 {
@@ -273,18 +274,21 @@
                 datasets: [
         @foreach (var data in Model.MultipleDataSets)
         {
+
+            var randomColor = Model.GetRandomColors(index);
+            index++;
             <text>
-                        {
-                            label: @data.Key,
-                            data: @data.Value,
-                            color: 'rgba(0, 0, 0, 0)',
-                            backgroundColor: @Html.Raw(color),
-                            borderColor: @Html.Raw(color),
-                            borderWidth: 1
-                        },
+                {
+                    label: '@data.Key',
+                    data: @data.Value,
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: @Html.Raw(randomColor),
+                    borderColor: @Html.Raw(randomColor),
+                    borderWidth: 1
+                },
             </text>
         }
-                        ]
+            ]
             },
             options: {
                 responsive: @Model.Responsive.ToString().ToLower(),

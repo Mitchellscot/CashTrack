@@ -94,13 +94,31 @@ namespace CashTrack.Services.MainCategoriesService
             var chartData =  subCategories.Select(x => {
                 var sumOfTotals = x.Expenses.Sum(x => x.Amount);
                 var mainCategoryIndex = Array.IndexOf(mainCategoryNames, x.MainCategory.Name);
-                return new SubCategoryAmountDataset(x.Name, mainCategoryNames.Length, sumOfTotals, mainCategoryIndex);
+                return new SubCategoryAmountDataset(
+                    x.Name, mainCategoryNames.Length, 
+                    sumOfTotals, 
+                    mainCategoryIndex);
             }).ToList();
             return new MainCategoryChartData()
             {
                 MainCategoryNames = mainCategoryNames,
                 SubCategoryData = chartData
             };
+        }
+
+        private string GetColorForSubCategoryDataset(int index)
+        {
+            var localIndex = 0;
+            var colors = new[] {
+                "rgba(255, 99, 132, 1)",
+                "rgba(255, 159, 64, 1)",
+                "rgba(255, 205, 86, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(153, 102, 255, 1)" };
+            while (index > colors.Length)
+                localIndex = index - colors.Length;
+            return colors[localIndex];
         }
 
         private Dictionary<string, int> GetSubCategoryOccurances(SubCategoryEntity[] subCategories, Expression<Func<ExpenseEntity, bool>> predicate)

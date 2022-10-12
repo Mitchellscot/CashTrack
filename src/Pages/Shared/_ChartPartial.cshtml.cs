@@ -31,6 +31,17 @@ namespace CashTrack.Pages.Shared
         {
             return JsonSerializer.Serialize(new[] { "rgba(255, 99, 132, 0.8)", "rgba(255, 159, 64, 0.8)", "rgba(255, 205, 86, 0.8)", "rgba(75, 192, 192, 0.8)", "rgba(54, 162, 235, 0.8)", "rgba(153, 102, 255, 0.8)", "rgba(201, 203, 207, 0.8)" });
         }
+        public string GetRandomColors(int index)
+        {
+            var colors = new[] {
+                "_",
+                "rgba(255, 99, 132, 1)",
+                "rgba(54, 162, 235, 1)", };
+            if(index % 2 == 0)
+                return JsonSerializer.Serialize(colors[2]);
+            else
+                return JsonSerializer.Serialize(colors[1]);
+        }
         private string GetThemeColors()
         {
             return JsonSerializer.Serialize(new[] { "rgba(44, 62, 88, .8)", "rgba(149, 165, 166, .8)", "rgba(24, 188, 156, .8)", "rgba(52, 152, 219, .8)", "rgba(243, 156, 18, .8)", "rgba(231, 76, 60, .8)", "rgba(123, 138, 139, .8)" });
