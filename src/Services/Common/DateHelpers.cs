@@ -1,5 +1,7 @@
-﻿using CashTrack.Data.Entities.Common;
+﻿using CashTrack.Data.Entities;
+using CashTrack.Data.Entities.Common;
 using CashTrack.Models.Common;
+using CashTrack.Models.MainCategoryModels;
 using System;
 using System.Linq.Expressions;
 
@@ -91,6 +93,18 @@ namespace CashTrack.Services.Common
 
             _ => throw new ArgumentException($"DateOption type not supported {request.DateOptions}", nameof(request.DateOptions))
 
+        };
+    }
+    public static class CategoryTimeOption<T> where T : Transactions
+    {
+        public static Expression<Func<T, bool>> Parse(MainCategoryRequest request) => request.TimeOption switch
+        {
+            MainCategoryTimeOptions.AllTime => (T x) => true,
+            MainCategoryTimeOptions.FiveYears => (T x) => x.Date >= DateTime.Now.AddYears(-5),
+            MainCategoryTimeOptions.ThreeYears => (T x) => x.Date >= DateTime.Now.AddYears(-3),
+            MainCategoryTimeOptions.OneYear => (T x) => x.Date >= DateTime.Now.AddYears(-1),
+            MainCategoryTimeOptions.SixMonths => (T x) => x.Date >= DateTime.Now.AddMonths(-6),
+            _ => throw new ArgumentException($"TimeOption type not supported {request.TimeOption}", nameof(request.TimeOption))
         };
     }
 }

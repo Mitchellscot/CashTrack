@@ -274,17 +274,17 @@
         @foreach (var data in Model.MultipleDataSets)
         {
             <text>
-                {
-                    label: '@data.Key',
-                    data: @data.Value,
-                    color: 'rgba(0, 0, 0, 0)',
-                    backgroundColor: @Html.Raw(color),
-                    borderColor: @Html.Raw(color),
-                    borderWidth: 1
-                },
+                        {
+                            label: '@data.SubCategoryName',
+                            data: @JsonSerializer.Serialize(data.DataSet),
+                            color: 'rgba(0, 0, 0, 0)',
+                            backgroundColor: '@Html.Raw(data.Color)',
+                            borderColor: '@Html.Raw(data.Color)',
+                            borderWidth: 1
+                        },
             </text>
         }
-            ]
+                    ]
             },
             options: {
                 responsive: @Model.Responsive.ToString().ToLower(),

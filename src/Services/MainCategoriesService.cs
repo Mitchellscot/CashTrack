@@ -8,6 +8,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.Collections.Generic;
+using CashTrack.Repositories.IncomeRepository;
+using CashTrack.Services.Common;
 
 namespace CashTrack.Services.MainCategoriesService
 {
@@ -25,11 +27,13 @@ namespace CashTrack.Services.MainCategoriesService
     {
         private readonly IMainCategoriesRepository _mainCategoryRepo;
         private readonly ISubCategoryRepository _subCategoryRepository;
+        private readonly IIncomeRepository _incomeRepo;
 
-        public MainCategoriesService(IMainCategoriesRepository mainCategoryRepository, ISubCategoryRepository subCategoryRepository)
+        public MainCategoriesService(IMainCategoriesRepository mainCategoryRepository, ISubCategoryRepository subCategoryRepository, IIncomeRepository incomeRepo)
         {
             _mainCategoryRepo = mainCategoryRepository;
             _subCategoryRepository = subCategoryRepository;
+            _incomeRepo = incomeRepo;
         }
 
         public async Task<int> CreateMainCategoryAsync(AddEditMainCategory request)
@@ -70,9 +74,10 @@ namespace CashTrack.Services.MainCategoriesService
 
         public async Task<MainCategoryResponse> GetMainCategoriesAsync(MainCategoryRequest request)
         {
-            var predicate = ParseTimeOptions(request);
-            var subCategories = await _mainCategoryRepo.GetCategoriesWithExpenses(predicate);
-
+            var expensePredicate = CategoryTimeOption<ExpenseEntity>.Parse(request);
+            var subCategories = await _mainCategoryRepo.GetCategoriesWithExpenses(expensePredicate);
+            var incomePredicate = CategoryTimeOption<IncomeEntity>.Parse(request);
+            var totalIncome = await _incomeRepo.GetAmountOfIncome(incomePredicate);
             var overallTotal = subCategories.SelectMany(x => x.Expenses).Sum(x => x.Amount);
 
             var listItems = GetMainCategoryListItems(subCategories);
@@ -81,24 +86,46 @@ namespace CashTrack.Services.MainCategoriesService
             {
                 TotalMainCategories = listItems.Length,
                 MainCategories = listItems,
-                MainCategoryPercentages = GetMainCategoryPercentages(subCategories, predicate),
-                SubCategoryPercentages = GetSubCategoryPercentages(subCategories, predicate, overallTotal),
-                CategoryPurchaseOccurances = GetSubCategoryOccurances(subCategories, predicate),
-                MainCategoryChartData = GetDataForMainGraph(subCategories)
+                MainCategoryPercentages = GetMainCategoryPercentages(subCategories, expensePredicate),
+                SubCategoryPercentages = GetSubCategoryPercentages(subCategories, expensePredicate, overallTotal),
+                CategoryPurchaseOccurances = GetSubCategoryOccurances(subCategories, expensePredicate),
+                MainCategoryChartData = GetDataForMainGraph(subCategories),
+                SavingsPercentages = GetSavingsPercentage(totalIncome, overallTotal)
+            };
+        }
+
+        private Dictionary<string, int> GetSavingsPercentage(decimal totalIncome, decimal totalExpense)
+        {
+            var total = totalIncome + totalExpense;
+            if (totalIncome < totalExpense)
+                return new Dictionary<string, int>()
+                {
+                    { "Expenses", 100},
+                };
+            var expensePercentage = (int)decimal.Round((totalExpense / totalIncome) * 100);
+
+            return new Dictionary<string, int>()
+            {
+                { "Expenses", expensePercentage},
+                { "Savings", Math.Abs(expensePercentage - 100)}
             };
         }
 
         private MainCategoryChartData GetDataForMainGraph(SubCategoryEntity[] subCategories)
         {
             var mainCategoryNames = subCategories.Select(x => x.MainCategory.Name).Distinct().OrderBy(x => x).ToArray();
-            var chartData =  subCategories.Select(x => {
+            var chartData = subCategories.Select(x =>
+            {
                 var sumOfTotals = x.Expenses.Sum(x => x.Amount);
                 var mainCategoryIndex = Array.IndexOf(mainCategoryNames, x.MainCategory.Name);
                 return new SubCategoryAmountDataset(
-                    x.Name, mainCategoryNames.Length, 
-                    sumOfTotals, 
-                    mainCategoryIndex);
+                    x.Name, mainCategoryNames.Length,
+                    sumOfTotals,
+                    mainCategoryIndex,
+                    x.MainCategory.Id
+                    );
             }).ToList();
+            var coloredChartData = AssignColorsToChartData(chartData);
             return new MainCategoryChartData()
             {
                 MainCategoryNames = mainCategoryNames,
@@ -106,19 +133,41 @@ namespace CashTrack.Services.MainCategoriesService
             };
         }
 
+        private List<SubCategoryAmountDataset> AssignColorsToChartData(List<SubCategoryAmountDataset> chartData)
+        {
+            var chartDataWithColors = new List<SubCategoryAmountDataset>();
+            for (int i = 1; i <= chartData.Count; i++)
+            {
+                var categoriesByMainCategory = chartData.Where(x => x.MainCategoryId == i).ToList();
+                var coloredData = categoriesByMainCategory.Select((x, index) =>
+                {
+                    x.Color = GetColorForSubCategoryDataset(index);
+                    return x;
+                }).ToList();
+                chartDataWithColors.AddRange(coloredData);
+            }
+            return chartDataWithColors;
+        }
+
         private string GetColorForSubCategoryDataset(int index)
         {
-            var localIndex = 0;
-            var colors = new[] {
-                "rgba(255, 99, 132, 1)",
-                "rgba(255, 159, 64, 1)",
-                "rgba(255, 205, 86, 1)",
-                "rgba(75, 192, 192, 1)",
-                "rgba(54, 162, 235, 1)",
-                "rgba(153, 102, 255, 1)" };
-            while (index > colors.Length)
-                localIndex = index - colors.Length;
-            return colors[localIndex];
+            var colors = new[]
+            {
+                "rgba(255, 99, 132, .8)",
+                "rgba(255, 159, 64, .8)",
+                "rgba(255, 205, 86, .8)",
+                "rgba(75, 192, 192, .8)",
+                "rgba(54, 162, 235, .8)",
+                "rgba(153, 102, 255, .8)"
+            };
+            if (index > colors.Length - 1)
+            {
+                var localIndex = index;
+                while (localIndex > colors.Length - 1)
+                    localIndex = (localIndex - colors.Length);
+                return colors[localIndex];
+            }
+            else return colors[index];
         }
 
         private Dictionary<string, int> GetSubCategoryOccurances(SubCategoryEntity[] subCategories, Expression<Func<ExpenseEntity, bool>> predicate)
@@ -190,16 +239,6 @@ namespace CashTrack.Services.MainCategoriesService
                 };
             }).Where(x => x.NumberOfSubCategories > 0).OrderBy(x => x.Name).ToArray();
         }
-
-        private Expression<Func<ExpenseEntity, bool>> ParseTimeOptions(MainCategoryRequest request) => request.TimeOption switch
-        {
-            MainCategoryTimeOptions.AllTime => (ExpenseEntity x) => true,
-            MainCategoryTimeOptions.FiveYears => (ExpenseEntity x) => x.Date >= DateTime.Now.AddYears(-5),
-            MainCategoryTimeOptions.ThreeYears => (ExpenseEntity x) => x.Date >= DateTime.Now.AddYears(-3),
-            MainCategoryTimeOptions.OneYear => (ExpenseEntity x) => x.Date >= DateTime.Now.AddYears(-1),
-            MainCategoryTimeOptions.SixMonths => (ExpenseEntity x) => x.Date >= DateTime.Now.AddMonths(-6),
-            _ => throw new ArgumentException($"TimeOption type not supported {request.TimeOption}", nameof(request.TimeOption))
-        };
 
         public async Task<MainCategoryDropdownSelection[]> GetMainCategoriesForDropdownListAsync()
         {
