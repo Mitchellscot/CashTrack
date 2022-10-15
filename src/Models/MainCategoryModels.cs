@@ -51,9 +51,11 @@ public class MainCategoryListItem : Category
     public Dictionary<string, int> SubCategoryExpenses { get; set; }
 
 }
-public class AddEditMainCategory : Category
+public class AddEditMainCategoryModal : Category
 {
     new public int? Id { get; set; }
+    public bool IsEdit { get; set; }
+    public string ReturnUrl { get; set; }
 }
 public class MainCategoryDetail : Category
 {

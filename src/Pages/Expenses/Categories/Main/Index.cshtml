@@ -1,4 +1,5 @@
 ﻿@page
+@using CashTrack.Models.MainCategoryModels
 @using CashTrack.Pages.Shared
 @using System.Text.Json
 @model CashTrack.Pages.Expenses.Categories.Main.IndexModel
@@ -72,6 +73,12 @@
         }
     </div>
     <div row mb-1>
+        @*Lists go here*@
+    </div>
+    <div class="modal fade" id="addMainCategoryModal">
+        @await Html.PartialAsync("_AddEditMainCategoryModal", new AddEditMainCategoryModal() {
+        ReturnUrl = "/Expenses/Categories/Main/Index",
+        IsEdit = false});
     </div>
 </div>
 

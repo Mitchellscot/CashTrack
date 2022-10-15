@@ -1,0 +1,44 @@
+﻿@model CashTrack.Models.MainCategoryModels.AddEditMainCategoryModal
+@{
+    var addOrEdit = Model.IsEdit ? "Edit" : "Add";
+}
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header text-center">
+            <h5 class="modal-title w-100">@addOrEdit an Expense Category</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal">
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <form method="post"
+                      asp-page="/Expenses/Categories/Main/Index"
+                      asp-page-handler="AddEditMainCategoryModal"
+                      id="addEditMainCategoryForm">
+                    @if (Model.IsEdit)
+                    {
+                        <input asp-for="@Model.Id" type="hidden" />
+                    }
+                    <input asp-for="@Model.IsEdit" type="hidden" />
+                    <input asp-for="@Model.ReturnUrl" type="hidden" />
+                    <div class="row mb-1">
+                        <div class="col">
+                            <label class="visually-hidden" asp-for="@Model.Name">Name</label>
+                            <div class="input-group">
+                                <div class="input-group-text text-center">Name</div>
+                                <input data-val="true" asp-for=@Model.Name type="text" class="form-control">
+                                <span asp-validation-for="@Model.Name"></span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-evenly">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <form>
+                <button type="submit" class="btn btn-primary" form="addEditMainCategoryForm">Save</button>
+            </form>
+        </div>
+    </div>
+</div>

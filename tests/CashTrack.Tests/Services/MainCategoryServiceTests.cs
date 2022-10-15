@@ -60,7 +60,7 @@ namespace CashTrack.Tests.Services
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
                 var service = GetService(db);
-                var category = new AddEditMainCategory()
+                var category = new AddEditMainCategoryModal()
                 {
                     Name = "category"
                 };
@@ -71,7 +71,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Throws_DuplicateName_Error_When_Creating()
         {
-            var category = new AddEditMainCategory()
+            var category = new AddEditMainCategoryModal()
             {
                 Name = "Food"
             };
@@ -115,7 +115,7 @@ namespace CashTrack.Tests.Services
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
                 var service = GetService(db);
-                var category = new AddEditMainCategory() { Id = 1, Name = "Blah blah blah" };
+                var category = new AddEditMainCategoryModal() { Id = 1, Name = "Blah blah blah" };
 
                 var result = await service.UpdateMainCategoryAsync(category);
                 result.ShouldBe(1);
@@ -127,7 +127,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Throws_DuplicateName_Error_When_Updating()
         {
-            var category = new AddEditMainCategory()
+            var category = new AddEditMainCategoryModal()
             {
                 Id = 1,
                 Name = "Food"
@@ -137,7 +137,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Throws_When_Id_Is_Invalid_When_Updating()
         {
-            var category = new AddEditMainCategory()
+            var category = new AddEditMainCategoryModal()
             {
                 Id = int.MaxValue,
                 Name = "blah blah"

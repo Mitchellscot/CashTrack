@@ -18,9 +18,9 @@ namespace CashTrack.Services.MainCategoriesService
         Task<MainCategoryResponse> GetMainCategoriesAsync(MainCategoryRequest request);
         Task<MainCategoryDetail> GetMainCategoryDetailAsync(int id);
         Task<string> GetMainCategoryNameBySubCategoryIdAsync(int id);
-        Task<int> CreateMainCategoryAsync(AddEditMainCategory request);
+        Task<int> CreateMainCategoryAsync(AddEditMainCategoryModal request);
         Task<MainCategoryDropdownSelection[]> GetMainCategoriesForDropdownListAsync();
-        Task<int> UpdateMainCategoryAsync(AddEditMainCategory request);
+        Task<int> UpdateMainCategoryAsync(AddEditMainCategoryModal request);
         Task<bool> DeleteMainCategoryAsync(int id);
     }
     public class MainCategoriesService : IMainCategoriesService
@@ -36,7 +36,7 @@ namespace CashTrack.Services.MainCategoriesService
             _incomeRepo = incomeRepo;
         }
 
-        public async Task<int> CreateMainCategoryAsync(AddEditMainCategory request)
+        public async Task<int> CreateMainCategoryAsync(AddEditMainCategoryModal request)
         {
             var categories = await _mainCategoryRepo.Find(x => true);
             if (categories.Any(x => x.Name == request.Name))
@@ -266,7 +266,7 @@ namespace CashTrack.Services.MainCategoriesService
             return mainCategory.Name;
         }
 
-        public async Task<int> UpdateMainCategoryAsync(AddEditMainCategory request)
+        public async Task<int> UpdateMainCategoryAsync(AddEditMainCategoryModal request)
         {
             var categories = await _mainCategoryRepo.Find(x => x.Name == request.Name);
             if (categories.Any(x => x.Id != request.Id))
