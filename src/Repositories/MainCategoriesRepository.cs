@@ -1,22 +1,39 @@
-﻿using CashTrack.Data;
+﻿using CashTrack.Common.Exceptions;
+using CashTrack.Data;
 using CashTrack.Data.Entities;
-using CashTrack.Common.Exceptions;
+using CashTrack.Repositories.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using CashTrack.Repositories.Common;
 
 namespace CashTrack.Repositories.MainCategoriesRepository
 {
     public interface IMainCategoriesRepository : IRepository<MainCategoryEntity>
     {
+        Task<SubCategoryEntity[]> GetCategoriesWithExpenses(Expression<Func<ExpenseEntity, bool>> predicate);
     }
     public class MainCategoriesRepository : IMainCategoriesRepository
     {
         private readonly AppDbContext _context;
         public MainCategoriesRepository(AppDbContext dbContext) => (_context) = (dbContext);
+
+        public async Task<SubCategoryEntity[]> GetCategoriesWithExpenses(Expression<Func<ExpenseEntity, bool>> predicate)
+        {
+            try
+            {
+                return await _context.SubCategories
+                    .Include(m => m.MainCategory)
+                    .Include(c => c.Expenses.AsQueryable().Where(predicate))
+                    .ToArrayAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
 
         public async Task<int> Create(MainCategoryEntity entity)
         {

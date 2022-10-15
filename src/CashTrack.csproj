@@ -37,6 +37,7 @@
 		<None Remove="Scripts\Import\rules.ts" />
 		<None Remove="Scripts\IncomeCategories\incomeCategories.ts" />
 		<None Remove="Scripts\IncomeCategories\incomeCategoryDetail.ts" />
+		<None Remove="Scripts\MainCategories\mainCategories.ts" />
 		<None Remove="Scripts\Settings\settings.ts" />
 		<None Remove="Scripts\SubCategories\subCategoryDetail.ts" />
 		<None Remove="Scripts\Utility\force-refund.ts" />
@@ -62,6 +63,7 @@
 		<TypeScriptCompile Include="Scripts\IncomeCategories\incomeCategoryDetail.ts" />
 		<TypeScriptCompile Include="Scripts\Income\income.ts" />
 		<TypeScriptCompile Include="Scripts\Income\refund.ts" />
+		<TypeScriptCompile Include="Scripts\MainCategories\mainCategories.ts" />
 		<TypeScriptCompile Include="Scripts\Merchants\merchantDetail.ts" />
 		<TypeScriptCompile Include="Scripts\Merchants\merchants.ts" />
 		<TypeScriptCompile Include="Scripts\Settings\settings.ts" />

@@ -125,7 +125,7 @@ public class AuthenticationValidator : AbstractValidator<AuthenticationModels.Re
 //    }
 //}
 ///* MAIN CATEGORY */
-//public class AddEditMainCategoryValidator : AbstractValidator<AddEditMainCategory>
+//public class AddEditMainCategoryValidator : AbstractValidator<AddEditMainCategoryModal>
 //{
 //    public AddEditMainCategoryValidator()
 //    {

@@ -22,7 +22,8 @@ const config = {
         sourceDetail: './Scripts/Sources/sourceDetail.ts',
         subCategories: './Scripts/SubCategories/subCategories.ts',
         subCategoryDetail: './Scripts/SubCategories/subCategoryDetail.ts',
-        incomeCategoryDetail: './Scripts/IncomeCategories/incomeCategoryDetail.ts'
+        incomeCategoryDetail: './Scripts/IncomeCategories/incomeCategoryDetail.ts',
+        mainCategories: './Scripts/MainCategories/mainCategories.ts'
     },
     output: {
         filename: '[name].js',
