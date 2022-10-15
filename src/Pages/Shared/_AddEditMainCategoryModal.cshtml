@@ -1,6 +1,7 @@
 ﻿@model CashTrack.Models.MainCategoryModels.AddEditMainCategoryModal
 @{
     var addOrEdit = Model.IsEdit ? "Edit" : "Add";
+    var formId = Model.IsEdit ? $"addEditMainCategoryForm-{Model.Id}" : "addEditMainCategoryForm";
 }
 <div class="modal-dialog">
     <div class="modal-content">
@@ -14,7 +15,7 @@
                 <form method="post"
                       asp-page="/Expenses/Categories/Main/Index"
                       asp-page-handler="AddEditMainCategoryModal"
-                      id="addEditMainCategoryForm">
+                      id="@formId">
                     @if (Model.IsEdit)
                     {
                         <input asp-for="@Model.Id" type="hidden" />
@@ -37,7 +38,7 @@
         <div class="modal-footer d-flex justify-content-evenly">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <form>
-                <button type="submit" class="btn btn-primary" form="addEditMainCategoryForm">Save</button>
+                <button type="submit" class="btn btn-primary" form="@formId">Save</button>
             </form>
         </div>
     </div>

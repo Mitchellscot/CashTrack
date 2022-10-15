@@ -1,12 +1,13 @@
 ﻿using CashTrack.Common.Exceptions;
 using CashTrack.Data;
 using CashTrack.Models.MainCategoryModels;
+using CashTrack.Repositories.IncomeCategoryRepository;
+using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.MainCategoriesRepository;
 using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Services.MainCategoriesService;
 using CashTrack.Tests.Services.Common;
 using Shouldly;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -22,21 +23,24 @@ namespace CashTrack.Tests.Services
             var db = new AppDbContextFactory().CreateDbContext();
             var repo = new MainCategoriesRepository(db);
             var subCategoryRepo = new SubCategoryRepository(db);
-            _service = new MainCategoriesService(repo, subCategoryRepo);
+            var incomeRepo = new IncomeRepository(db);
+            _service = new MainCategoriesService(repo, subCategoryRepo, incomeRepo);
         }
         [Fact]
-        public async Task Get_Main_Category_Detail()
+        public async Task Get_Main_Categories()
         {
-            //TODO!!!!
-            await Task.Run(() => Should.Throw<NotImplementedException>(async () => await _service.GetMainCategoryDetailAsync(1)));
+            var request = new MainCategoryRequest();
+            var result = await _service.GetMainCategoriesAsync(request);
+            result.MainCategories.ShouldNotBeNull();
+            result.TotalMainCategories.ShouldBeGreaterThan(0);
+            result.CategoryPurchaseOccurances.ShouldNotBeEmpty();
+            result.MainCategoryPercentages.ShouldNotBeEmpty();
+            result.SubCategoryPercentages.ShouldNotBeEmpty();
+            result.MainCategoryChartData.MainCategoryNames.Length.ShouldBeGreaterThan(0);
+            result.MainCategoryChartData.SubCategoryData.Count.ShouldBeGreaterThan(0);
+            result.SavingsPercentages.ShouldNotBeEmpty();
+            result.ShouldNotBeNull();
         }
-        //[Fact(Skip = "Needs refactoring after UI setup")]
-        //public async Task Get_Main_Categories()
-        //{
-        //    var request = new MainCategoryRequest();
-        //    var result = await _service.GetMainCategoriesAsync(request);
-        //    result.ShouldNotBeNull();
-        //}
         [Fact]
         public async Task Get_By_SubCategory_Id()
         {
@@ -99,7 +103,8 @@ namespace CashTrack.Tests.Services
             {
                 var repo = new MainCategoriesRepository(db);
                 var subCategoryRepo = new SubCategoryRepository(db);
-                var service = new MainCategoriesService(repo, subCategoryRepo);
+                var incomeRepo = new IncomeRepository(db);
+                var service = new MainCategoriesService(repo, subCategoryRepo, incomeRepo);
 
                 var subcategories = await subCategoryRepo.Find(x => x.MainCategoryId == 1);
                 var sampleSubCategory = subcategories.FirstOrDefault();
@@ -148,7 +153,8 @@ namespace CashTrack.Tests.Services
         {
             var repo = new MainCategoriesRepository(db);
             var subCategoryRepo = new SubCategoryRepository(db);
-            return new MainCategoriesService(repo, subCategoryRepo);
+            var incomeRepo = new IncomeRepository(db);
+            return new MainCategoriesService(repo, subCategoryRepo, incomeRepo);
         }
     }
 }

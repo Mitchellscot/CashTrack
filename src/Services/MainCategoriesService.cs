@@ -10,13 +10,13 @@ using System.Linq.Expressions;
 using System.Collections.Generic;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Services.Common;
+using System.Reflection.Metadata.Ecma335;
 
 namespace CashTrack.Services.MainCategoriesService
 {
     public interface IMainCategoriesService
     {
         Task<MainCategoryResponse> GetMainCategoriesAsync(MainCategoryRequest request);
-        Task<MainCategoryDetail> GetMainCategoryDetailAsync(int id);
         Task<string> GetMainCategoryNameBySubCategoryIdAsync(int id);
         Task<int> CreateMainCategoryAsync(AddEditMainCategoryModal request);
         Task<MainCategoryDropdownSelection[]> GetMainCategoriesForDropdownListAsync();
@@ -61,7 +61,7 @@ namespace CashTrack.Services.MainCategoriesService
             var otherCategory = (await _mainCategoryRepo.Find(x => x.Name == "Other")).FirstOrDefault();
             if (otherCategory == null)
             {
-                throw new CategoryNotFoundException("You need to create a new category called 'Other' before you can delete a sub category. This will assigned all exepenses associated with this main category to the 'Other' category.");
+                throw new CategoryNotFoundException("You need to create a new category called 'Other' before you can delete a main category. This will assigned all exepenses associated with this main category to the 'Other' category.");
             }
             var subCategories = await _subCategoryRepository.Find(x => x.MainCategoryId == id);
             foreach (var subCategory in subCategories)
@@ -93,7 +93,37 @@ namespace CashTrack.Services.MainCategoriesService
                 SavingsPercentages = GetSavingsPercentage(totalIncome, overallTotal)
             };
         }
+        public async Task<MainCategoryDropdownSelection[]> GetMainCategoriesForDropdownListAsync()
+        {
+            return (await _mainCategoryRepo.Find(x => true)).Select(x => new MainCategoryDropdownSelection()
+            {
+                Id = x.Id,
+                Category = x.Name
+            }).ToArray();
+        }
+        public async Task<string> GetMainCategoryNameBySubCategoryIdAsync(int id)
+        {
+            var subCategory = await _subCategoryRepository.FindById(id);
+            if (subCategory == null)
+                throw new CategoryNotFoundException(id.ToString());
+            var mainCategory = await _mainCategoryRepo.FindById(subCategory.MainCategoryId);
+            if (mainCategory == null)
+                throw new CategoryNotFoundException(id.ToString());
+            return mainCategory.Name;
+        }
+        public async Task<int> UpdateMainCategoryAsync(AddEditMainCategoryModal request)
+        {
+            var categories = await _mainCategoryRepo.Find(x => x.Name == request.Name);
+            if (categories.Any(x => x.Id != request.Id))
+                throw new DuplicateNameException(request.Name, nameof(MainCategoryEntity));
 
+            var category = await _mainCategoryRepo.FindById(request.Id.Value);
+            if (category == null)
+                throw new CategoryNotFoundException(request.Id.Value.ToString());
+
+            category.Name = request.Name;
+            return await _mainCategoryRepo.Update(category);
+        }
         private Dictionary<string, int> GetSavingsPercentage(decimal totalIncome, decimal totalExpense)
         {
             var total = totalIncome + totalExpense;
@@ -110,16 +140,16 @@ namespace CashTrack.Services.MainCategoriesService
                 { "Savings", Math.Abs(expensePercentage - 100)}
             };
         }
-
         private MainCategoryChartData GetDataForMainGraph(SubCategoryEntity[] subCategories)
         {
-            var mainCategoryNames = subCategories.Select(x => x.MainCategory.Name).Distinct().OrderBy(x => x).ToArray();
-            var chartData = subCategories.Select(x =>
+            var mainCategoryNames = subCategories.Where(x => x.Expenses.Count > 0).Select(x => x.MainCategory.Name).Distinct().OrderBy(x => x).ToArray();
+            var chartData = subCategories.Where(x => x.Expenses.Count > 0).Select(x =>
             {
                 var sumOfTotals = x.Expenses.Sum(x => x.Amount);
                 var mainCategoryIndex = Array.IndexOf(mainCategoryNames, x.MainCategory.Name);
                 return new SubCategoryAmountDataset(
-                    x.Name, mainCategoryNames.Length,
+                    x.Name,
+                    mainCategoryNames.Length,
                     sumOfTotals,
                     mainCategoryIndex,
                     x.MainCategory.Id
@@ -148,7 +178,6 @@ namespace CashTrack.Services.MainCategoriesService
             }
             return chartDataWithColors;
         }
-
         private string GetColorForSubCategoryDataset(int index)
         {
             var colors = new[]
@@ -169,7 +198,6 @@ namespace CashTrack.Services.MainCategoriesService
             }
             else return colors[index];
         }
-
         private Dictionary<string, int> GetSubCategoryOccurances(SubCategoryEntity[] subCategories, Expression<Func<ExpenseEntity, bool>> predicate)
         {
             return subCategories.Select(x =>
@@ -182,7 +210,6 @@ namespace CashTrack.Services.MainCategoriesService
                 return (Name: x.Name, Count: totalOfSubCategory);
             }).Where(x => x.Count > 0).ToDictionary(k => k.Name, v => v.Count);
         }
-
         private Dictionary<string, int> GetSubCategoryPercentages(SubCategoryEntity[] subCategories, Expression<Func<ExpenseEntity, bool>> predicate, decimal overallTotal)
         {
             var amounts = subCategories.Select(x =>
@@ -201,7 +228,6 @@ namespace CashTrack.Services.MainCategoriesService
                 return (Name: x.Key, Percentage: percentageOfTotalForCategory);
             }).Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
         }
-
         private Dictionary<string, int> GetMainCategoryPercentages(SubCategoryEntity[] subCategories, Expression<Func<ExpenseEntity, bool>> predicate)
         {
             var mainCategoryAmounts = subCategories.GroupBy(x => x.MainCategory.Name).Select(x =>
@@ -218,7 +244,6 @@ namespace CashTrack.Services.MainCategoriesService
             }).Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
 
         }
-
         private MainCategoryListItem[] GetMainCategoryListItems(SubCategoryEntity[] subCategories)
         {
             return subCategories.GroupBy(x => x.MainCategory.Id).Select(g =>
@@ -238,46 +263,6 @@ namespace CashTrack.Services.MainCategoriesService
                     SubCategoryExpenses = subCategoryPercentages
                 };
             }).Where(x => x.NumberOfSubCategories > 0).OrderBy(x => x.Name).ToArray();
-        }
-
-        public async Task<MainCategoryDropdownSelection[]> GetMainCategoriesForDropdownListAsync()
-        {
-            return (await _mainCategoryRepo.Find(x => true)).Select(x => new MainCategoryDropdownSelection()
-            {
-                Id = x.Id,
-                Category = x.Name
-            }).ToArray();
-        }
-
-        public Task<MainCategoryDetail> GetMainCategoryDetailAsync(int id)
-        {
-            //think on this one
-            throw new NotImplementedException();
-        }
-
-        public async Task<string> GetMainCategoryNameBySubCategoryIdAsync(int id)
-        {
-            var subCategory = await _subCategoryRepository.FindById(id);
-            if (subCategory == null)
-                throw new CategoryNotFoundException(id.ToString());
-            var mainCategory = await _mainCategoryRepo.FindById(subCategory.MainCategoryId);
-            if (mainCategory == null)
-                throw new CategoryNotFoundException(id.ToString());
-            return mainCategory.Name;
-        }
-
-        public async Task<int> UpdateMainCategoryAsync(AddEditMainCategoryModal request)
-        {
-            var categories = await _mainCategoryRepo.Find(x => x.Name == request.Name);
-            if (categories.Any(x => x.Id != request.Id))
-                throw new DuplicateNameException(request.Name, nameof(MainCategoryEntity));
-
-            var category = await _mainCategoryRepo.FindById(request.Id.Value);
-            if (category == null)
-                throw new CategoryNotFoundException(request.Id.Value.ToString());
-
-            category.Name = request.Name;
-            return await _mainCategoryRepo.Update(category);
         }
     }
 }

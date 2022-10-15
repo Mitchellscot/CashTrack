@@ -1,4 +1,5 @@
 using CashTrack.Models.Common;
+using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.MainCategoryModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Pages.Shared;
@@ -45,6 +46,20 @@ namespace CashTrack.Pages.Expenses.Categories.Main
 
             TempData["SuccessMessage"] = MainCategoryModal.IsEdit ? "Successfully edited a Category!" : "Successfully added a new Category!";
             return LocalRedirect(MainCategoryModal.ReturnUrl);
+        }
+        public async Task<IActionResult> OnPostDelete(int id)
+        {
+            try
+            {
+                var deleteSuccess = await _mainCategoryService.DeleteMainCategoryAsync(id);
+            }
+            catch (Exception ex)
+            {
+                TempData["InfoMessage"] = ex.Message;
+                return LocalRedirect("/Expenses/Categories/Main/Index");
+            }
+            TempData["SuccessMessage"] = "Successfully Deleted a Main Category!";
+            return LocalRedirect("/Expenses/Categories/Main/Index");
         }
 
         private async Task<ActionResult> PrepareAndRenderPage()

@@ -14,7 +14,7 @@
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
     <div class="row mb-1">
         <div class="col  d-flex justify-content-between align-items-center">
-            <form method="get" class="btn-group btn-height">
+            <form method="get" class="btn-group btn-height mb-1">
                 <div class="input-group-prepend">
                     <div class="input-group-text">Time Span</div>
                 </div>
@@ -46,7 +46,78 @@
             </div>
         }
     </div>
-    <div class="row mb-1">
+    @if (Model.MainCategoryResponse != null && Model.MainCategoryResponse.MainCategories.Count() > 0)
+    {
+        <div class="row m-2 px-3 rows-cols d-flex g-3 align-items-center justify-content-evenly">
+            @foreach (var category in Model.MainCategoryResponse.MainCategories)
+            {
+                <div class="card mx-1" style="width: 18rem;">
+                    <div class="card-header">
+                        @category.Name <span class="text-muted">(@category.NumberOfSubCategories)</span>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="@(category.Name)Chart" class="card-chart-height"></canvas>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center align-content-center">
+                        <a class="link-primary text-decoration-underline"
+                   href="#"
+                   data-bs-toggle="modal"
+                   data-bs-target="#editMainCategoryModal-@category.Id">
+                            Edit
+                        </a>&nbsp; | &nbsp;
+                        <a class="link-danger text-decoration-underline"
+                   href="#"
+                   data-bs-toggle="modal"
+                   data-bs-target="#deleteMainCategoryModal-@category.Id">
+                            Delete
+                        </a>
+                    </div>
+                </div>
+                <div class="modal fade" id="editMainCategoryModal-@category.Id">
+                    @await Html.PartialAsync("_AddEditMainCategoryModal", new AddEditMainCategoryModal() {
+            ReturnUrl = "/Expenses/Categories/Main/Index",
+            IsEdit = true,
+            Name = category.Name,
+            Id = category.Id
+            })
+                </div>
+                @*Delete Model*@
+                <div class="modal fade" id="deleteMainCategoryModal-@category.Id">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <h5 class="modal-title text-center">
+                                    <strong>Are you sure you want to Delete this Category?</strong>
+                                </h5>
+                                <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal">
+                                </button>
+                            </div>
+
+                            <div class="modal-footer d-flex justify-content-evenly">
+                                <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                                    Cancel
+                                </button>
+                                <form method="post"
+                              asp-page="./Index"
+                              asp-route-id="@category.Id"
+                              asp-page-handler="Delete">
+                                    <button type="submit" class="btn btn-danger">DELETE</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*End Delete Modal*@
+            }
+            <hr />
+
+        </div>
+    }
+    <div class="row m-1">
         @if (Model.MainCategoryResponse.MainCategoryPercentages != null)
         {
             <div class="col-xl-3 col-md-6 col-12">
@@ -72,72 +143,83 @@
             </div>
         }
     </div>
-    <div row mb-1>
-        @*Lists go here*@
-    </div>
     <div class="modal fade" id="addMainCategoryModal">
         @await Html.PartialAsync("_AddEditMainCategoryModal", new AddEditMainCategoryModal() {
         ReturnUrl = "/Expenses/Categories/Main/Index",
         IsEdit = false});
     </div>
-</div>
+    @section Scripts {
+        <script src="~/js/mainCategories.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
+        @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+    {
+    ChartType = ChartType.StackedBar,
+    UseDefaultColor = false,
+    ElementId = "mainCategoryExpenseChart",
+    Labels = JsonSerializer.Serialize(Model.MainCategoryResponse.MainCategoryChartData.MainCategoryNames),
+    MultipleDataSets = Model.MainCategoryResponse.MainCategoryChartData.SubCategoryData,
+    Title = "",
+    DisplayLabels = false,
+    Responsive = true
+    })
+        @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+    {
+    ChartType = ChartType.Pie,
+    UseDefaultColor = false,
+    ElementId = "mainCategoryPercentagesChart",
+    Labels = JsonSerializer.Serialize(Model.MainCategoryResponse.MainCategoryPercentages.Keys),
+    Dataset = JsonSerializer.Serialize(Model.MainCategoryResponse.MainCategoryPercentages.Values),
+    Title = "Main Category Percentages",
+    DisplayLabels = false,
+    Responsive = true
+    })
+        @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+    {
+    ChartType = ChartType.Donut,
+    UseDefaultColor = false,
+    ElementId = "subCategoryPurchaseOccurancesChart",
+    Labels = JsonSerializer.Serialize(Model.MainCategoryResponse.CategoryPurchaseOccurances.Keys),
+    Dataset = JsonSerializer.Serialize(Model.MainCategoryResponse.CategoryPurchaseOccurances.Values),
+    Title = "Sub Category Purchases",
+    DisplayLabels = false,
+    Responsive = true
+    })
+        @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+    {
+    ChartType = ChartType.Pie,
+    UseDefaultColor = false,
+    ElementId = "subCategoryPercentagesChart",
+    Labels = JsonSerializer.Serialize(Model.MainCategoryResponse.SubCategoryPercentages.Keys),
+    Dataset = JsonSerializer.Serialize(Model.MainCategoryResponse.SubCategoryPercentages.Values),
+    Title = "Sub Category Percentages",
+    DisplayLabels = false,
+    Responsive = true
+    })
+        @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+    {
+    ChartType = ChartType.Pie,
+    UseDefaultColor = false,
+    ElementId = "savingsPercentagesChart",
+    Labels = JsonSerializer.Serialize(Model.MainCategoryResponse.SavingsPercentages.Keys),
+    Dataset = JsonSerializer.Serialize(Model.MainCategoryResponse.SavingsPercentages.Values),
+    Title = "Percentage Saved",
+    DisplayLabels = false,
+    Responsive = true
+    })
 
-@section Scripts {
-    <script src="~/js/mainCategories.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
-    @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+        @foreach (var category in Model.MainCategoryResponse.MainCategories)
+        {
+            @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
     {
-                ChartType = ChartType.StackedBar,
-                UseDefaultColor = false,
-                ElementId = "mainCategoryExpenseChart",
-                Labels = JsonSerializer.Serialize(Model.MainCategoryResponse.MainCategoryChartData.MainCategoryNames),
-                MultipleDataSets = Model.MainCategoryResponse.MainCategoryChartData.SubCategoryData,
-                Title = "",
-                DisplayLabels = false,
-                Responsive = true
+    ChartType = ChartType.Pie,
+    UseDefaultColor = false,
+    ElementId = $"{category.Name}Chart",
+    Labels = JsonSerializer.Serialize(category.SubCategoryExpenses.Keys),
+    Dataset = JsonSerializer.Serialize(category.SubCategoryExpenses.Values),
+    Title = "",
+    DisplayLabels = false,
+    Responsive = true
     })
-    @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
-    {
-                ChartType = ChartType.Pie,
-                UseDefaultColor = false,
-                ElementId = "mainCategoryPercentagesChart",
-                Labels = JsonSerializer.Serialize(Model.MainCategoryResponse.MainCategoryPercentages.Keys),
-                Dataset = JsonSerializer.Serialize(Model.MainCategoryResponse.MainCategoryPercentages.Values),
-                Title = "Main Category Percentages",
-                DisplayLabels = false,
-                Responsive = true
-    })
-    @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
-    {
-                ChartType = ChartType.Donut,
-                UseDefaultColor = false,
-                ElementId = "subCategoryPurchaseOccurancesChart",
-                Labels = JsonSerializer.Serialize(Model.MainCategoryResponse.CategoryPurchaseOccurances.Keys),
-                Dataset = JsonSerializer.Serialize(Model.MainCategoryResponse.CategoryPurchaseOccurances.Values),
-                Title = "Sub Category Purchases",
-                DisplayLabels = false,
-                Responsive = true
-    })
-    @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
-    {
-                ChartType = ChartType.Pie,
-                UseDefaultColor = false,
-                ElementId = "subCategoryPercentagesChart",
-                Labels = JsonSerializer.Serialize(Model.MainCategoryResponse.SubCategoryPercentages.Keys),
-                Dataset = JsonSerializer.Serialize(Model.MainCategoryResponse.SubCategoryPercentages.Values),
-                Title = "Sub Category Percentages",
-                DisplayLabels = false,
-                Responsive = true
-    })
-    @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
-    {
-                ChartType = ChartType.Pie,
-                UseDefaultColor = false,
-                ElementId = "savingsPercentagesChart",
-                Labels = JsonSerializer.Serialize(Model.MainCategoryResponse.SavingsPercentages.Keys),
-                Dataset = JsonSerializer.Serialize(Model.MainCategoryResponse.SavingsPercentages.Values),
-                Title = "Percentage Saved",
-                DisplayLabels = false,
-                Responsive = true
-    })
-}
+        }
+    }
+
