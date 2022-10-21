@@ -34,6 +34,7 @@
 		<None Remove="Migrations\**" />
 	</ItemGroup>
 	<ItemGroup>
+		<None Remove="Scripts\Budget\budget.ts" />
 		<None Remove="Scripts\Import\rules.ts" />
 		<None Remove="Scripts\IncomeCategories\incomeCategories.ts" />
 		<None Remove="Scripts\IncomeCategories\incomeCategoryDetail.ts" />
@@ -56,6 +57,7 @@
 		<None Remove="Scripts\Utility\subcategory-autocomplete.ts" />
 	</ItemGroup>
 	<ItemGroup>
+		<TypeScriptCompile Include="Scripts\Budget\budget.ts" />
 		<TypeScriptCompile Include="Scripts\Expenses\expenses.ts" />
 		<TypeScriptCompile Include="Scripts\Expenses\split.ts" />
 		<TypeScriptCompile Include="Scripts\Import\rules.ts" />
