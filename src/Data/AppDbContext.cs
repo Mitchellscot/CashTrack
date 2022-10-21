@@ -14,6 +14,7 @@ namespace CashTrack.Data
 {
     public class AppDbContext : IdentityDbContext<UserEntity, IdentityRole<int>, int>
     {
+        public DbSet<BudgetEntity> Budgets { get; set; }
         public DbSet<ExpenseEntity> Expenses { get; set; }
         public DbSet<IncomeEntity> Incomes { get; set; }
         public DbSet<MainCategoryEntity> MainCategories { get; set; }
