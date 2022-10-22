@@ -1,9 +1,29 @@
 ﻿@page
+@using CashTrack.Models.BudgetModels
 @model CashTrack.Pages.Budget.IndexModel
 @{
+
 }
-<div>Budget page!</div>
+<div class="container-fluid">
+    <div class="row d-flex">
+        <div class="float-end">
+            <button class="btn btn-primary text-wrap import-link" data-bs-toggle="modal" data-bs-target="#addBudgetModal" id="addBudgetButton">Add Budget Allocation</button>
+        </div>
+    </div>
+    <div class="modal fade" id="addBudgetModal">
+        @await Html.PartialAsync("_AddBudgetModal", new AddBudgetAllocationModal()
+        {
+        SubCategoryList = new SelectList(Model.CategoryList, "Id", "Category"),
+        Month = DateTime.Now.Month,
+        Year = DateTime.Now.Year,
+        Amount = 0,
+        TimeSpan = AllocationTimeSpan.Month,
+        Type = BudgetType.Static
+        });
+    </div>
+</div>
+
 
 @section Scripts {
-<script src="~/js/budget.js" asp-append-version="true"></script>
+    <script src="~/js/budget.js" asp-append-version="true"></script>
 }

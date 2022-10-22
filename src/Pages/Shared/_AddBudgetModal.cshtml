@@ -1,0 +1,49 @@
+﻿@using CashTrack.Models.BudgetModels
+@model CashTrack.Models.BudgetModels.AddBudgetAllocationModal
+@{
+}
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header text-center">
+            <h5 class="modal-title w-100">Add Budget Allocation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal">
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <form method="post"
+                      id="addBudgetForm"
+                      asp-page="./Index"
+                      asp-page-handler="AddBudgetModel">
+                    <div class="row">
+                        <div class="row mb-3">
+                            <div class="col-8">
+                                <div class="input-group">
+                                    <div class="input-group-text">Category</div>
+                                    <label class="visually-hidden"
+                                           asp-for="@Model.SubCategoryId">Category</label>
+                                    <select data-val="true"
+                                            asp-for=@Model.SubCategoryId
+                                            asp-items=@Model.SubCategoryList
+                                            class="form-control text-center load-main-category-js"
+                                            data-id=@Model.SubCategoryId>
+                                        <option value="" selected disabled hidden>Select</option>
+                                    </select>
+                                    <div class="input-group-text">Main Category</div>
+                                    <input disabled type="text"
+                                           class="form-control text-center bg-white"
+                                           id="budgetMainCategory" required />
+                                </div>
+                            </div>
+                        </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-evenly">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <form>
+                <button type="submit" class="btn btn-primary" form="addBudgetForm" id="">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
