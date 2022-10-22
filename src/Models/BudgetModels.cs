@@ -5,16 +5,14 @@ namespace CashTrack.Models.BudgetModels
     public enum BudgetType
     {
         Savings,
-        Static,
-        Dynamic,
-        Wishlist
+        Need,
+        Want
     }
     public enum AllocationTimeSpan
     {
+        SpecificMonth,
         Month,
-        Year,
-        Week,
-        SpecificMonth
+        Year
     }
     public class AddBudgetAllocation
     {
@@ -28,5 +26,12 @@ namespace CashTrack.Models.BudgetModels
     public class AddBudgetAllocationModal : AddBudgetAllocation
     {
         public SelectList SubCategoryList { get; set; }
+    }
+    public class CategoryMonthlyAverages
+    {
+        public decimal SixMonths { get; set; }
+        public decimal ThisYear { get; set; }
+        public decimal LastYear { get; set; }
+        public decimal TwoYearsAgo { get; set; }
     }
 }
