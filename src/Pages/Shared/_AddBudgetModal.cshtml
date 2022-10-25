@@ -17,7 +17,7 @@
                       asp-page-handler="AddBudgetModel">
                     <div class="row">
                         <div class="row mb-3">
-                            <div class="col-8">
+                            <div class="col">
                                 <div class="input-group">
                                     <div class="input-group-text">Category</div>
                                     <label class="visually-hidden"
@@ -25,18 +25,63 @@
                                     <select data-val="true"
                                             asp-for=@Model.SubCategoryId
                                             asp-items=@Model.SubCategoryList
-                                            class="form-control text-center load-main-category-js"
-                                            data-id=@Model.SubCategoryId>
+                                            class="form-control text-center load-main-category-js">
                                         <option value="" selected disabled hidden>Select</option>
                                     </select>
                                     <div class="input-group-text">Main Category</div>
                                     <input disabled type="text"
                                            class="form-control text-center bg-white"
-                                           id="budgetMainCategory" required />
+                                           id="mainCategoryInput" required />
                                 </div>
                             </div>
                         </div>
+                        <div class="row mb-1">
+                        </div>
                 </form>
+                <table class="table table-borderless visually-hidden" id="averagesTable">
+                    <thead>
+                        <tr class="text-center">
+                            
+                            <th scope="col">
+                                Last 6 Months
+                            </th>
+                            <th scope="col">
+                                This Year
+                            </th>
+                            <th scope="col">
+                                Last Year
+                            </th>
+                            <th scope="col">
+                                Two Years Ago
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center" scope="row">
+                            <td id="sixMonthAverages">
+                            </td>
+                            <td id="thisYearAverages">
+                            </td>
+                            <td id="lastYearAverages">
+                            </td>
+                            <td id="twoYearsAgoAverages">
+                            </td>
+                            <td class="text-muted">Monthly Averages</td>
+                        </tr>
+                        <tr class="text-center" scope="row">
+                            <td id="sixMonthTotals">
+                            </td>
+                            <td id="thisYearTotals">
+                            </td>
+                            <td id="lastYearTotals">
+                            </td>
+                            <td id="twoYearsAgoTotals">
+                            </td>
+                            <td class="text-muted">Annual Totals</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         <div class="modal-footer d-flex justify-content-evenly">

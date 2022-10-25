@@ -27,11 +27,15 @@ namespace CashTrack.Models.BudgetModels
     {
         public SelectList SubCategoryList { get; set; }
     }
-    public class CategoryMonthlyAverages
+    public class CategoryAveragesAndTotals
     {
-        public decimal SixMonths { get; set; }
-        public decimal ThisYear { get; set; }
-        public decimal LastYear { get; set; }
-        public decimal TwoYearsAgo { get; set; }
+        public decimal SixMonthAverages { get; set; }
+        public decimal ThisYearAverages { get; set; }
+        public decimal LastYearAverages { get; set; }
+        public decimal TwoYearsAgoAverages { get; set; }
+        public decimal SixMonthTotals { get; set; }
+        public decimal ThisYearTotals { get; set; }
+        public decimal LastYearTotals { get; set; }
+        public decimal TwoYearsAgoTotals { get; set; }
     }
 }

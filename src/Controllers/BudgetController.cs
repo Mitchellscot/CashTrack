@@ -13,12 +13,12 @@ namespace CashTrack.Controllers
     {
         private readonly IBudgetService _budgetService;
         public BudgetController(IBudgetService budgetService) => (_budgetService) = (budgetService);
-        [HttpGet("averages/{subCategoryId:int}")]
-        public async Task<ActionResult<CategoryMonthlyAverages>> GetAveragesForBudgetAllocationModal(int subCategoryId)
+        [HttpGet("averages-and-totals/{subCategoryId:int}")]
+        public async Task<ActionResult<CategoryAveragesAndTotals>> GetAmountsForBudgetAllocationModal(int subCategoryId)
         {
             try
             {
-                var result = await _budgetService.GetCategoryMonthlyAverages(subCategoryId);
+                var result = await _budgetService.GetCategoryAveragesAndTotals(subCategoryId);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -26,6 +26,5 @@ namespace CashTrack.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
     }
 }
