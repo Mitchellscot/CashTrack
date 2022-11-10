@@ -38,7 +38,7 @@ namespace CashTrack.Data
         {
             base.OnModelCreating(mb);
             //to seed a new dev or prod database, set this to true
-            mb.Initialize(_env.EnvironmentName, false);
+            mb.Initialize(_env.EnvironmentName, true);
             //used to convert decimals and DateTime for the sqllite in memory database.
             if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
                 ConfigureForSqlLite(mb);
@@ -131,6 +131,7 @@ namespace CashTrack.Data
                 mb.Entity<IncomeSourceEntity>().HasData(CsvParser.ProcessIncomeSourceFile(Path.Combine(csvFileDirectory, "IncomeSources.csv")));
                 mb.Entity<IncomeEntity>().HasData(CsvParser.ProcessIncomeFile(Path.Combine(csvFileDirectory, "Income.csv")));
                 mb.Entity<ImportRuleEntity>().HasData(CsvParser.ProcessImportRuleFile(Path.Combine(csvFileDirectory, "ImportRules.csv")));
+                mb.Entity<BudgetEntity>().HasData(CsvParser.ProcessBudgetFile(Path.Combine(csvFileDirectory, "Budgets.csv")));
             }
         }
     }

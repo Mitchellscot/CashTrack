@@ -14,6 +14,7 @@ namespace CashTrack.Data.Entities
         public int Year { get; set; }
         [Range(0, int.MaxValue)]
         public int Amount { get; set; }
+        public bool IsIncome { get; set; }
         public int SubcategoryId { get; set; }
         public SubCategoryEntity SubCategory { get; set; }
         public BudgetType BudgetType { get; set; }

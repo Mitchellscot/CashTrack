@@ -18,241 +18,243 @@
 
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a asp-page="./Expenses" 
-            class="nav-link active">
-            Expenses</a>
+            <a asp-page="./Expenses"
+               class="nav-link active">
+                Expenses
+            </a>
         </li>
         <li class="nav-item">
-            <a asp-page="./Income" 
-            class="nav-link">
-            Income</a>
+            <a asp-page="./Income"
+               class="nav-link">
+                Income
+            </a>
         </li>
-          <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" 
-              data-bs-toggle="dropdown">
-              Add</a>
-              <ul class="dropdown-menu">
-                  <li class="text-center">
-                      <button class="dropdown-item fakelink text-center" 
-                      id="addMerchant" 
-                      data-bs-toggle="modal" 
-                      data-bs-target="#addMerchantModal">
-                      Add Merchant</button>
-                      </li>
-                  <li class="text-center">
-                      <button 
-                          class="dropdown-item fakelink text-center" 
-                          id="addSubCategory" 
-                          data-bs-toggle="modal" 
-                          data-bs-target="#addSubCategoryModal">
-                          Add Category</button>
-                      </li>
-                        <li class="dropdown-divider"></li>
-                      <li class="text-center">
-                      <button class="dropdown-item fakelink text-center" 
-                      id="importCsvButton" 
-                      data-bs-toggle="modal" 
-                      data-bs-target="#importCsvModal">
-                      Import Transactions</button>
-                      </li>
-                      <li>
-                      <a class="dropdown-item fakelink text-center" 
-                      asp-page="./Rules">
-                      Import Rules</a>
-                      </li>
-              </ul>
-              </li>
-              </ul>
-              <div class="modal fade" id="importCsvModal">
-                  @await Html.PartialAsync("_ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Import/Expenses" })
-                  </div>
-              <div class="modal fade" id="addMerchantModal">
-                  @await Html.PartialAsync("_AddMerchantPartial", new AddEditMerchantModal() { Returnurl = "~/Import/Expenses", SuggestOnLookup = true, IsEdit = false })
-                  </div>
-                  <div class="modal fade" id="addSubCategoryModal">
-                      @await Html.PartialAsync("_AddEditSubCategoryModal", new AddEditSubCategoryModal() { Returnurl="~/Import/Expenses", InUse=true, IsEdit=false, MainCategoryList= new SelectList(Model.MainCategoryList, "Id", "Category") })
-                      </div>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle"
+               data-bs-toggle="dropdown">
+                Add
+            </a>
+            <ul class="dropdown-menu">
+                <li class="text-center">
+                    <button class="dropdown-item fakelink text-center"
+                            id="addMerchant"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addMerchantModal">
+                        Add Merchant
+                    </button>
+                </li>
+                <li class="text-center">
+                    <button class="dropdown-item fakelink text-center"
+                            id="addSubCategory"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addSubCategoryModal">
+                        Add Category
+                    </button>
+                </li>
+                <li class="dropdown-divider"></li>
+                <li class="text-center">
+                    <button class="dropdown-item fakelink text-center"
+                            id="importCsvButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#importCsvModal">
+                        Import Transactions
+                    </button>
+                </li>
+                <li>
+                    <a class="dropdown-item fakelink text-center"
+                       asp-page="./Rules">
+                        Import Rules
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <div class="modal fade" id="importCsvModal">
+        @await Html.PartialAsync("_ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Import/Expenses" })
+    </div>
+    <div class="modal fade" id="addMerchantModal">
+        @await Html.PartialAsync("_AddMerchantPartial", new AddEditMerchantModal() { Returnurl = "~/Import/Expenses", SuggestOnLookup = true, IsEdit = false })
+    </div>
+    <div class="modal fade" id="addSubCategoryModal">
+        @await Html.PartialAsync("_AddEditSubCategoryModal", new AddEditSubCategoryModal() { Returnurl="~/Import/Expenses", InUse=true, IsEdit=false, MainCategoryList= new SelectList(Model.MainCategoryList, "Id", "Category") })
+    </div>
 
 
     @if (Model.ExpenseReviewResponse != null && Model.ExpenseReviewResponse.ListItems.Count() > 0)
     {
-            <div class="row">
-                <div class="table-responsive table-sm">
-                    <table class="table table-bordered table-hover table-sm mb-0 mt-2">
-                        <thead>
-                            <tr class="text-center table-primary">
-                                <th width="10%">
-                                    Date
-                                </th>
-                                <th width="10%">
-                                    Amount
-                                </th>
-                                <th width="15%">
-                                    Merchant
-                                </th>
-                                <th width="15%">
-                                    Category
-                                </th>
-                                <th width="40%">
-                                    Notes
-                                </th>
-                                <th width="10%">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
+        <div class="row">
+            <div class="table-responsive table-sm">
+                <table class="table table-bordered table-hover table-sm mb-0 mt-2">
+                    <thead>
+                        <tr class="text-center table-primary">
+                            <th width="10%">
+                                Date
+                            </th>
+                            <th width="10%">
+                                Amount
+                            </th>
+                            <th width="15%">
+                                Merchant
+                            </th>
+                            <th width="15%">
+                                Category
+                            </th>
+                            <th width="40%">
+                                Notes
+                            </th>
+                            <th width="10%">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         @foreach (var expense in Model.ExpenseReviewResponse.ListItems)
                         {
-                                            <tr class="text-center">
-                                                <form method="post" 
-                                                    id="editExpenseReviewForm-@expense.Id" 
-                                                    asp-page-handler="ExpenseAdd" 
-                                                    asp-route-pageNumber="@Model.PageNumber">
-                                                    <input type="hidden" 
-                                                        asp-for="@Model.SelectedExpenseId" value="@expense.Id" />
-                                                <td>
-                                                    <input type="hidden" 
-                                                        asp-for="@Model.SelectedExpense.Date" 
-                                                        value="@expense.Date" />
+                            <tr class="text-center">
+                                <form method="post"
+                              id="editExpenseReviewForm-@expense.Id"
+                              asp-page-handler="ExpenseAdd"
+                              asp-route-pageNumber="@Model.PageNumber">
+                                    <input type="hidden"
+                                   asp-for="@Model.SelectedExpenseId" value="@expense.Id" />
+                                <td>
+                                    <input type="hidden"
+                                   asp-for="@Model.SelectedExpense.Date"
+                                   value="@expense.Date" />
                                         @expense.Date.Date.ToShortDateString()
-                                                </td>
-                                                <td>
-                                                    <input type="hidden" 
-                                                        asp-for="@Model.SelectedExpense.Amount" 
-                                                        value="@expense.Amount" />
+                                </td>
+                                <td>
+                                    <input type="hidden"
+                                   asp-for="@Model.SelectedExpense.Amount"
+                                   value="@expense.Amount" />
                                         @expense.Amount
-                                                </td>
-                                                <td>
-                                                    <input 
-                                                       class="form-control text-center form-control-sm merchant-autosuggest-js" 
-                                                        asp-for="@Model.SelectedExpense.Merchant"
-                                                        value="@expense.SuggestedMerchant" />
-                                                </td>
-                                                <td>
+                                </td>
+                                <td>
+                                    <input class="form-control text-center form-control-sm merchant-autosuggest-js"
+                                   asp-for="@Model.SelectedExpense.Merchant"
+                                   value="@expense.SuggestedMerchant" />
+                                </td>
+                                <td>
                                         @{
                                             var dropdownList = new SelectList(
-                                                Model.CategoryList, "Id", "Category", expense.SuggestedCategoryId);
+                                            Model.CategoryList, "Id", "Category", expense.SuggestedCategoryId);
                                         }
-                                        <select 
-                                            class="form-select text-center form-select-sm"
-                                            id="category-@expense.Id"
-                                            asp-for="SelectedExpense.SubCategoryId"
-                                            asp-items="@dropdownList" value="@expense.SuggestedCategoryId">
+                                    <select class="form-select text-center form-select-sm"
+                                    id="category-@expense.Id"
+                                    asp-for="SelectedExpense.SubCategoryId"
+                                    asp-items="@dropdownList" value="@expense.SuggestedCategoryId">
                                             @{
-                                    if (expense.SuggestedCategoryId == null)
-                                    {
-                                        <option value="" selected disabled hidden></option>
-                                    }
-                                    }
+                                                if (expense.SuggestedCategoryId == null)
+                                                {
+                                                <option value="" selected disabled hidden></option>
+                                                }
+                                            }
                                     </select>
-                                    </td>
-                                    <td>
-                                        <input class="form-control mx-auto form-control-sm" 
-                                        asp-for="@Model.SelectedExpense.Notes" 
-                                        value="@expense.Notes" />
-                                    </td>
-                                    <td class="mx-0 px-0 py-0 my-0">
-                                        <button type="submit" 
-                                            class="me-2 ms-1 py-0 my-0 icon-button">
-                                            <i class="bi bi-check2-circle text-primary icon-size-xl" ></i>
-                                   </button>
-                                   <button
-                                       data-bs-toggle="modal"
-                                       data-bs-target="#deleteModal-@expense.Id"
-                                       type="button" 
-                                       class="mx-0 px-0 py-0 my-0 icon-button">
-                                       <i class="bi bi-x-circle text-primary action-icon"></i>
-                                   </button>
+                                </td>
+                                <td>
+                                    <input class="form-control mx-auto form-control-sm"
+                                   asp-for="@Model.SelectedExpense.Notes"
+                                   value="@expense.Notes" />
+                                </td>
+                                <td class="mx-0 px-0 py-0 my-0">
+                                    <button type="submit"
+                                    class="me-2 ms-1 py-0 my-0 icon-button">
+                                        <i class="bi bi-check2-circle text-primary icon-size-xl"></i>
+                                    </button>
+                                    <button data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal-@expense.Id"
+                                    type="button"
+                                    class="mx-0 px-0 py-0 my-0 icon-button">
+                                        <i class="bi bi-x-circle text-primary action-icon"></i>
+                                    </button>
                                         @*Delete Modal*@
-                                   <div class="modal fade" id="deleteModal-@expense.Id">
-                                       <div class="modal-dialog" role="document">
-                                           <div class="modal-content">
-                                               <div class="modal-header text-center">
-                                                   <h5 class="modal-title text-center">
-                                                       <strong>Are you sure you want to Remove this Expense?</strong>
-                                                       </h5>
-                                                           </div>
-                                                           <div class="modal-body text-wrap text-center">
-                                                               Once this is done, you will have to manually add it on the expense page. It will no longer show up in future imports.
-                                                           </div>
-                                                           <div class="modal-footer d-flex justify-content-evenly">
-                                                               <button type="button" 
-                                                                   class="btn btn-secondary" 
-                                                                   data-bs-dismiss="modal">
-                                                                   Cancel
-                                                                   </button>
-                                                                   <button 
-                                                                       asp-page-handler="RemoveExpense"
-                                                                       asp-route-pageNumber="@Model.PageNumber"
-                                                                       name="SelectedId" 
-                                                                       value="@expense.Id"
-                                                                       type="submit" 
-                                                                       class="btn btn-danger">
-                                                                       DELETE</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                    <div class="modal fade" id="deleteModal-@expense.Id">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header text-center">
+                                                    <h5 class="modal-title text-center">
+                                                        <strong>Are you sure you want to Remove this Expense?</strong>
+                                                    </h5>
+                                                </div>
+                                                <div class="modal-body text-wrap text-center">
+                                                    Once this is done, you will have to manually add it on the expense page. It will no longer show up in future imports.
+                                                </div>
+                                                <div class="modal-footer d-flex justify-content-evenly">
+                                                    <button type="button"
+                                                    class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">
+                                                        Cancel
+                                                    </button>
+                                                    <button asp-page-handler="RemoveExpense"
+                                                    asp-route-pageNumber="@Model.PageNumber"
+                                                    name="SelectedId"
+                                                    value="@expense.Id"
+                                                    type="submit"
+                                                    class="btn btn-danger">
+                                                        DELETE
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                         @*End Delete Modal*@
-                                        <button 
-                                            type="button" 
-                                            class="ms-2 me-1 py-0 my-0 icon-button" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#splitExpenseModal-@expense.Id">
-                                            <i class="bi bi-arrow-left-right text-primary action-icon"></i>
-                                        </button>
+                                    <button type="button"
+                                    class="ms-2 me-1 py-0 my-0 icon-button"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#splitExpenseModal-@expense.Id">
+                                        <i class="bi bi-arrow-left-right text-primary action-icon"></i>
+                                    </button>
                                         @*Split Expense Modal*@
-                                   <div class="modal fade" 
-                                       id="splitExpenseModal-@expense.Id">
-                                       <div class="modal-dialog">
-                                           <div class="modal-content">
-                                               <div class="modal-header">
-                                                   <h5 class="modal-title w-100">
-                                                       <strong>Split An Expense</strong>
-                                                       </h5>
-                                                           </div>
-                                                           <div class="modal-body text-wrap text-center">
-                                                               This will take you to a page where you can split this expense into seperate expenses.
-                                                           </div>
-                                                           <div class="modal-footer d-flex justify-content-evenly">
-                                                               <button type="button" 
-                                                                   class="btn btn-secondary" 
-                                                                   data-bs-dismiss="modal">
-                                                                   Cancel
-                                                                   </button>
-                                                                   <button 
-                                                                       form="editExpenseReviewForm-@expense.Id"
-                                                                       asp-page-handler="SplitExpense"
-                                                                       type="submit" 
-                                                                       class="btn btn-primary">
-                                                                       Ok</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                    <div class="modal fade"
+                                 id="splitExpenseModal-@expense.Id">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title w-100">
+                                                        <strong>Split An Expense</strong>
+                                                    </h5>
+                                                </div>
+                                                <div class="modal-body text-wrap text-center">
+                                                    This will take you to a page where you can split this expense into seperate expenses.
+                                                </div>
+                                                <div class="modal-footer d-flex justify-content-evenly">
+                                                    <button type="button"
+                                                    class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">
+                                                        Cancel
+                                                    </button>
+                                                    <button form="editExpenseReviewForm-@expense.Id"
+                                                    asp-page-handler="SplitExpense"
+                                                    type="submit"
+                                                    class="btn btn-primary">
+                                                        Ok
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                         @*End Split Expense Modal*@
-                                   </td>
-                                   </form>
-                                   </tr>
+                                </td>
+                                </form>
+                            </tr>
                         }
-                        </tbody>
-                    </table>
-                    <div class="row my-1">
-                        <div class="col-sm-6 col-lg-2 col-xl-2 mx-auto">
+                    </tbody>
+                </table>
+                <div class="row my-1">
+                    <div class="col-sm-6 col-lg-2 col-xl-2 mx-auto">
                         @if (@Model.ExpenseReviewResponse.TotalCount > 0)
                         {
                             var currentCount = Model.ExpenseReviewResponse.PageNumber * @Model.ExpenseReviewResponse.PageSize;
-                                            <span class="text-muted">
-                                                @(Math.Min(currentCount, Model.ExpenseReviewResponse.TotalCount)) 
-                                                of @Model.ExpenseReviewResponse.TotalCount
-                                                </span>
+                            <span class="text-muted">
+                                @(Math.Min(currentCount, Model.ExpenseReviewResponse.TotalCount))
+                                of @Model.ExpenseReviewResponse.TotalCount
+                            </span>
                         }
-                        </div>
-                        <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
+                    </div>
+                    <div class="col-sm-6 col-lg-4 col-xl-6 m-auto">
                         @*Total amount went here. Something else can go here maybe?*@
-                        </div>
-                        <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
+                    </div>
+                    <div class="col-sm-12 col-lg-6 col-xl-4 my-0 py-0 gy-0">
                         @await Html.PartialAsync("_PaginationPartial",
                     new _PaginationPartialModel {
                     PathLink = "../Import/Expenses",
@@ -260,13 +262,13 @@
                     PageNumber = Model.ExpenseReviewResponse.PageNumber,
                     TotalPages = Model.ExpenseReviewResponse.TotalPages,
                     })
-                        </div>
                     </div>
                 </div>
             </div>
+        </div>
 
     }
 </div>
 @section Scripts {
-<script src="~/js/importExpenses.js" asp-append-version="true"></script>
+    <script src="~/js/importExpenses.js" asp-append-version="true"></script>
 }
