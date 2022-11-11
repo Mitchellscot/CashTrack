@@ -8,6 +8,7 @@ using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.IncomeReviewRepository;
 using CsvHelper;
 using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
@@ -58,7 +59,7 @@ namespace CashTrack.Services.ImportService
                 File.Delete(filePath);
                 return "Please inspect the csv file for the correct headers.";
             }
-            catch (ReaderException)
+            catch (TypeConverterException)
             {
                 File.Delete(filePath);
                 return "No transactions imported - is the file formatted properly?";
@@ -69,13 +70,13 @@ namespace CashTrack.Services.ImportService
                 return "No transactions imported";
             }
 
-            
+
             IEnumerable<ImportTransaction> filteredImports = await FilterTransactionsInDatabase(imports);
 
             if (!filteredImports.Any())
                 return "Transactions have already been imported.";
 
-            
+
             IEnumerable<ImportTransaction> importRulesApplied = SetImportRules(filteredImports, rules);
 
             var expensesToImport = importRulesApplied.Where(x => !x.IsIncome).Select(x => new ExpenseReviewEntity()
@@ -147,8 +148,8 @@ namespace CashTrack.Services.ImportService
 
         internal IEnumerable<ImportTransaction> GetTransactionsFromFile(string filePath, CsvFileType fileType, ImportRuleEntity[] rules)
         {
-            var bankFilterRules = rules.Where(x => 
-            x.FileType == CsvFileType.Bank && 
+            var bankFilterRules = rules.Where(x =>
+            x.FileType == CsvFileType.Bank &&
             x.RuleType == RuleType.Filter).ToList();
             var creditFilterRules = rules.Where(x =>
             x.FileType == CsvFileType.Credit &&

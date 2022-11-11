@@ -17,20 +17,14 @@ namespace CashTrack.Tests.Services
 {
     public class SourceServiceTests
     {
-        private readonly IMapper _mapper;
         private readonly IncomeSourceService _service;
 
         public SourceServiceTests()
         {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<IncomeSourcesProfile>();
-            });
-            _mapper = config.CreateMapper();
             var sharedDb = new AppDbContextFactory().CreateDbContext();
             var repo = new IncomeSourceRepository(sharedDb);
             var incomeRepo = new IncomeRepository(sharedDb);
-            _service = new IncomeSourceService(repo, incomeRepo, _mapper);
+            _service = new IncomeSourceService(repo, incomeRepo);
         }
         [Fact]
         public async Task Get_All_Source_Names()
@@ -196,7 +190,7 @@ namespace CashTrack.Tests.Services
                 var repo = new IncomeSourceRepository(db);
                 var incomeCategoryRepo = new IncomeCategoryRepository(db);
                 var incomeRepo = new IncomeRepository(db);
-                var sourceService = new IncomeSourceService(repo, incomeRepo, _mapper);
+                var sourceService = new IncomeSourceService(repo, incomeRepo);
                 var categories = await incomeCategoryRepo.Find(x => true);
                 var income = await incomeRepo.Find(x => true);
                 var result = sourceService.GetIncomeCategoryTotals(categories, income);
@@ -213,7 +207,7 @@ namespace CashTrack.Tests.Services
                 var repo = new IncomeSourceRepository(db);
                 var incomeCategoryRepo = new IncomeCategoryRepository(db);
                 var incomeRepo = new IncomeRepository(db);
-                var sourceService = new IncomeSourceService(repo, incomeRepo, _mapper);
+                var sourceService = new IncomeSourceService(repo, incomeRepo);
                 var categories = await incomeCategoryRepo.Find(x => true);
                 var income = await incomeRepo.Find(x => true);
                 var result = sourceService.GetIncomeCategoryOccurances(categories, income);
@@ -226,7 +220,7 @@ namespace CashTrack.Tests.Services
         {
             var repo = new IncomeSourceRepository(db);
             var incomeRepo = new IncomeRepository(db);
-            var service = new IncomeSourceService(repo, incomeRepo, _mapper);
+            var service = new IncomeSourceService(repo, incomeRepo);
             return service;
         }
     }

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CashTrack.Data.Entities;
+﻿using CashTrack.Data.Entities;
 using CashTrack.Common.Exceptions;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.MerchantModels;
@@ -28,14 +27,12 @@ public interface IMerchantService
 }
 public class MerchantService : IMerchantService
 {
-    private readonly IMapper _mapper;
     private readonly IMerchantRepository _merchantRepo;
     private readonly ISubCategoryRepository _subCategoryRepo;
     private readonly IExpenseRepository _expenseRepo;
 
-    public MerchantService(IMapper mapper, IMerchantRepository merchantRepo, ISubCategoryRepository subCategoryRepo, IExpenseRepository expenseRepo)
+    public MerchantService(IMerchantRepository merchantRepo, ISubCategoryRepository subCategoryRepo, IExpenseRepository expenseRepo)
     {
-        _mapper = mapper;
         _merchantRepo = merchantRepo;
         _subCategoryRepo = subCategoryRepo;
         _expenseRepo = expenseRepo;
@@ -214,7 +211,15 @@ public class MerchantService : IMerchantService
         if (merchants.Any())
             throw new DuplicateNameException(nameof(MerchantEntity), request.Name);
 
-        var merchantEntity = _mapper.Map<MerchantEntity>(request);
+        var merchantEntity = new MerchantEntity()
+        {
+            Name = request.Name,
+            SuggestOnLookup= request.SuggestOnLookup,
+            City= request.City,
+            State= request.State,
+            IsOnline= request.IsOnline,
+            Notes= request.Notes
+        };
 
         return await _merchantRepo.Create(merchantEntity);
     }
@@ -280,21 +285,5 @@ public class MerchantService : IMerchantService
             Id = x.Id,
             Name = x.Name
         }).ToArray();
-    }
-}
-public class MerchantMapperProfile : Profile
-{
-    public MerchantMapperProfile()
-    {
-
-        CreateMap<Merchant, MerchantEntity>()
-            .ForMember(m => m.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(m => m.Name, o => o.MapFrom(src => src.Name))
-            .ForMember(m => m.IsOnline, o => o.MapFrom(src => src.IsOnline))
-            .ForMember(m => m.City, o => o.MapFrom(src => src.City))
-            .ForMember(m => m.State, o => o.MapFrom(src => src.State))
-            .ForMember(m => m.Notes, o => o.MapFrom(src => src.Notes))
-            .ReverseMap();
-
     }
 }

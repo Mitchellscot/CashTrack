@@ -18,21 +18,15 @@ namespace CashTrack.Tests.Services
 {
     public class MerchantServiceTests
     {
-        private readonly IMapper _mapper;
         private readonly MerchantService _service;
 
         public MerchantServiceTests()
         {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<MerchantMapperProfile>();
-            });
-            _mapper = config.CreateMapper();
             var sharedDB = new AppDbContextFactory().CreateDbContext();
             var repo = new MerchantRepository(sharedDB);
             var subCategoryRepo = new SubCategoryRepository(sharedDB);
             var expenseRepo = new ExpenseRepository(sharedDB);
-            _service = new MerchantService(_mapper, repo, subCategoryRepo, expenseRepo);
+            _service = new MerchantService(repo, subCategoryRepo, expenseRepo);
         }
         [Fact]
         public async Task Get_All_Merchant_Names()
@@ -162,7 +156,7 @@ namespace CashTrack.Tests.Services
                 var repo = new MerchantRepository(db);
                 var subCategoryRepo = new SubCategoryRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
-                var merchantService = new MerchantService(_mapper, repo, subCategoryRepo, expenseRepo);
+                var merchantService = new MerchantService(repo, subCategoryRepo, expenseRepo);
                 var subCategories = await subCategoryRepo.Find(x => true);
                 var expenses = await expenseRepo.Find(x => true);
                 var result = merchantService.GetExpenseCategoryTotals(subCategories, expenses);
@@ -179,7 +173,7 @@ namespace CashTrack.Tests.Services
                 var repo = new MerchantRepository(db);
                 var subCategoryRepo = new SubCategoryRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
-                var merchantService = new MerchantService(_mapper, repo, subCategoryRepo, expenseRepo);
+                var merchantService = new MerchantService(repo, subCategoryRepo, expenseRepo);
                 var subCategories = await subCategoryRepo.Find(x => true);
                 var expenses = await expenseRepo.Find(x => true);
                 var result = merchantService.GetExpenseCategoryOccurances(subCategories, expenses);
@@ -341,7 +335,7 @@ namespace CashTrack.Tests.Services
             var repo = new MerchantRepository(db);
             var subCategoryRepo = new SubCategoryRepository(db);
             var expenseRepo = new ExpenseRepository(db);
-            var service = new MerchantService(_mapper, repo, subCategoryRepo, expenseRepo);
+            var service = new MerchantService(repo, subCategoryRepo, expenseRepo);
             return service;
         }
     }

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CashTrack.Data.Entities;
+﻿using CashTrack.Data.Entities;
 using CashTrack.Common.Exceptions;
 using CashTrack.Models.IncomeSourceModels;
 using CashTrack.Repositories.IncomeSourceRepository;
@@ -29,10 +28,9 @@ public interface IIncomeSourceService
 public class IncomeSourceService : IIncomeSourceService
 {
     private readonly IIncomeSourceRepository _sourceRepo;
-    private readonly IMapper _mapper;
     private readonly IIncomeRepository _incomeRepo;
 
-    public IncomeSourceService(IIncomeSourceRepository repo, IIncomeRepository incomeRepo, IMapper mapper) => (_sourceRepo, _incomeRepo, _mapper) = (repo, incomeRepo, mapper);
+    public IncomeSourceService(IIncomeSourceRepository repo, IIncomeRepository incomeRepo) => (_sourceRepo, _incomeRepo) = (repo, incomeRepo);
 
     public async Task<int> CreateIncomeSourceAsync(IncomeSource request)
     {
@@ -40,7 +38,15 @@ public class IncomeSourceService : IIncomeSourceService
         if (categories.Any(x => x.Name == request.Name))
             throw new DuplicateNameException(nameof(IncomeSourceEntity), request.Name);
 
-        var sourceEntity = _mapper.Map<IncomeSourceEntity>(request);
+        var sourceEntity = new IncomeSourceEntity()
+        {
+            Name = request.Name,
+            Notes = request.Notes,
+            SuggestOnLookup = request.SuggestOnLookup,
+            City = request.City,
+            State = request.State,
+            IsOnline = request.IsOnline
+        };
 
         return await _sourceRepo.Create(sourceEntity);
     }
@@ -197,22 +203,5 @@ public class IncomeSourceService : IIncomeSourceService
             Id = x.Id,
             Name = x.Name
         }).OrderBy(x => x.Name).ToArray();
-    }
-}
-
-
-public class IncomeSourcesProfile : Profile
-{
-    public IncomeSourcesProfile()
-    {
-        CreateMap<IncomeSource, IncomeSourceEntity>()
-            .ForMember(x => x.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(x => x.Name, o => o.MapFrom(src => src.Name))
-            .ForMember(x => x.Notes, o => o.MapFrom(src => src.Notes))
-            .ForMember(x => x.SuggestOnLookup, o => o.MapFrom(src => src.SuggestOnLookup))
-            .ForMember(x => x.City, o => o.MapFrom(src => src.City))
-            .ForMember(x => x.State, o => o.MapFrom(src => src.State))
-            .ForMember(x => x.IsOnline, o => o.MapFrom(src => src.IsOnline))
-            .ReverseMap();
     }
 }
