@@ -1,18 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using System.Collections.Generic;
 
 namespace CashTrack.Models.BudgetModels
 {
     public enum BudgetType
     {
-        Savings,
         Need,
-        Want
+        Want,
+        Savings,
+        Income
     }
     public enum AllocationTimeSpan
     {
-        SpecificMonth,
         Month,
-        Year
+        Year,
+        Week
     }
     public class AddBudgetAllocation
     {
@@ -21,11 +24,29 @@ namespace CashTrack.Models.BudgetModels
         public int Year { get; set; }
         public int Amount { get; set; }
         public BudgetType Type { get; set; }
+        public bool IsIncome { get; set; }
         public AllocationTimeSpan TimeSpan { get; set; }
     }
     public class AddBudgetAllocationModal : AddBudgetAllocation
     {
         public SelectList SubCategoryList { get; set; }
+        public SelectList YearList { get; set; } = new SelectList(new[] { DateTime.Now.Year, DateTime.Now.Year + 1 }, DateTime.Now.Year);
+        public SelectList MonthList { get; set; } = new SelectList(new Dictionary<string, int> {
+            { "Every", 0},
+            { "January", 1 },
+            { "February", 2 },
+            { "March", 3 },
+            { "April", 4 },
+            { "May", 5 },
+            { "June", 6 },
+            { "July", 7 },
+            { "August", 8 },
+            { "September", 9 },
+            { "October", 10 },
+            { "November", 11 },
+            { "December", 12 }
+        }, "Value", "Key", DateTime.Now.Month);
+        public string[] TimeSpans = new[] { "Specific Month", "Year", "Month", "Week" };
     }
     public class CategoryAveragesAndTotals
     {
