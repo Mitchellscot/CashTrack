@@ -1,10 +1,18 @@
 ﻿@page
 @using CashTrack.Models.BudgetModels
+@using CashTrack.Pages.Shared;
 @model CashTrack.Pages.Budget.IndexModel
 @{
 
 }
+
 <div class="container-fluid">
+        @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
     <div class="row d-flex">
         <div class="float-end">
             <button class="btn btn-primary text-wrap import-link" data-bs-toggle="modal" data-bs-target="#addBudgetModal" id="addBudgetButton">Add Budget Allocation</button>
