@@ -14,8 +14,8 @@ namespace CashTrack.Models.BudgetModels
     public enum AllocationTimeSpan
     {
         Month,
-        Year,
-        Week
+        Week,
+        Year
     }
     public class AddBudgetAllocation
     {

@@ -30,7 +30,7 @@
                                 <div class="border rounded align-self-center px-5 py-2">
                                     <div class="form-check form-switch">
                                         <label class="form-check-label" asp-for="@Model.IsIncome">This is Income</label>
-                                        <input class="form-check-input" type="checkbox" role="switch"
+                                        <input class="form-check-input" type="checkbox" role="switch" id="budgetIncomeSwitch"
                                                asp-for="@Model.IsIncome" />
                                     </div>
                                 </div>
@@ -48,7 +48,7 @@
                             {
                                 <input type="radio"
                                    id=@($"TimeSpan{time.Value}")
-                                   class="btn-check"
+                                   class="btn-check handle-timespan-select-js"
                                    asp-for="@Model.TimeSpan"
                                    autocomplete="off"
                                    value="@time.Value"
@@ -63,6 +63,7 @@
                             <label class="visually-hidden"
                                    asp-for="@Model.Month">Month</label>
                             <select data-val="true"
+                                    id="monthSelectList"
                                     asp-for=@Model.Month
                                     asp-items=@Model.MonthList
                                     class="form-control text-center">
@@ -77,7 +78,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row mb-2" id="budgetTypeInputs">
                         <div class="btn-group btn-height mb-2">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
@@ -88,7 +89,7 @@
                             {
                                 <input type="radio"
                                    id=@($"BudgetType{type}")
-                                   class="btn-check"
+                                   class="btn-check handle-category-select-js"
                                    asp-for="@Model.Type"
                                    autocomplete="off"
                                    value="@budgetTypes.IndexOf(type)"
@@ -97,7 +98,7 @@
                             }
                         </div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row mb-2" id="categoryInputs">
                         <div class="input-group">
                             <div class="input-group-text">Category</div>
                             <label class="visually-hidden"
