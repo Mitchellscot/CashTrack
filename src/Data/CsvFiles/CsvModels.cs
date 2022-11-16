@@ -117,8 +117,7 @@ namespace CashTrack.Data.CsvFiles
             public int Month { get; set; }
             public int Year { get; set; }
             public int Amount { get; set; }
-            public bool IsIncome { get; set; }
-            public int SubCategoryId { get; set; }
+            public int? SubCategoryId { get; set; }
             public BudgetType BudgetType { get; set; }
         }
     }

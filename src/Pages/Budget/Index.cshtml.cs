@@ -4,8 +4,6 @@ using CashTrack.Pages.Shared;
 using CashTrack.Services.BudgetService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
 
@@ -21,20 +19,32 @@ namespace CashTrack.Pages.Budget
         [BindProperty]
         public AddBudgetAllocationModal AddBudgetModal { get; set; }
 
-        public Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
-            return PrepareAndRenderPage();
+            return await PrepareAndRenderPage();
         }
-        public Task<IActionResult> OnPostAddBudgetModal()
+        public async Task<IActionResult> OnPostAddBudgetModal()
         {
             var validation = ValidateAddBudgetModal(this.AddBudgetModal);
             if (!string.IsNullOrEmpty(validation))
             {
                 ModelState.AddModelError("", validation);
-                return PrepareAndRenderPage();
+                return await PrepareAndRenderPage();
+            }
+            try
+            {
+                var success = await _budgetService.CreateBudgetItem(this.AddBudgetModal);
+                if(success > 0) //TODO: refactor with sucess message displayed
+                    return await PrepareAndRenderPage();
+
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
 
-            return PrepareAndRenderPage();
+            return await PrepareAndRenderPage();
         }
         private async Task<IActionResult> PrepareAndRenderPage()
         {
