@@ -3,6 +3,8 @@
     checkBox?.addEventListener('click', (): void => {
 
         if ((checkBox as HTMLInputElement).checked) {
+            const averagesTable = <HTMLTableElement>document.getElementById('averagesTable');
+            averagesTable.classList.add('visually-hidden');
             document.getElementById("budgetTypeInputs")?.classList.add('visually-hidden');
             document.getElementById("categoryInputs")?.classList.add('visually-hidden');
         }
