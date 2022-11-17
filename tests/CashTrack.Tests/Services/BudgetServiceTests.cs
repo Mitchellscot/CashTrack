@@ -122,7 +122,7 @@ namespace CashTrack.Tests.Services
                 Year = 1999, //test year
                 Amount = 12000,
                 TimeSpan = AllocationTimeSpan.Year,
-                SubCategoryId= 1
+                SubCategoryId = 1
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
@@ -199,6 +199,27 @@ namespace CashTrack.Tests.Services
                 Month = int.MaxValue
             };
             await Task.Run(() => Should.Throw<ArgumentException>(async () => await _service.CreateBudgetItem(request)));
+        }
+        [Fact]
+        public async Task Delete_A_Budget_By_Id()
+        {
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var service = GetBudgetService(db);
+
+                var result = await service.DeleteBudgetAsync(1);
+
+                result.ShouldBeTrue();
+            }
+        }
+        [Fact]
+        public async Task Delete_Budget_Throws_With_Invalid_Id()
+        {
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var service = GetBudgetService(db);
+                await Task.Run(() => Should.Throw<BudgetNotFoundException>(async () => await service.DeleteBudgetAsync(int.MaxValue)));
+            }
         }
         private BudgetService GetBudgetService(AppDbContext db)
         {

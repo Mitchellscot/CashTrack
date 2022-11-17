@@ -1,4 +1,5 @@
-﻿using CashTrack.Data;
+﻿using CashTrack.Common.Exceptions;
+using CashTrack.Data;
 using CashTrack.Data.Entities;
 using CashTrack.Repositories.Common;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace CashTrack.Repositories.BudgetRepository
     public interface IBudgetRepository : IRepository<BudgetEntity>
     {
         Task<int> CreateMany(IEnumerable<BudgetEntity> entities);
+        Task<bool> DeleteMany(List<BudgetEntity> entity);
     }
     public class BudgetRepository : IBudgetRepository
     {
@@ -46,9 +48,29 @@ namespace CashTrack.Repositories.BudgetRepository
             }
         }
 
-        public Task<bool> Delete(BudgetEntity entity)
+        public async Task<bool> Delete(BudgetEntity entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _ctx.Budgets.Remove(entity);
+                return await (_ctx.SaveChangesAsync()) > 0;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public async Task<bool> DeleteMany(List<BudgetEntity> entity)
+        {
+            try
+            {
+                _ctx.Budgets.RemoveRange(entity);
+                return await (_ctx.SaveChangesAsync()) > 0;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<BudgetEntity[]> Find(Expression<Func<BudgetEntity, bool>> predicate)
@@ -68,24 +90,54 @@ namespace CashTrack.Repositories.BudgetRepository
             }
         }
 
-        public Task<BudgetEntity> FindById(int id)
+        public async Task<BudgetEntity> FindById(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var budget = await _ctx.Budgets
+                    .Include(x => x.SubCategory)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+                if (budget == null)
+                    throw new BudgetNotFoundException(id.ToString());
+
+                return budget;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public Task<BudgetEntity[]> FindWithPagination(Expression<Func<BudgetEntity, bool>> predicate, int pageNumber, int pageSize)
         {
+            //not using pagination on this page
             throw new NotImplementedException();
         }
 
-        public Task<int> GetCount(Expression<Func<BudgetEntity, bool>> predicate)
+        public async Task<int> GetCount(Expression<Func<BudgetEntity, bool>> predicate)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _ctx.Budgets
+                .Where(predicate)
+                .CountAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public Task<int> Update(BudgetEntity entity)
+        public async Task<int> Update(BudgetEntity entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("An error occured while trying to save the budget.");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

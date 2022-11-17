@@ -83,9 +83,10 @@ public class IncomeCategoryRepository : IIncomeCategoryRepository
         {
             var category = await _ctx.IncomeCategories
                 .Where(x => x.Id == id)
-                .SingleOrDefaultAsync();
+                .FirstOrDefaultAsync();
             if (category == null)
                 throw new CategoryNotFoundException(id.ToString());
+
             return category;
         }
         catch (Exception)

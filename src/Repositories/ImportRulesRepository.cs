@@ -1,4 +1,5 @@
-﻿using CashTrack.Data;
+﻿using CashTrack.Common.Exceptions;
+using CashTrack.Data;
 using CashTrack.Data.Entities;
 using CashTrack.Repositories.Common;
 using Microsoft.EntityFrameworkCore;
@@ -61,7 +62,10 @@ namespace CashTrack.Repositories.ImportRuleRepository
             try
             {
                 var rule = await _ctx.ImportRules
-                    .SingleOrDefaultAsync(x => x.Id == id);
+                    .FirstOrDefaultAsync(x => x.Id == id);
+                if (rule == null)
+                    throw new ImportRuleNotFoundException(id.ToString());
+
                 return rule;
             }
             catch (Exception)

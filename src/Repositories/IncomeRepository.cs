@@ -73,9 +73,10 @@ public class IncomeRepository : IIncomeRepository
             var income = await _ctx.Incomes
                 .Include(x => x.Source)
                 .Include(x => x.Category)
-                .SingleOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id);
             if (income == null)
                 throw new IncomeNotFoundException(id.ToString());
+
             return income;
         }
         catch (Exception)

@@ -56,9 +56,10 @@ public class SubCategoryRepository : ISubCategoryRepository
             var category = await _context.SubCategories
                 .Where(x => x.Id == id)
                 .Include(x => x.MainCategory)
-                .SingleOrDefaultAsync();
+                .FirstOrDefaultAsync();
             if (category == null)
                 throw new CategoryNotFoundException(id.ToString());
+
             return category;
         }
         catch (Exception)

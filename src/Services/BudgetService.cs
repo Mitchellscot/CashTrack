@@ -1,4 +1,5 @@
-﻿using CashTrack.Data.Entities;
+﻿using CashTrack.Common.Exceptions;
+using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
 using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Repositories.ExpenseRepository;
@@ -13,6 +14,7 @@ namespace CashTrack.Services.BudgetService
     {
         Task<CategoryAveragesAndTotals> GetCategoryAveragesAndTotals(int subCategoryId);
         Task<int> CreateBudgetItem(AddBudgetAllocation request);
+        Task<bool> DeleteBudgetAsync(int id);
     }
     public class BudgetService : IBudgetService
     {
@@ -59,6 +61,15 @@ namespace CashTrack.Services.BudgetService
             budgetEntity.SubCategoryId = isIncome ? null : request.SubCategoryId;
 
             return await _budgetRepo.Create(budgetEntity);
+        }
+
+        public async Task<bool> DeleteBudgetAsync(int id)
+        {
+            var budget = await _budgetRepo.FindById(id);
+            if (budget == null)
+                throw new BudgetNotFoundException("Invalid Budget Id");
+
+            return await _budgetRepo.Delete(budget);
         }
 
         public async Task<CategoryAveragesAndTotals> GetCategoryAveragesAndTotals(int subCategoryId)

@@ -64,9 +64,10 @@ public class IncomeSourceRepository : IIncomeSourceRepository
         {
             var category = await _ctx.IncomeSources
                 .Where(x => x.Id == id)
-                .SingleOrDefaultAsync();
+                .FirstOrDefaultAsync();
             if (category == null)
                 throw new IncomeSourceNotFoundException(id.ToString());
+
             return category;
         }
         catch (Exception)

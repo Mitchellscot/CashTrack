@@ -40,7 +40,8 @@ public class IncomeReviewRepository : IIncomeReviewRepository
             var income = await _ctx.IncomeToReview
                         .Include(x => x.SuggestedCategory)
                         .Include(x => x.SuggestedSource)
-                        .SingleOrDefaultAsync(x => x.Id == id);
+                        .FirstOrDefaultAsync(x => x.Id == id);
+
             if (income == null)
                 throw new IncomeNotFoundException(id.ToString());
 

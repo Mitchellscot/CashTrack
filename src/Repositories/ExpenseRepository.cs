@@ -54,7 +54,7 @@ public class ExpenseRepository : IExpenseRepository
                 .Include(x => x.Merchant)
                 .Include(x => x.Category)
                 .ThenInclude(x => x.MainCategory)
-                .SingleOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id);
             if (expense == null)
                 throw new ExpenseNotFoundException(id.ToString());
 
