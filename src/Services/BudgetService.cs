@@ -1,6 +1,7 @@
 ﻿using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
+using CashTrack.Models.IncomeModels;
 using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Repositories.ExpenseRepository;
 using System;
@@ -26,7 +27,7 @@ namespace CashTrack.Services.BudgetService
         public async Task<int> CreateBudgetItem(AddBudgetAllocation request)
         {
             var isIncome = request.IsIncome || request.Type == BudgetType.Income;
-            var annualBudget = request.Month == 13 || request.TimeSpan == AllocationTimeSpan.Year;
+            var annualBudget = request.Month == 0 || request.TimeSpan == AllocationTimeSpan.Year;
             var isWeekly = request.TimeSpan == AllocationTimeSpan.Week;
 
             if (request.Amount <= 0)
@@ -47,7 +48,7 @@ namespace CashTrack.Services.BudgetService
                     onceAMonthBudget.Amount = isWeekly ? (request.Amount * 52) / 12 : request.Amount / 12;
                     onceAMonthBudget.Month = i;
                     onceAMonthBudget.Year = request.Year;
-                    onceAMonthBudget.BudgetType = request.Type;
+                    onceAMonthBudget.BudgetType = isIncome ? BudgetType.Income : request.Type;
                     budgetEntities.Add(onceAMonthBudget);
                 }
                 return await _budgetRepo.CreateMany(budgetEntities);
@@ -57,7 +58,7 @@ namespace CashTrack.Services.BudgetService
             budgetEntity.Amount = isWeekly ? (request.Amount * 52) / 12 : request.Amount;
             budgetEntity.Month = request.Month;
             budgetEntity.Year = request.Year;
-            budgetEntity.BudgetType = request.Type;
+            budgetEntity.BudgetType = isIncome ? BudgetType.Income : request.Type;
             budgetEntity.SubCategoryId = isIncome ? null : request.SubCategoryId;
 
             return await _budgetRepo.Create(budgetEntity);

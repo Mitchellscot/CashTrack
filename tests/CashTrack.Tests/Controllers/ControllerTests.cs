@@ -107,6 +107,18 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
         PrintRequestAndResponse("/api/maincategory/sub-category/", result);
     }
     [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public async Task Budgets_Controller_Returns_Averages_By_Subcategory_Id(int id)
+    {
+        var response = await _client.GetAsync($"/api/budget/averages-and-totals/{id}");
+        var result = await response.Content.ReadAsStringAsync();
+        result.ShouldNotBeEmpty();
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        PrintRequestAndResponse("/api/budget/averages-and-totals/", result);
+    }
+    [Theory]
     [InlineData("BZT Tips")]
     [InlineData("Alliance Redwoods")]
     [InlineData("SCT Tips")]

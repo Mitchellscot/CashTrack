@@ -25,40 +25,41 @@ namespace CashTrack.Pages.Budget
         }
         public async Task<IActionResult> OnPostAddBudgetModal()
         {
-            var validation = ValidateAddBudgetModal(this.AddBudgetModal);
-            if (!string.IsNullOrEmpty(validation))
-            {
-                ModelState.AddModelError("", validation);
-                return await PrepareAndRenderPage();
-            }
             try
             {
                 var success = await _budgetService.CreateBudgetItem(this.AddBudgetModal);
-                if(success > 0) //TODO: refactor with sucess message displayed
-                    return await PrepareAndRenderPage();
-
+                if (success > 0)
+                {
+                    TempData["SuccessMessage"] = "Successfully Budgeted!";
+                    return RedirectToPage("./Index");
+                }
+                else 
+                {
+                    TempData["InfoMessage"] = "Budget was not saved.";
+                    return RedirectToPage("./Index");
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                ModelState.AddModelError("", ex.Message);
+                return await PrepareAndRenderPage();
             }
-
-            return await PrepareAndRenderPage();
+        }
+        public async Task<IActionResult> OnPostDelete(int budgetId)
+        {
+            var success = await _budgetService.DeleteBudgetAsync(budgetId);
+            if (!success)
+            {
+                ModelState.AddModelError("", "Unable to delete the budget");
+                return await PrepareAndRenderPage();
+            }
+            TempData["SuccessMessage"] = "Successfully deleted the budget!";
+            return RedirectToPage("./Index");
         }
         private async Task<IActionResult> PrepareAndRenderPage()
         {
             CategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
             return Page();
-        }
-        private string ValidateAddBudgetModal(AddBudgetAllocationModal modal)
-        {
-            var validationMessage = "";
-            if (modal.Amount < 1)
-                validationMessage += "Amount Must be greater than zero. ";
-            if (!modal.IsIncome && modal.SubCategoryId < 1)
-                validationMessage += "You must supply a category if you are budgeting for an expense. ";
-            return validationMessage;
         }
     }
 }
