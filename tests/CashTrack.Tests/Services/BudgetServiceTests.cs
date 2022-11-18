@@ -145,7 +145,7 @@ namespace CashTrack.Tests.Services
                 Year = 1999, //test year
                 Amount = 25,
                 TimeSpan = AllocationTimeSpan.Week,
-                Month = 13,
+                Month = 0,
                 SubCategoryId = 1
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
