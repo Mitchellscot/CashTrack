@@ -1,7 +1,6 @@
 ﻿using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
-using CashTrack.Models.IncomeModels;
 using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Repositories.ExpenseRepository;
 using System;

@@ -18,6 +18,7 @@ namespace CashTrack.Pages.Budget
         public SubCategoryDropdownSelection[] CategoryList { get; set; }
         [BindProperty]
         public AddBudgetAllocationModal AddBudgetModal { get; set; }
+        public BudgetPageResponse BudgetPageResponse { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -59,6 +60,7 @@ namespace CashTrack.Pages.Budget
         private async Task<IActionResult> PrepareAndRenderPage()
         {
             CategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
+            BudgetPageResponse = await _budgetService.GetBudgetPage();
             return Page();
         }
     }

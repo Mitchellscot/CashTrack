@@ -1,9 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using CashTrack.Models.MainCategoryModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 
 namespace CashTrack.Models.BudgetModels
 {
+    public record BudgetPageResponse
+    {
+        public AnnualBudgetChartData AnnualBudgetChartData { get; set; }
+    }
+    public record AnnualBudgetChartData()
+    { 
+        public string[] Months { get; set; }
+        public List<BudgetChartDataSet> BudgetChartData { get; set; }
+
+    }
+    public record BudgetChartDataSet
+    { 
+        
+    }
     public enum BudgetType
     {
         Need,
