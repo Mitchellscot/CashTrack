@@ -1,6 +1,7 @@
 ﻿using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
+using CashTrack.Models.ExpenseModels;
 using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Repositories.ExpenseRepository;
 using System;
@@ -15,6 +16,7 @@ namespace CashTrack.Services.BudgetService
         Task<CategoryAveragesAndTotals> GetCategoryAveragesAndTotals(int subCategoryId);
         Task<int> CreateBudgetItem(AddBudgetAllocation request);
         Task<bool> DeleteBudgetAsync(int id);
+        Task<BudgetPageResponse> GetBudgetPageAsync(BudgetPageRequest request);
     }
     public class BudgetService : IBudgetService
     {
@@ -22,6 +24,38 @@ namespace CashTrack.Services.BudgetService
         private readonly IExpenseRepository _expenseRepo;
 
         public BudgetService(IBudgetRepository budgetRepo, IExpenseRepository expenseRepo) => (_budgetRepo, _expenseRepo) = (budgetRepo, expenseRepo);
+
+        public async Task<BudgetPageResponse> GetBudgetPageAsync(BudgetPageRequest request)
+        {
+            var budgets = await _budgetRepo.Find(x => x.Year == DateTime.Now.Year);
+
+            return new BudgetPageResponse()
+            {
+                AnnualBudgetChartData = new AnnualBudgetChartData()
+                {
+                    IncomeData = GetMonthlyData(budgets, BudgetType.Income).ToList(),
+                    NeedsData = GetMonthlyData(budgets, BudgetType.Need).ToList(),
+                    WantsData = GetMonthlyData(budgets, BudgetType.Want).ToList(),
+                    SavingsData = GetMonthlyData(budgets, BudgetType.Savings).ToList()
+                }
+            };
+        }
+
+        private IEnumerable<int> GetMonthlyData(BudgetEntity[] budgets, BudgetType type)
+        {
+            var monthlyData = budgets.Where(x => x.BudgetType == type).GroupBy(x => x.Month).Select(x =>
+            {
+                return (Month: x.Key, Amount: x.Sum(x => x.Amount));
+            }).OrderBy(x => x.Month).ToDictionary(k => k.Month, v => v.Amount);
+
+            for (int i = 1; i <= 12; i++)
+            {
+                if (monthlyData.Any(x => x.Key == i))
+                    yield return monthlyData[i];
+                else
+                    yield return 0;
+            }
+        }
 
         public async Task<int> CreateBudgetItem(AddBudgetAllocation request)
         {

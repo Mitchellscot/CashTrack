@@ -34,7 +34,7 @@ namespace CashTrack.Pages.Budget
                     TempData["SuccessMessage"] = "Successfully Budgeted!";
                     return RedirectToPage("./Index");
                 }
-                else 
+                else
                 {
                     TempData["InfoMessage"] = "Budget was not saved.";
                     return RedirectToPage("./Index");
@@ -60,7 +60,7 @@ namespace CashTrack.Pages.Budget
         private async Task<IActionResult> PrepareAndRenderPage()
         {
             CategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
-            BudgetPageResponse = await _budgetService.GetBudgetPage();
+            BudgetPageResponse = await _budgetService.GetBudgetPageAsync(new BudgetPageRequest());
             return Page();
         }
     }

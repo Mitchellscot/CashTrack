@@ -8,7 +8,7 @@
 }
 
 <div class="container-fluid">
-        @await Html.PartialAsync("_MessagePartial",
+    @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
@@ -20,10 +20,10 @@
         </div>
     </div>
     <div class="row mb-1">
-        @if (Model.MainCategoryResponse.MainCategoryChartData != null)
+        @if (Model.BudgetPageResponse.AnnualBudgetChartData != null)
         {
             <div class="col">
-                <canvas id="mainCategoryExpenseChart" class="chart-height"></canvas>
+                <canvas id="annualBudgetChart" class="chart-height"></canvas>
             </div>
         }
     </div>
@@ -44,15 +44,12 @@
 @section Scripts {
     <script src="~/js/budget.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
-    @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+    @await Html.PartialAsync("_BudgetChartPartial", new _BudgetChartPartial()
     {
-    ChartType = ChartType.StackedBar,
-    UseDefaultColor = false,
-    ElementId = "mainCategoryExpenseChart",
-    Labels = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.Months),
-    MultipleDataSets = Model.BudgetPageResponse.AnnualBudgetChartData.BudgetChartData,
-    Title = "",
-    DisplayLabels = false,
-    Responsive = true
+        ElementId = "annualBudgetChart",
+        IncomeDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.IncomeData),
+        NeedDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.NeedsData),
+        WantDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.WantsData),
+        SavingsDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.SavingsData)
     })
 }
