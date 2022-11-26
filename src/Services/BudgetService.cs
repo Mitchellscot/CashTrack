@@ -64,8 +64,40 @@ namespace CashTrack.Services.BudgetService
                     {"Wants", monthlyWants.Sum().ToPercentage(totalAnnualIncome) },
                     {"Savings", monthlySavings.Sum().ToPercentage(totalAnnualIncome) },
                     {"Unallocated", monthlyUnallocated.Sum().ToPercentage(totalAnnualIncome) }
-                }
+                },
+                SubCategoryPercentages = GetSubCategoryPercentages(budgets, totalAnnualIncome)
+
             };
+        }
+
+        private Dictionary<string, int> GetSubCategoryPercentages(BudgetEntity[] budgets, int totalAnnualIncome)
+        {
+            if (budgets.Length == 0)
+                return new Dictionary<string, int>();
+
+            var expensePercentagesOfIncome = budgets.Where(x => x.SubCategoryId != null).GroupBy(x => x.SubCategory.Name).Select(x =>
+            {
+                return (Name: x.Key, Amount: x.Sum(x => x.Amount));
+            }).Select(x =>
+            {
+                return (Name: x.Name, Percentage: x.Amount.ToPercentage(totalAnnualIncome));
+            }).Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
+
+            var savingsAllocated = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
+            var totalExpenses = budgets.Where(x => x.BudgetType == BudgetType.Need || x.BudgetType == BudgetType.Want).Sum(x => x.Amount);
+            var expensesAndSavings = savingsAllocated + totalExpenses;
+            savingsAllocated = expensesAndSavings > totalAnnualIncome ?
+                savingsAllocated - ((totalExpenses + savingsAllocated) - totalAnnualIncome) :
+                savingsAllocated;
+            var unAllocated = totalAnnualIncome > expensesAndSavings ? totalAnnualIncome - expensesAndSavings : 0;
+
+            if(savingsAllocated > 0)
+                expensePercentagesOfIncome.Add("Savings", savingsAllocated.ToPercentage(totalAnnualIncome));
+
+            if(unAllocated > 0)
+                expensePercentagesOfIncome.Add("Unallocated", unAllocated.ToPercentage(totalAnnualIncome));
+
+            return expensePercentagesOfIncome;
         }
 
         private IEnumerable<int> GetSavingsData(BudgetEntity[] budgets)
