@@ -17,10 +17,12 @@ namespace CashTrack.Pages.Budget
         public string NeedDataset { get; set; }
         public string WantDataset { get; set; }
         public string SavingsDataset { get; set; }
+        public string UnallocatedDataset { get; set; }
         public string Title { get; set; }
         public string IncomeColor = JsonSerializer.Serialize("rgba(24, 188, 156, .8)");
         public string NeedColor = JsonSerializer.Serialize("rgba(231, 76, 60, .8)");
         public string WantColor = JsonSerializer.Serialize("rgba(255, 205, 86, .8)");
         public string SavingsColor = JsonSerializer.Serialize("rgba(54, 162, 235, .8)");
+        public string UnallocatedColor = JsonSerializer.Serialize("rgba(153, 102, 255, .8)");
     }
 }

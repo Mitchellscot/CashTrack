@@ -50,6 +50,8 @@
         IncomeDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.IncomeData),
         NeedDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.NeedsData),
         WantDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.WantsData),
-        SavingsDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.SavingsData)
+        SavingsDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.SavingsData),
+        UnallocatedDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.Unallocated),
+        Title = DateTime.Now.Year.ToString()
     })
 }

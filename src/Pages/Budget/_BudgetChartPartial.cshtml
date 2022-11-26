@@ -44,7 +44,17 @@
                 borderColor: @Html.Raw(Model.SavingsColor),
                 borderWidth: 1,
                 stack: 'Stack 2'
-            }]
+            },
+            {
+                label: 'Unallocated',
+                data: @Model.UnallocatedDataset,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: @Html.Raw(Model.UnallocatedColor),
+                borderColor: @Html.Raw(Model.UnallocatedColor),
+                borderWidth: 1,
+                stack: 'Stack 2'
+            }
+            ]
         },
         options: {
             responsive: true,

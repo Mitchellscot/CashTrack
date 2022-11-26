@@ -19,6 +19,7 @@ namespace CashTrack.Models.BudgetModels
         public List<int> NeedsData { get; set; }
         public List<int> WantsData { get; set; }
         public List<int> SavingsData { get; set; }
+        public List<int> Unallocated { get; set; }
 
     }
     public enum BudgetType

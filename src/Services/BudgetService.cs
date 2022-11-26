@@ -36,9 +36,71 @@ namespace CashTrack.Services.BudgetService
                     IncomeData = GetMonthlyData(budgets, BudgetType.Income).ToList(),
                     NeedsData = GetMonthlyData(budgets, BudgetType.Need).ToList(),
                     WantsData = GetMonthlyData(budgets, BudgetType.Want).ToList(),
-                    SavingsData = GetMonthlyData(budgets, BudgetType.Savings).ToList()
+                    SavingsData = GetSavingsData(budgets).ToList(),
+                    Unallocated = GetUnallocatedData(budgets).ToList()
                 }
             };
+        }
+        private IEnumerable<int> GetSavingsData(BudgetEntity[] budgets)
+        {
+            var monthlyIncome = budgets.Where(x => x.BudgetType == BudgetType.Income).GroupBy(x => x.Month).Select(x =>
+            {
+                return (Month: x.Key, Amount: x.Sum(x => x.Amount));
+            }).OrderBy(x => x.Month).ToDictionary(k => k.Month, v => v.Amount);
+
+            var monthlyExpenses = budgets.Where(x => x.BudgetType == BudgetType.Need || x.BudgetType == BudgetType.Want).GroupBy(x => x.Month).Select(x =>
+            {
+                return (Month: x.Key, Amount: x.Sum(x => x.Amount));
+            }).OrderBy(x => x.Month).ToDictionary(k => k.Month, v => v.Amount);
+
+            var monthlySavings = budgets.Where(x => x.BudgetType == BudgetType.Savings).GroupBy(x => x.Month).Select(x =>
+            {
+                return (Month: x.Key, Amount: x.Sum(x => x.Amount));
+            }).OrderBy(x => x.Month).ToDictionary(k => k.Month, v => v.Amount);
+
+            for (int i = 1; i <= 12; i++)
+            {
+                if (monthlyIncome.Any(x => x.Key == i) && monthlyExpenses.Any(x => x.Key == i) && monthlySavings.Any(x => x.Key == i))
+                {
+                    if (monthlyIncome[i] > (monthlyExpenses[i] + monthlySavings[i]))
+                        yield return monthlySavings[i];
+                    else if (monthlyIncome[i] < (monthlyExpenses[i] + monthlySavings[i]))
+                        yield return (monthlyIncome[i] - (monthlyExpenses[i] + monthlySavings[i])) + monthlySavings[i];
+                    else yield return monthlySavings[i];
+                }
+                else if (monthlyIncome.Any(x => x.Key == i) && !monthlyExpenses.Any(x => x.Key == i))
+                    yield return monthlySavings[i];
+                else if (!monthlyIncome.Any(x => x.Key == i) && monthlyExpenses.Any(x => x.Key == i))
+                    yield return 0 - monthlyExpenses[i];
+                else yield return 0;
+            }
+        }
+
+        private IEnumerable<int> GetUnallocatedData(BudgetEntity[] budgets)
+        {
+            var monthlyIncome = budgets.Where(x => x.BudgetType == BudgetType.Income).GroupBy(x => x.Month).Select(x =>
+            {
+                return (Month: x.Key, Amount: x.Sum(x => x.Amount));
+            }).OrderBy(x => x.Month).ToDictionary(k => k.Month, v => v.Amount);
+
+            var monthlyExpenses = budgets.Where(x => x.BudgetType != BudgetType.Income).GroupBy(x => x.Month).Select(x =>
+            {
+                return (Month: x.Key, Amount: x.Sum(x => x.Amount));
+            }).OrderBy(x => x.Month).ToDictionary(k => k.Month, v => v.Amount);
+
+            for (int i = 1; i <= 12; i++)
+            {
+                if (monthlyIncome.Any(x => x.Key == i) && monthlyExpenses.Any(x => x.Key == i))
+                {
+                    if (monthlyIncome[i] > monthlyExpenses[i])
+                        yield return monthlyIncome[i] - monthlyExpenses[i];
+                    else yield return 0;
+                }
+                else if (monthlyIncome.Any(x => x.Key == i) && !monthlyExpenses.Any(x => x.Key == i))
+                    yield return monthlyIncome[i];
+                else
+                    yield return 0;
+            }
         }
 
         private IEnumerable<int> GetMonthlyData(BudgetEntity[] budgets, BudgetType type)
