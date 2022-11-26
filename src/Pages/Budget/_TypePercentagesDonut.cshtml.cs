@@ -5,17 +5,9 @@ using System.Text.Json;
 
 namespace CashTrack.Pages.Budget
 {
-    public class _TypePercentagesDonut
+    public class _TypePercentagesDonut : ChartBase
     {
-        public string VariableName { get; private set; }
-        public _TypePercentagesDonut()
-        {
-            VariableName = string.Join("", Enumerable.Repeat(0, 6).Select(n => (char)new Random().Next(97, 122)));
-        }
-        public string ElementId { get; set; } = "typePercentagesDonut";
-        public string Title { get; set; }
-        public string Dataset { get; set; }
-        public string Labels { get; set; }
+        public _TypePercentagesDonut() : base() { }
         public string ColorArray => GetColors();
         public string GetColors()
         {
