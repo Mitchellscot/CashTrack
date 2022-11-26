@@ -18,7 +18,7 @@ namespace CashTrack.Pages.Budget
 
         public AnnualModel(IBudgetService budgetService, ISubCategoryService subCategoryService) => (_budgetService, _subCategoryService) = (budgetService, subCategoryService);
         public SubCategoryDropdownSelection[] CategoryList { get; set; }
-        [BindProperty(SupportsGet =true)]
+        [BindProperty(SupportsGet = true)]
         public int Year { get; set; } = DateTime.Now.Year;
         public SelectList YearSelectList { get; set; }
         [BindProperty]
@@ -37,12 +37,12 @@ namespace CashTrack.Pages.Budget
                 if (success > 0)
                 {
                     TempData["SuccessMessage"] = "Successfully Budgeted!";
-                    return RedirectToPage("./Index");
+                    return RedirectToPage("./Annual");
                 }
                 else
                 {
                     TempData["InfoMessage"] = "Budget was not saved.";
-                    return RedirectToPage("./Index");
+                    return RedirectToPage("./Annual");
                 }
             }
             catch (Exception ex)
@@ -60,12 +60,12 @@ namespace CashTrack.Pages.Budget
                 return await PrepareAndRenderPage();
             }
             TempData["SuccessMessage"] = "Successfully deleted the budget!";
-            return RedirectToPage("./Index");
+            return RedirectToPage("./Annual");
         }
         private async Task<IActionResult> PrepareAndRenderPage()
         {
             CategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
-            BudgetPageResponse = await _budgetService.GetAnnualBudgetPageAsync(new AnnualBudgetPageRequest() { Year = Year});
+            BudgetPageResponse = await _budgetService.GetAnnualBudgetPageAsync(new AnnualBudgetPageRequest() { Year = Year });
             YearSelectList = new SelectList(await _budgetService.GetAnnualBudgetYears());
             return Page();
         }

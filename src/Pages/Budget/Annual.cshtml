@@ -55,24 +55,6 @@
         </li>
     </ul>
     @*END NAV TABS*@
-
-    <div class="row mb-1">
-        <div class="mt-2 d-flex justify-content-center">
-            <form method="get" class="d-inline-flex">
-                <div class="input-group">
-                    <select data-val="true" onchange="this.form.submit()" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="annualBudgetYearSelection">
-                        <option value="@Model.Year" selected disabled hidden></option>
-                        </select>
-                    </div>
-                </form>
-        </div>
-        @if (Model.BudgetPageResponse.AnnualBudgetChartData != null)
-        {
-            <div class="col">
-                <canvas id="annualBudgetChart" class="chart-height"></canvas>
-            </div>
-        }
-    </div>
     <div class="modal fade" id="addBudgetModal">
         @await Html.PartialAsync("_AddBudgetModal", new AddBudgetAllocationModal()
         {
@@ -84,6 +66,88 @@
         Type = BudgetType.Need
         })
     </div>
+
+    <div class="row mb-1">
+        <div class="mt-2 d-flex justify-content-center">
+            <form method="get" class="d-inline-flex">
+                <div class="input-group">
+                    <select data-val="true" onchange="this.form.submit()" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="annualBudgetYearSelection">
+                        <option value="@Model.Year" selected disabled hidden></option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        @if (Model.BudgetPageResponse.AnnualBudgetChartData != null)
+        {
+            <div class="col">
+                <canvas id="annualBudgetChart" class="chart-height"></canvas>
+            </div>
+        }
+    </div>
+
+    <div class="row mb-1">
+        @if (Model.BudgetPageResponse.TypePercentages != null)
+        {
+            <div class="col-6 col-lg-3 mt-3">
+                <ul class="list-group text-center">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">
+                            Income: &nbsp;
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.IncomeAmount)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">
+                            Expenses:
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.ExpensesAmount)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">
+                            Needs:
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.NeedsAmount)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">
+                            Wants:
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.WantsAmount)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">
+                            Savings:
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.SavingsAmount)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">
+                            Unallocated:
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.UnallocatedAmount)
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        }
+
+            <div class="col-6 col-lg-3 mt-3">
+            <canvas id="typePercentagesDonut" class="chart-height"></canvas>
+            </div>
+        
+    </div>
+
 </div>
 
 @section Scripts {
@@ -98,5 +162,12 @@
         SavingsDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.SavingsData),
         UnallocatedDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.Unallocated),
         Title = DateTime.Now.Year.ToString()
+    })
+    @await Html.PartialAsync("_TypePercentagesDonut", new _TypePercentagesDonut()
+    {
+        ElementId = "typePercentagesDonut",
+        Labels = JsonSerializer.Serialize(Model.BudgetPageResponse.TypePercentages.Select(x => x.Key).ToArray()),
+        Dataset = JsonSerializer.Serialize(Model.BudgetPageResponse.TypePercentages.Select(x => x.Value).ToArray()),
+        Title = "Type Percentages"
     })
 }

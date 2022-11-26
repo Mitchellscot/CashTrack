@@ -1,5 +1,4 @@
-﻿using CashTrack.Models.MainCategoryModels;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 
@@ -12,6 +11,19 @@ namespace CashTrack.Models.BudgetModels
     public record BudgetPageResponse
     {
         public AnnualBudgetChartData AnnualBudgetChartData { get; set; }
+        public AnnualSummary AnnualSummary { get; set; }
+        public Dictionary<string, int> TypePercentages { get; set; }
+        public Dictionary<string, int> SubCategoryPercentages { get; set; }
+        public Dictionary<string, int> MainCategoryPercentages { get; set; }
+    }
+    public record AnnualSummary
+    {
+        public int IncomeAmount { get; set; }
+        public int ExpensesAmount { get; set; }
+        public int NeedsAmount { get; set; }
+        public int WantsAmount { get; set; }
+        public int SavingsAmount { get; set; }
+        public int UnallocatedAmount { get; set; }
     }
     public record AnnualBudgetChartData()
     {

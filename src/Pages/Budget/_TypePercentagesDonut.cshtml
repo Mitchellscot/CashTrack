@@ -1,0 +1,35 @@
+﻿@model CashTrack.Pages.Budget._TypePercentagesDonut
+@{
+    var variable = string.Join("", Enumerable.Repeat(0, 6).Select(n => (char)new Random().Next(97, 122)));
+    var elementId = "typePercentagesDonut";
+}
+    <script>
+        const @variable = document.getElementById(@Json.Serialize(elementId)).getContext('2d');
+        const @Model.ElementId = new Chart(@variable, {
+            type: 'doughnut',
+            data: {
+                labels: @Html.Raw(@Model.Labels),
+                datasets: [{
+                    label: 'Total',
+                    data: @Model.Dataset,
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: @Html.Raw(Model.ColorArray),
+                    borderColor: @Html.Raw(Model.ColorArray),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: true,
+                        text: '@Model.Title'
+                    }
+                }
+            }
+        });
+    </script>

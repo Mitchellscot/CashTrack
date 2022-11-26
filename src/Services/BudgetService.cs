@@ -4,6 +4,7 @@ using CashTrack.Models.BudgetModels;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Repositories.ExpenseRepository;
+using CashTrack.Services.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,18 +31,43 @@ namespace CashTrack.Services.BudgetService
         {
             var budgets = await _budgetRepo.Find(x => x.Year == request.Year);
 
+            var monthlyIncome = GetMonthlyData(budgets, BudgetType.Income).ToList();
+            var monthlyNeeds = GetMonthlyData(budgets, BudgetType.Need).ToList();
+            var monthlyWants = GetMonthlyData(budgets, BudgetType.Want).ToList();
+            var monthlySavings = GetSavingsData(budgets).ToList();
+            var monthlyUnallocated = GetUnallocatedData(budgets).ToList();
+
+            var totalAnnualIncome = monthlyIncome.Sum();
+
             return new BudgetPageResponse()
             {
                 AnnualBudgetChartData = new AnnualBudgetChartData()
                 {
-                    IncomeData = GetMonthlyData(budgets, BudgetType.Income).ToList(),
-                    NeedsData = GetMonthlyData(budgets, BudgetType.Need).ToList(),
-                    WantsData = GetMonthlyData(budgets, BudgetType.Want).ToList(),
-                    SavingsData = GetSavingsData(budgets).ToList(),
-                    Unallocated = GetUnallocatedData(budgets).ToList()
+                    IncomeData = monthlyIncome,
+                    NeedsData = monthlyNeeds,
+                    WantsData = monthlyWants,
+                    SavingsData = monthlySavings,
+                    Unallocated = monthlyUnallocated
+                },
+                AnnualSummary = new AnnualSummary()
+                {
+                    IncomeAmount = totalAnnualIncome,
+                    ExpensesAmount = monthlyNeeds.Sum() + monthlyWants.Sum(),
+                    NeedsAmount = monthlyNeeds.Sum(),
+                    WantsAmount = monthlyWants.Sum(),
+                    SavingsAmount = monthlySavings.Sum(),
+                    UnallocatedAmount = monthlyUnallocated.Sum()
+                },
+                TypePercentages = new Dictionary<string, int>()
+                {
+                    {"Needs", monthlyNeeds.Sum().ToPercentage(totalAnnualIncome) },
+                    {"Wants", monthlyWants.Sum().ToPercentage(totalAnnualIncome) },
+                    {"Savings", monthlySavings.Sum().ToPercentage(totalAnnualIncome) },
+                    {"Unallocated", monthlyUnallocated.Sum().ToPercentage(totalAnnualIncome) }
                 }
             };
         }
+
         private IEnumerable<int> GetSavingsData(BudgetEntity[] budgets)
         {
             var monthlyIncome = budgets.Where(x => x.BudgetType == BudgetType.Income).GroupBy(x => x.Month).Select(x =>
@@ -125,6 +151,7 @@ namespace CashTrack.Services.BudgetService
             var isIncome = request.IsIncome || request.Type == BudgetType.Income;
             var annualBudget = request.Month == 0 || request.TimeSpan == AllocationTimeSpan.Year;
             var isWeekly = request.TimeSpan == AllocationTimeSpan.Week;
+            var isYearly = request.TimeSpan == AllocationTimeSpan.Year && request.Month != 0;
 
             if (request.Amount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(request.Amount));
@@ -138,10 +165,18 @@ namespace CashTrack.Services.BudgetService
             if (annualBudget)
             {
                 var budgetEntities = new List<BudgetEntity>();
+                var amount = 0;
+                if (isWeekly)
+                    amount = (request.Amount * 52) / 12;
+                else if (isYearly)
+                    amount = request.Amount / 12;
+                else
+                    amount = request.Amount;
+
                 for (int i = 1; i < 13; i++)
                 {
                     var onceAMonthBudget = new BudgetEntity();
-                    onceAMonthBudget.Amount = isWeekly ? (request.Amount * 52) / 12 : request.Amount / 12;
+                    onceAMonthBudget.Amount = amount;
                     onceAMonthBudget.Month = i;
                     onceAMonthBudget.Year = request.Year;
                     onceAMonthBudget.BudgetType = isIncome ? BudgetType.Income : request.Type;
