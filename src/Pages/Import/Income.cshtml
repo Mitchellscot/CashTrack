@@ -1,5 +1,6 @@
 ﻿@page
 @using CashTrack.Models.ImportCsvModels
+@using CashTrack.Models.IncomeCategoryModels;
 @using CashTrack.Models.IncomeSourceModels
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Import.IncomeModel
@@ -38,7 +39,9 @@
                 </li>
                 <li class="text-center">
                     <button class="dropdown-item fakelink text-center" 
-                    id="addCategory">
+                    id="addCategory"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addCategoryModal">
                     Add Category</button>
                 </li>
                   <li class="dropdown-divider"></li>
@@ -65,6 +68,13 @@
                   <div class="modal fade" id="addSourceModal">
                       @await Html.PartialAsync("_AddIncomeSourcePartial", 
                       new AddEditIncomeSourceModal() { ReturnUrl = "~/Import/Income", SuggestOnLookup = true })
+                      </div>
+                      <div class="modal fade" id="addCategoryModal">
+                      @await Html.PartialAsync("_AddEditIncomeCategoryModal", 
+                      new AddEditIncomeCategoryModal() { 
+                          Returnurl = "~/Import/Income", 
+                          IsEdit = false 
+                      })
                       </div>
     @if (Model.IncomeReviewResponse != null && Model.IncomeReviewResponse.ListItems.Count() > 0)
     {

@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace CashTrack.Models.BudgetModels
 {
-    public record BudgetPageRequest
+    public record AnnualBudgetPageRequest
     {
-
+        public int Year { get; set; }
     }
     public record BudgetPageResponse
     {

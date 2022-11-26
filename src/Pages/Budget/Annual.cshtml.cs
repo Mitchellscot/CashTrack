@@ -1,21 +1,26 @@
 using CashTrack.Models.BudgetModels;
 using CashTrack.Models.SubCategoryModels;
-using CashTrack.Pages.Shared;
 using CashTrack.Services.BudgetService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
+using System;
+using CashTrack.Pages.Shared;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CashTrack.Pages.Budget
 {
-    public class IndexModel : PageModelBase
+    public class AnnualModel : PageModelBase
     {
         private readonly IBudgetService _budgetService;
         private readonly ISubCategoryService _subCategoryService;
 
-        public IndexModel(IBudgetService budgetService, ISubCategoryService subCategoryService) => (_budgetService, _subCategoryService) = (budgetService, subCategoryService);
+        public AnnualModel(IBudgetService budgetService, ISubCategoryService subCategoryService) => (_budgetService, _subCategoryService) = (budgetService, subCategoryService);
         public SubCategoryDropdownSelection[] CategoryList { get; set; }
+        [BindProperty(SupportsGet =true)]
+        public int Year { get; set; } = DateTime.Now.Year;
+        public SelectList YearSelectList { get; set; }
         [BindProperty]
         public AddBudgetAllocationModal AddBudgetModal { get; set; }
         public BudgetPageResponse BudgetPageResponse { get; set; }
@@ -60,7 +65,8 @@ namespace CashTrack.Pages.Budget
         private async Task<IActionResult> PrepareAndRenderPage()
         {
             CategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
-            BudgetPageResponse = await _budgetService.GetBudgetPageAsync(new BudgetPageRequest());
+            BudgetPageResponse = await _budgetService.GetAnnualBudgetPageAsync(new AnnualBudgetPageRequest() { Year = Year});
+            YearSelectList = new SelectList(await _budgetService.GetAnnualBudgetYears());
             return Page();
         }
     }

@@ -16,7 +16,8 @@ namespace CashTrack.Services.BudgetService
         Task<CategoryAveragesAndTotals> GetCategoryAveragesAndTotals(int subCategoryId);
         Task<int> CreateBudgetItem(AddBudgetAllocation request);
         Task<bool> DeleteBudgetAsync(int id);
-        Task<BudgetPageResponse> GetBudgetPageAsync(BudgetPageRequest request);
+        Task<BudgetPageResponse> GetAnnualBudgetPageAsync(AnnualBudgetPageRequest request);
+        Task<int[]> GetAnnualBudgetYears();
     }
     public class BudgetService : IBudgetService
     {
@@ -25,9 +26,9 @@ namespace CashTrack.Services.BudgetService
 
         public BudgetService(IBudgetRepository budgetRepo, IExpenseRepository expenseRepo) => (_budgetRepo, _expenseRepo) = (budgetRepo, expenseRepo);
 
-        public async Task<BudgetPageResponse> GetBudgetPageAsync(BudgetPageRequest request)
+        public async Task<BudgetPageResponse> GetAnnualBudgetPageAsync(AnnualBudgetPageRequest request)
         {
-            var budgets = await _budgetRepo.Find(x => x.Year == DateTime.Now.Year);
+            var budgets = await _budgetRepo.Find(x => x.Year == request.Year);
 
             return new BudgetPageResponse()
             {
@@ -187,6 +188,11 @@ namespace CashTrack.Services.BudgetService
                 LastYearTotals = lastYearTotal,
                 TwoYearsAgoTotals = twoYearsAgoTotal
             };
+        }
+
+        public async Task<int[]> GetAnnualBudgetYears()
+        {
+            return (await _budgetRepo.Find(x => true)).GroupBy(x => x.Year).Select(x => x.Key).ToArray();
         }
     }
 }

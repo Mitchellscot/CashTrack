@@ -1,25 +1,71 @@
 ﻿@page
+@model CashTrack.Pages.Budget.AnnualModel
 @using CashTrack.Models.BudgetModels
 @using CashTrack.Pages.Shared;
 @using System.Text.Json;
-@model CashTrack.Pages.Budget.IndexModel
 @{
 
 }
 
-<div class="container-fluid">
+<div class="container-fluid mb-0">
+
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
-    <div class="row d-flex">
-        <div class="float-end">
-            <button class="btn btn-primary text-wrap import-link" data-bs-toggle="modal" data-bs-target="#addBudgetModal" id="addBudgetButton">Add Budget Allocation</button>
-        </div>
-    </div>
+
+    @*NAV TABS*@
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a asp-page="./Annual"
+               class="nav-link active">
+                Annual
+            </a>
+        </li>
+        <li class="nav-item">
+            <a asp-page="./Monthly"
+               class="nav-link">
+                Monthly
+            </a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle"
+               data-bs-toggle="dropdown">
+                Add
+            </a>
+            <ul class="dropdown-menu">
+                <li class="text-center">
+                    <button class="dropdown-item fakelink text-center"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addBudgetModal">
+                        Add Budget
+                    </button>
+                </li>
+                <li class="text-center">
+                    <button class="dropdown-item fakelink text-center"
+                            id="addSubCategory"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addSubCategoryModal">
+                        Add Category
+                    </button>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    @*END NAV TABS*@
+
     <div class="row mb-1">
+        <div class="mt-2 d-flex justify-content-center">
+            <form method="get" class="d-inline-flex">
+                <div class="input-group">
+                    <select data-val="true" onchange="this.form.submit()" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="annualBudgetYearSelection">
+                        <option value="@Model.Year" selected disabled hidden></option>
+                        </select>
+                    </div>
+                </form>
+        </div>
         @if (Model.BudgetPageResponse.AnnualBudgetChartData != null)
         {
             <div class="col">
@@ -40,11 +86,10 @@
     </div>
 </div>
 
-
 @section Scripts {
     <script src="~/js/budget.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
-    @await Html.PartialAsync("_BudgetChartPartial", new _BudgetChartPartial()
+    @await Html.PartialAsync("_AnnualBudgetChart", new _AnnualBudgetChart()
     {
         ElementId = "annualBudgetChart",
         IncomeDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.IncomeData),
