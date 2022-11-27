@@ -15,6 +15,7 @@ namespace CashTrack.Repositories.BudgetRepository
     {
         Task<int> CreateMany(IEnumerable<BudgetEntity> entities);
         Task<bool> DeleteMany(List<BudgetEntity> entity);
+        Task<BudgetEntity[]> FindWithMainCategories(Expression<Func<BudgetEntity, bool>> predicate);
     }
     public class BudgetRepository : IBudgetRepository
     {
@@ -79,6 +80,23 @@ namespace CashTrack.Repositories.BudgetRepository
             {
                 return await _ctx.Budgets
                 .Include(x => x.SubCategory)
+                .Where(predicate)
+                .OrderBy(x => x.Year)
+                .ThenBy(x => x.Month)
+                .ToArrayAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public async Task<BudgetEntity[]> FindWithMainCategories(Expression<Func<BudgetEntity, bool>> predicate)
+        {
+            try
+            {
+                return await _ctx.Budgets
+                .Include(x => x.SubCategory)
+                .ThenInclude(x => x.MainCategory)
                 .Where(predicate)
                 .OrderBy(x => x.Year)
                 .ThenBy(x => x.Month)
