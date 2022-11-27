@@ -83,16 +83,12 @@ namespace CashTrack.Services.BudgetService
                 return (Name: x.Name, Percentage: x.Amount.ToPercentage(totalAnnualIncome));
             }).Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
 
-            var savingsAllocated = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
-            var totalExpenses = budgets.Where(x => x.BudgetType == BudgetType.Need || x.BudgetType == BudgetType.Want).Sum(x => x.Amount);
-            var expensesAndSavings = savingsAllocated + totalExpenses;
-            savingsAllocated = expensesAndSavings > totalAnnualIncome ?
-                savingsAllocated - ((totalExpenses + savingsAllocated) - totalAnnualIncome) :
-                savingsAllocated;
-            var unAllocated = totalAnnualIncome > expensesAndSavings ? totalAnnualIncome - expensesAndSavings : 0;
+            var savingsAllocated = GetSavingsData(budgets).Sum();
 
             if (savingsAllocated > 0)
                 expensePercentagesOfIncome.Add("Savings", savingsAllocated.ToPercentage(totalAnnualIncome));
+
+            var unAllocated = GetUnallocatedData(budgets).Sum();
 
             if (unAllocated > 0)
                 expensePercentagesOfIncome.Add("Unallocated", unAllocated.ToPercentage(totalAnnualIncome));
@@ -113,18 +109,14 @@ namespace CashTrack.Services.BudgetService
                 return (Name: x.Name, Percentage: x.Amount.ToPercentage(totalAnnualIncome));
             }).Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
 
-            var savingsAllocated = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
-            var totalExpenses = budgets.Where(x => x.BudgetType == BudgetType.Need || x.BudgetType == BudgetType.Want).Sum(x => x.Amount);
-            var expensesAndSavings = savingsAllocated + totalExpenses;
-            savingsAllocated = expensesAndSavings > totalAnnualIncome ?
-                savingsAllocated - ((totalExpenses + savingsAllocated) - totalAnnualIncome) :
-                savingsAllocated;
-            var unAllocated = totalAnnualIncome > expensesAndSavings ? totalAnnualIncome - expensesAndSavings : 0;
+            var savingsAllocated = GetSavingsData(budgets).Sum();
 
-            if(savingsAllocated > 0)
+            if (savingsAllocated > 0)
                 expensePercentagesOfIncome.Add("Savings", savingsAllocated.ToPercentage(totalAnnualIncome));
 
-            if(unAllocated > 0)
+            var unAllocated = GetUnallocatedData(budgets).Sum();
+
+            if (unAllocated > 0)
                 expensePercentagesOfIncome.Add("Unallocated", unAllocated.ToPercentage(totalAnnualIncome));
 
             return expensePercentagesOfIncome;
@@ -242,6 +234,7 @@ namespace CashTrack.Services.BudgetService
                     onceAMonthBudget.Month = i;
                     onceAMonthBudget.Year = request.Year;
                     onceAMonthBudget.BudgetType = isIncome ? BudgetType.Income : request.Type;
+                    onceAMonthBudget.SubCategoryId = isIncome ? null : request.SubCategoryId;
                     budgetEntities.Add(onceAMonthBudget);
                 }
                 return await _budgetRepo.CreateMany(budgetEntities);

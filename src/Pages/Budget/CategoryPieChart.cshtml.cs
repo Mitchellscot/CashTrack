@@ -6,48 +6,48 @@ using System.Text.Json;
 
 namespace CashTrack.Pages.Budget
 {
-    public class SubCategoryPieChart : ChartBase
+    public class CategoryPieChart : ChartBase
     {
-        public SubCategoryPieChart(string labels) : base() 
-        { 
+        public CategoryPieChart(string labels) : base()
+        {
             Labels = labels;
         }
-        new public string Colors => GetColors();
-        //i definitely overthought this one...
-        new public string GetColors()
+        public string Colors => GetColors();
+        //i definitely overengineered this one...
+        public string GetColors()
         {
-            var labelsArray = this.Labels.Split(',');
+            var labelsArray = JsonSerializer.Deserialize<string[]>(this.Labels);
             Stack<string> colorStack = new Stack<string>();
-            if (labelsArray.Any(x => x.Contains("Unallocated")) && labelsArray.Any(x => x.Contains("Savings")))
+            if (labelsArray.Any(x => x == "Unallocated") && labelsArray.Any(x => x == "Savings"))
             {
                 for (int i = 0; i < labelsArray.Length; i++)
                 {
                     if (i == labelsArray.Length - 2)
-                        colorStack.Push(SubCategoryPieChart.SavingsColor);
-                    else if (i == labelsArray.Length -1)
-                        colorStack.Push(SubCategoryPieChart.UnallocatedColor);
+                        colorStack.Push(CategoryPieChart.SavingsColor);
+                    else if (i == labelsArray.Length - 1)
+                        colorStack.Push(CategoryPieChart.UnallocatedColor);
                     else colorStack.Push(GetColorsForExpenses(i));
                 }
             }
-            else if (labelsArray.Any(x => !x.Contains("Unallocated")) && labelsArray.Any(x => x.Contains("Savings")))
+            else if (labelsArray.Any(x => x != "Unallocated") && labelsArray.Any(x => x == "Savings"))
             {
                 for (int i = 0; i < labelsArray.Length; i++)
                 {
-                    if (i == labelsArray.Length -1)
-                        colorStack.Push(SubCategoryPieChart.SavingsColor);
+                    if (i == labelsArray.Length - 1)
+                        colorStack.Push(CategoryPieChart.SavingsColor);
                     else colorStack.Push(GetColorsForExpenses(i));
                 }
             }
-            else if (labelsArray.Any(x => x.Contains("Unallocated")) && !labelsArray.Any(x => x.Contains("Savings")))
+            else if (labelsArray.Any(x => x == "Unallocated") && labelsArray.Any(x => x != "Savings"))
             {
                 for (int i = 0; i < labelsArray.Length - 1; i++)
                 {
-                    if (i == labelsArray.Length -1)
-                        colorStack.Push(SubCategoryPieChart.UnallocatedColor);
+                    if (i == labelsArray.Length - 1)
+                        colorStack.Push(CategoryPieChart.UnallocatedColor);
                     else colorStack.Push(GetColorsForExpenses(i));
                 }
             }
-            else 
+            else
             {
                 for (int i = 0; i < labelsArray.Length; i++)
                 {
@@ -73,7 +73,7 @@ namespace CashTrack.Pages.Budget
             }
             else return colors[index];
         }
-        public const string SavingsColor = "rgba(54, 162, 235, .8)";
-        public const string UnallocatedColor = "rgba(153, 102, 255, .8)";
+        public const string SavingsColor = "rgba(54, 162, 235, .8)"; //blue
+        public const string UnallocatedColor = "rgba(153, 102, 255, .8)"; //purple
     }
 }

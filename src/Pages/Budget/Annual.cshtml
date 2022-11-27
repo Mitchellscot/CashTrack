@@ -68,15 +68,6 @@
     </div>
 
     <div class="row mb-1">
-        <div class="mt-2 d-flex justify-content-center">
-            <form method="get" class="d-inline-flex">
-                <div class="input-group">
-                    <select data-val="true" onchange="this.form.submit()" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="annualBudgetYearSelection">
-                        <option value="@Model.Year" selected disabled hidden></option>
-                    </select>
-                </div>
-            </form>
-        </div>
         @if (Model.BudgetPageResponse.AnnualBudgetChartData != null)
         {
             <div class="col">
@@ -86,10 +77,20 @@
     </div>
 
     <div class="row mb-1">
-        @if (Model.BudgetPageResponse.TypePercentages != null)
+        @if (Model.BudgetPageResponse.AnnualSummary != null)
         {
-            <div class="col-6 col-lg-3 mt-3">
-                <ul class="list-group text-center">
+            <div class="col-6 col-lg-3">
+
+                    <form method="get" class="mt-5">
+                        <div class="input-group">
+                            <span class="input-group-text">Year</span>
+                            <select data-val="true" onchange="this.form.submit()" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="annualBudgetYearSelection">
+                                <option value="@Model.Year" selected disabled hidden></option>
+                            </select>
+                        </div>
+                    </form>
+
+                <ul class="list-group text-center mt-3">
                     <li class="list-group-item d-flex justify-content-between">
                         <span class="d-none d-md-block">
                             Income: &nbsp;
@@ -153,6 +154,12 @@
                 <canvas id="subCategoryPie" class="chart-height"></canvas>
             </div>
         }
+        @if (Model.BudgetPageResponse.MainCategoryPercentages != null && Model.BudgetPageResponse.MainCategoryPercentages.Values.Sum() > 0)
+        {
+            <div class="col-6 col-lg-3 mt-3">
+                <canvas id="mainCategoryPie" class="chart-height"></canvas>
+            </div>
+        }
     </div>
 
 </div>
@@ -177,10 +184,16 @@
         Dataset = JsonSerializer.Serialize(Model.BudgetPageResponse.TypePercentages.Select(x => x.Value).ToArray()),
         Title = "Type Percentages"
     })
-    @await Html.PartialAsync("SubCategoryPieChart", new SubCategoryPieChart(JsonSerializer.Serialize(Model.BudgetPageResponse.SubCategoryPercentages.Select(x => x.Key).ToArray()))
+    @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.BudgetPageResponse.SubCategoryPercentages.Select(x => x.Key).ToArray()))
     {
         ElementId = "subCategoryPie",
         Dataset = JsonSerializer.Serialize(Model.BudgetPageResponse.SubCategoryPercentages.Select(x => x.Value).ToArray()),
         Title = "Sub Category Percentages"
+    })
+    @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.BudgetPageResponse.MainCategoryPercentages.Select(x => x.Key).ToArray()))
+    {
+        ElementId = "mainCategoryPie",
+        Dataset = JsonSerializer.Serialize(Model.BudgetPageResponse.MainCategoryPercentages.Select(x => x.Value).ToArray()),
+        Title = "Main Category Percentages"
     })
 }
