@@ -4,19 +4,32 @@ using System.Collections.Generic;
 
 namespace CashTrack.Models.BudgetModels
 {
+    public record MonthlyBudgetPageRequest
+    {
+        public int Year { get; set; }
+        public int Month { get; set; }
+    }
     public record AnnualBudgetPageRequest
     {
         public int Year { get; set; }
     }
-    public record BudgetPageResponse
+    public record AnnualBudgetPageResponse
     {
         public AnnualBudgetChartData AnnualBudgetChartData { get; set; }
-        public AnnualSummary AnnualSummary { get; set; }
+        public BudgetSummary AnnualSummary { get; set; }
         public Dictionary<string, int> TypePercentages { get; set; }
         public Dictionary<string, int> SubCategoryPercentages { get; set; }
         public Dictionary<string, int> MainCategoryPercentages { get; set; }
     }
-    public record AnnualSummary
+    public record MonthlyBudgetPageResponse
+    {
+        public MonthlyBudgetChartData MonthlyBudgetChartData { get; set; }
+        public BudgetSummary MonthlySummary { get; set; }
+        public Dictionary<string, int> TypePercentages { get; set; }
+        public Dictionary<string, int> SubCategoryPercentages { get; set; }
+        public Dictionary<string, int> MainCategoryPercentages { get; set; }
+    }
+    public record BudgetSummary
     {
         public int IncomeAmount { get; set; }
         public int ExpensesAmount { get; set; }
@@ -32,6 +45,16 @@ namespace CashTrack.Models.BudgetModels
         public List<int> WantsData { get; set; }
         public List<int> SavingsData { get; set; }
         public List<int> Unallocated { get; set; }
+
+    }
+    public record MonthlyBudgetChartData()
+    {
+        public string[] Labels { get; set; }
+        public int[] IncomeData { get; set; }
+        public int[] NeedsData { get; set; }
+        public int[] WantsData { get; set; }
+        public int[] SavingsData { get; set; }
+        public int[] Unallocated { get; set; }
 
     }
     public enum BudgetType

@@ -1,49 +1,47 @@
-﻿@using System.Text.Json
-@model CashTrack.Pages.Budget._AnnualBudgetChart
+﻿@using System.Text.Json;
+@model CashTrack.Pages.Budget.MonthlyBudgetChart
 @{
-
+    var savingsColor = JsonSerializer.Deserialize<int[]>(Model.SavingsDataset).Sum() < 0 ? Model.SavingsColor : Model.SavingsColor; 
+    //you can add InTheRedSavingsColor and then it would turn pink, but it won't match the annual budget chart
+    //so I just removed it.
 }
 <script>
     const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
     const @Model.ElementId = new Chart(@Model.VariableName, {
         type: 'bar',
         data: {
-            labels: @Html.Raw(@Model.Months),
+            labels: @Html.Raw(@Model.Labels),
             datasets: [{
                 label: 'Income',
                 data: @Model.IncomeDataset,
                 color: 'rgba(0, 0, 0, 0)',
                 backgroundColor: @Html.Raw(Model.IncomeColor),
                 borderColor: @Html.Raw(Model.IncomeColor),
-                borderWidth: 1,
-                stack: 'Stack 0'
+                borderWidth: 1
             },
             {
                 label: 'Needs',
                 data: @Model.NeedDataset,
                 color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: @Html.Raw(Model.NeedColor),
-                borderColor: @Html.Raw(Model.NeedColor),
-                borderWidth: 1,
-                stack: 'Stack 1'
+                backgroundColor: @Html.Raw(Model.NeedsColor),
+                borderColor: @Html.Raw(Model.NeedsColor),
+                borderWidth: 1
             },
             {
                 label: 'Wants',
                 data: @Model.WantDataset,
                 color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: @Html.Raw(Model.WantColor),
-                borderColor: @Html.Raw(Model.WantColor),
-                borderWidth: 1,
-                stack: 'Stack 1'
+                backgroundColor: @Html.Raw(Model.WantsColor),
+                borderColor: @Html.Raw(Model.WantsColor),
+                borderWidth: 1
             },
             {
                 label: 'Savings',
                 data: @Model.SavingsDataset,
                 color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: @Html.Raw(Model.SavingsColor),
-                borderColor: @Html.Raw(Model.SavingsColor),
-                borderWidth: 1,
-                stack: 'Stack 2'
+                backgroundColor: @Html.Raw(savingsColor),
+                borderColor: @Html.Raw(savingsColor),
+                borderWidth: 1
             },
             {
                 label: 'Unallocated',
@@ -51,34 +49,29 @@
                 color: 'rgba(0, 0, 0, 0)',
                 backgroundColor: @Html.Raw(Model.UnallocatedColor),
                 borderColor: @Html.Raw(Model.UnallocatedColor),
-                borderWidth: 1,
-                stack: 'Stack 2'
-            }
-            ]
+                borderWidth: 1
+            }]
         },
         options: {
             responsive: true,
-            interaction: {
-                intersect: false,
-            },
             scales: {
                 x: {
                     stacked: true,
                 },
                 y: {
                     stacked: true
-                }
+                },
             },
             plugins: {
                 legend: {
-                    display: true,
+                    display: false,
                     position: 'top',
                 },
                 title: {
-                    display: false,
+                    display: true,
                     text: '@Model.Title'
                 }
             }
         }
-        });
-        </script>
+    });
+    </script>

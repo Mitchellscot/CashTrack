@@ -5,9 +5,9 @@ using System.Text.Json;
 
 namespace CashTrack.Pages.Budget
 {
-    public class _TypePercentagesDonut : ChartBase
+    public class TypePercentagesDonut : ChartBase
     {
-        public _TypePercentagesDonut() : base() { }
+        public TypePercentagesDonut() : base() { }
         public string ColorArray => GetColors();
         public string GetColors()
         {

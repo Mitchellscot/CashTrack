@@ -8,7 +8,9 @@ using CashTrack.Services.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CashTrack.Services.BudgetService
 {
@@ -17,7 +19,8 @@ namespace CashTrack.Services.BudgetService
         Task<CategoryAveragesAndTotals> GetCategoryAveragesAndTotals(int subCategoryId);
         Task<int> CreateBudgetItem(AddBudgetAllocation request);
         Task<bool> DeleteBudgetAsync(int id);
-        Task<BudgetPageResponse> GetAnnualBudgetPageAsync(AnnualBudgetPageRequest request);
+        Task<AnnualBudgetPageResponse> GetAnnualBudgetPageAsync(AnnualBudgetPageRequest request);
+        Task<MonthlyBudgetPageResponse> GetMonthlyBudgetPageAsync(MonthlyBudgetPageRequest request);
         Task<int[]> GetAnnualBudgetYears();
     }
     public class BudgetService : IBudgetService
@@ -27,19 +30,147 @@ namespace CashTrack.Services.BudgetService
 
         public BudgetService(IBudgetRepository budgetRepo, IExpenseRepository expenseRepo) => (_budgetRepo, _expenseRepo) = (budgetRepo, expenseRepo);
 
-        public async Task<BudgetPageResponse> GetAnnualBudgetPageAsync(AnnualBudgetPageRequest request)
+        public async Task<MonthlyBudgetPageResponse> GetMonthlyBudgetPageAsync(MonthlyBudgetPageRequest request)
+        {
+            var budgets = await _budgetRepo.FindWithMainCategories(x => x.Year == request.Year && x.Month == request.Month);
+
+            var mainCategoryLabels = budgets.Where(x => x.SubCategoryId != null && x.Amount > 0).Select(x => x.SubCategory.MainCategory.Name).OrderBy(x => x).Distinct().ToArray();
+
+            var savingsAllocations = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
+            var incomeAmount = budgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount);
+            var needsAmount = budgets.Where(x => x.BudgetType == BudgetType.Need).Sum(x => x.Amount);
+            var wantsAmount = budgets.Where(x => x.BudgetType == BudgetType.Want).Sum(x => x.Amount);
+            var expenseAmounts = needsAmount + wantsAmount;
+
+            var expensesAndSavingsAmount = savingsAllocations + expenseAmounts;
+
+            var adjustedSavings = expensesAndSavingsAmount > incomeAmount ?
+                savingsAllocations + (incomeAmount - expensesAndSavingsAmount) : savingsAllocations;
+
+            var unallocatedAmount = (incomeAmount - expensesAndSavingsAmount) > 0 ?
+                incomeAmount - expensesAndSavingsAmount : 0;
+
+            var incomeExists = incomeAmount > 0;
+            var savingsExists = adjustedSavings != 0;
+            var unallocatedExists = unallocatedAmount > 0;
+
+            return new MonthlyBudgetPageResponse()
+            {
+                MonthlyBudgetChartData = new MonthlyBudgetChartData()
+                {
+                    Labels = GenerateMonthlyChartLabels(incomeExists, mainCategoryLabels, savingsExists, unallocatedExists),
+                    IncomeData = GetMonthlyIncomeData(incomeAmount, mainCategoryLabels.Length, savingsExists, unallocatedExists),
+                    NeedsData = GetMonthlyExpenseData(budgets, BudgetType.Need, incomeExists, savingsExists, unallocatedExists, mainCategoryLabels),
+                    WantsData = GetMonthlyExpenseData(budgets, BudgetType.Want, incomeExists, savingsExists, unallocatedExists, mainCategoryLabels),
+                    SavingsData = GetMonthlySavingsData(incomeExists, mainCategoryLabels.Length, adjustedSavings, unallocatedExists),
+                    Unallocated = GetMonthlyUnallocatedData(incomeExists, mainCategoryLabels.Length, savingsExists, unallocatedAmount)
+                }
+            };
+        }
+
+        private string[] GenerateMonthlyChartLabels(bool incomeExists, string[] mainCategoryLabels, bool savingsExists, bool unallocatedExists)
+        {
+            Queue<string> data = new Queue<string>();
+            if (incomeExists)
+                data.Enqueue("Income");
+
+            mainCategoryLabels.OrderBy(x => x).ToList().ForEach(x => data.Enqueue(x));
+
+            if (savingsExists)
+                data.Enqueue("Savings");
+
+            if (unallocatedExists)
+                data.Enqueue("Unallocated");
+
+            return data.ToArray();
+        }
+
+        private int[] GetMonthlyUnallocatedData(bool incomeExists, int numberOfMainCategories, bool savingsExists, int unallocatedAmount)
+        {
+            Queue<int> data = new Queue<int>();
+            if (incomeExists)
+                data.Enqueue(0);
+
+            Enumerable.Repeat(0, numberOfMainCategories).ToList().ForEach(x => data.Enqueue(x));
+
+            if (savingsExists)
+                data.Enqueue(0);
+
+            if (unallocatedAmount > 0)
+                data.Enqueue(unallocatedAmount);
+
+            return data.ToArray();
+        }
+
+        private int[] GetMonthlySavingsData(bool incomeExists, int numberOfMainCategories, int adjustedSavingsAmount, bool unallocatedExists)
+        {
+            Queue<int> data = new Queue<int>();
+            if (incomeExists)
+                data.Enqueue(0);
+
+            Enumerable.Repeat(0, numberOfMainCategories).ToList().ForEach(x => data.Enqueue(x));
+
+            if (adjustedSavingsAmount != 0)
+                data.Enqueue(adjustedSavingsAmount);
+
+            if (unallocatedExists)
+                data.Enqueue(0);
+
+            return data.ToArray();
+        }
+
+        private int[] GetMonthlyExpenseData(BudgetEntity[] budgets, BudgetType budgetType, bool incomeExists, bool savingsExists, bool unallocatedExists, string[] mainCategoryLabels)
+        {
+            var arraySize = mainCategoryLabels.Length;
+            arraySize = incomeExists ? arraySize + 1 : arraySize;
+            arraySize = savingsExists ? arraySize + 1 : arraySize;
+            arraySize = unallocatedExists ? arraySize + 1 : arraySize;
+            var data = new int[arraySize];
+
+            var amountsAndLabels = budgets.Where(x => x.SubCategoryId != null && x.BudgetType == budgetType && x.Amount > 0).GroupBy(x => x.SubCategory.MainCategory.Name)
+                .Select(x => (x.Key, Amount: x.Sum(x => x.Amount))).OrderBy(x => x.Key).ToList();
+
+            foreach (var expense in amountsAndLabels)
+            {
+                var adjustIndexForIncome = incomeExists ? 1 : 0;
+                var index = Array.IndexOf(mainCategoryLabels, expense.Key);
+                data[index + adjustIndexForIncome] = expense.Amount;
+            }
+
+            return data;
+        }
+
+        private int[] GetMonthlyIncomeData(int incomeAmount, int numberOfMainCategories, bool savingsExists, bool unallocatedExists)
+        {
+            Queue<int> data = new Queue<int>();
+
+            if (incomeAmount > 0)
+                data.Enqueue(incomeAmount);
+
+            Enumerable.Repeat(0, numberOfMainCategories).ToList().ForEach(x => data.Enqueue(x));
+
+            if (savingsExists)
+                data.Enqueue(0);
+
+            if (unallocatedExists)
+                data.Enqueue(0);
+
+            return data.ToArray();
+        }
+
+        public async Task<AnnualBudgetPageResponse> GetAnnualBudgetPageAsync(AnnualBudgetPageRequest request)
         {
             var budgets = await _budgetRepo.FindWithMainCategories(x => x.Year == request.Year);
 
-            var monthlyIncome = GetMonthlyData(budgets, BudgetType.Income).ToList();
-            var monthlyNeeds = GetMonthlyData(budgets, BudgetType.Need).ToList();
-            var monthlyWants = GetMonthlyData(budgets, BudgetType.Want).ToList();
-            var monthlySavings = GetSavingsData(budgets).ToList();
-            var monthlyUnallocated = GetUnallocatedData(budgets).ToList();
+            var monthlyIncome = GetAnnualData(budgets, BudgetType.Income).ToList();
+            var monthlyNeeds = GetAnnualData(budgets, BudgetType.Need).ToList();
+            var monthlyWants = GetAnnualData(budgets, BudgetType.Want).ToList();
+            var monthlySavings = GetAnnualSavingsData(budgets).ToList();
+            var monthlyUnallocated = GetAnnualUnallocatedData(budgets).ToList();
 
             var totalAnnualIncome = monthlyIncome.Sum();
 
-            return new BudgetPageResponse()
+            return new AnnualBudgetPageResponse()
             {
                 AnnualBudgetChartData = new AnnualBudgetChartData()
                 {
@@ -49,7 +180,7 @@ namespace CashTrack.Services.BudgetService
                     SavingsData = monthlySavings,
                     Unallocated = monthlyUnallocated
                 },
-                AnnualSummary = new AnnualSummary()
+                AnnualSummary = new BudgetSummary()
                 {
                     IncomeAmount = totalAnnualIncome,
                     ExpensesAmount = monthlyNeeds.Sum() + monthlyWants.Sum(),
@@ -83,12 +214,12 @@ namespace CashTrack.Services.BudgetService
                 return (Name: x.Name, Percentage: x.Amount.ToPercentage(totalAnnualIncome));
             }).Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
 
-            var savingsAllocated = GetSavingsData(budgets).Sum();
+            var savingsAllocated = GetAnnualSavingsData(budgets).Sum();
 
             if (savingsAllocated > 0)
                 expensePercentagesOfIncome.Add("Savings", savingsAllocated.ToPercentage(totalAnnualIncome));
 
-            var unAllocated = GetUnallocatedData(budgets).Sum();
+            var unAllocated = GetAnnualUnallocatedData(budgets).Sum();
 
             if (unAllocated > 0)
                 expensePercentagesOfIncome.Add("Unallocated", unAllocated.ToPercentage(totalAnnualIncome));
@@ -109,12 +240,12 @@ namespace CashTrack.Services.BudgetService
                 return (Name: x.Name, Percentage: x.Amount.ToPercentage(totalAnnualIncome));
             }).Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
 
-            var savingsAllocated = GetSavingsData(budgets).Sum();
+            var savingsAllocated = GetAnnualSavingsData(budgets).Sum();
 
             if (savingsAllocated > 0)
                 expensePercentagesOfIncome.Add("Savings", savingsAllocated.ToPercentage(totalAnnualIncome));
 
-            var unAllocated = GetUnallocatedData(budgets).Sum();
+            var unAllocated = GetAnnualUnallocatedData(budgets).Sum();
 
             if (unAllocated > 0)
                 expensePercentagesOfIncome.Add("Unallocated", unAllocated.ToPercentage(totalAnnualIncome));
@@ -122,7 +253,7 @@ namespace CashTrack.Services.BudgetService
             return expensePercentagesOfIncome;
         }
 
-        private IEnumerable<int> GetSavingsData(BudgetEntity[] budgets)
+        private IEnumerable<int> GetAnnualSavingsData(BudgetEntity[] budgets)
         {
             var monthlyIncome = budgets.Where(x => x.BudgetType == BudgetType.Income).GroupBy(x => x.Month).Select(x =>
             {
@@ -157,7 +288,7 @@ namespace CashTrack.Services.BudgetService
             }
         }
 
-        private IEnumerable<int> GetUnallocatedData(BudgetEntity[] budgets)
+        private IEnumerable<int> GetAnnualUnallocatedData(BudgetEntity[] budgets)
         {
             var monthlyIncome = budgets.Where(x => x.BudgetType == BudgetType.Income).GroupBy(x => x.Month).Select(x =>
             {
@@ -184,7 +315,7 @@ namespace CashTrack.Services.BudgetService
             }
         }
 
-        private IEnumerable<int> GetMonthlyData(BudgetEntity[] budgets, BudgetType type)
+        private IEnumerable<int> GetAnnualData(BudgetEntity[] budgets, BudgetType type)
         {
             var monthlyData = budgets.Where(x => x.BudgetType == type).GroupBy(x => x.Month).Select(x =>
             {

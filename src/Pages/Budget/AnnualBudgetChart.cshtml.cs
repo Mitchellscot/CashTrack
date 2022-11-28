@@ -4,10 +4,10 @@ using System.Text.Json;
 
 namespace CashTrack.Pages.Budget
 {
-    public class _AnnualBudgetChart
+    public class AnnualBudgetChart
     {
         public string VariableName { get; private set; }
-        public _AnnualBudgetChart()
+        public AnnualBudgetChart()
         {
             VariableName = string.Join("", Enumerable.Repeat(0, 6).Select(n => (char)new Random().Next(97, 122)));
         }

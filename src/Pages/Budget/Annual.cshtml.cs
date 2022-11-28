@@ -23,7 +23,7 @@ namespace CashTrack.Pages.Budget
         public SelectList YearSelectList { get; set; }
         [BindProperty]
         public AddBudgetAllocationModal AddBudgetModal { get; set; }
-        public BudgetPageResponse BudgetPageResponse { get; set; }
+        public AnnualBudgetPageResponse BudgetPageResponse { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {

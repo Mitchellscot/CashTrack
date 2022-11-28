@@ -167,7 +167,7 @@
 @section Scripts {
     <script src="~/js/budget.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
-    @await Html.PartialAsync("_AnnualBudgetChart", new _AnnualBudgetChart()
+    @await Html.PartialAsync("AnnualBudgetChart", new AnnualBudgetChart()
     {
         ElementId = "annualBudgetChart",
         IncomeDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.IncomeData),
@@ -177,7 +177,7 @@
         UnallocatedDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.Unallocated),
         Title = DateTime.Now.Year.ToString()
     })
-    @await Html.PartialAsync("_TypePercentagesDonut", new _TypePercentagesDonut()
+    @await Html.PartialAsync("TypePercentagesDonut", new TypePercentagesDonut()
     {
         ElementId = "typePercentagesDonut",
         Labels = JsonSerializer.Serialize(Model.BudgetPageResponse.TypePercentages.Select(x => x.Key).ToArray()),
