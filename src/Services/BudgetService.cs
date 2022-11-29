@@ -34,7 +34,7 @@ namespace CashTrack.Services.BudgetService
         {
             var budgets = await _budgetRepo.FindWithMainCategories(x => x.Year == request.Year && x.Month == request.Month);
 
-            var mainCategoryLabels = budgets.Where(x => x.SubCategoryId != null && x.Amount > 0).Select(x => x.SubCategory.Name).OrderBy(x => x).Distinct().ToArray();
+            var mainCategoryLabels = budgets.Where(x => x.SubCategoryId != null && x.Amount > 0).Select(x => x.SubCategory.MainCategory.Name).OrderBy(x => x).Distinct().ToArray();
 
             var savingsAllocations = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
             var incomeAmount = budgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount);
@@ -127,7 +127,7 @@ namespace CashTrack.Services.BudgetService
             arraySize = unallocatedExists ? arraySize + 1 : arraySize;
             var data = new int[arraySize];
 
-            var amountsAndLabels = budgets.Where(x => x.SubCategoryId != null && x.BudgetType == budgetType && x.Amount > 0).GroupBy(x => x.SubCategory.Name)
+            var amountsAndLabels = budgets.Where(x => x.SubCategoryId != null && x.BudgetType == budgetType && x.Amount > 0).GroupBy(x => x.SubCategory.MainCategory.Name)
                 .Select(x => (x.Key, Amount: x.Sum(x => x.Amount))).OrderBy(x => x.Key).ToList();
 
             foreach (var expense in amountsAndLabels)

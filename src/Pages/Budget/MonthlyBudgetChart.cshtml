@@ -1,9 +1,7 @@
 ﻿@using System.Text.Json;
 @model CashTrack.Pages.Budget.MonthlyBudgetChart
 @{
-    var savingsColor = JsonSerializer.Deserialize<int[]>(Model.SavingsDataset).Sum() < 0 ? Model.SavingsColor : Model.SavingsColor; 
-    //you can add InTheRedSavingsColor and then it would turn pink, but it won't match the annual budget chart
-    //so I just removed it.
+    var savingsColor = JsonSerializer.Deserialize<int[]>(Model.SavingsDataset).Sum() < 0 ? Model.InTheRedSavingsColor : Model.SavingsColor; 
 }
 <script>
     const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
@@ -39,8 +37,8 @@
                 label: 'Savings',
                 data: @Model.SavingsDataset,
                 color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: colorize(),
-                borderColor: colorize(),
+                backgroundColor: @Html.Raw(savingsColor),
+                borderColor: @Html.Raw(savingsColor),
                 borderWidth: 1
             },
             {
@@ -60,7 +58,7 @@
                 },
                 y: {
                     stacked: true,
-                    type: 'logarithmic'
+                    //type: 'logarithmic',
                 },
             },
             plugins: {
@@ -75,14 +73,4 @@
             }
         }
     });
-    function colorize() {
-        return (ctx) => {
-            const v = ctx.parsed.y;
-            console.log(v)
-            const c = v < 0 ? @Html.Raw(Model.InTheRedSavingsColor)
-            : @Html.Raw(Model.SavingsColor);
-            console.log(c);
-    return c;
-  };
-}
     </script>

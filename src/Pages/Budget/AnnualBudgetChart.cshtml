@@ -40,8 +40,8 @@
                 label: 'Savings',
                 data: @Model.SavingsDataset,
                 color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: @Html.Raw(Model.SavingsColor),
-                borderColor: @Html.Raw(Model.SavingsColor),
+                backgroundColor: colorize(),
+                borderColor: colorize(),
                 borderWidth: 1,
                 stack: 'Stack 2'
             },
@@ -81,4 +81,15 @@
             }
         }
         });
+function colorize() {
+        return (ctx) => {
+            console.log(ctx);
+            const v = ctx.raw;
+            console.log(v)
+            const c = v < 0 ? @Html.Raw(Model.InTheRedSavingsColor)
+            : @Html.Raw(Model.SavingsColor);
+            console.log(c);
+    return c;
+  };
+};
         </script>

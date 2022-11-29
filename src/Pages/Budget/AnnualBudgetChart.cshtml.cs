@@ -23,6 +23,7 @@ namespace CashTrack.Pages.Budget
         public string NeedColor = JsonSerializer.Serialize("rgba(231, 76, 60, .8)");
         public string WantColor = JsonSerializer.Serialize("rgba(255, 205, 86, .8)");
         public string SavingsColor = JsonSerializer.Serialize("rgba(54, 162, 235, .8)");
+        public string InTheRedSavingsColor = JsonSerializer.Serialize("rgba(149, 165, 166, .8)"); //light grey
         public string UnallocatedColor = JsonSerializer.Serialize("rgba(153, 102, 255, .8)");
     }
 }
