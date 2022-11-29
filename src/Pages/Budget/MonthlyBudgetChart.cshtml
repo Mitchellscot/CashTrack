@@ -39,8 +39,8 @@
                 label: 'Savings',
                 data: @Model.SavingsDataset,
                 color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: @Html.Raw(savingsColor),
-                borderColor: @Html.Raw(savingsColor),
+                backgroundColor: colorize(),
+                borderColor: colorize(),
                 borderWidth: 1
             },
             {
@@ -59,7 +59,8 @@
                     stacked: true,
                 },
                 y: {
-                    stacked: true
+                    stacked: true,
+                    type: 'logarithmic'
                 },
             },
             plugins: {
@@ -74,4 +75,14 @@
             }
         }
     });
+    function colorize() {
+        return (ctx) => {
+            const v = ctx.parsed.y;
+            console.log(v)
+            const c = v < 0 ? @Html.Raw(Model.InTheRedSavingsColor)
+            : @Html.Raw(Model.SavingsColor);
+            console.log(c);
+    return c;
+  };
+}
     </script>
