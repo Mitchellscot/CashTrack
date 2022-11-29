@@ -336,7 +336,7 @@ namespace CashTrack.Services.BudgetService
             var isIncome = request.IsIncome || request.Type == BudgetType.Income;
             var annualBudget = request.Month == 0 || request.TimeSpan == AllocationTimeSpan.Year;
             var isWeekly = request.TimeSpan == AllocationTimeSpan.Week;
-            var isYearly = request.TimeSpan == AllocationTimeSpan.Year && request.Month != 0;
+            var isYearly = request.TimeSpan == AllocationTimeSpan.Year && request.Month == 0;
 
             if (request.Amount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(request.Amount));
