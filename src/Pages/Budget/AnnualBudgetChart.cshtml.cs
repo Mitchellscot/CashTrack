@@ -1,3 +1,4 @@
+using CashTrack.Common;
 using System;
 using System.Linq;
 using System.Text.Json;
@@ -19,11 +20,11 @@ namespace CashTrack.Pages.Budget
         public string SavingsDataset { get; set; }
         public string UnallocatedDataset { get; set; }
         public string Title { get; set; }
-        public string IncomeColor = JsonSerializer.Serialize("rgba(24, 188, 156, .8)");
-        public string NeedColor = JsonSerializer.Serialize("rgba(231, 76, 60, .8)");
-        public string WantColor = JsonSerializer.Serialize("rgba(255, 205, 86, .8)");
-        public string SavingsColor = JsonSerializer.Serialize("rgba(54, 162, 235, .8)");
-        public string InTheRedSavingsColor = JsonSerializer.Serialize("rgba(149, 165, 166, .8)"); //light grey
-        public string UnallocatedColor = JsonSerializer.Serialize("rgba(153, 102, 255, .8)");
+        public string IncomeColor = JsonSerializer.Serialize(ThemeColors.Success);
+        public string NeedColor = JsonSerializer.Serialize(ChartColors.Orange);
+        public string WantColor = JsonSerializer.Serialize(ChartColors.Yellow);
+        public string SavingsColor = JsonSerializer.Serialize(ChartColors.Azure);
+        public string InTheRedSavingsColor = JsonSerializer.Serialize(ThemeColors.Danger);
+        public string UnallocatedColor = JsonSerializer.Serialize(ThemeColors.Secondary);
     }
 }

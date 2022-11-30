@@ -1,4 +1,5 @@
-﻿@model CashTrack.Pages.Budget.CategoryPieChart
+﻿@using CashTrack.Common;
+@model CashTrack.Pages.Budget.CategoryPieChart
 @{
 }
     <script>
@@ -10,7 +11,7 @@
                 datasets: [{
                     label: 'Total',
                     data: @Model.Dataset,
-                    color: 'rgba(0, 0, 0, 0)',
+                    color: '@ThemeColors.Black',
                     backgroundColor: @Html.Raw(Model.Colors),
                     borderColor: @Html.Raw(Model.Colors),
                     borderWidth: 1

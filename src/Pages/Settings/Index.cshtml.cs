@@ -35,7 +35,7 @@ namespace CashTrack.Pages.Settings
         public async Task<ActionResult> OnPostExport(int ExportOption, bool ExportAsReadable)
         {
             var filePath = await _exportService.ExportData(ExportOption, ExportAsReadable);
-            byte[] fileBytes = FileUtils.GetFileBytesAndDeleteFile(filePath);
+            byte[] fileBytes = FileUtilities.GetFileBytesAndDeleteFile(filePath);
 
             if (filePath.Contains("archive"))
             {

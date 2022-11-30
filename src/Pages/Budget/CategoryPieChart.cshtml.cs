@@ -1,7 +1,7 @@
+using CashTrack.Common;
 using CashTrack.Pages.Shared;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 
 namespace CashTrack.Pages.Budget
@@ -12,13 +12,15 @@ namespace CashTrack.Pages.Budget
         {
             Labels = labels;
         }
-        public string Colors => GetColors();
+        public new string Colors => GetColors();
         //i definitely overengineered this one...
-        public string GetColors()
+        public new string GetColors()
         {
+            const string Unallocated = "Unallocated";
+            const string Savings = "Savings";
             var labelsArray = JsonSerializer.Deserialize<string[]>(this.Labels);
             Stack<string> colorStack = new Stack<string>();
-            if (labelsArray.Any(x => x == "Unallocated") && labelsArray.Any(x => x == "Savings"))
+            if (labelsArray.Any(x => x == Unallocated) && labelsArray.Any(x => x == Savings))
             {
                 for (int i = 0; i < labelsArray.Length; i++)
                 {
@@ -29,7 +31,7 @@ namespace CashTrack.Pages.Budget
                     else colorStack.Push(GetColorsForExpenses(i));
                 }
             }
-            else if (labelsArray.Any(x => x != "Unallocated") && labelsArray.Any(x => x == "Savings"))
+            else if (labelsArray.Any(x => x != Unallocated) && labelsArray.Any(x => x == Savings))
             {
                 for (int i = 0; i < labelsArray.Length; i++)
                 {
@@ -38,7 +40,7 @@ namespace CashTrack.Pages.Budget
                     else colorStack.Push(GetColorsForExpenses(i));
                 }
             }
-            else if (labelsArray.Any(x => x == "Unallocated") && labelsArray.Any(x => x != "Savings"))
+            else if (labelsArray.Any(x => x == Unallocated) && labelsArray.Any(x => x != Savings))
             {
                 for (int i = 0; i < labelsArray.Length - 1; i++)
                 {
@@ -60,9 +62,11 @@ namespace CashTrack.Pages.Budget
         {
             var colors = new string[]
             {
-                "rgba(231, 76, 60, 0.8)", //red
-                "rgba(255, 159, 64, 0.8)", //orange
-                "rgba(255, 205, 86, 0.8)" //yellow
+                ChartColors.Pink,
+                ChartColors.Orange,
+                ChartColors.Yellow,
+                ChartColors.Cyan,
+                ChartColors.Purple
             };
             if (index > colors.Length - 1)
             {
@@ -73,7 +77,7 @@ namespace CashTrack.Pages.Budget
             }
             else return colors[index];
         }
-        public const string SavingsColor = "rgba(54, 162, 235, .8)"; //blue
-        public const string UnallocatedColor = "rgba(153, 102, 255, .8)"; //purple
+        public const string SavingsColor = ChartColors.Azure;
+        public const string UnallocatedColor = ThemeColors.Secondary;
     }
 }

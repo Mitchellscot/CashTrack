@@ -1,3 +1,4 @@
+using CashTrack.Common;
 using CashTrack.Pages.Shared;
 using System;
 using System.Linq;
@@ -9,13 +10,13 @@ namespace CashTrack.Pages.Budget
     {
         public TypePercentagesDonut() : base() { }
         public string ColorArray => GetColors();
-        public string GetColors()
+        public new string GetColors()
         {
             return JsonSerializer.Serialize(new[] {
-                "rgba(231, 76, 60, .8)",
-                "rgba(255, 205, 86, .8)",
-                "rgba(54, 162, 235, .8)",
-                "rgba(153, 102, 255, .8)"
+                ChartColors.Orange,
+                ChartColors.Yellow,
+                ChartColors.Azure,
+                ThemeColors.Secondary
             });
         }
     }
