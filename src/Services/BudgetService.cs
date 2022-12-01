@@ -2,10 +2,12 @@
 using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
+using CashTrack.Models.MainCategoryModels;
 using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Repositories.ExpenseRepository;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -57,8 +59,7 @@ namespace CashTrack.Services.BudgetService
                 {
                     Labels = GenerateMonthlyChartLabels(incomeExists, mainCategoryLabels, savingsExists, unallocatedExists),
                     IncomeData = GetMonthlyIncomeData(incomeAmount, mainCategoryLabels.Length, savingsExists, unallocatedExists),
-                    NeedsData = GetMonthlyExpenseData(budgets, BudgetType.Need, incomeExists, savingsExists, unallocatedExists, mainCategoryLabels),
-                    WantsData = GetMonthlyExpenseData(budgets, BudgetType.Want, incomeExists, savingsExists, unallocatedExists, mainCategoryLabels),
+                    ExpenseData = GetMonthlyExpenseData(budgets, incomeExists, savingsExists, unallocatedExists, mainCategoryLabels),
                     SavingsData = GetMonthlySavingsData(incomeExists, mainCategoryLabels.Length, adjustedSavings, unallocatedExists),
                     Unallocated = GetMonthlyUnallocatedData(incomeExists, mainCategoryLabels.Length, savingsExists, unallocatedAmount)
                 }
@@ -116,27 +117,73 @@ namespace CashTrack.Services.BudgetService
             return data.ToArray();
         }
 
-        private int[] GetMonthlyExpenseData(BudgetEntity[] budgets, BudgetType budgetType, bool incomeExists, bool savingsExists, bool unallocatedExists, string[] mainCategoryLabels)
+        private List<ExpenseDataset> GetMonthlyExpenseData(BudgetEntity[] budgets, bool incomeExists, bool savingsExists, bool unallocatedExists, string[] mainCategoryLabels)
         {
             var arraySize = mainCategoryLabels.Length;
             arraySize = incomeExists ? arraySize + 1 : arraySize;
             arraySize = savingsExists ? arraySize + 1 : arraySize;
             arraySize = unallocatedExists ? arraySize + 1 : arraySize;
-            var data = new int[arraySize];
 
-            var amountsAndLabels = budgets.Where(x => x.SubCategoryId != null && x.BudgetType == budgetType && x.Amount > 0).GroupBy(x => x.SubCategory.MainCategory.Name)
-                .Select(x => (x.Key, Amount: x.Sum(x => x.Amount))).OrderBy(x => x.Key).ToList();
-
+            var amountsAndLabels = budgets.Where(x => x.SubCategoryId != null && x.BudgetType == BudgetType.Need || x.BudgetType == BudgetType.Want && x.Amount > 0).GroupBy(x => x.SubCategory.Name)
+                .Select(x => (x.Key, 
+                Amount: x.Sum(x => x.Amount), 
+                MainCategory: x.Select(x =>
+                    x.SubCategory.MainCategory.Name).FirstOrDefault(),
+                MainCategoryId: x.Select(x => x.SubCategory.MainCategoryId).FirstOrDefault()
+                )).OrderBy(x => x.Key).ToList();
+            var expenseList = new List<ExpenseDataset>();
             foreach (var expense in amountsAndLabels)
             {
                 var adjustIndexForIncome = incomeExists ? 1 : 0;
-                var index = Array.IndexOf(mainCategoryLabels, expense.Key);
-                data[index + adjustIndexForIncome] = expense.Amount;
+                var index = Array.IndexOf(mainCategoryLabels, expense.MainCategory);
+                var dataSet = new int[arraySize];
+                dataSet[index + adjustIndexForIncome] = expense.Amount;
+                var data = new ExpenseDataset()
+                {
+                    DataSet = dataSet,
+                    SubCategoryName = expense.Key,
+                    MainCategoryId = expense.MainCategoryId
+                };
+                expenseList.Add(data);
             }
-
-            return data;
+            return AssignColorsToChartData(expenseList);
         }
-
+        private List<ExpenseDataset> AssignColorsToChartData(List<ExpenseDataset> chartData)
+        {
+            var chartDataWithColors = new List<ExpenseDataset>();
+            var mainCategories = chartData.Select(x => x.MainCategoryId).Distinct().ToList();
+            foreach (var id in mainCategories)
+            {
+                var matchingExpenses = chartData.Where(x => x.MainCategoryId == id);
+                var coloredData = matchingExpenses.Select((x, index) =>
+                {
+                    x.Color = GetColorForExpenseDataset(index);
+                    return x;
+                }).ToList();
+                chartDataWithColors.AddRange(coloredData);
+            }
+            return chartDataWithColors;
+        }
+        private string GetColorForExpenseDataset(int index)
+        {
+            var colors = new[]
+            {
+                ChartColors.Pink,
+                ChartColors.Orange,
+                ChartColors.Yellow,
+                ChartColors.Cyan,
+                ChartColors.Azure,
+                ChartColors.Purple
+            };
+            if (index > colors.Length - 1)
+            {
+                var localIndex = index;
+                while (localIndex > colors.Length - 1)
+                    localIndex = (localIndex - colors.Length);
+                return colors[localIndex];
+            }
+            else return colors[index];
+        }
         private int[] GetMonthlyIncomeData(int incomeAmount, int numberOfMainCategories, bool savingsExists, bool unallocatedExists)
         {
             Queue<int> data = new Queue<int>();

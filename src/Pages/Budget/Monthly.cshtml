@@ -81,8 +81,7 @@
         ElementId = "monthlyBudgetChart",
         Labels = JsonSerializer.Serialize(Model.BudgetPageResponse.MonthlyBudgetChartData.Labels),
         IncomeDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.MonthlyBudgetChartData.IncomeData),
-        NeedDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.MonthlyBudgetChartData.NeedsData),
-        WantDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.MonthlyBudgetChartData.WantsData),
+        ExpenseDataset = Model.BudgetPageResponse.MonthlyBudgetChartData.ExpenseData,
         SavingsDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.MonthlyBudgetChartData.SavingsData),
         UnallocatedDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.MonthlyBudgetChartData.Unallocated),
         Title = DateTime.Now.Year.ToString()

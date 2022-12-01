@@ -13,9 +13,9 @@ namespace CashTrack.Pages.Budget
         public new string GetColors()
         {
             return JsonSerializer.Serialize(new[] {
-                ChartColors.Orange,
-                ChartColors.Yellow,
-                ChartColors.Azure,
+                ThemeColors.Danger,
+                ThemeColors.Warning,
+                ThemeColors.Info,
                 ThemeColors.Secondary
             });
         }

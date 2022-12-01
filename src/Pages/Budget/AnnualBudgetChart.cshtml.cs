@@ -21,10 +21,10 @@ namespace CashTrack.Pages.Budget
         public string UnallocatedDataset { get; set; }
         public string Title { get; set; }
         public string IncomeColor = JsonSerializer.Serialize(ThemeColors.Success);
-        public string NeedColor = JsonSerializer.Serialize(ChartColors.Orange);
-        public string WantColor = JsonSerializer.Serialize(ChartColors.Yellow);
-        public string SavingsColor = JsonSerializer.Serialize(ChartColors.Azure);
-        public string InTheRedSavingsColor = JsonSerializer.Serialize(ThemeColors.Danger);
+        public string NeedColor = JsonSerializer.Serialize(ThemeColors.Danger);
+        public string WantColor = JsonSerializer.Serialize(ThemeColors.Warning);
+        public string SavingsColor = JsonSerializer.Serialize(ThemeColors.Info);
+        public string InTheRedSavingsColor = JsonSerializer.Serialize(ThemeColors.SuccessAlt);
         public string UnallocatedColor = JsonSerializer.Serialize(ThemeColors.Secondary);
     }
 }

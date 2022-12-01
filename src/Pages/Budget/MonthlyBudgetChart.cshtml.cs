@@ -1,5 +1,7 @@
 using CashTrack.Common;
+using CashTrack.Models.BudgetModels;
 using CashTrack.Pages.Shared;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
@@ -9,16 +11,15 @@ namespace CashTrack.Pages.Budget
     {
         public MonthlyBudgetChart() : base() { }
         public string IncomeDataset { get; set; }
-        public string NeedDataset { get; set; }
-        public string WantDataset { get; set; }
+        public List<ExpenseDataset> ExpenseDataset { get; set; }
         public string SavingsDataset { get; set; }
         public string UnallocatedDataset { get; set; }
 
-        public string IncomeColor = JsonSerializer.Serialize(Common.ThemeColors.Success);
-        public string SavingsColor = JsonSerializer.Serialize(ChartColors.Azure);
+        public string IncomeColor = JsonSerializer.Serialize(ThemeColors.Success);
+        public string SavingsColor = JsonSerializer.Serialize(ThemeColors.Info);
         public string UnallocatedColor = JsonSerializer.Serialize(ThemeColors.Secondary);
-        public string NeedsColor = JsonSerializer.Serialize(ChartColors.Orange);
-        public string WantsColor = JsonSerializer.Serialize(ChartColors.Yellow);
-        public string InTheRedSavingsColor = JsonSerializer.Serialize(Common.ThemeColors.Danger);
+        public string NeedsColor = JsonSerializer.Serialize(ThemeColors.Danger);
+        public string WantsColor = JsonSerializer.Serialize(ThemeColors.Warning);
+        public string InTheRedSavingsColor = JsonSerializer.Serialize(ThemeColors.SuccessAlt);
     }
 }

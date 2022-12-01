@@ -17,22 +17,19 @@
                 borderColor: @Html.Raw(Model.IncomeColor),
                 borderWidth: 1
             },
+            @foreach(var data in Model.ExpenseDataset)
             {
-                label: 'Needs',
-                data: @Model.NeedDataset,
-                color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: @Html.Raw(Model.NeedsColor),
-                borderColor: @Html.Raw(Model.NeedsColor),
-                borderWidth: 1
-            },
-            {
-                label: 'Wants',
-                data: @Model.WantDataset,
-                color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: @Html.Raw(Model.WantsColor),
-                borderColor: @Html.Raw(Model.WantsColor),
-                borderWidth: 1
-            },
+                <text>
+                {
+                    label: '@data.SubCategoryName',
+                    data: @JsonSerializer.Serialize(@data.DataSet),
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: '@Html.Raw(data.Color)',
+                    borderColor: '@Html.Raw(data.Color)',
+                    borderWidth: 1
+                },
+                </text>
+            }
             {
                 label: 'Savings',
                 data: @Model.SavingsDataset,
@@ -58,7 +55,7 @@
                 },
                 y: {
                     stacked: true,
-                    //type: 'logarithmic',
+                    type: 'logarithmic',
                 },
             },
             plugins: {

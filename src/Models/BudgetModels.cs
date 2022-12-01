@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CashTrack.Models.BudgetModels
 {
@@ -51,11 +52,17 @@ namespace CashTrack.Models.BudgetModels
     {
         public string[] Labels { get; set; }
         public int[] IncomeData { get; set; }
-        public int[] NeedsData { get; set; }
-        public int[] WantsData { get; set; }
         public int[] SavingsData { get; set; }
         public int[] Unallocated { get; set; }
+        public List<ExpenseDataset> ExpenseData { get; set; }
 
+    }
+    public class ExpenseDataset
+    {
+        public string SubCategoryName { get; set; }
+        public int[] DataSet { get; set; }
+        public string Color { get; set; }
+        public int MainCategoryId { get; set; }
     }
     public enum BudgetType
     {

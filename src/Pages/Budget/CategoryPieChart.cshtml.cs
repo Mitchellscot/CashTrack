@@ -66,6 +66,7 @@ namespace CashTrack.Pages.Budget
                 ChartColors.Orange,
                 ChartColors.Yellow,
                 ChartColors.Cyan,
+                ChartColors.Azure,
                 ChartColors.Purple
             };
             if (index > colors.Length - 1)
@@ -77,7 +78,7 @@ namespace CashTrack.Pages.Budget
             }
             else return colors[index];
         }
-        public const string SavingsColor = ChartColors.Azure;
+        public const string SavingsColor = ThemeColors.Info;
         public const string UnallocatedColor = ThemeColors.Secondary;
     }
 }
