@@ -62,6 +62,15 @@ namespace CashTrack.Services.BudgetService
                     ExpenseData = GetMonthlyExpenseData(budgets, incomeExists, savingsExists, unallocatedExists, mainCategoryLabels),
                     SavingsData = GetMonthlySavingsData(incomeExists, mainCategoryLabels.Length, adjustedSavings, unallocatedExists),
                     Unallocated = GetMonthlyUnallocatedData(incomeExists, mainCategoryLabels.Length, savingsExists, unallocatedAmount)
+                },
+                MonthlySummary = new BudgetSummary()
+                {
+                    IncomeAmount = incomeAmount,
+                    ExpensesAmount = expensesAndSavingsAmount,
+                    NeedsAmount = needsAmount,
+                    WantsAmount = wantsAmount,
+                    SavingsAmount = adjustedSavings,
+                    UnallocatedAmount = unallocatedAmount
                 }
             };
         }
@@ -125,8 +134,8 @@ namespace CashTrack.Services.BudgetService
             arraySize = unallocatedExists ? arraySize + 1 : arraySize;
 
             var amountsAndLabels = budgets.Where(x => x.SubCategoryId != null && x.BudgetType == BudgetType.Need || x.BudgetType == BudgetType.Want && x.Amount > 0).GroupBy(x => x.SubCategory.Name)
-                .Select(x => (x.Key, 
-                Amount: x.Sum(x => x.Amount), 
+                .Select(x => (x.Key,
+                Amount: x.Sum(x => x.Amount),
                 MainCategory: x.Select(x =>
                     x.SubCategory.MainCategory.Name).FirstOrDefault(),
                 MainCategoryId: x.Select(x => x.SubCategory.MainCategoryId).FirstOrDefault()

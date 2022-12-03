@@ -72,6 +72,100 @@
             </div>
         }
     </div>
+        <div class="row mb-1">
+        @if (Model.BudgetPageResponse.MonthlySummary != null)
+        {
+            <div class="col-6 col-lg-3">
+
+                    <form method="get" class="mt-1">
+                        <div class="input-group">
+                            <span class="input-group-text">Month</span>
+                            <select data-val="true" asp-for=@Model.Month asp-items="@Model.MonthList" class="form-select text-center" id="monthlyBudgetMonthSelection">
+                                <option value="@Model.Month" selected disabled hidden></option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text">Year</span>
+                            <select data-val="true" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="monthlyBudgetYearSelection">
+                                <option value="@Model.Year" selected disabled hidden></option>
+                            </select>
+                        </div>
+                        <button class="btn btn-secondary rounded-end" type="submit">
+                            <i class="bi bi-search icon-size-md text-white mx-3" role="img"></i>
+                        </button>
+                    </form>
+
+                <ul class="list-group text-center mt-3">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">
+                            Income: &nbsp;
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.BudgetPageResponse.MonthlySummary.IncomeAmount)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">
+                            Expenses:
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.BudgetPageResponse.MonthlySummary.ExpensesAmount)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">
+                            Needs:
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.BudgetPageResponse.MonthlySummary.NeedsAmount)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">
+                            Wants:
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.BudgetPageResponse.MonthlySummary.WantsAmount)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">
+                            Savings:
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.BudgetPageResponse.MonthlySummary.SavingsAmount)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">
+                            Unallocated:
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.BudgetPageResponse.MonthlySummary.UnallocatedAmount)
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        }
+        @if (Model.BudgetPageResponse.TypePercentages != null && Model.BudgetPageResponse.TypePercentages.Values.Sum() > 0)
+        {
+            <div class="col-6 col-lg-3 mt-3">
+                <canvas id="typePercentagesDonut" class="chart-height"></canvas>
+            </div>
+        }
+        @if (Model.BudgetPageResponse.SubCategoryPercentages != null && Model.BudgetPageResponse.SubCategoryPercentages.Values.Sum() > 0)
+        {
+            <div class="col-6 col-lg-3 mt-3">
+                <canvas id="subCategoryPie" class="chart-height"></canvas>
+            </div>
+        }
+        @if (Model.BudgetPageResponse.MainCategoryPercentages != null && Model.BudgetPageResponse.MainCategoryPercentages.Values.Sum() > 0)
+        {
+            <div class="col-6 col-lg-3 mt-3">
+                <canvas id="mainCategoryPie" class="chart-height"></canvas>
+            </div>
+        }
+    </div>
 </div>
 @section Scripts {
     <script src="~/js/budget.js" asp-append-version="true"></script>
