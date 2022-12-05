@@ -77,25 +77,20 @@
         {
             <div class="col-6 col-lg-3">
 
-                    <form method="get" class="mt-1">
-                        <div class="input-group">
-                            <span class="input-group-text">Month</span>
-                            <select data-val="true" asp-for=@Model.Month asp-items="@Model.MonthList" class="form-select text-center" id="monthlyBudgetMonthSelection">
-                                <option value="@Model.Month" selected disabled hidden></option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group-text">Year</span>
-                            <select data-val="true" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="monthlyBudgetYearSelection">
-                                <option value="@Model.Year" selected disabled hidden></option>
-                            </select>
-                        </div>
-                        <button class="btn btn-secondary rounded-end" type="submit">
-                            <i class="bi bi-search icon-size-md text-white mx-3" role="img"></i>
-                        </button>
-                    </form>
+                <form method="get" class="mt-1">
+                    <div class="input-group">
+                        @*                            <span class="input-group-text">Month</span>*@
+                        <select onchange="this.form.submit()" data-val="true" asp-for=@Model.Month asp-items="@Model.MonthList" class="form-select text-center" id="monthlyBudgetMonthSelection">
+                            <option value="@Model.Month" selected disabled hidden></option>
+                        </select>
+                        @*                            <span class="input-group-text">Year</span>*@
+                        <select onchange="this.form.submit()" data-val="true" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="monthlyBudgetYearSelection">
+                            <option value="@Model.Year" selected disabled hidden></option>
+                        </select>
+                    </div>
+                </form>
 
-                <ul class="list-group text-center mt-3">
+                <ul class="list-group text-center mt-1">
                     <li class="list-group-item d-flex justify-content-between">
                         <span class="d-none d-md-block">
                             Income: &nbsp;
