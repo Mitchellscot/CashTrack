@@ -1,10 +1,32 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using CashTrack.Models.Common;
+using CashTrack.Models.MerchantModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace CashTrack.Models.BudgetModels
 {
+    public class BudgetListRequest : PaginationRequest
+    {
+        public bool Reversed { get; set; }
+        public BudgetOrderBy Order { get; set; }
+    }
+    public class BudgetListResponse : PaginationResponse<BudgetListItem>
+    {
+        public BudgetListResponse(int pageNumber, int pageSize, int totalCount, List<BudgetListItem> listItems) : base(pageNumber, pageSize, totalCount, listItems) { }
+    }
+    public record BudgetListItem
+    {
+        public int Id { get; set; }
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public int Amount { get; set; }
+        public string SubCategory { get; set; }
+        public string MainCategory { get; set; }
+        public string Type { get; set; }
+
+    }
     public record MonthlyBudgetPageRequest
     {
         public int Year { get; set; }
@@ -89,6 +111,15 @@ namespace CashTrack.Models.BudgetModels
         Week,
         Year
     }
+    public enum BudgetOrderBy
+    {
+        Year,
+        Month,
+        Amount,
+        SubCategory,
+        MainCategory,
+        Type
+    }
     public class AddBudgetAllocation
     {
         public int SubCategoryId { get; set; }
@@ -119,6 +150,10 @@ namespace CashTrack.Models.BudgetModels
             { "December", 12 }
         }, "Value", "Key", DateTime.Now.Month);
         public string[] TimeSpans = new[] { "Specific Month", "Year", "Month", "Week" };
+        public string ReturnUrl { get; set; }
+        public int PageNumber { get; set; }
+        public int Query { get; set; }
+        public string Q2 { get; set; }
     }
     public class CategoryAveragesAndTotals
     {

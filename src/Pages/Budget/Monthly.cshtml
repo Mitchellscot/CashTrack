@@ -29,6 +29,12 @@
                 Monthly
             </a>
         </li>
+        <li class="nav-item">
+            <a asp-page="./List"
+               class="nav-link">
+                List
+            </a>
+        </li>
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle"
                data-bs-toggle="dropdown">
@@ -93,7 +99,12 @@
                                             @budget.Amount
                                         </td>
                                         <td>
-                                            @budget.Percentage &#37;
+                                            @{
+                                                if (budget.Percentage != 0)
+                                                {
+                                                    <span>@budget.Percentage &#37;</span>
+                                                }
+                                            }
                                         </td>
                                     </tr>
                                 }
@@ -110,7 +121,12 @@
                                             @budget.Amount
                                         </td>
                                         <td>
-                                            @budget.Percentage &#37;
+                                            @{
+                                                if (budget.Percentage != 0)
+                                                {
+                                                    <span>@budget.Percentage &#37;</span>
+                                                }                                                
+                                            }
                                         </td>
                                     </tr>
                                 }

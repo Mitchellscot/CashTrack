@@ -17,13 +17,10 @@ namespace CashTrack.Pages.Budget
         private readonly ISubCategoryService _subCategoryService;
         public MonthlyModel(IBudgetService budgetService, ISubCategoryService subCategoryService) => (_budgetService, _subCategoryService) = (budgetService, subCategoryService);
 
-
         [BindProperty(SupportsGet = true)]
         public int Year { get; set; } = DateTime.Now.Year;
         [BindProperty(SupportsGet = true)]
         public int Month { get; set; } = DateTime.Now.Month;
-        [BindProperty]
-        public AddBudgetAllocationModal AddBudgetModal { get; set; }
         public MonthlyBudgetPageResponse BudgetPageResponse { get; set; }
         public SubCategoryDropdownSelection[] CategoryList { get; set; }
         public SelectList YearSelectList { get; set; }

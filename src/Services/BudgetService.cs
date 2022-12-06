@@ -1,16 +1,13 @@
-﻿using CashTrack.Common;
+﻿using AutoMapper;
+using CashTrack.Common;
 using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
-using CashTrack.Models.MainCategoryModels;
 using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Repositories.ExpenseRepository;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace CashTrack.Services.BudgetService
@@ -23,13 +20,72 @@ namespace CashTrack.Services.BudgetService
         Task<AnnualBudgetPageResponse> GetAnnualBudgetPageAsync(AnnualBudgetPageRequest request);
         Task<MonthlyBudgetPageResponse> GetMonthlyBudgetPageAsync(MonthlyBudgetPageRequest request);
         Task<int[]> GetAnnualBudgetYears();
+        Task<BudgetListResponse> GetBudgetList(BudgetListRequest request);
     }
     public class BudgetService : IBudgetService
     {
         private readonly IBudgetRepository _budgetRepo;
         private readonly IExpenseRepository _expenseRepo;
+        private readonly IMapper _mapper;
 
-        public BudgetService(IBudgetRepository budgetRepo, IExpenseRepository expenseRepo) => (_budgetRepo, _expenseRepo) = (budgetRepo, expenseRepo);
+        public BudgetService(IBudgetRepository budgetRepo, IExpenseRepository expenseRepo, IMapper mapper) => (_budgetRepo, _expenseRepo, _mapper) = (budgetRepo, expenseRepo, mapper);
+
+        public async Task<BudgetListResponse> GetBudgetList(BudgetListRequest request)
+        {
+            var budgetListItems = await ParseBudgetListQuery(request);
+            var count = await _budgetRepo.GetCount(x => true);
+            return new BudgetListResponse(request.PageNumber, request.PageSize, count, budgetListItems);
+        }
+        private async Task<List<BudgetListItem>> ParseBudgetListQuery(BudgetListRequest request)
+        {
+            var budgetListItems = new List<BudgetEntity>();
+            switch (request.Order)
+            {
+                case BudgetOrderBy.Year:
+                    var allBudgetsByYear = await _budgetRepo.Find(x => true);
+
+                    budgetListItems = request.Reversed ?
+                        allBudgetsByYear.OrderByDescending(x => x.Year).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                        allBudgetsByYear.OrderBy(x => x.Year).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                    break;
+                case BudgetOrderBy.Month:
+                    var allBudgetsByMonth = await _budgetRepo.Find(x => true);
+                    var budgetsByMonth = _mapper.Map<List<BudgetListItem>>(allBudgetsByMonth);
+                    budgetsByMonth = request.Reversed ?
+                        budgetsByMonth.OrderByDescending(x => x.Month).ThenByDescending(x => x.SubCategory).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                        budgetsByMonth.OrderBy(x => x.Month).ThenBy(x => x.SubCategory).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                    return budgetsByMonth;
+                case BudgetOrderBy.Amount:
+                    var allBudgetsByAmount = await _budgetRepo.Find(x => true);
+
+                    budgetListItems = request.Reversed ?
+                        allBudgetsByAmount.OrderByDescending(x => x.Amount).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                        allBudgetsByAmount.OrderBy(x => x.Amount).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                    break;
+                case BudgetOrderBy.SubCategory:
+                    var allBudgetsBySubCategory = (await _budgetRepo.Find(x => true)).ToList();
+                    var budgetsBySub = _mapper.Map<List<BudgetListItem>>(allBudgetsBySubCategory);
+                    budgetsBySub = request.Reversed ?
+                        budgetsBySub.OrderByDescending(x => x.SubCategory).ThenByDescending(x => x.MainCategory).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                        budgetsBySub.OrderBy(x => x.SubCategory).ThenBy(x => x.MainCategory).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                    return budgetsBySub;
+                case BudgetOrderBy.MainCategory:
+                    var allBudgetsByMainCategory = (await _budgetRepo.Find(x => true)).ToList();
+                    var budgetsByMain = _mapper.Map<List<BudgetListItem>>(allBudgetsByMainCategory);
+                    budgetsByMain = request.Reversed ?
+                        budgetsByMain.OrderByDescending(x => x.MainCategory).ThenByDescending(x => x.SubCategory).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                        budgetsByMain.OrderBy(x => x.MainCategory).ThenBy(x => x.SubCategory).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                    return budgetsByMain;
+                case BudgetOrderBy.Type:
+                    var allBudgetsByType = await _budgetRepo.Find(x => true);
+
+                    budgetListItems = request.Reversed ?
+                        allBudgetsByType.OrderByDescending(x => x.BudgetType).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                        allBudgetsByType.OrderBy(x => x.BudgetType).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                    break;
+            }
+            return _mapper.Map<List<BudgetListItem>>(budgetListItems);
+        }
 
         public async Task<MonthlyBudgetPageResponse> GetMonthlyBudgetPageAsync(MonthlyBudgetPageRequest request)
         {
@@ -56,6 +112,7 @@ namespace CashTrack.Services.BudgetService
             var savingsExists = adjustedSavings != 0;
             var unallocatedExists = unallocatedAmount > 0;
 
+            var savingsForTypeChart = adjustedSavings.ToPercentage(incomeAmount) > 0 ? adjustedSavings.ToPercentage(incomeAmount) : 0;
             return new MonthlyBudgetPageResponse()
             {
                 MonthlyBudgetChartData = new MonthlyBudgetChartData()
@@ -79,7 +136,7 @@ namespace CashTrack.Services.BudgetService
                 {
                     {"Needs", needsAmount.ToPercentage(incomeAmount) },
                     {"Wants", wantsAmount.ToPercentage(incomeAmount) },
-                    {"Savings", adjustedSavings.ToPercentage(incomeAmount) },
+                    {"Savings", savingsForTypeChart },
                     {"Unallocated", unallocatedAmount.ToPercentage(incomeAmount) }
                 },
                 SubCategoryPercentages = GetSubCategoryPercentages(budgets, incomeAmount),
@@ -236,6 +293,7 @@ namespace CashTrack.Services.BudgetService
 
             var totalAnnualIncome = monthlyIncome.Sum();
 
+            var savingsForTypeChat = monthlySavings.Sum().ToPercentage(totalAnnualIncome) > 0 ? monthlySavings.Sum().ToPercentage(totalAnnualIncome) : 0;
             return new AnnualBudgetPageResponse()
             {
                 AnnualBudgetChartData = new AnnualBudgetChartData()
@@ -259,7 +317,7 @@ namespace CashTrack.Services.BudgetService
                 {
                     {"Needs", monthlyNeeds.Sum().ToPercentage(totalAnnualIncome) },
                     {"Wants", monthlyWants.Sum().ToPercentage(totalAnnualIncome) },
-                    {"Savings", monthlySavings.Sum().ToPercentage(totalAnnualIncome) },
+                    {"Savings", savingsForTypeChat },
                     {"Unallocated", monthlyUnallocated.Sum().ToPercentage(totalAnnualIncome) }
                 },
                 SubCategoryPercentages = GetSubCategoryPercentages(budgets, totalAnnualIncome),
@@ -296,16 +354,19 @@ namespace CashTrack.Services.BudgetService
             monthlyBudgets.AddRange(mainCategories);
             var savingsAmount = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
 
+            var adjustedSavings = (savingsAmount + mainCategories.Sum(x => x.Amount)) > totalIncome ?
+                 (totalIncome - mainCategories.Sum(x => x.Amount)) : savingsAmount;
+
             var savings = new BudgetBreakdown()
             {
                 MainCategoryId = int.MaxValue - 1,
                 SubCategoryId = 0,
                 Name = "Savings",
-                Amount = savingsAmount,
-                Percentage = savingsAmount.ToPercentage(totalIncome)
+                Amount = adjustedSavings,
+                Percentage = adjustedSavings > 0 ? savingsAmount.ToPercentage(totalIncome) : 0
             };
 
-            if (savings.Amount > 0)
+            if (savings.Amount != 0)
                 monthlyBudgets.Add(savings);
 
             var unallocatedAmount = subCategories.Sum(x => x.Amount) + savings.Amount >= totalIncome ? 0 : totalIncome - (subCategories.Sum(x => x.Amount) + savings.Amount);
@@ -536,6 +597,21 @@ namespace CashTrack.Services.BudgetService
         public async Task<int[]> GetAnnualBudgetYears()
         {
             return (await _budgetRepo.Find(x => true)).GroupBy(x => x.Year).Select(x => x.Key).ToArray();
+        }
+        public class BudgetMapperProfile : Profile
+        {
+            public BudgetMapperProfile()
+            {
+                CreateMap<BudgetEntity, BudgetListItem>()
+                    .ForMember(b => b.Id, o => o.MapFrom(src => src.Id))
+                    .ForMember(b => b.Year, o => o.MapFrom(src => src.Year))
+                    .ForMember(b => b.Month, o => o.MapFrom(src => src.Month))
+                    .ForMember(b => b.SubCategory, o => o.MapFrom(src => src.SubCategoryId != null ? src.SubCategory.Name : string.Empty))
+                    .ForMember(b => b.MainCategory, o => o.MapFrom(src => src.SubCategoryId != null ? src.SubCategory.MainCategory.Name : src.BudgetType.ToString()))
+                    .ForMember(b => b.Type, o => o.MapFrom(src => src.BudgetType.ToString()))
+                    .ForMember(b => b.Amount, o => o.MapFrom(src => src.Amount));
+
+            }
         }
     }
 }

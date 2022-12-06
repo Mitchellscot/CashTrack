@@ -30,6 +30,12 @@
                 Monthly
             </a>
         </li>
+        <li class="nav-item">
+            <a asp-page="./List"
+               class="nav-link">
+                List
+            </a>
+        </li>
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle"
                data-bs-toggle="dropdown">
@@ -66,7 +72,7 @@
         Type = BudgetType.Need
         })
     </div>
-        <div class="modal fade" id="budgetStats">
+    <div class="modal fade" id="budgetStats">
         @if (Model.BudgetPageResponse.BudgetBreakdown != null)
         {
             <div class="modal-dialog modal-lg">
@@ -94,7 +100,10 @@
                                             @budget.Amount
                                         </td>
                                         <td>
-                                            @budget.Percentage &#37;
+                                            @if (budget.Percentage != 0)
+                                            {
+                                                <span>@budget.Percentage &#37;</span>
+                                            }
                                         </td>
                                     </tr>
                                 }
@@ -111,7 +120,10 @@
                                             @budget.Amount
                                         </td>
                                         <td>
-                                            @budget.Percentage &#37;
+                                            @if (budget.Percentage != 0)
+                                            {
+                                                <span>@budget.Percentage &#37;</span>
+                                            }
                                         </td>
                                     </tr>
                                 }
@@ -126,17 +138,17 @@
         }
     </div>
     <div class="row d-flex justify-content-between">
-        <form method="get" class="mt-1 col-2">
+        <form method="get" class="m-2 col-2">
             <div class="input-group">
                 <span class="input-group-text">Year</span>
                 <select data-val="true" onchange="this.form.submit()" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="annualBudgetYearSelection">
                     <option value="@Model.Year" selected disabled hidden></option>
                 </select>
-                        </div>
-                    </form>
-                <div class="col-12 col-md-3 mt-2 d-flex justify-content-end">
-                    <button class="btn btn-secondary text-wrap import-link btn-height" data-bs-toggle="modal" data-bs-target="#budgetStats">View Details</button>
-                </div>
+            </div>
+        </form>
+        <div class="col-12 col-md-3 mt-2 d-flex justify-content-end">
+            <button class="btn btn-secondary text-wrap import-link btn-height" data-bs-toggle="modal" data-bs-target="#budgetStats">View Details</button>
+        </div>
     </div>
 
     <div class="row mb-1">
