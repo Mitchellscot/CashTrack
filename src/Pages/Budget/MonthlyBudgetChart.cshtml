@@ -9,14 +9,15 @@
         type: 'bar',
         data: {
             labels: @Html.Raw(@Model.Labels),
-            datasets: [{
-                label: 'Income',
-                data: @Model.IncomeDataset,
-                color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: @Html.Raw(Model.IncomeColor),
-                borderColor: @Html.Raw(Model.IncomeColor),
-                borderWidth: 1
-            },
+            datasets: [
+            //    {
+            //    label: 'Income',
+            //    data: Model.IncomeDataset,
+            //    color: 'rgba(0, 0, 0, 0)',
+            //    backgroundColor: Html.Raw(Model.IncomeColor),
+            //    borderColor: Html.Raw(Model.IncomeColor),
+            //    borderWidth: 1
+            //},
             @foreach(var data in Model.ExpenseDataset)
             {
                 <text>
@@ -64,7 +65,7 @@
                     position: 'left',
                 },
                 title: {
-                    display: true,
+                    display: false,
                     text: '@Model.Title'
                 }
             }

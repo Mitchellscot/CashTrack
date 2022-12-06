@@ -24,7 +24,7 @@ namespace CashTrack.Pages.Budget
         public string NeedColor = JsonSerializer.Serialize(ThemeColors.Danger);
         public string WantColor = JsonSerializer.Serialize(ThemeColors.Warning);
         public string SavingsColor = JsonSerializer.Serialize(ThemeColors.Info);
-        public string InTheRedSavingsColor = JsonSerializer.Serialize(ThemeColors.SuccessAlt);
+        public string InTheRedSavingsColor = JsonSerializer.Serialize(DarkChartColors.RedBold);
         public string UnallocatedColor = JsonSerializer.Serialize(ThemeColors.Secondary);
     }
 }

@@ -182,12 +182,12 @@ namespace CashTrack.Services.MainCategoriesService
         {
             var colors = new[]
             {
-                ChartColors.Pink,
-                ChartColors.Orange,
-                ChartColors.Yellow,
-                ChartColors.Cyan,
-                ChartColors.Azure,
-                ChartColors.Purple
+                LightChartColors.Pink,
+                LightChartColors.Orange,
+                LightChartColors.Yellow,
+                LightChartColors.Cyan,
+                LightChartColors.Azure,
+                LightChartColors.Purple
             };
             if (index > colors.Length - 1)
             {

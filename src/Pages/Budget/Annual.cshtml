@@ -66,6 +66,78 @@
         Type = BudgetType.Need
         })
     </div>
+        <div class="modal fade" id="budgetStats">
+        @if (Model.BudgetPageResponse.BudgetBreakdown != null)
+        {
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h5 class="modal-title w-100">@Model.Year Breakdown</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal">
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <table class="table table-borderless border border-3 rounded-4 text-center">
+                            @foreach (var budget in Model.BudgetPageResponse.BudgetBreakdown)
+                            {
+                                @if (budget.IsMainCategory || budget.MainCategoryId >= int.MaxValue - 1)
+                                {
+                                    <tr class="border-top border-bottom border-3 rounded-4">
+                                        <td>
+                                            @budget.Name
+                                        </td>
+                                        <td class="border-end">
+                                            &nbsp;
+                                        </td>
+                                        <td class="border-end">
+                                            @budget.Amount
+                                        </td>
+                                        <td>
+                                            @budget.Percentage &#37;
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr class="border-end border-start">
+                                        <td>
+                                            &nbsp;
+                                        </td>
+                                        <td class="border-end">
+                                            @budget.Name
+                                        </td>
+                                        <td class="border-end">
+                                            @budget.Amount
+                                        </td>
+                                        <td>
+                                            @budget.Percentage &#37;
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </table>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="row d-flex justify-content-between">
+        <form method="get" class="mt-1 col-2">
+            <div class="input-group">
+                <span class="input-group-text">Year</span>
+                <select data-val="true" onchange="this.form.submit()" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="annualBudgetYearSelection">
+                    <option value="@Model.Year" selected disabled hidden></option>
+                </select>
+                        </div>
+                    </form>
+                <div class="col-12 col-md-3 mt-2 d-flex justify-content-end">
+                    <button class="btn btn-secondary text-wrap import-link btn-height" data-bs-toggle="modal" data-bs-target="#budgetStats">View Details</button>
+                </div>
+    </div>
 
     <div class="row mb-1">
         @if (Model.BudgetPageResponse.AnnualBudgetChartData != null)
@@ -80,18 +152,8 @@
         @if (Model.BudgetPageResponse.AnnualSummary != null)
         {
             <div class="col-6 col-lg-3">
-
-                    <form method="get" class="mt-1">
-                        <div class="input-group">
-                            <span class="input-group-text">Year</span>
-                            <select data-val="true" onchange="this.form.submit()" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="annualBudgetYearSelection">
-                                <option value="@Model.Year" selected disabled hidden></option>
-                            </select>
-                        </div>
-                    </form>
-
                 <ul class="list-group text-center mt-3">
-                    <li class="list-group-item d-flex justify-content-between">
+                    <li class="list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Income: &nbsp;
                         </span>
@@ -99,7 +161,7 @@
                             @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.IncomeAmount)
                         </span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between">
+                    <li class="list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Expenses:
                         </span>
@@ -107,7 +169,7 @@
                             @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.ExpensesAmount)
                         </span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between">
+                    <li class="list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Needs:
                         </span>
@@ -115,7 +177,7 @@
                             @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.NeedsAmount)
                         </span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between">
+                    <li class="list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Wants:
                         </span>
@@ -123,7 +185,7 @@
                             @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.WantsAmount)
                         </span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between">
+                    <li class="list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Savings:
                         </span>
@@ -131,7 +193,7 @@
                             @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.SavingsAmount)
                         </span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between">
+                    <li class="list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Unallocated:
                         </span>

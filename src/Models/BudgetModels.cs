@@ -21,6 +21,7 @@ namespace CashTrack.Models.BudgetModels
         public Dictionary<string, int> TypePercentages { get; set; }
         public Dictionary<string, int> SubCategoryPercentages { get; set; }
         public Dictionary<string, int> MainCategoryPercentages { get; set; }
+        public List<BudgetBreakdown> BudgetBreakdown { get; set; }
     }
     public record MonthlyBudgetPageResponse
     {
@@ -29,6 +30,17 @@ namespace CashTrack.Models.BudgetModels
         public Dictionary<string, int> TypePercentages { get; set; }
         public Dictionary<string, int> SubCategoryPercentages { get; set; }
         public Dictionary<string, int> MainCategoryPercentages { get; set; }
+        public List<BudgetBreakdown> BudgetBreakdown { get; set; }
+
+    }
+    public record BudgetBreakdown
+    {
+        public int MainCategoryId { get; set; }
+        public int SubCategoryId { get; set; }
+        public string Name { get; set; }
+        public int Amount { get; set; }
+        public int Percentage { get; set; }
+        public bool IsMainCategory => SubCategoryId == 0 && MainCategoryId != 0;
     }
     public record BudgetSummary
     {
@@ -51,7 +63,7 @@ namespace CashTrack.Models.BudgetModels
     public record MonthlyBudgetChartData()
     {
         public string[] Labels { get; set; }
-        public int[] IncomeData { get; set; }
+        //public int[] IncomeData { get; set; }
         public int[] SavingsData { get; set; }
         public int[] Unallocated { get; set; }
         public List<ExpenseDataset> ExpenseData { get; set; }

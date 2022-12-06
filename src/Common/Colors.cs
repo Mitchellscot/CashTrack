@@ -22,7 +22,7 @@
         public const string Black = "rgba(0, 0, 0, 0)";
 
     }
-    public static class ChartColors
+    public static class LightChartColors
     {
         public const string Pink = "rgba(255, 99, 132, 0.8)";
         public const string PinkDark = "rgba(193, 37, 83, 0.8)";
@@ -36,5 +36,20 @@
         public const string AzureDark = "rgba(0, 111, 179, 0.8)";
         public const string Purple = "rgba(153, 102, 255, 0.8)";
         public const string PurpleDark = "rgba(94, 51, 197, 0.8)";
+    }
+    public static class DarkChartColors
+    {
+        public const string Red = "rgba(203, 67, 53, .8)";
+        public const string RedBold = "rgba(203, 67, 53, 1)";
+        public const string Orange = "rgba(211, 84, 0, .8)";
+        public const string OrangeBold = "rgba(211, 84, 0, 1)";
+        public const string Yellow = "rgba(241, 196, 15, .8)";
+        public const string YellowBold = "rgba(241, 196, 15, 1)";
+        public const string Green = "rgba(39, 174, 96, .8)";
+        public const string GreenBold = "rgba(39, 174, 96, 1)";
+        public const string Blue = "rgba(31, 97, 141, .8)";
+        public const string BlueBold = "rgba(31, 97, 141, 1)";
+        public const string Purple = "rgba(136, 78, 160, .8)";
+        public const string PurpleBold = "rgba(136, 78, 160, 1)";
     }
 }

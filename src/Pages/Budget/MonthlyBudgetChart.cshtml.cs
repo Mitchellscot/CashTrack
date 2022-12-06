@@ -10,7 +10,7 @@ namespace CashTrack.Pages.Budget
     public class MonthlyBudgetChart : ChartBase
     {
         public MonthlyBudgetChart() : base() { }
-        public string IncomeDataset { get; set; }
+        //public string IncomeDataset { get; set; }
         public List<ExpenseDataset> ExpenseDataset { get; set; }
         public string SavingsDataset { get; set; }
         public string UnallocatedDataset { get; set; }

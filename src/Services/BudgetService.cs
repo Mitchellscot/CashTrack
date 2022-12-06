@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace CashTrack.Services.BudgetService
@@ -49,7 +51,8 @@ namespace CashTrack.Services.BudgetService
             var unallocatedAmount = (incomeAmount - expensesAndSavingsAmount) > 0 ?
                 incomeAmount - expensesAndSavingsAmount : 0;
 
-            var incomeExists = incomeAmount > 0;
+            //taking income off since it makes the graph look wonky
+            var incomeExists = false; //incomeAmount > 0;
             var savingsExists = adjustedSavings != 0;
             var unallocatedExists = unallocatedAmount > 0;
 
@@ -58,7 +61,7 @@ namespace CashTrack.Services.BudgetService
                 MonthlyBudgetChartData = new MonthlyBudgetChartData()
                 {
                     Labels = GenerateMonthlyChartLabels(incomeExists, mainCategoryLabels, savingsExists, unallocatedExists),
-                    IncomeData = GetMonthlyIncomeData(incomeAmount, mainCategoryLabels.Length, savingsExists, unallocatedExists),
+                    //IncomeData = GetMonthlyIncomeData(incomeAmount, mainCategoryLabels.Length, savingsExists, unallocatedExists),
                     ExpenseData = GetMonthlyExpenseData(budgets, incomeExists, savingsExists, unallocatedExists, mainCategoryLabels),
                     SavingsData = GetMonthlySavingsData(incomeExists, mainCategoryLabels.Length, adjustedSavings, unallocatedExists),
                     Unallocated = GetMonthlyUnallocatedData(incomeExists, mainCategoryLabels.Length, savingsExists, unallocatedAmount)
@@ -71,7 +74,17 @@ namespace CashTrack.Services.BudgetService
                     WantsAmount = wantsAmount,
                     SavingsAmount = adjustedSavings,
                     UnallocatedAmount = unallocatedAmount
-                }
+                },
+                TypePercentages = new Dictionary<string, int>()
+                {
+                    {"Needs", needsAmount.ToPercentage(incomeAmount) },
+                    {"Wants", wantsAmount.ToPercentage(incomeAmount) },
+                    {"Savings", adjustedSavings.ToPercentage(incomeAmount) },
+                    {"Unallocated", unallocatedAmount.ToPercentage(incomeAmount) }
+                },
+                SubCategoryPercentages = GetSubCategoryPercentages(budgets, incomeAmount),
+                MainCategoryPercentages = GetMainCategoryPercentages(budgets, incomeAmount),
+                BudgetBreakdown = GetBudgetBreakdown(budgets, incomeAmount)
             };
         }
 
@@ -177,12 +190,12 @@ namespace CashTrack.Services.BudgetService
         {
             var colors = new[]
             {
-                ChartColors.Pink,
-                ChartColors.Orange,
-                ChartColors.Yellow,
-                ChartColors.Cyan,
-                ChartColors.Azure,
-                ChartColors.Purple
+                LightChartColors.Pink,
+                LightChartColors.Orange,
+                LightChartColors.Yellow,
+                LightChartColors.Cyan,
+                LightChartColors.Azure,
+                LightChartColors.Purple
             };
             if (index > colors.Length - 1)
             {
@@ -250,8 +263,64 @@ namespace CashTrack.Services.BudgetService
                     {"Unallocated", monthlyUnallocated.Sum().ToPercentage(totalAnnualIncome) }
                 },
                 SubCategoryPercentages = GetSubCategoryPercentages(budgets, totalAnnualIncome),
-                MainCategoryPercentages = GetMainCategoryPercentages(budgets, totalAnnualIncome)
+                MainCategoryPercentages = GetMainCategoryPercentages(budgets, totalAnnualIncome),
+                BudgetBreakdown = GetBudgetBreakdown(budgets, totalAnnualIncome)
             };
+        }
+        private List<BudgetBreakdown> GetBudgetBreakdown(BudgetEntity[] budgets, int totalIncome)
+        {
+            var monthlyBudgets = new List<BudgetBreakdown>();
+            var subCategories = budgets.Where(x => x.SubCategoryId != null).GroupBy(x => x.SubCategoryId).Select(x =>
+            {
+                return new BudgetBreakdown()
+                {
+                    MainCategoryId = x.Select(x => x.SubCategory.MainCategoryId).FirstOrDefault(),
+                    SubCategoryId = x.Key.Value,
+                    Name = x.Select(x => x.SubCategory.Name).FirstOrDefault(),
+                    Amount = x.Sum(x => x.Amount),
+                    Percentage = x.Sum(x => x.Amount).ToPercentage(totalIncome)
+                };
+            }).ToList();
+            monthlyBudgets.AddRange(subCategories);
+            var mainCategories = budgets.Where(x => x.SubCategoryId != null).GroupBy(x => x.SubCategory.MainCategory.Id).Select(x =>
+            {
+                return new BudgetBreakdown()
+                {
+                    MainCategoryId = x.Key,
+                    SubCategoryId = 0,
+                    Name = x.Select(x => x.SubCategory.MainCategory.Name).FirstOrDefault(),
+                    Amount = x.Sum(x => x.Amount),
+                    Percentage = x.Sum(x => x.Amount).ToPercentage(totalIncome)
+                };
+            }).ToList();
+            monthlyBudgets.AddRange(mainCategories);
+            var savingsAmount = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
+
+            var savings = new BudgetBreakdown()
+            {
+                MainCategoryId = int.MaxValue - 1,
+                SubCategoryId = 0,
+                Name = "Savings",
+                Amount = savingsAmount,
+                Percentage = savingsAmount.ToPercentage(totalIncome)
+            };
+
+            if (savings.Amount > 0)
+                monthlyBudgets.Add(savings);
+
+            var unallocatedAmount = subCategories.Sum(x => x.Amount) + savings.Amount >= totalIncome ? 0 : totalIncome - (subCategories.Sum(x => x.Amount) + savings.Amount);
+            var unAllocated = new BudgetBreakdown()
+            {
+                Name = "Unallocated",
+                MainCategoryId = int.MaxValue,
+                SubCategoryId = 0,
+                Amount = unallocatedAmount,
+                Percentage = unallocatedAmount > 0 ? unallocatedAmount.ToPercentage(totalIncome) : 0
+            };
+            if (unAllocated.Amount > 0)
+                monthlyBudgets.Add(unAllocated);
+
+            return monthlyBudgets.OrderBy(x => x.MainCategoryId).ThenBy(x => x.SubCategoryId).ToList();
         }
 
         private Dictionary<string, int> GetMainCategoryPercentages(BudgetEntity[] budgets, int totalAnnualIncome)

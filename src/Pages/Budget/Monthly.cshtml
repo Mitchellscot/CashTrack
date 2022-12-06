@@ -2,6 +2,7 @@
 @using CashTrack.Models.BudgetModels;
 @using System.Text.Json;
 @using CashTrack.Pages.Shared;
+@using System.Globalization;
 @model CashTrack.Pages.Budget.MonthlyModel
 @{
 }
@@ -53,7 +54,7 @@
         </li>
     </ul>
     @*END NAV TABS*@
-        <div class="modal fade" id="addBudgetModal">
+    <div class="modal fade" id="addBudgetModal">
         @await Html.PartialAsync("_AddBudgetModal", new AddBudgetAllocationModal()
         {
         SubCategoryList = new SelectList(Model.CategoryList, "Id", "Category"),
@@ -64,7 +65,85 @@
         Type = BudgetType.Need
         })
     </div>
-        <div class="row mb-1">
+    <div class="modal fade" id="budgetStats">
+        @if (Model.BudgetPageResponse.BudgetBreakdown != null)
+        {
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h5 class="modal-title w-100">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month) Breakdown</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal">
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <table class="table table-borderless border border-3 rounded-4 text-center">
+                            @foreach (var budget in Model.BudgetPageResponse.BudgetBreakdown)
+                            {
+                                @if (budget.IsMainCategory || budget.MainCategoryId >= int.MaxValue - 1)
+                                {
+                                    <tr class="border-top border-bottom border-3 rounded-4">
+                                        <td>
+                                            @budget.Name
+                                        </td>
+                                        <td class="border-end">
+                                            &nbsp;
+                                        </td>
+                                        <td class="border-end">
+                                            @budget.Amount
+                                        </td>
+                                        <td>
+                                            @budget.Percentage &#37;
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr class="border-end border-start">
+                                        <td>
+                                            &nbsp;
+                                        </td>
+                                        <td class="border-end">
+                                            @budget.Name
+                                        </td>
+                                        <td class="border-end">
+                                            @budget.Amount
+                                        </td>
+                                        <td>
+                                            @budget.Percentage &#37;
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </table>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="row d-flex justify-content-between">
+
+        <form method="get" class="m-2 col-12 col-md-8 col-xl-4">
+            <div class="input-group">
+                <span class="input-group-text">Month</span>
+                <select onchange="this.form.submit()" data-val="true" asp-for=@Model.Month asp-items="@Model.MonthList" class="form-select text-center" id="monthlyBudgetMonthSelection">
+                    <option value="@Model.Month" selected disabled hidden></option>
+                </select>
+                <span class="input-group-text">Year</span>
+                <select onchange="this.form.submit()" data-val="true" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="monthlyBudgetYearSelection">
+                    <option value="@Model.Year" selected disabled hidden></option>
+                </select>
+            </div>
+        </form>
+        <div class="col-12 col-md-3 mt-2 d-flex justify-content-end">
+            <button class="btn btn-secondary text-wrap import-link btn-height" data-bs-toggle="modal" data-bs-target="#budgetStats">View Details</button>
+        </div>
+
+    </div>
+    <div class="row mb-1">
         @if (Model.BudgetPageResponse.MonthlyBudgetChartData != null)
         {
             <div class="col">
@@ -72,26 +151,12 @@
             </div>
         }
     </div>
-        <div class="row mb-1">
+    <div class="row mb-1">
         @if (Model.BudgetPageResponse.MonthlySummary != null)
         {
             <div class="col-6 col-lg-3">
-
-                <form method="get" class="mt-1">
-                    <div class="input-group">
-                        @*                            <span class="input-group-text">Month</span>*@
-                        <select onchange="this.form.submit()" data-val="true" asp-for=@Model.Month asp-items="@Model.MonthList" class="form-select text-center" id="monthlyBudgetMonthSelection">
-                            <option value="@Model.Month" selected disabled hidden></option>
-                        </select>
-                        @*                            <span class="input-group-text">Year</span>*@
-                        <select onchange="this.form.submit()" data-val="true" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="monthlyBudgetYearSelection">
-                            <option value="@Model.Year" selected disabled hidden></option>
-                        </select>
-                    </div>
-                </form>
-
-                <ul class="list-group text-center mt-1">
-                    <li class="list-group-item d-flex justify-content-between">
+                <ul class="list-group text-center mt-3">
+                    <li class="list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Income: &nbsp;
                         </span>
@@ -99,7 +164,7 @@
                             @String.Format("{0:n}", Model.BudgetPageResponse.MonthlySummary.IncomeAmount)
                         </span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between">
+                    <li class="list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Expenses:
                         </span>
@@ -107,7 +172,7 @@
                             @String.Format("{0:n}", Model.BudgetPageResponse.MonthlySummary.ExpensesAmount)
                         </span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between">
+                    <li class="list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Needs:
                         </span>
@@ -115,7 +180,7 @@
                             @String.Format("{0:n}", Model.BudgetPageResponse.MonthlySummary.NeedsAmount)
                         </span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between">
+                    <li class="list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Wants:
                         </span>
@@ -123,7 +188,7 @@
                             @String.Format("{0:n}", Model.BudgetPageResponse.MonthlySummary.WantsAmount)
                         </span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between">
+                    <li class="list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Savings:
                         </span>
@@ -131,7 +196,7 @@
                             @String.Format("{0:n}", Model.BudgetPageResponse.MonthlySummary.SavingsAmount)
                         </span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between">
+                    <li class="list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Unallocated:
                         </span>
@@ -169,10 +234,28 @@
     {
         ElementId = "monthlyBudgetChart",
         Labels = JsonSerializer.Serialize(Model.BudgetPageResponse.MonthlyBudgetChartData.Labels),
-        IncomeDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.MonthlyBudgetChartData.IncomeData),
         ExpenseDataset = Model.BudgetPageResponse.MonthlyBudgetChartData.ExpenseData,
         SavingsDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.MonthlyBudgetChartData.SavingsData),
         UnallocatedDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.MonthlyBudgetChartData.Unallocated),
         Title = DateTime.Now.Year.ToString()
+    })
+    @await Html.PartialAsync("TypePercentagesDonut", new TypePercentagesDonut()
+    {
+        ElementId = "typePercentagesDonut",
+        Labels = JsonSerializer.Serialize(Model.BudgetPageResponse.TypePercentages.Select(x => x.Key).ToArray()),
+        Dataset = JsonSerializer.Serialize(Model.BudgetPageResponse.TypePercentages.Select(x => x.Value).ToArray()),
+        Title = "Type Percentages"
+    })
+    @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.BudgetPageResponse.SubCategoryPercentages.Select(x => x.Key).ToArray()))
+    {
+        ElementId = "subCategoryPie",
+        Dataset = JsonSerializer.Serialize(Model.BudgetPageResponse.SubCategoryPercentages.Select(x => x.Value).ToArray()),
+        Title = "Sub Category Percentages"
+    })
+    @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.BudgetPageResponse.MainCategoryPercentages.Select(x => x.Key).ToArray()))
+    {
+        ElementId = "mainCategoryPie",
+        Dataset = JsonSerializer.Serialize(Model.BudgetPageResponse.MainCategoryPercentages.Select(x => x.Value).ToArray()),
+        Title = "Main Category Percentages"
     })
 }

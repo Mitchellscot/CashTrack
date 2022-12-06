@@ -20,12 +20,12 @@ namespace CashTrack.Pages.Shared
         public string GetColors()
         {
             return JsonSerializer.Serialize(new[] {
-                ChartColors.Pink,
-                ChartColors.Orange,
-                ChartColors.Yellow,
-                ChartColors.Cyan,
-                ChartColors.Azure,
-                ChartColors.Purple
+                LightChartColors.Pink,
+                LightChartColors.Orange,
+                LightChartColors.Yellow,
+                LightChartColors.Cyan,
+                LightChartColors.Azure,
+                LightChartColors.Purple
             });
         }
 
