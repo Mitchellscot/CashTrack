@@ -14,6 +14,8 @@ using CashTrack.Data;
 using System.Collections.Generic;
 using CashTrack.Services.BudgetService;
 using CashTrack.Models.BudgetModels;
+using AutoMapper;
+using static CashTrack.Services.BudgetService.BudgetService;
 
 namespace CashTrack.Tests.Services
 {
@@ -22,12 +24,89 @@ namespace CashTrack.Tests.Services
     {
         private readonly BudgetService _service;
         private readonly BudgetRepository _repo;
+        private readonly IMapper _mapper;
         public BudgetServiceTests()
         {
+            var budgetMapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new BudgetMapperProfile());
+            });
+            _mapper = budgetMapper.CreateMapper();
             var sharedDB = new AppDbContextFactory().CreateDbContext();
             _repo = new BudgetRepository(sharedDB);
             var expenseRepo = new ExpenseRepository(sharedDB);
-            _service = new BudgetService(_repo, expenseRepo);
+            _service = new BudgetService(_repo, expenseRepo, _mapper);
+        }
+        [Fact]
+        public async Task Can_Get_Annual_Budget_Page()
+        {
+            var response = await _service.GetAnnualBudgetPageAsync(new AnnualBudgetPageRequest() { Year = 2012 });
+            response.AnnualBudgetChartData.ShouldNotBeNull();
+            response.AnnualSummary.ShouldNotBeNull();
+            response.BudgetBreakdown.ShouldNotBeNull();
+            response.MainCategoryPercentages.ShouldNotBeNull();
+            response.SubCategoryPercentages.ShouldNotBeNull();
+            response.TypePercentages.ShouldNotBeNull();
+            response.BudgetBreakdown.ShouldNotBeNull();
+        }
+        [Fact]
+        public async Task Can_Get_Monthly_Budget_Page()
+        {
+            var response = await _service.GetMonthlyBudgetPageAsync(new MonthlyBudgetPageRequest() { Year = 2012, Month = 1 });
+            response.MonthlyBudgetChartData.ShouldNotBeNull();
+            response.MonthlySummary.ShouldNotBeNull();
+            response.BudgetBreakdown.ShouldNotBeNull();
+            response.MainCategoryPercentages.ShouldNotBeNull();
+            response.SubCategoryPercentages.ShouldNotBeNull();
+            response.TypePercentages.ShouldNotBeNull();
+            response.BudgetBreakdown.ShouldNotBeNull();
+        }
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        public async Task Can_Get_Budget_List_Page(int orderBy)
+        {
+            var response = await _service.GetBudgetListAsync(new BudgetListRequest() { Order = (BudgetOrderBy)orderBy, Reversed = false, PageNumber = 1, PageSize = 25 });
+            response.ListItems.ShouldNotBeEmpty();
+            response.TotalCount.ShouldBeGreaterThan(1);
+            response.TotalPages.ShouldBeGreaterThan(1);
+        }
+        //[Fact(Skip = "Data is in the year 1999")]
+        //public async Task Can_Get_Category_Averages_And_Totals()
+        //{
+        //    var response = await _service.GetCategoryAveragesAndTotalsAsync(1);
+        //}
+        [Fact]
+        public async Task Can_Get_Annual_Budget_Years()
+        {
+            var response = await _service.GetAnnualBudgetYearsAsync();
+            response.ShouldContain(2012);
+        }
+        [Fact]
+        public async Task Update_Budget()
+        {
+            var request = new AddEditBudgetAllocation()
+            {
+                Id = 1,
+                Type = BudgetType.Want,
+                Year = 1999,
+                Amount = 300,
+                Month = 5,
+                SubCategoryId = 5
+            };
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var service = GetBudgetService(db);
+                var result = await service.UpdateBudgetAsync(request);
+                var budget = db.Budgets.Single(x => x.Year == 1999);
+                budget.Id.ShouldBe(1);
+                budget.Amount.ShouldBe(300);
+                budget.BudgetType.ShouldBe(BudgetType.Want);
+            }
         }
         [Fact]
         public async Task Create_Expense_Budget_For_Given_Month()
@@ -222,11 +301,77 @@ namespace CashTrack.Tests.Services
                 await Task.Run(() => Should.Throw<BudgetNotFoundException>(async () => await service.DeleteBudgetAsync(int.MaxValue)));
             }
         }
+        //private method tests
+        [Fact]
+        public async Task Can_Get_Monthly_Expense_Data()
+        {
+            var budgets = await _repo.FindWithMainCategories(x => x.Year == 2012);
+            var mainCategoryLabels = budgets.Where(x => x.SubCategoryId != null && x.Amount > 0).Select(x => x.SubCategory?.MainCategory.Name).OrderBy(x => x).Distinct().ToArray();
+            var response = _service.GetMonthlyExpenseData(budgets, true, true, true, mainCategoryLabels);
+            response.Count.ShouldBe(mainCategoryLabels.Length + 2);
+            response.Sum(x => x.DataSet.Sum()).ShouldBe(22876);
+        }
+        [Fact]
+        public async Task Can_Get_Budget_Breakdown()
+        {
+            var budgets = await _repo.FindWithMainCategories(x => x.Year == 2012);
+            var income = budgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount);
+            var response = _service.GetBudgetBreakdown(budgets, income);
+            response.Count.ShouldBe(18);
+            var x = response.Sum(x => x.Amount);
+            response.Select(x => x.Amount).Sum().ShouldBe(90476);
+        }
+
+        [Fact]
+        public async Task Can_Get_Main_Category_Percentages()
+        {
+            var budgets = await _repo.FindWithMainCategories(x => x.Year == 2012);
+            var income = budgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount);
+            var response = _service.GetMainCategoryPercentages(budgets, income);
+            response.Values.Count.ShouldBeGreaterThan(1);
+            response.Values.Sum().ShouldBe(100);
+        }
+        [Fact]
+        public async Task Can_Get_Sub_Category_Percentages()
+        {
+            var budgets = await _repo.Find(x => x.Year == 2012);
+            var income = budgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount);
+            var response = _service.GetSubCategoryPercentages(budgets, income);
+            response.Values.Count.ShouldBeGreaterThan(1);
+            response.Values.Sum().ShouldBe(100);
+        }
+        [Fact]
+        public async Task Can_Get_Annual_Unallocated_Data()
+        {
+            var budgets = await _repo.Find(x => x.Year == 2012);
+            var response = _service.GetAnnualUnallocatedData(budgets);
+            response.ToList().Count.ShouldBeGreaterThan(1);
+            response.Sum().ShouldBe(32724);
+        }
+        [Fact]
+        public async Task Can_Get_Annual_Savings_Data()
+        {
+            var budgets = await _repo.Find(x => x.Year == 2012);
+            var response = _service.GetAnnualSavingsData(budgets);
+            response.ToList().Count.ShouldBeGreaterThan(1);
+            response.ToList().Sum().ShouldBe(12000);
+        }
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public async Task Can_Get_Annual_Data(int budgetType)
+        {
+            var budgets = await _repo.Find(x => x.Year == 2012);
+            var response = _service.GetAnnualData(budgets, (BudgetType)budgetType);
+            response.ToList().Count.ShouldBeGreaterThan(1);
+        }
         private BudgetService GetBudgetService(AppDbContext db)
         {
             var expenseRepo = new ExpenseRepository(db);
             var repo = new BudgetRepository(db);
-            return new BudgetService(repo, expenseRepo);
+            return new BudgetService(repo, expenseRepo, _mapper);
         }
     }
 }

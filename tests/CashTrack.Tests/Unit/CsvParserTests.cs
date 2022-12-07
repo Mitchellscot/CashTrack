@@ -71,7 +71,7 @@ namespace CashTrack.Tests.Unit
         public void Can_Parse_Budgets_File()
         {
             var result = CsvParser.ProcessBudgetFile(Path.Combine(_csvFileDirectory, "Budgets.csv"));
-            result.Count().ShouldBe(104);
+            result.Count().ShouldBe(116);
         }
     }
 }
