@@ -23,6 +23,7 @@ namespace CashTrack.Models.BudgetModels
         public int Month { get; set; }
         public int Amount { get; set; }
         public string SubCategory { get; set; }
+        public int SubCategoryId { get; set; }
         public string MainCategory { get; set; }
         public string Type { get; set; }
 
@@ -130,8 +131,9 @@ namespace CashTrack.Models.BudgetModels
         public bool IsIncome { get; set; }
         public AllocationTimeSpan TimeSpan { get; set; }
     }
-    public class AddBudgetAllocationModal : AddBudgetAllocation
+    public class AddEditBudgetAllocationModal : AddBudgetAllocation
     {
+        public int? Id { get; set; }
         public SelectList SubCategoryList { get; set; }
         public SelectList YearList { get; set; } = new SelectList(new[] { DateTime.Now.Year, DateTime.Now.Year + 1 }, DateTime.Now.Year);
         public SelectList MonthList { get; set; } = new SelectList(new Dictionary<string, int> {

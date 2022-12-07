@@ -607,6 +607,7 @@ namespace CashTrack.Services.BudgetService
                     .ForMember(b => b.Year, o => o.MapFrom(src => src.Year))
                     .ForMember(b => b.Month, o => o.MapFrom(src => src.Month))
                     .ForMember(b => b.SubCategory, o => o.MapFrom(src => src.SubCategoryId != null ? src.SubCategory.Name : string.Empty))
+                    .ForMember(b => b.SubCategoryId, o => o.MapFrom(src => src.SubCategoryId != null ? src.SubCategory.Id : 0))
                     .ForMember(b => b.MainCategory, o => o.MapFrom(src => src.SubCategoryId != null ? src.SubCategory.MainCategory.Name : src.BudgetType.ToString()))
                     .ForMember(b => b.Type, o => o.MapFrom(src => src.BudgetType.ToString()))
                     .ForMember(b => b.Amount, o => o.MapFrom(src => src.Amount));

@@ -61,7 +61,7 @@
     </ul>
     @*END NAV TABS*@
     <div class="modal fade" id="addBudgetModal">
-        @await Html.PartialAsync("_AddBudgetModal", new AddBudgetAllocationModal()
+        @await Html.PartialAsync("AddBudgetModal", new AddEditBudgetAllocationModal()
         {
         SubCategoryList = new SelectList(Model.CategoryList, "Id", "Category"),
         Month = DateTime.Now.Month,
@@ -196,12 +196,32 @@
                                     @budget.Type
                                 </td>
                                 <td>
-                                    edit | 
+                                    <button type="button"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editBudgetModal-@budget.Id"
+                                    class="icon-button px-2 load-main-category-edit-modal-js">
+                                    <i class="bi bi-pencil text-primary action-icon"></i>
+                                    </button>
+                                    @*Edit Modal*@
+                                    <div class="modal fade" id="editBudgetModal-@budget.Id">
+                                    @await Html.PartialAsync("EditBudgetModal", new AddEditBudgetAllocationModal()
+                                    {
+                                        Id = budget.Id,
+                                        SubCategoryList = new SelectList(Model.CategoryList, "Id", "Category", budget.SubCategoryId),
+                                        SubCategoryId = budget.SubCategoryId,
+                                        Month = budget.Month,
+                                        Year = budget.Year,
+                                        Amount = budget.Amount,
+                                        Type = Enum.Parse<BudgetType>(budget.Type)
+                                    })
+                                    </div>
+                                    @*End Edit Modal*@
+                                    &nbsp;&#124;&nbsp;
                                     <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-@budget.Id" class="icon-button ps-2 ps-0 me-0">
                                         <i class="bi bi-trash text-primary action-icon"></i>
                                     </button>
-                                    @*Delete Model*@
+                                    @*Delete Modal*@
                                     <div class="modal fade" id="deleteModal-@budget.Id">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">

@@ -1,5 +1,5 @@
 ﻿@using CashTrack.Models.BudgetModels
-@model CashTrack.Models.BudgetModels.AddBudgetAllocationModal
+@model CashTrack.Models.BudgetModels.AddEditBudgetAllocationModal
 @{
     List<string> budgetTypes = Enum.GetNames<BudgetType>().ToList();
     budgetTypes.RemoveAll(x => x.Contains("Income"));
@@ -7,16 +7,16 @@
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
         <div class="modal-header text-center">
-            <h5 class="modal-title w-100">Add Budget Allocation</h5>
+            <h5 class="modal-title w-100">Edit Budget Allocation</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal">
             </button>
         </div>
         <div class="modal-body">
             <div class="container-fluid">
                 <form method="post"
-                      id="addBudgetForm"
+                      id="editBudgetForm-@Model.Id.Value"
                       asp-page="./List"
-                      asp-page-handler="AddBudgetModal">
+                      asp-page-handler="EditBudgetModal">
                     <div class="row mb-2">
                         <div class="col">
                             <div class="input-group">
@@ -30,8 +30,8 @@
                                 <div class="border rounded align-self-center px-5 py-2">
                                     <div class="form-check form-switch">
                                         <label class="form-check-label" asp-for="@Model.IsIncome">This is Income</label>
-                                        <input class="form-check-input" type="checkbox" role="switch" id="budgetIncomeSwitch"
-                                               asp-for="@Model.IsIncome" />
+                                        <input class="form-check-input disable-inputs-on-check-edit-js" type="checkbox" role="switch"
+                                               data-id="@Model.Id.Value" id="budgetIncomeSwitch-@Model.Id.Value" asp-for="@Model.IsIncome" />
                                     </div>
                                 </div>
                             </div>
@@ -47,13 +47,13 @@
                             @foreach (var time in Html.GetEnumSelectList<AllocationTimeSpan>())
                             {
                                 <input type="radio"
-                                   id=@($"TimeSpan{time.Value}")
-                                   class="btn-check handle-timespan-select-js"
+                                   id=@($"TimeSpan{time.Value}-{Model.Id}")
+                                   class="btn-check handle-timespan-select-edit-js"
                                    asp-for="@Model.TimeSpan"
                                    autocomplete="off"
                                    value="@time.Value"
                                    checked=@(time.Value == "0")>
-                                <label class="btn btn-outline-secondary" for=@($"TimeSpan{time.Value}")>@time.Text</label>
+                                <label class="btn btn-outline-secondary" for=@($"TimeSpan{time.Value}-{Model.Id}")>@time.Text</label>
                             }
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                             <label class="visually-hidden"
                                    asp-for="@Model.Month">Month</label>
                             <select data-val="true"
-                                    id="monthSelectList"
+                                    id="monthSelectList-@Model.Id.Value"
                                     asp-for=@Model.Month
                                     asp-items=@Model.MonthList
                                     class="form-control text-center">
@@ -78,7 +78,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row mb-2" id="budgetTypeInputs">
+                    <div class="row mb-2" id="budgetTypeInputs-@Model.Id.Value">
                         <div class="btn-group btn-height mb-2">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
@@ -88,17 +88,18 @@
                             @foreach (var type in budgetTypes)
                             {
                                 <input type="radio"
-                                   id=@($"BudgetType{type}")
-                                   class="btn-check handle-category-select-js"
+                                   id=@($"BudgetType{type}-{Model.Id}")
+                                   class="btn-check handle-category-select-edit-js"
+                                   data-id="@Model.Id.Value"
                                    asp-for="@Model.Type"
                                    autocomplete="off"
                                    value="@budgetTypes.IndexOf(type)"
-                                   checked=@(budgetTypes.IndexOf(type) == 0)>
-                                <label class="btn btn-outline-secondary" for=@($"BudgetType{type}")>@type</label>
+                                   checked=@(budgetTypes.IndexOf(type) == (int)Model.Type)>
+                                <label class="btn btn-outline-secondary" for=@($"BudgetType{type}-{Model.Id}")>@type</label>
                             }
                         </div>
                     </div>
-                    <div class="row mb-2" id="categoryInputs">
+                    <div class="row mb-2" id="categoryInputs-@Model.Id.Value">
                         <div class="input-group">
                             <div class="input-group-text">Category</div>
                             <label class="visually-hidden"
@@ -107,7 +108,10 @@
                                     asp-for=@Model.SubCategoryId
                                     asp-items=@Model.SubCategoryList
                                     class="form-control text-center load-main-category-js">
-                                <option value="" selected disabled hidden>Select</option>
+                                @if (Model.SubCategoryId == 0)
+                                {
+                                    <option value="" selected disabled hidden>Select</option>
+                                }
                             </select>
                             <div class="input-group-text">Main Category</div>
                             <input disabled type="text"
@@ -116,10 +120,9 @@
                         </div>
                     </div>
                 </form>
-                <table class="table table-borderless visually-hidden" id="averagesTable">
+                <table class="table table-borderless visually-hidden" id="averagesTable-@Model.Id.Value">
                     <thead>
                         <tr class="text-center">
-
                             <th scope="col">
                                 Last 6 Months
                             </th>
@@ -137,24 +140,24 @@
                     </thead>
                     <tbody>
                         <tr class="text-center" scope="row">
-                            <td id="sixMonthAverages">
+                            <td id="sixMonthAverages-@Model.Id.Value">
                             </td>
-                            <td id="thisYearAverages">
+                            <td id="thisYearAverages-@Model.Id.Value">
                             </td>
-                            <td id="lastYearAverages">
+                            <td id="lastYearAverages-@Model.Id.Value">
                             </td>
-                            <td id="twoYearsAgoAverages">
+                            <td id="twoYearsAgoAverages-@Model.Id.Value">
                             </td>
                             <td class="text-muted">Monthly Averages</td>
                         </tr>
                         <tr class="text-center" scope="row">
-                            <td id="sixMonthTotals">
+                            <td id="sixMonthTotals-@Model.Id.Value">
                             </td>
-                            <td id="thisYearTotals">
+                            <td id="thisYearTotals-@Model.Id.Value">
                             </td>
-                            <td id="lastYearTotals">
+                            <td id="lastYearTotals-@Model.Id.Value">
                             </td>
-                            <td id="twoYearsAgoTotals">
+                            <td id="twoYearsAgoTotals-@Model.Id.Value">
                             </td>
                             <td class="text-muted">Annual Totals</td>
                         </tr>
@@ -165,7 +168,7 @@
         <div class="modal-footer d-flex justify-content-evenly">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <form>
-                <button type="submit" class="btn btn-primary" form="addBudgetForm" id="addBudgetFormSaveButton">Save</button>
+                <button type="submit" class="btn btn-primary" form="editBudgetForm-@Model.Id.Value" id="editBudgetFormSaveButton-@Model.Id.Value">Save</button>
             </form>
         </div>
     </div>

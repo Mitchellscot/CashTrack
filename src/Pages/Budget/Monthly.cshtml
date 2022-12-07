@@ -61,7 +61,7 @@
     </ul>
     @*END NAV TABS*@
     <div class="modal fade" id="addBudgetModal">
-        @await Html.PartialAsync("_AddBudgetModal", new AddBudgetAllocationModal()
+        @await Html.PartialAsync("AddBudgetModal", new AddEditBudgetAllocationModal()
         {
         SubCategoryList = new SelectList(Model.CategoryList, "Id", "Category"),
         Month = DateTime.Now.Month,

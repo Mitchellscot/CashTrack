@@ -19,7 +19,7 @@ namespace CashTrack.Pages.Budget
 
         public SubCategoryDropdownSelection[] CategoryList { get; set; }
         [BindProperty]
-        public AddBudgetAllocationModal AddBudgetModal { get; set; }
+        public AddEditBudgetAllocationModal AddBudgetModal { get; set; }
         public BudgetListResponse BudgetListResponse { get; set; }
         [BindProperty(SupportsGet = true)]
         public BudgetOrderBy Query { get; set; }
