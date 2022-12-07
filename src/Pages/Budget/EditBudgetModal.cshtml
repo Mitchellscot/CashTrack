@@ -3,6 +3,8 @@
 @{
     List<string> budgetTypes = Enum.GetNames<BudgetType>().ToList();
     budgetTypes.RemoveAll(x => x.Contains("Income"));
+    var isIncome = Model.Type == BudgetType.Income;
+    var isSavings = Model.Type == BudgetType.Savings;
 }
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -30,8 +32,7 @@
                                 <div class="border rounded align-self-center px-5 py-2">
                                     <div class="form-check form-switch">
                                         <label class="form-check-label" asp-for="@Model.IsIncome">This is Income</label>
-                                        <input class="form-check-input disable-inputs-on-check-edit-js" type="checkbox" role="switch"
-                                               data-id="@Model.Id.Value" id="budgetIncomeSwitch-@Model.Id.Value" asp-for="@Model.IsIncome" />
+                                        <input class="form-check-input disable-inputs-on-check-edit-js" type="checkbox" role="switch" data-id="@Model.Id.Value" id="budgetIncomeSwitch-@Model.Id.Value" asp-for="@Model.IsIncome" checked=@isIncome />
                                     </div>
                                 </div>
                             </div>
@@ -78,7 +79,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row mb-2" id="budgetTypeInputs-@Model.Id.Value">
+                    <div class="row mb-2 @(isIncome ? "visually-hidden" : "")" id="budgetTypeInputs-@Model.Id.Value">
                         <div class="btn-group btn-height mb-2">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
@@ -99,7 +100,7 @@
                             }
                         </div>
                     </div>
-                    <div class="row mb-2" id="categoryInputs-@Model.Id.Value">
+                    <div class="row mb-2  @(isIncome || isSavings ? "visually-hidden" : "")" id="categoryInputs-@Model.Id.Value">
                         <div class="input-group">
                             <div class="input-group-text">Category</div>
                             <label class="visually-hidden"
@@ -108,10 +109,7 @@
                                     asp-for=@Model.SubCategoryId
                                     asp-items=@Model.SubCategoryList
                                     class="form-control text-center load-main-category-js">
-                                @if (Model.SubCategoryId == 0)
-                                {
                                     <option value="" selected disabled hidden>Select</option>
-                                }
                             </select>
                             <div class="input-group-text">Main Category</div>
                             <input disabled type="text"
