@@ -2,6 +2,7 @@ using CashTrack.Models.BudgetModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.BudgetService;
+using CashTrack.Services.MainCategoriesService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,6 +17,7 @@ namespace CashTrack.Pages.Budget
     {
         private readonly IBudgetService _budgetService;
         private readonly ISubCategoryService _subCategoryService;
+        private readonly IMainCategoriesService _mainCategoryService;
 
         public SubCategoryDropdownSelection[] CategoryList { get; set; }
         [BindProperty]
@@ -29,7 +31,8 @@ namespace CashTrack.Pages.Budget
         public bool Q2 { get; set; }
         [BindProperty]
         public int BudgetId { get; set; }
-        public ListModel(IBudgetService budgetService, ISubCategoryService subCategoryService) => (_budgetService, _subCategoryService) = (budgetService, subCategoryService);
+        public SelectList MainCategoryList { get; set; }
+        public ListModel(IBudgetService budgetService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoryService) => (_budgetService, _subCategoryService, _mainCategoryService) = (budgetService, subCategoryService, mainCategoryService);
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -77,6 +80,7 @@ namespace CashTrack.Pages.Budget
                 Order = Query,
                 PageNumber = this.PageNumber
             });
+            MainCategoryList = new SelectList(await _mainCategoryService.GetMainCategoriesForDropdownListAsync(), "Id", "Category");
             return Page();
         }
     }

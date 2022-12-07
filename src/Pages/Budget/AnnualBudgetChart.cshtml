@@ -83,12 +83,9 @@
         });
 function colorize() {
         return (ctx) => {
-            console.log(ctx);
             const v = ctx.raw;
-            console.log(v)
             const c = v < 0 ? @Html.Raw(Model.InTheRedSavingsColor)
             : @Html.Raw(Model.SavingsColor);
-            console.log(c);
     return c;
   };
 };

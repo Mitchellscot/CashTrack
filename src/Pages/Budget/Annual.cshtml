@@ -1,6 +1,7 @@
 ﻿@page
 @model CashTrack.Pages.Budget.AnnualModel
 @using CashTrack.Models.BudgetModels
+@using CashTrack.Models.SubCategoryModels;
 @using CashTrack.Pages.Shared;
 @using System.Text.Json;
 @{
@@ -62,6 +63,16 @@
         </li>
     </ul>
     @*END NAV TABS*@
+    <div class="modal fade" id="addSubCategoryModal">
+        @await Html.PartialAsync("_AddEditSubCategoryModal", new AddEditSubCategoryModal()
+        {
+            Returnurl="/Budget/Annual",
+            IsEdit = false,
+            MainCategoryList = Model.MainCategoryList,
+            InUse=true
+
+        });
+    </div>
     <div class="modal fade" id="addBudgetModal">
         @await Html.PartialAsync("AddBudgetModal", new AddEditBudgetAllocationModal()
         {

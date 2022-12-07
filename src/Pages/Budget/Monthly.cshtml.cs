@@ -2,6 +2,7 @@ using CashTrack.Models.BudgetModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.BudgetService;
+using CashTrack.Services.MainCategoriesService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,7 +16,9 @@ namespace CashTrack.Pages.Budget
     {
         private readonly IBudgetService _budgetService;
         private readonly ISubCategoryService _subCategoryService;
-        public MonthlyModel(IBudgetService budgetService, ISubCategoryService subCategoryService) => (_budgetService, _subCategoryService) = (budgetService, subCategoryService);
+        private readonly IMainCategoriesService _mainCategoryService;
+
+        public MonthlyModel(IBudgetService budgetService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoryService) => (_budgetService, _subCategoryService, _mainCategoryService) = (budgetService, subCategoryService, mainCategoryService);
 
         [BindProperty(SupportsGet = true)]
         public int Year { get; set; } = DateTime.Now.Year;
@@ -24,6 +27,7 @@ namespace CashTrack.Pages.Budget
         public MonthlyBudgetPageResponse BudgetPageResponse { get; set; }
         public SubCategoryDropdownSelection[] CategoryList { get; set; }
         public SelectList YearSelectList { get; set; }
+        public SelectList MainCategoryList { get; set; }
         public SelectList MonthList { get; set; } = new SelectList(new Dictionary<string, int> {
             { "January", 1 },
             { "February", 2 },
@@ -47,6 +51,7 @@ namespace CashTrack.Pages.Budget
         {
             CategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
             BudgetPageResponse = await _budgetService.GetMonthlyBudgetPageAsync(new MonthlyBudgetPageRequest() { Year = Year, Month = Month });
+            MainCategoryList = new SelectList(await _mainCategoryService.GetMainCategoriesForDropdownListAsync(), "Id", "Category");
             YearSelectList = new SelectList(await _budgetService.GetAnnualBudgetYears());
             return Page();
         }
