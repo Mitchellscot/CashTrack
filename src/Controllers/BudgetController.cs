@@ -18,7 +18,7 @@ namespace CashTrack.Controllers
         {
             try
             {
-                var result = await _budgetService.GetCategoryAveragesAndTotals(subCategoryId);
+                var result = await _budgetService.GetCategoryAveragesAndTotalsAsync(subCategoryId);
                 return Ok(result);
             }
             catch (Exception ex)

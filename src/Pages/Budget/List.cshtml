@@ -69,7 +69,6 @@
             IsEdit = false,
             MainCategoryList = Model.MainCategoryList,
             InUse=true
-
         });
     </div>
     <div class="modal fade" id="addBudgetModal">
@@ -225,7 +224,11 @@
                                         Month = budget.Month,
                                         Year = budget.Year,
                                         Amount = budget.Amount,
-                                        Type = Enum.Parse<BudgetType>(budget.Type)
+                                        Type = Enum.Parse<BudgetType>(budget.Type),
+                                        ReturnUrl="/Budget/List",
+                                        Q2 = Model.Q2,
+                                        Query = Model.Query,
+                                        PageNumber = Model.PageNumber
                                     })
                                     </div>
                                     @*End Edit Modal*@

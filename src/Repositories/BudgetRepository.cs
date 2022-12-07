@@ -150,6 +150,8 @@ namespace CashTrack.Repositories.BudgetRepository
         {
             try
             {
+                //in case a budget gets saved that has no changes associated with it, doesn't throw error
+                _ctx.Entry(entity).State = EntityState.Modified;
                 return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("An error occured while trying to save the budget.");
             }
             catch (Exception)

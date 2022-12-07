@@ -35,7 +35,7 @@ namespace CashTrack.Pages.Budget
             CategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
             MainCategoryList = new SelectList(await _mainCategoryService.GetMainCategoriesForDropdownListAsync(), "Id", "Category");
             BudgetPageResponse = await _budgetService.GetAnnualBudgetPageAsync(new AnnualBudgetPageRequest() { Year = Year });
-            YearSelectList = new SelectList(await _budgetService.GetAnnualBudgetYears());
+            YearSelectList = new SelectList(await _budgetService.GetAnnualBudgetYearsAsync());
             return Page();
         }
     }

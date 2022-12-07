@@ -119,8 +119,9 @@ namespace CashTrack.Models.BudgetModels
         MainCategory,
         Type
     }
-    public class AddBudgetAllocation
+    public class AddEditBudgetAllocation
     {
+        public int? Id { get; set; }
         public int SubCategoryId { get; set; }
         public int Month { get; set; }
         public int Year { get; set; }
@@ -129,13 +130,26 @@ namespace CashTrack.Models.BudgetModels
         public bool IsIncome { get; set; }
         public AllocationTimeSpan TimeSpan { get; set; }
     }
-    public class AddEditBudgetAllocationModal : AddBudgetAllocation
+    public class AddEditBudgetAllocationModal : AddEditBudgetAllocation
     {
-        public int? Id { get; set; }
         public SelectList SubCategoryList { get; set; }
         public SelectList YearList { get; set; } = new SelectList(new[] { DateTime.Now.Year, DateTime.Now.Year + 1 }, DateTime.Now.Year);
-        public SelectList MonthList { get; set; } = new SelectList(new Dictionary<string, int> {
+        public SelectList AddMonthList { get; set; } = new SelectList(new Dictionary<string, int> {
             { "Every", 0},
+            { "January", 1 },
+            { "February", 2 },
+            { "March", 3 },
+            { "April", 4 },
+            { "May", 5 },
+            { "June", 6 },
+            { "July", 7 },
+            { "August", 8 },
+            { "September", 9 },
+            { "October", 10 },
+            { "November", 11 },
+            { "December", 12 }
+        }, "Value", "Key", DateTime.Now.Month);
+        public SelectList EditMonthList { get; set; } = new SelectList(new Dictionary<string, int> {
             { "January", 1 },
             { "February", 2 },
             { "March", 3 },
@@ -152,8 +166,8 @@ namespace CashTrack.Models.BudgetModels
         public string[] TimeSpans = new[] { "Specific Month", "Year", "Month", "Week" };
         public string ReturnUrl { get; set; }
         public int PageNumber { get; set; }
-        public int Query { get; set; }
-        public string Q2 { get; set; }
+        public BudgetOrderBy Query { get; set; }
+        public bool Q2 { get; set; }
     }
     public class CategoryAveragesAndTotals
     {

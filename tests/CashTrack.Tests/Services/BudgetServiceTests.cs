@@ -32,7 +32,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Create_Expense_Budget_For_Given_Month()
         {
-            var request = new AddBudgetAllocation()
+            var request = new AddEditBudgetAllocation()
             {
                 Type = BudgetType.Need,
                 Year = 1999, //test year
@@ -43,7 +43,7 @@ namespace CashTrack.Tests.Services
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
                 var service = GetBudgetService(db);
-                var result = await service.CreateBudgetItem(request);
+                var result = await service.CreateBudgetItemAsync(request);
                 var budget = db.Budgets.Single(x => x.Year == 1999);
                 budget.Id.ShouldBe(result);
                 budget.Amount.ShouldBe(500);
@@ -52,7 +52,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Create_Income_Budget_For_Given_Month()
         {
-            var request = new AddBudgetAllocation()
+            var request = new AddEditBudgetAllocation()
             {
                 Type = BudgetType.Income,
                 Year = 1999, //test year
@@ -62,7 +62,7 @@ namespace CashTrack.Tests.Services
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
                 var service = GetBudgetService(db);
-                var result = await service.CreateBudgetItem(request);
+                var result = await service.CreateBudgetItemAsync(request);
                 var budget = db.Budgets.Single(x => x.Year == 1999);
                 budget.Id.ShouldBe(result);
                 budget.Amount.ShouldBe(500);
@@ -71,7 +71,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Create_Expense_Budget_For_Given_Month_by_Weekly_Amount()
         {
-            var request = new AddBudgetAllocation()
+            var request = new AddEditBudgetAllocation()
             {
                 Type = BudgetType.Need,
                 Year = 1999, //test year
@@ -83,7 +83,7 @@ namespace CashTrack.Tests.Services
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
                 var service = GetBudgetService(db);
-                var result = await service.CreateBudgetItem(request);
+                var result = await service.CreateBudgetItemAsync(request);
                 var budget = db.Budgets.Single(x => x.Year == 1999);
                 budget.Amount.ShouldBe(108);
             }
@@ -91,7 +91,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Create_Multiple_Income_Budgets()
         {
-            var request = new AddBudgetAllocation()
+            var request = new AddEditBudgetAllocation()
             {
                 Type = BudgetType.Income,
                 Year = 1999, //test year
@@ -102,7 +102,7 @@ namespace CashTrack.Tests.Services
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
                 var service = GetBudgetService(db);
-                var result = await service.CreateBudgetItem(request);
+                var result = await service.CreateBudgetItemAsync(request);
                 result.ShouldBe(12);
                 var budgets = db.Budgets.Where(x => x.Year == 1999).ToList();
 
@@ -116,7 +116,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Create_Multiple_Expense_Budgets()
         {
-            var request = new AddBudgetAllocation()
+            var request = new AddEditBudgetAllocation()
             {
                 Type = BudgetType.Need,
                 Year = 1999, //test year
@@ -128,7 +128,7 @@ namespace CashTrack.Tests.Services
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
                 var service = GetBudgetService(db);
-                var result = await service.CreateBudgetItem(request);
+                var result = await service.CreateBudgetItemAsync(request);
                 result.ShouldBe(12);
                 var budgets = db.Budgets.Where(x => x.Year == 1999).ToList();
 
@@ -141,7 +141,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Create_Multiple_Expense_Budgets_Every_Week_Of_The_Year()
         {
-            var request = new AddBudgetAllocation()
+            var request = new AddEditBudgetAllocation()
             {
                 Type = BudgetType.Need,
                 Year = 1999, //test year
@@ -153,7 +153,7 @@ namespace CashTrack.Tests.Services
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
                 var service = GetBudgetService(db);
-                var result = await service.CreateBudgetItem(request);
+                var result = await service.CreateBudgetItemAsync(request);
                 result.ShouldBe(12);
                 var budgets = db.Budgets.Where(x => x.Year == 1999).ToList();
 
@@ -166,7 +166,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Throws_When_Amount_is_Invalid()
         {
-            var request = new AddBudgetAllocation()
+            var request = new AddEditBudgetAllocation()
             {
                 Type = BudgetType.Need,
                 Year = 1999, //test year
@@ -174,12 +174,12 @@ namespace CashTrack.Tests.Services
                 Month = 13,
                 SubCategoryId = 1
             };
-            await Task.Run(() => Should.Throw<ArgumentOutOfRangeException>(async () => await _service.CreateBudgetItem(request)));
+            await Task.Run(() => Should.Throw<ArgumentOutOfRangeException>(async () => await _service.CreateBudgetItemAsync(request)));
         }
         [Fact]
         public async Task Throws_When_Month_is_Invalid()
         {
-            var request = new AddBudgetAllocation()
+            var request = new AddEditBudgetAllocation()
             {
                 Type = BudgetType.Need,
                 Year = 1999, //test year
@@ -187,19 +187,19 @@ namespace CashTrack.Tests.Services
                 Month = int.MaxValue,
                 SubCategoryId = 1
             };
-            await Task.Run(() => Should.Throw<ArgumentOutOfRangeException>(async () => await _service.CreateBudgetItem(request)));
+            await Task.Run(() => Should.Throw<ArgumentOutOfRangeException>(async () => await _service.CreateBudgetItemAsync(request)));
         }
         [Fact]
         public async Task Throws_When_Category_is_Missing_On_Expense()
         {
-            var request = new AddBudgetAllocation()
+            var request = new AddEditBudgetAllocation()
             {
                 Type = BudgetType.Need,
                 Year = 1999, //test year
                 Amount = 1,
                 Month = int.MaxValue
             };
-            await Task.Run(() => Should.Throw<ArgumentException>(async () => await _service.CreateBudgetItem(request)));
+            await Task.Run(() => Should.Throw<ArgumentException>(async () => await _service.CreateBudgetItemAsync(request)));
         }
         [Fact]
         public async Task Delete_A_Budget_By_Id()

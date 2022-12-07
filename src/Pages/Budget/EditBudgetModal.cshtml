@@ -19,6 +19,11 @@
                       id="editBudgetForm-@Model.Id.Value"
                       asp-page="./List"
                       asp-page-handler="EditBudgetModal">
+                    <input asp-for="@Model.Id" type="hidden" />
+                    <input asp-for="@Model.ReturnUrl" type="hidden" />
+                    <input asp-for="@Model.Query" type="hidden" />
+                    <input asp-for="@Model.Q2" type="hidden" />
+                    <input asp-for="@Model.PageNumber" type="hidden" />
                     <div class="row mb-2">
                         <div class="col">
                             <div class="input-group">
@@ -39,27 +44,6 @@
                         </div>
                     </div>
                     <div class="row mb-2">
-                        <div class="btn-group btn-height">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    Time Span
-                                </div>
-                            </div>
-                            @foreach (var time in Html.GetEnumSelectList<AllocationTimeSpan>())
-                            {
-                                <input type="radio"
-                                   id=@($"TimeSpan{time.Value}-{Model.Id}")
-                                   class="btn-check handle-timespan-select-edit-js"
-                                   asp-for="@Model.TimeSpan"
-                                   autocomplete="off"
-                                   value="@time.Value"
-                                   data-id="@Model.Id.Value"
-                                   checked=@(time.Value == "0")>
-                                <label class="btn btn-outline-secondary" for=@($"TimeSpan{time.Value}-{Model.Id}")>@time.Text</label>
-                            }
-                        </div>
-                    </div>
-                    <div class="row mb-2">
                         <div class="input-group">
                             <div class="input-group-text">Month</div>
                             <label class="visually-hidden"
@@ -67,7 +51,7 @@
                             <select data-val="true"
                                     id="monthSelectList-@Model.Id.Value"
                                     asp-for=@Model.Month
-                                    asp-items=@Model.MonthList
+                                    asp-items=@Model.EditMonthList
                                     class="form-control text-center">
                             </select>
                             <div class="input-group-text">Year</div>

@@ -5,7 +5,6 @@ using CashTrack.Services.BudgetService;
 using CashTrack.Services.MainCategoriesService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
@@ -21,7 +20,7 @@ namespace CashTrack.Pages.Budget
 
         public SubCategoryDropdownSelection[] CategoryList { get; set; }
         [BindProperty]
-        public AddEditBudgetAllocationModal AddBudgetModal { get; set; }
+        public AddEditBudgetAllocationModal BudgetModal { get; set; }
         public BudgetListResponse BudgetListResponse { get; set; }
         [BindProperty(SupportsGet = true)]
         public BudgetOrderBy Query { get; set; }
@@ -42,22 +41,44 @@ namespace CashTrack.Pages.Budget
         {
             try
             {
-                var success = await _budgetService.CreateBudgetItem(this.AddBudgetModal);
+                var success = await _budgetService.CreateBudgetItemAsync(this.BudgetModal);
                 if (success > 0)
                 {
                     TempData["SuccessMessage"] = "Successfully Budgeted!";
-                    return RedirectToPage(this.AddBudgetModal.ReturnUrl);
+                    return RedirectToPage(this.BudgetModal.ReturnUrl);
                 }
                 else
                 {
                     TempData["InfoMessage"] = "Budget was not saved.";
-                    return RedirectToPage(this.AddBudgetModal.ReturnUrl);
+                    return RedirectToPage(this.BudgetModal.ReturnUrl);
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                return RedirectToPage(this.AddBudgetModal.ReturnUrl, new { PageNumber = this.AddBudgetModal.PageNumber, Query = this.AddBudgetModal.Query, Q2 = this.AddBudgetModal.Q2 });
+                return RedirectToPage(this.BudgetModal.ReturnUrl, new { PageNumber = this.BudgetModal.PageNumber, Query = this.BudgetModal.Query, Q2 = this.BudgetModal.Q2 });
+            }
+        }
+        public async Task<IActionResult> OnPostEditBudgetModal()
+        {
+            try
+            {
+                var success = await _budgetService.UpdateBudgetAsync(this.BudgetModal);
+                if (success > 0)
+                {
+                    TempData["SuccessMessage"] = "Successfully Edited Budget!";
+                    return RedirectToPage(this.BudgetModal.ReturnUrl);
+                }
+                else
+                {
+                    TempData["InfoMessage"] = "Budget was not saved.";
+                    return RedirectToPage(this.BudgetModal.ReturnUrl);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return await PrepareAndRenderPage();
             }
         }
         public async Task<IActionResult> OnPostDelete(int budgetId)
@@ -74,7 +95,7 @@ namespace CashTrack.Pages.Budget
         private async Task<IActionResult> PrepareAndRenderPage()
         {
             CategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
-            BudgetListResponse = await _budgetService.GetBudgetList(new BudgetListRequest()
+            BudgetListResponse = await _budgetService.GetBudgetListAsync(new BudgetListRequest()
             {
                 Reversed = Q2,
                 Order = Query,

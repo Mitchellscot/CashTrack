@@ -5,6 +5,7 @@ using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
 using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Repositories.ExpenseRepository;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +15,14 @@ namespace CashTrack.Services.BudgetService
 {
     public interface IBudgetService
     {
-        Task<CategoryAveragesAndTotals> GetCategoryAveragesAndTotals(int subCategoryId);
-        Task<int> CreateBudgetItem(AddBudgetAllocation request);
+        Task<CategoryAveragesAndTotals> GetCategoryAveragesAndTotalsAsync(int subCategoryId);
+        Task<int> CreateBudgetItemAsync(AddEditBudgetAllocation request);
         Task<bool> DeleteBudgetAsync(int id);
         Task<AnnualBudgetPageResponse> GetAnnualBudgetPageAsync(AnnualBudgetPageRequest request);
         Task<MonthlyBudgetPageResponse> GetMonthlyBudgetPageAsync(MonthlyBudgetPageRequest request);
-        Task<int[]> GetAnnualBudgetYears();
-        Task<BudgetListResponse> GetBudgetList(BudgetListRequest request);
+        Task<int[]> GetAnnualBudgetYearsAsync();
+        Task<BudgetListResponse> GetBudgetListAsync(BudgetListRequest request);
+        Task<int> UpdateBudgetAsync(AddEditBudgetAllocation request);
     }
     public class BudgetService : IBudgetService
     {
@@ -30,7 +32,7 @@ namespace CashTrack.Services.BudgetService
 
         public BudgetService(IBudgetRepository budgetRepo, IExpenseRepository expenseRepo, IMapper mapper) => (_budgetRepo, _expenseRepo, _mapper) = (budgetRepo, expenseRepo, mapper);
 
-        public async Task<BudgetListResponse> GetBudgetList(BudgetListRequest request)
+        public async Task<BudgetListResponse> GetBudgetListAsync(BudgetListRequest request)
         {
             var budgetListItems = await ParseBudgetListQuery(request);
             var count = await _budgetRepo.GetCount(x => true);
@@ -514,7 +516,33 @@ namespace CashTrack.Services.BudgetService
             }
         }
 
-        public async Task<int> CreateBudgetItem(AddBudgetAllocation request)
+        public async Task<int> UpdateBudgetAsync(AddEditBudgetAllocation request)
+        {
+            if (request.Id == null)
+                throw new ArgumentException("Need an id to update a budget");
+
+            var isIncome = request.IsIncome || request.Type == BudgetType.Income;
+
+            if (request.Amount <= 0)
+                throw new ArgumentOutOfRangeException(nameof(request.Amount));
+
+            if (request.Month < 0 || request.Month > 12)
+                throw new ArgumentOutOfRangeException(nameof(request.Month));
+
+            if (!isIncome && request.Type != BudgetType.Savings && request.SubCategoryId == 0)
+                throw new ArgumentException("Expense Budgets must have a Category");
+
+            var currentBudget = await _budgetRepo.FindById(request.Id.Value);
+
+            currentBudget.BudgetType = isIncome ? BudgetType.Income : request.Type;
+            currentBudget.Amount = request.Amount;
+            currentBudget.SubCategoryId = isIncome || request.Type == BudgetType.Savings ? null : request.SubCategoryId;
+            currentBudget.Month = request.Month;
+            currentBudget.Year = request.Year;
+            return await _budgetRepo.Update(currentBudget);
+        }
+
+        public async Task<int> CreateBudgetItemAsync(AddEditBudgetAllocation request)
         {
             var isIncome = request.IsIncome || request.Type == BudgetType.Income;
             var annualBudget = request.Month == 0 || request.TimeSpan == AllocationTimeSpan.Year;
@@ -573,7 +601,7 @@ namespace CashTrack.Services.BudgetService
             return await _budgetRepo.Delete(budget);
         }
 
-        public async Task<CategoryAveragesAndTotals> GetCategoryAveragesAndTotals(int subCategoryId)
+        public async Task<CategoryAveragesAndTotals> GetCategoryAveragesAndTotalsAsync(int subCategoryId)
         {
             var expenses = await _expenseRepo.Find(x => x.CategoryId == subCategoryId && x.Date.Year > DateTime.Now.AddYears(-3).Year);
             var sixMonthTotal = decimal.Round(expenses.Where(x => x.Date > DateTime.Now.AddMonths(-6)).Sum(x => x.Amount));
@@ -594,10 +622,11 @@ namespace CashTrack.Services.BudgetService
             };
         }
 
-        public async Task<int[]> GetAnnualBudgetYears()
+        public async Task<int[]> GetAnnualBudgetYearsAsync()
         {
             return (await _budgetRepo.Find(x => true)).GroupBy(x => x.Year).Select(x => x.Key).ToArray();
         }
+
         public class BudgetMapperProfile : Profile
         {
             public BudgetMapperProfile()

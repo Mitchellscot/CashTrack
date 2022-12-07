@@ -3,7 +3,6 @@ using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
-using CashTrack.Models.IncomeModels;
 using CashTrack.Models.TagModels;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.IncomeRepository;
