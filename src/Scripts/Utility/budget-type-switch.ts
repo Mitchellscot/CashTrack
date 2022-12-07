@@ -4,8 +4,10 @@
 }
 export const handleSavingsIsSelectedForAddModal = (e: Event): void => {
     const isChecked = (e.target as HTMLInputElement).checked && (e.target as HTMLInputElement).value == "2";
+    const averagesTable = <HTMLTableElement>document.getElementById('averagesTable');
     if (isChecked) {
         document.getElementById("categoryInputs")?.classList.add('visually-hidden');
+        averagesTable.classList.add('visually-hidden');
     }
     else {
         document.getElementById("categoryInputs")?.classList.remove('visually-hidden');
@@ -19,8 +21,10 @@ export function hideCategoryWhenSavingsIsSelectedEditModal() {
 export const handleSavingsIsSelectedForEditModal = (e: Event): void => {
     const isChecked = (e.target as HTMLInputElement).checked && (e.target as HTMLInputElement).value == "2";
     const id = (e.target as HTMLElement).dataset.id;
+    const averagesTable = <HTMLTableElement>document.getElementById(`averagesTable-${id}`);
     if (isChecked) {
         document.getElementById(`categoryInputs-${id}`)?.classList.add('visually-hidden');
+        averagesTable.classList.add('visually-hidden');
     }
     else {
         document.getElementById(`categoryInputs-${id}`)?.classList.remove('visually-hidden');

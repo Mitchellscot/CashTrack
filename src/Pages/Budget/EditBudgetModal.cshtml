@@ -53,6 +53,7 @@
                                    asp-for="@Model.TimeSpan"
                                    autocomplete="off"
                                    value="@time.Value"
+                                   data-id="@Model.Id.Value"
                                    checked=@(time.Value == "0")>
                                 <label class="btn btn-outline-secondary" for=@($"TimeSpan{time.Value}-{Model.Id}")>@time.Text</label>
                             }
@@ -108,13 +109,14 @@
                             <select data-val="true"
                                     asp-for=@Model.SubCategoryId
                                     asp-items=@Model.SubCategoryList
-                                    class="form-control text-center load-main-category-js">
+                                    data-id=@Model.Id.Value
+                                    class="form-control text-center load-main-category-edit-js">
                                     <option value="" selected disabled hidden>Select</option>
                             </select>
                             <div class="input-group-text">Main Category</div>
                             <input disabled type="text"
                                    class="form-control text-center bg-white"
-                                   id="mainCategoryInput" required />
+                                   id="mainCategoryInput-@Model.Id.Value" required />
                         </div>
                     </div>
                 </form>

@@ -43,6 +43,7 @@
             <ul class="dropdown-menu">
                 <li class="text-center">
                     <button class="dropdown-item fakelink text-center"
+                            id="addBudgetButton"
                             data-bs-toggle="modal"
                             data-bs-target="#addBudgetModal">
                         Add Budget
@@ -199,7 +200,8 @@
                                     <button type="button"
                                     data-bs-toggle="modal"
                                     data-bs-target="#editBudgetModal-@budget.Id"
-                                    class="icon-button px-2 load-main-category-edit-modal-js">
+                                    id="editBudgetButton-@budget.Id"
+                                    class="icon-button px-2 load-main-category-edit-modal-js disable-inputs-on-check-edit-js">
                                     <i class="bi bi-pencil text-primary action-icon"></i>
                                     </button>
                                     @*Edit Modal*@
