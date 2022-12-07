@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 using System.Collections.Generic;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Services.Common;
-using System.Reflection.Metadata.Ecma335;
+using CashTrack.Common;
 
 namespace CashTrack.Services.MainCategoriesService
 {
@@ -182,12 +182,12 @@ namespace CashTrack.Services.MainCategoriesService
         {
             var colors = new[]
             {
-                "rgba(255, 99, 132, .8)",
-                "rgba(255, 159, 64, .8)",
-                "rgba(255, 205, 86, .8)",
-                "rgba(75, 192, 192, .8)",
-                "rgba(54, 162, 235, .8)",
-                "rgba(153, 102, 255, .8)"
+                LightChartColors.Pink,
+                LightChartColors.Orange,
+                LightChartColors.Yellow,
+                LightChartColors.Cyan,
+                LightChartColors.Azure,
+                LightChartColors.Purple
             };
             if (index > colors.Length - 1)
             {

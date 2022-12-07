@@ -30,12 +30,12 @@ namespace CashTrack.Pages
             ReturnUrl ??= Url.Content("~/");
 
             //using fluent validation here for funsies
-            var validation = await _validator.ValidateAsync(LoginRequest);
-            if (!validation.IsValid)
-            {
-                validation.AddToModelState(this.ModelState);
-                return Page();
-            }
+            //var validation = await _validator.ValidateAsync(LoginRequest);
+            //if (!validation.IsValid)
+            //{
+            //    validation.AddToModelState(this.ModelState);
+            //    return Page();
+            //}
 
             var user = await _userManager.FindByNameAsync(LoginRequest.UserName);
             if (user == null)

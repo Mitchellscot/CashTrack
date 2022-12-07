@@ -1,6 +1,5 @@
 using CashTrack.Data;
 using CashTrack.Data.Entities;
-using CashTrack.Repositories.Common;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.ExpenseReviewRepository;
 using CashTrack.Repositories.ExportRepository;
@@ -26,7 +25,6 @@ using CashTrack.Services.MainCategoriesService;
 using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
 using CashTrack.Services.UserService;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -34,14 +32,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
-using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Routing;
 using CashTrack.Common;
-using System.Diagnostics;
-using System.Collections.Generic;
 using FluentValidation;
+using CashTrack.Repositories.BudgetRepository;
+using CashTrack.Services.BudgetService;
 
 namespace CashTrack
 {
@@ -116,6 +112,7 @@ namespace CashTrack
             services.AddScoped<IIncomeReviewRepository, IncomeReviewRepository>();
             services.AddScoped<IExpenseReviewRepository, ExpenseReviewRepository>();
             services.AddScoped<IExportRepository, ExportRepository>();
+            services.AddScoped<IBudgetRepository, BudgetRepository>();
 
             services.AddScoped<IExpenseService, ExpenseService>();
             services.AddScoped<IMerchantService, MerchantService>();
@@ -130,7 +127,7 @@ namespace CashTrack
             services.AddScoped<IExpenseReviewService, ExpenseReviewService>();
             services.AddScoped<IIncomeReviewService, IncomeReviewService>();
             services.AddScoped<IExportService, ExportService>();
-            
+            services.AddScoped<IBudgetService, BudgetService>();
 
         }
         private static void ConfigureMiddleware(IApplicationBuilder app, IServiceProvider services, IWebHostEnvironment env)

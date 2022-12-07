@@ -2,7 +2,7 @@
 
 namespace CashTrack.Common
 {
-    public static class FileUtils
+    public static class FileUtilities
     {
         public static byte[] GetFileBytesAndDeleteFile(string filePath)
         {

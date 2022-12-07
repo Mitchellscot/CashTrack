@@ -1,0 +1,34 @@
+﻿@using CashTrack.Common;
+@model CashTrack.Pages.Budget.CategoryPieChart
+@{
+}
+    <script>
+        const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+        const @Model.ElementId = new Chart(@Model.VariableName, {
+            type: 'pie',
+            data: {
+                labels: @Html.Raw(@Model.Labels),
+                datasets: [{
+                    label: 'Total',
+                    data: @Model.Dataset,
+                    color: '@ThemeColors.Black',
+                    backgroundColor: @Html.Raw(Model.Colors),
+                    borderColor: @Html.Raw(Model.Colors),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false,
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: true,
+                        text: '@Model.Title'
+                    }
+                }
+            }
+        });
+    </script>

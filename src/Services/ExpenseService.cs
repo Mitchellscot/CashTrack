@@ -3,7 +3,6 @@ using CashTrack.Common.Exceptions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
-using CashTrack.Models.IncomeModels;
 using CashTrack.Models.TagModels;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.IncomeRepository;
@@ -263,11 +262,5 @@ public class ExpenseMapperProfile : Profile
             .ForMember(e => e.RefundNotes, o => o.MapFrom(src => src.RefundNotes))
             .ForMember(e => e.Tags, o => o.MapFrom(
                 src => src.ExpenseTags.Select(a => new TagModel() { Id = a.TagId, TagName = a.Tag.Name })));
-
-        //goes to Tags Service when created
-        CreateMap<TagEntity, TagModel>()
-            .ForMember(t => t.Id, o => o.MapFrom(src => src.Id))
-            .ForMember(t => t.TagName, o => o.MapFrom(src => src.Name))
-            .ReverseMap();
     }
 }

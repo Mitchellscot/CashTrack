@@ -1,0 +1,159 @@
+﻿@using CashTrack.Models.BudgetModels
+@model CashTrack.Models.BudgetModels.AddEditBudgetAllocationModal
+@{
+    List<string> budgetTypes = Enum.GetNames<BudgetType>().ToList();
+    budgetTypes.RemoveAll(x => x.Contains("Income"));
+    var isIncome = Model.Type == BudgetType.Income;
+    var isSavings = Model.Type == BudgetType.Savings;
+}
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header text-center">
+            <h5 class="modal-title w-100">Edit Budget Allocation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal">
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <form method="post"
+                      id="editBudgetForm-@Model.Id.Value"
+                      asp-page="./List"
+                      asp-page-handler="EditBudgetModal">
+                    <input asp-for="@Model.Id" type="hidden" />
+                    <input asp-for="@Model.ReturnUrl" type="hidden" />
+                    <input asp-for="@Model.Query" type="hidden" />
+                    <input asp-for="@Model.Q2" type="hidden" />
+                    <input asp-for="@Model.PageNumber" type="hidden" />
+                    <div class="row mb-2">
+                        <div class="col">
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input asp-for=@Model.Amount type="number"
+                                       min="0"
+                                       step="any"
+                                       class="form-control format-amount-js text-center"
+                                       placeholder="0">
+                                <span class="input-group-text">.00</span>
+                                <div class="border rounded align-self-center px-5 py-2">
+                                    <div class="form-check form-switch">
+                                        <label class="form-check-label" asp-for="@Model.IsIncome">This is Income</label>
+                                        <input class="form-check-input disable-inputs-on-check-edit-js" type="checkbox" role="switch" data-id="@Model.Id.Value" id="budgetIncomeSwitch-@Model.Id.Value" asp-for="@Model.IsIncome" checked=@isIncome />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="input-group">
+                            <div class="input-group-text">Month</div>
+                            <label class="visually-hidden"
+                                   asp-for="@Model.Month">Month</label>
+                            <select data-val="true"
+                                    id="monthSelectList-@Model.Id.Value"
+                                    asp-for=@Model.Month
+                                    asp-items=@Model.EditMonthList
+                                    class="form-control text-center">
+                            </select>
+                            <div class="input-group-text">Year</div>
+                            <label class="visually-hidden"
+                                   asp-for="@Model.Year">Year</label>
+                            <select data-val="true"
+                                    asp-for=@Model.Year
+                                    asp-items=@Model.YearList
+                                    class="form-control text-center">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-2 @(isIncome ? "visually-hidden" : "")" id="budgetTypeInputs-@Model.Id.Value">
+                        <div class="btn-group btn-height mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    Budget Type
+                                </div>
+                            </div>
+                            @foreach (var type in budgetTypes)
+                            {
+                                <input type="radio"
+                                   id=@($"BudgetType{type}-{Model.Id}")
+                                   class="btn-check handle-category-select-edit-js"
+                                   data-id="@Model.Id.Value"
+                                   asp-for="@Model.Type"
+                                   autocomplete="off"
+                                   value="@budgetTypes.IndexOf(type)"
+                                   checked=@(budgetTypes.IndexOf(type) == (int)Model.Type)>
+                                <label class="btn btn-outline-secondary" for=@($"BudgetType{type}-{Model.Id}")>@type</label>
+                            }
+                        </div>
+                    </div>
+                    <div class="row mb-2  @(isIncome || isSavings ? "visually-hidden" : "")" id="categoryInputs-@Model.Id.Value">
+                        <div class="input-group">
+                            <div class="input-group-text">Category</div>
+                            <label class="visually-hidden"
+                                   asp-for="@Model.SubCategoryId">Category</label>
+                            <select data-val="true"
+                                    asp-for=@Model.SubCategoryId
+                                    asp-items=@Model.SubCategoryList
+                                    data-id=@Model.Id.Value
+                                    class="form-control text-center load-main-category-edit-js">
+                                    <option value="" selected disabled hidden>Select</option>
+                            </select>
+                            <div class="input-group-text">Main Category</div>
+                            <input disabled type="text"
+                                   class="form-control text-center bg-white"
+                                   id="mainCategoryInput-@Model.Id.Value" required />
+                        </div>
+                    </div>
+                </form>
+                <table class="table table-borderless visually-hidden" id="averagesTable-@Model.Id.Value">
+                    <thead>
+                        <tr class="text-center">
+                            <th scope="col">
+                                Last 6 Months
+                            </th>
+                            <th scope="col">
+                                This Year
+                            </th>
+                            <th scope="col">
+                                Last Year
+                            </th>
+                            <th scope="col">
+                                Two Years Ago
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center" scope="row">
+                            <td id="sixMonthAverages-@Model.Id.Value">
+                            </td>
+                            <td id="thisYearAverages-@Model.Id.Value">
+                            </td>
+                            <td id="lastYearAverages-@Model.Id.Value">
+                            </td>
+                            <td id="twoYearsAgoAverages-@Model.Id.Value">
+                            </td>
+                            <td class="text-muted">Monthly Averages</td>
+                        </tr>
+                        <tr class="text-center" scope="row">
+                            <td id="sixMonthTotals-@Model.Id.Value">
+                            </td>
+                            <td id="thisYearTotals-@Model.Id.Value">
+                            </td>
+                            <td id="lastYearTotals-@Model.Id.Value">
+                            </td>
+                            <td id="twoYearsAgoTotals-@Model.Id.Value">
+                            </td>
+                            <td class="text-muted">Annual Totals</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-evenly">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <form>
+                <button type="submit" class="btn btn-primary" form="editBudgetForm-@Model.Id.Value" id="editBudgetFormSaveButton-@Model.Id.Value">Save</button>
+            </form>
+        </div>
+    </div>
+</div>

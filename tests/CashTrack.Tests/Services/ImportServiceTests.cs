@@ -31,7 +31,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Importing_From_Bank_File_Works()
         {
-            var bytes = FileUtils.GetFileBytes(Path.Combine(FilesFolderPath, "test-bank-import.csv"));
+            var bytes = FileUtilities.GetFileBytes(Path.Combine(FilesFolderPath, "test-bank-import.csv"));
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-bank-import", "test-bank-import.csv"),
@@ -66,7 +66,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Importing_From_Credit_Card_File_Works()
         {
-            var bytes = FileUtils.GetFileBytes(Path.Combine(FilesFolderPath, "test-credit-import.csv"));
+            var bytes = FileUtilities.GetFileBytes(Path.Combine(FilesFolderPath, "test-credit-import.csv"));
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-credit-import", "test-credit-import.csv"),
@@ -103,7 +103,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Reimporting_From_Bank_File_Gives_Error()
         {
-            var bytes = FileUtils.GetFileBytes(Path.Combine(FilesFolderPath, "test-bank-import.csv"));
+            var bytes = FileUtilities.GetFileBytes(Path.Combine(FilesFolderPath, "test-bank-import.csv"));
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-bank-import", "test-bank-import.csv"),
@@ -129,7 +129,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Reimporting_From_Credit_Card_File_Gives_Error()
         {
-            var bytes = FileUtils.GetFileBytes(Path.Combine(FilesFolderPath, "test-credit-import.csv"));
+            var bytes = FileUtilities.GetFileBytes(Path.Combine(FilesFolderPath, "test-credit-import.csv"));
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-credit-import", "test-credit-import.csv"),
@@ -155,7 +155,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Empty_Bank_File_Gives_Error()
         {
-            var bytes = FileUtils.GetFileBytes(Path.Combine(FilesFolderPath, "empty-test-bank-import.csv"));
+            var bytes = FileUtilities.GetFileBytes(Path.Combine(FilesFolderPath, "empty-test-bank-import.csv"));
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "empty-test-bank-import", "empty-test-bank-import.csv"),
@@ -178,7 +178,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Empty_Credit_File_Gives_Error()
         {
-            var bytes = FileUtils.GetFileBytes(Path.Combine(FilesFolderPath, "empty-test-credit-import.csv"));
+            var bytes = FileUtilities.GetFileBytes(Path.Combine(FilesFolderPath, "empty-test-credit-import.csv"));
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "empty-test-credit-import", "empty-test-credit-import.csv"),
@@ -201,7 +201,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Wrong_Headers_On_Credit_File_Gives_Error()
         {
-            var bytes = FileUtils.GetFileBytes(Path.Combine(FilesFolderPath, "test-credit-import-bad-headers.csv"));
+            var bytes = FileUtilities.GetFileBytes(Path.Combine(FilesFolderPath, "test-credit-import-bad-headers.csv"));
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-credit-import-bad-headers", "test-credit-import-bad-headers.csv"),
@@ -224,7 +224,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Wrong_Headers_On_Bank_File_Gives_Error()
         {
-            var bytes = FileUtils.GetFileBytes(Path.Combine(FilesFolderPath, "test-bank-import-bad-headers.csv"));
+            var bytes = FileUtilities.GetFileBytes(Path.Combine(FilesFolderPath, "test-bank-import-bad-headers.csv"));
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-bank-import-bad-headers", "test-bank-import-bad-headers.csv"),
@@ -247,7 +247,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Bad_Formmatting_On_Bank_File_Gives_Error()
         {
-            var bytes = FileUtils.GetFileBytes(Path.Combine(FilesFolderPath, "test-bank-import-bad-formatting.csv"));
+            var bytes = FileUtilities.GetFileBytes(Path.Combine(FilesFolderPath, "test-bank-import-bad-formatting.csv"));
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-bank-import-bad-formatting", "test-bank-import-bad-formatting.csv"),
@@ -270,7 +270,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Bad_Formmatting_On_Credit_File_Gives_Error()
         {
-            var bytes = FileUtils.GetFileBytes(Path.Combine(FilesFolderPath, "test-credit-import-bad-formatting.csv"));
+            var bytes = FileUtilities.GetFileBytes(Path.Combine(FilesFolderPath, "test-credit-import-bad-formatting.csv"));
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-credit-import-bad-formatting", "test-credit-import-bad-formatting.csv"),
@@ -469,7 +469,7 @@ namespace CashTrack.Tests.Services
         private async Task<string> CopyTestFileToRootForTesting(string testFileName)
         {
             //need to copy file to root so because the SUT deletes the file after reading it
-            var bytes = FileUtils.GetFileBytes(Path.Combine(FilesFolderPath, testFileName));
+            var bytes = FileUtilities.GetFileBytes(Path.Combine(FilesFolderPath, testFileName));
             var file = new FormFile(new MemoryStream(bytes), 0, bytes.Length, testFileName, testFileName);
             var newFilePath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())!.Parent!.Parent!.FullName, file.FileName);
 

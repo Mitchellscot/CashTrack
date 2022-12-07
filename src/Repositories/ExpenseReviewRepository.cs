@@ -49,7 +49,7 @@ public class ExpenseReviewRepository : IExpenseReviewRepository
             .Include(x => x.SuggestedCategory)
             .Include(x => x.SuggestedMerchant)
             .Where(x => x.IsReviewed == false)
-            .SingleOrDefaultAsync(x => x.Id == id);
+            .FirstOrDefaultAsync(x => x.Id == id);
             if (expense == null)
                 throw new ExpenseNotFoundException(id.ToString());
 

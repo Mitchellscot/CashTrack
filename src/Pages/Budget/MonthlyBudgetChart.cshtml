@@ -1,0 +1,74 @@
+﻿@using System.Text.Json;
+@model CashTrack.Pages.Budget.MonthlyBudgetChart
+@{
+    var savingsColor = JsonSerializer.Deserialize<int[]>(Model.SavingsDataset).Sum() < 0 ? Model.InTheRedSavingsColor : Model.SavingsColor; 
+}
+<script>
+    const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+    const @Model.ElementId = new Chart(@Model.VariableName, {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(@Model.Labels),
+            datasets: [
+            //    {
+            //    label: 'Income',
+            //    data: Model.IncomeDataset,
+            //    color: 'rgba(0, 0, 0, 0)',
+            //    backgroundColor: Html.Raw(Model.IncomeColor),
+            //    borderColor: Html.Raw(Model.IncomeColor),
+            //    borderWidth: 1
+            //},
+            @foreach(var data in Model.ExpenseDataset)
+            {
+                <text>
+                {
+                    label: '@data.SubCategoryName',
+                    data: @JsonSerializer.Serialize(@data.DataSet),
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: '@Html.Raw(data.Color)',
+                    borderColor: '@Html.Raw(data.Color)',
+                    borderWidth: 1
+                },
+                </text>
+            }
+            {
+                label: 'Savings',
+                data: @Model.SavingsDataset,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: @Html.Raw(savingsColor),
+                borderColor: @Html.Raw(savingsColor),
+                borderWidth: 1
+            },
+            {
+                label: 'Unallocated',
+                data: @Model.UnallocatedDataset,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: @Html.Raw(Model.UnallocatedColor),
+                borderColor: @Html.Raw(Model.UnallocatedColor),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: true,
+                    //type: 'logarithmic',
+                },
+            },
+            plugins: {
+                legend: {
+                    display: false,
+                    position: 'left',
+                },
+                title: {
+                    display: false,
+                    text: '@Model.Title'
+                }
+            }
+        }
+    });
+    </script>

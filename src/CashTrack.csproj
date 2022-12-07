@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<NoLogo>true</NoLogo>
 		<LangVersion>latest</LangVersion>
@@ -12,20 +12,20 @@
 		<NoWarn>1701,1702,80001;</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="11.0.1" />
-		<PackageReference Include="CsvHelper" Version="28.0.1" />
-		<PackageReference Include="FluentValidation" Version="11.2.0" />
-		<PackageReference Include="FluentValidation.AspNetCore" Version="11.2.1" />
+		<PackageReference Include="AutoMapper" Version="12.0.0" />
+		<PackageReference Include="CsvHelper" Version="30.0.0" />
+		<PackageReference Include="FluentValidation" Version="11.3.0" />
+		<PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.8" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.8">
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.8" />
-		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.0" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.6" />
 	</ItemGroup>
 	<ItemGroup>
@@ -34,18 +34,24 @@
 		<None Remove="Migrations\**" />
 	</ItemGroup>
 	<ItemGroup>
+		<None Remove="Scripts\Budget\budget.ts" />
 		<None Remove="Scripts\Import\rules.ts" />
 		<None Remove="Scripts\IncomeCategories\incomeCategories.ts" />
 		<None Remove="Scripts\IncomeCategories\incomeCategoryDetail.ts" />
 		<None Remove="Scripts\MainCategories\mainCategories.ts" />
+		<None Remove="Scripts\Models\CategoryAverages.ts" />
 		<None Remove="Scripts\Settings\settings.ts" />
 		<None Remove="Scripts\SubCategories\subCategoryDetail.ts" />
+		<None Remove="Scripts\Utility\budget-income-switch.ts" />
+		<None Remove="Scripts\Utility\budget-timespan-select.ts" />
+		<None Remove="Scripts\Utility\budget-type-switch.ts" />
 		<None Remove="Scripts\Utility\force-refund.ts" />
 		<None Remove="Scripts\Utility\format-amount.ts" />
 		<None Remove="Scripts\Utility\handle-expense-dropdown.ts" />
 		<None Remove="Scripts\Utility\importrule-modal.ts" />
 		<None Remove="Scripts\Utility\income-category-autocomplete.ts" />
 		<None Remove="Scripts\Utility\load-main-category.ts" />
+		<None Remove="Scripts\Utility\loadBudgetStatistics.ts" />
 		<None Remove="Scripts\Utility\merchant-autocomplete.ts" />
 		<None Remove="Scripts\Utility\online-merchant.ts" />
 		<None Remove="Scripts\Utility\online-source.ts" />
@@ -56,6 +62,7 @@
 		<None Remove="Scripts\Utility\subcategory-autocomplete.ts" />
 	</ItemGroup>
 	<ItemGroup>
+		<TypeScriptCompile Include="Scripts\Budget\budget.ts" />
 		<TypeScriptCompile Include="Scripts\Expenses\expenses.ts" />
 		<TypeScriptCompile Include="Scripts\Expenses\split.ts" />
 		<TypeScriptCompile Include="Scripts\Import\rules.ts" />
@@ -66,16 +73,21 @@
 		<TypeScriptCompile Include="Scripts\MainCategories\mainCategories.ts" />
 		<TypeScriptCompile Include="Scripts\Merchants\merchantDetail.ts" />
 		<TypeScriptCompile Include="Scripts\Merchants\merchants.ts" />
+		<TypeScriptCompile Include="Scripts\Models\CategoryAverages.ts" />
 		<TypeScriptCompile Include="Scripts\Settings\settings.ts" />
 		<TypeScriptCompile Include="Scripts\Sources\sources.ts" />
 		<TypeScriptCompile Include="Scripts\Sources\sourceDetail.ts" />
 		<TypeScriptCompile Include="Scripts\SubCategories\subCategoryDetail.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\budget-income-switch.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\budget-timespan-select.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\budget-type-switch.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\force-refund.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\format-amount.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\handle-expense-dropdown.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\importrule-modal.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\income-category-autocomplete.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\load-main-category.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\loadBudgetStatistics.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\merchant-autocomplete.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\online-merchant.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\online-source.ts" />

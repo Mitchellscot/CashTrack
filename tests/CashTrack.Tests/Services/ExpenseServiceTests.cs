@@ -566,7 +566,7 @@ namespace CashTrack.Tests.Services
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
                 var service = GetExepenseService(db);
-                await Task.Run(() => Should.Throw<ExpenseNotFoundException>(async () => await _service.DeleteExpenseAsync(int.MaxValue)));
+                await Task.Run(() => Should.Throw<ExpenseNotFoundException>(async () => await service.DeleteExpenseAsync(int.MaxValue)));
             }
         }
         private ExpenseService GetExepenseService(AppDbContext db)

@@ -1,3 +1,4 @@
+using CashTrack.Common;
 using CashTrack.Models.MainCategoryModels;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace CashTrack.Pages.Shared
         {
             VariableName = string.Join("", Enumerable.Repeat(0, 6).Select(n => (char)new Random().Next(97, 122)));
         }
-        public string DefaultColor = JsonSerializer.Serialize("rgba(24, 188, 156, .8)");
+        public string DefaultColor = JsonSerializer.Serialize(ThemeColors.Success);
         public bool DisplayLabels { get; set; } = true;
         public string ColorArray => GetColors();
         public bool UseDefaultColor { get; set; }
@@ -29,24 +30,26 @@ namespace CashTrack.Pages.Shared
         public string Title { get; set; }
         public string GetColors()
         {
-            return JsonSerializer.Serialize(new[] { 
-                "rgba(255, 99, 132, 0.8)", 
-                "rgba(255, 159, 64, 0.8)", 
-                "rgba(255, 205, 86, 0.8)", 
-                "rgba(75, 192, 192, 0.8)", 
-                "rgba(54, 162, 235, 0.8)", 
-                "rgba(153, 102, 255, 0.8)"});
+            return JsonSerializer.Serialize(new[] {
+                LightChartColors.Pink,
+                LightChartColors.Orange,
+                LightChartColors.Yellow,
+                LightChartColors.Cyan,
+                LightChartColors.Azure,
+                LightChartColors.Purple
+            });
         }
         private string GetThemeColors()
         {
-            return JsonSerializer.Serialize(new[] { 
-                "rgba(44, 62, 88, .8)", 
-                "rgba(149, 165, 166, .8)", 
-                "rgba(24, 188, 156, .8)", 
-                "rgba(52, 152, 219, .8)", 
-                "rgba(243, 156, 18, .8)", 
-                "rgba(231, 76, 60, .8)", 
-                "rgba(123, 138, 139, .8)" });
+            return JsonSerializer.Serialize(new[] {
+                ThemeColors.Primary,
+                ThemeColors.Secondary,
+                ThemeColors.Success,
+                ThemeColors.Info,
+                ThemeColors.Warning,
+                ThemeColors.Danger,
+                ThemeColors.SecondaryDark
+            });
         }
     }
     public enum ChartType

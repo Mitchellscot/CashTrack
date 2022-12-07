@@ -60,7 +60,7 @@ public class AddEditMainCategoryModal : Category
 public class MainCategoryDetail : Category
 {
     public SubCategoryListItem[] SubCategories { get; set; }
-    //Think of a stats object like merchant detail with every year and a bar graph of expenses by sub category for each year,
+
 }
 public class MainCategoryDropdownSelection
 {
