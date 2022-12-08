@@ -216,7 +216,7 @@ namespace CashTrack.Services.BudgetService
         public async Task<int> UpdateBudgetAsync(AddEditBudgetAllocation request)
         {
             if (request.Id == null)
-                throw new ArgumentException("Need an id to update a budget");
+                throw new ArgumentException("Need an Id to update a budget");
 
             var isIncome = request.IsIncome || request.Type == BudgetType.Income;
 

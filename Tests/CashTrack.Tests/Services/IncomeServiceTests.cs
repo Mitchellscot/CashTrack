@@ -354,7 +354,7 @@ namespace CashTrack.Tests.Services
                 IsRefund = true
             };
             await Task.Run(() =>
-            Should.Throw<ArgumentException>(async () => await _service.UpdateIncomeAsync(income)).Message.ShouldBe("Need an id to update an income")
+            Should.Throw<ArgumentException>(async () => await _service.UpdateIncomeAsync(income)).Message.ShouldBe("Need an Id to update an income")
             );
         }
         [Fact]

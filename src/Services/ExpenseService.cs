@@ -152,7 +152,7 @@ public class ExpenseService : IExpenseService
     public async Task<int> UpdateExpenseAsync(Expense request)
     {
         if (request.Id == null)
-            throw new ArgumentException("Need an id to update an expense");
+            throw new ArgumentException("Need an Id to update an expense");
 
         if (request.SubCategoryId == 0)
             throw new CategoryNotFoundException("null");

@@ -29,7 +29,7 @@ namespace CashTrack.Controllers
             }
         }
 
-        [HttpGet("sub-category/{id:int}")]
+        [HttpGet("sub-category/{Id:int}")]
         public async Task<ActionResult<string>> GetMainCategoryNameBySubCategoryId(int id)
         {
             try

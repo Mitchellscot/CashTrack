@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using CashTrack.Tests.Services.Common;
+using Bogus.DataSets;
+using System;
 
 namespace CashTrack.Tests.Services
 {
@@ -50,12 +52,12 @@ namespace CashTrack.Tests.Services
         {
             var result = await _sut.GetUserByIdAsync(1);
             result.FirstName.ShouldBe("Test");
-            result.id.ShouldBe(1);
+            result.Id.ShouldBe(1);
         }
         [Fact]
         public async void CreateUser()
         {
-            var user = new UserModels.AddEditUser()
+            var user = new AddEditUser()
             {
                 FirstName = "Arthur",
                 LastName = "Scott",
@@ -74,9 +76,90 @@ namespace CashTrack.Tests.Services
 
             var result = await _sut.CreateUserAsync(user);
             result.FirstName.ShouldBe(user.FirstName);
-            result.id.ShouldBe(2);
+            result.Id.ShouldBe(2);
             _signInManager.Verify(r => r.RefreshSignInAsync(It.IsAny<UserEntity>()), Times.AtLeastOnce());
 
+        }
+        [Fact]
+        public async Task Can_Update_Password()
+        {
+            var newUser = new AddEditUser()
+            {
+                FirstName = "Arthur",
+                LastName = "Scott",
+                Email = "arthur@example.com",
+                Password = "Chewbaca"
+            };
+            _userManager.Setup(u => u.CreateAsync(It.IsAny<UserEntity>(), It.IsAny<string>())).Returns(Task.FromResult(IdentityResult.Success));
+            _userManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new UserEntity()
+            {
+                Id = 1,
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName,
+                Email = newUser.Email
+            });
+            _userManager.Setup(u => u.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(new UserEntity()
+            {
+                Id = 1,
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName,
+                Email = newUser.Email
+            });
+            _userManager.Setup(u => u.ChangePasswordAsync(It.IsAny<UserEntity>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+            var request = new ChangePassword()
+            {
+                Username = newUser.FirstName,
+                OldPassword = newUser.Password,
+                NewPassword = "Han-Solo",
+                ConfirmPassword = "Han-Solo"
+            };
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var repo = new UserRepository(db);
+                var service = new UserService(repo, _mapper, _userManager.Object, _signInManager.Object);
+                var createUserResult = await service.CreateUserAsync(newUser);
+                var getUserEntity = await service.GetUserByIdAsync(createUserResult.Id);
+                var result = await service.UpdatePasswordAsync(request);
+                result.ShouldBeTrue();
+            }
+        }
+        [Fact]
+        public async Task Throws_When_Passwords_Dont_Match()
+        {
+            var request = new ChangePassword()
+            {
+                Username = "Arthur",
+                OldPassword = "Chewbaca",
+                NewPassword = "Han-Solo",
+                ConfirmPassword = "HanSolo"
+            };
+            _userManager.Setup(u => u.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(new UserEntity()
+            {
+                Id = 1,
+                FirstName = request.Username,
+                LastName = "Scott",
+                Email = "arthur@example.com"
+            });
+            await Task.Run(() => Should.Throw<ArgumentException>(async () => await _sut.UpdatePasswordAsync(request)));
+        }
+        [Fact]
+        public async Task Throws_When_Password_Is_Null()
+        {
+            var request = new ChangePassword()
+            {
+                Username = "Arthur",
+                OldPassword = "Chewbaca",
+                NewPassword = "Han-Solo",
+                ConfirmPassword = ""
+            };
+            _userManager.Setup(u => u.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(new UserEntity()
+            {
+                Id = 1,
+                FirstName = request.Username,
+                LastName = "Scott",
+                Email = "arthur@example.com"
+            });
+            await Task.Run(() => Should.Throw<ArgumentNullException>(async () => await _sut.UpdatePasswordAsync(request)));
         }
     }
 }

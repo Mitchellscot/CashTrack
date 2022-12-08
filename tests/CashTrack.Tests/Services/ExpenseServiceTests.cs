@@ -524,7 +524,7 @@ namespace CashTrack.Tests.Services
                 ExcludeFromStatistics = true,
             };
             await Task.Run(() =>
-            Should.Throw<ArgumentException>(async () => await _service.UpdateExpenseAsync(expense)).Message.ShouldBe("Need an id to update an expense")
+            Should.Throw<ArgumentException>(async () => await _service.UpdateExpenseAsync(expense)).Message.ShouldBe("Need an Id to update an expense")
             );
         }
         [Fact]

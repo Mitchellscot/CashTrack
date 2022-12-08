@@ -154,10 +154,13 @@ namespace CashTrack.Services.ImportService
             var creditFilterRules = rules.Where(x =>
             x.FileType == CsvFileType.Credit &&
             x.RuleType == RuleType.Filter).ToList();
+            var otherFilterRules = rules.Where(x =>
+            x.FileType == CsvFileType.Other &&
+            x.RuleType == RuleType.Filter).ToList();
             using var reader = new StreamReader(filePath);
             var bankImports = new List<BankImport>();
             var creditImports = new List<CreditImport>();
-            var otherImports = new List<OtherTransactionImport>();
+            var otherImports = new List<OtherImport>();
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 if (fileType == CsvFileType.Bank)
@@ -198,12 +201,16 @@ namespace CashTrack.Services.ImportService
                 }
                 else if (fileType == CsvFileType.Other)
                 {
-                    //TODO: Figure this out
-                    //might be something like
-                    //giving instructions on what to name the headers
-                    //and then parsing a csv file that looks like that
-                    throw new NotImplementedException();
-                    //otherImports = csv.GetRecords<OtherTransactionImport>().ToList();
+                    csv.Context.RegisterClassMap<OtherTransactionMap>();
+                    var csvResult = csv.GetRecords<OtherImport>().ToList();
+                    foreach (var line in csvResult)
+                    {
+                        var rule = otherFilterRules.FirstOrDefault(x => line.Notes.ToLower().Contains(x.Rule.ToLower()));
+                        if (rule == null)
+                        {
+                            otherImports.Add(line);
+                        }
+                    }
                 }
             }
             IEnumerable<ImportTransaction> imports = bankImports.Any() ? bankImports :
@@ -269,6 +276,16 @@ namespace CashTrack.Services.ImportService
             Map(x => x.Credit).Name("Credit").Optional();
             Map(x => x.Debit).Name("Debit").Optional();
             Map(x => x.Notes).Name("Description");
+        }
+    }
+    public sealed class OtherTransactionMap : ClassMap<OtherImport>
+    {
+        public OtherTransactionMap()
+        {
+            Map(x => x.Date).Name("Date");
+            Map(x => x.Amount).Name("Amount");
+            Map(x => x.Notes).Name("Notes");
+            Map(x => x.IsIncome).Name("Income");
         }
     }
 }

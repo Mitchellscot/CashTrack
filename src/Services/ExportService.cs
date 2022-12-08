@@ -35,27 +35,30 @@ public class ExportService : IExportService
         switch (exportFileOption)
         {
             case 1:
-                await CreateExpensesFile(filePath, asReadable);
+                await CreateBudgetsFile(filePath, asReadable);
                 return filePath;
             case 2:
-                await CreateImportRulesFile(filePath, asReadable);
+                await CreateExpensesFile(filePath, asReadable);
                 return filePath;
             case 3:
-                await CreateIncomeFile(filePath, asReadable);
+                await CreateImportRulesFile(filePath, asReadable);
                 return filePath;
             case 4:
-                await CreateIncomeCategoriesFile(filePath, asReadable);
+                await CreateIncomeFile(filePath, asReadable);
                 return filePath;
             case 5:
-                await CreateIncomeSourcesFile(filePath, asReadable);
+                await CreateIncomeCategoriesFile(filePath, asReadable);
                 return filePath;
             case 6:
-                await CreateMainCategoriesFile(filePath, asReadable);
+                await CreateIncomeSourcesFile(filePath, asReadable);
                 return filePath;
             case 7:
-                await CreateMerchantsFile(filePath, asReadable);
+                await CreateMainCategoriesFile(filePath, asReadable);
                 return filePath;
             case 8:
+                await CreateMerchantsFile(filePath, asReadable);
+                return filePath;
+            case 9:
                 await CreateSubCategoriesFile(filePath, asReadable);
                 return filePath;
             default:
@@ -63,7 +66,27 @@ public class ExportService : IExportService
                 return zipFileName;
         }
     }
+    private async Task CreateBudgetsFile(string filePath, bool asReadable)
+    {
+        if (asReadable)
+        {
+            var readableBudgets = await _exportRepo.ReadableBudgetExport();
 
+            if (readableBudgets.Length == 0)
+                return;
+
+            await WriteFileAsync(filePath, readableBudgets);
+        }
+        else
+        {
+            var budgets = await _exportRepo.GetBudgets();
+
+            if (budgets.Length == 0)
+                return;
+
+            await WriteFileAsync<BudgetExport>(filePath, budgets);
+        }
+    }
     private async Task CreateExpensesFile(string filePath, bool asReadable)
     {
         if (asReadable)
@@ -126,7 +149,6 @@ public class ExportService : IExportService
 
             await WriteFileAsync<IncomeExport>(filePath, incomes);
         }
-
     }
     private async Task CreateIncomeCategoriesFile(string filePath, bool asReadable)
     {

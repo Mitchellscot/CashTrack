@@ -1,3 +1,4 @@
+using CashTrack.Common;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Pages.Shared;
@@ -6,6 +7,7 @@ using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +20,9 @@ namespace CashTrack.Pages.Expenses
         private readonly IExpenseService _expenseService;
         private readonly ISubCategoryService _subCategoryService;
         private readonly IMerchantService _merchantService;
+        private IOptions<AppSettingsOptions> _appSettings;
 
-        public SplitModel(IExpenseService expenseService, ISubCategoryService subCategoryService, IMerchantService merchantService) => (_expenseService, _subCategoryService, _merchantService) = (expenseService, subCategoryService, merchantService);
+        public SplitModel(IExpenseService expenseService, ISubCategoryService subCategoryService, IMerchantService merchantService, IOptions<AppSettingsOptions> appSettings) => (_expenseService, _subCategoryService, _merchantService, _appSettings) = (expenseService, subCategoryService, merchantService, appSettings);
 
         [BindProperty]
         public List<ExpenseSplit> ExpenseSplits { get; set; }
@@ -41,7 +44,7 @@ namespace CashTrack.Pages.Expenses
             var originalExpense = await _expenseService.GetExpenseByIdAsync(id);
             if (originalExpense == null)
             {
-                TempData["Message"] = $"Unable to find expense with id {id}";
+                TempData["Message"] = $"Unable to find expense with Id {id}";
                 return LocalRedirect("./Index");
             }
             SubCategoryId = originalExpense.SubCategoryId;
@@ -51,7 +54,7 @@ namespace CashTrack.Pages.Expenses
             Total = originalExpense.Amount;
             Date = originalExpense.Date;
             Merchant = originalExpense.Merchant;
-            this.Tax = Tax ?? 0.07875M; //TODO: Set Default Tax in Application Settings page
+            this.Tax = Tax ?? _appSettings.Value.DefaultTax;
             this.Split = Split ?? 2;
             SplitOptions = new SelectList(Enumerable.Range(2, 7));
             this.ReturnUrl = ReturnUrl ?? "~/Expenses/Index";
@@ -65,7 +68,6 @@ namespace CashTrack.Pages.Expenses
             }
             try
             {
-                //TODO: All of this should be moved into the service, delete and everything.
                 foreach (var expenseSplit in expenseSplits)
                 {
                     if (expenseSplit.Amount > 0)
@@ -73,7 +75,7 @@ namespace CashTrack.Pages.Expenses
                         var expenseId = await _expenseService.CreateExpenseFromSplitAsync(expenseSplit);
                     }
                 }
-                var deleteSuccess = await _expenseService.DeleteExpenseAsync(int.Parse(RouteData.Values["id"].ToString()));
+                var deleteSuccess = await _expenseService.DeleteExpenseAsync(int.Parse(RouteData.Values["Id"].ToString()));
             }
             catch (Exception ex)
             {

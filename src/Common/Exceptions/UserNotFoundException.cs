@@ -8,7 +8,7 @@ namespace CashTrack.Common.Exceptions
         {
 
         }
-        public UserNotFoundException(string id) : base(String.Format($"No user found with an id of {id}"))
+        public UserNotFoundException(string id) : base(String.Format($"No user found with an Id of {id}"))
         {
 
         }

@@ -1,29 +1,53 @@
 ﻿@page
 @using CashTrack.Models.ImportCsvModels
+@using CashTrack.Models.ImportRuleModels;
+@using CashTrack.Pages.Shared;
 @model CashTrack.Pages.Settings.Index
 @{
     ViewData["Title"] = "Settings";
     Layout = "_Layout";
 }
-                  <div class="modal fade" id="importCsvModal">
-        @await Html.PartialAsync("_ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Import/Expenses" })
-                  </div>
 <div class="container mt-3">
-    <form class="row mb-3" method="post">
-        <div class="col-6">
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+
+    <h1>Settings</h1>
+
+    <form asp-page-handler="ChangePassword" class="row my-3 border rounded border-2 px-5 pt-2 pb-5 d-flex justify-content-around align-content-center" method="post">
+        <div class="form-group col-md-3 col-6">
+            <label asp-for="ChangePassword.OldPassword" class="form-label mt-4">Old Password</label>
+            <input asp-for="ChangePassword.OldPassword" type="password" class="form-control" id="oldPasswordInput" placeholder="* * * * * *">
+        </div>
+        <div class="form-group col-md-3 col-6">
+            <label asp-for="ChangePassword.NewPassword" class="form-label mt-4">New Password</label>
+            <input asp-for="ChangePassword.NewPassword" type="text" class="form-control" id="newPasswordInput" placeholder="* * * * * *">
+        </div>
+        <div class="form-group col-md-3 col-6">
+            <label asp-for="ChangePassword.ConfirmPassword" class="form-label mt-4">ConfirmNew Password</label>
+            <input asp-for="ChangePassword.ConfirmPassword" type="text" class="form-control" id="confirmPasswordInput" placeholder="* * * * * *">
+        </div>
+        <div class="col-6 col-md-3 d-flex align-content-center">
+            <button class="btn btn-primary btn-height align-self-end" type="submit">Change Password</button>
+        </div>
+    </form>
+
+
+    <h2>Export</h2>
+    <form class="row my-3 border rounded border-2" method="post">
+        <div class="col-5 p-5 d-flex justify-content-start">
             <div class="input-group">
-                <div class="input-group-prepend d-none d-sm-block">
-                    <div class="input-group-text">Export Data</div>
+                <div class="input-group-prepend d-none d-lg-block">
+                    <div class="input-group-text">Data</div>
                 </div>
-                <select data-width="100%" asp-items="Model.ExportOptions" class="form-select text-center" id="exportOptions"
-                        asp-for="ExportOption">
+                <select data-width="100%" asp-items="Model.ExportOptions" class="form-select text-center" id="exportOptions" asp-for="ExportOption">
                 </select>
-                <button class="btn btn-secondary rounded-end" type="submit" asp-page-handler="Export">
-                    <i class="bi bi-download icon-size-md text-white mx-3" role="img"></i>
-                </button>
             </div>
         </div>
-        <div class="col-4 d-flex" method="post">
+        <div class="col-4 d-flex justify-content-center">
             <div class="form-check me-3 d-flex align-items-center">
                 <input class="form-check-input me-2" type="radio" asp-for="ExportAsReadable" value="false">
                 <label asp-for="ExportAsReadable" class="form-check-label">Raw Data</label>
@@ -33,12 +57,123 @@
                 <label asp-for="ExportAsReadable" class="form-check-label">Readable Data</label>
             </div>
         </div>
+        <div class="col-3 d-flex justify-content-center">
+            <button class="btn btn-primary btn-height align-self-center" type="submit" asp-page-handler="Export">
+                Export Data
+            </button>
+        </div>
     </form>
-    <div class="row">
-                <div>
-                    <button class="btn btn-primary" type="button" id="importButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">Import</button>
+
+    <h2>Import</h2>
+
+    <div class="row my-3 border rounded border-2 p-5 d-flex justify-content-around">
+        <div class="col-md-3 col-6 py-md-0 py-2">
+            <a asp-page="/Import/Rules" class="btn btn-secondary btn-height">Import Rules</a>
+        </div>
+        <div class="col-md-3 col-6 py-md-0 py-2">
+            <button class="btn btn-primary btn-height" id="addImportRuleButton" data-bs-toggle="modal" data-bs-target="#addImportRuleModal">Add Import Rule</button>
+        </div>
+        <div class="col-md-3 col-6 py-md-0 py-2">
+            <button class="btn btn-primary btn-height" type="button" id="importButton" data-bs-toggle="modal" data-bs-target="#customCsvHeader">
+                Custom CSV Headers
+            </button>
+        </div>
+        <div class="col-md-3 col-6 py-md-0 py-2">
+            <button class="btn btn-primary btn-height" type="button" id="importButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">
+                Import From CSV
+            </button>
+        </div>
     </div>
 </div>
+
+<div class="modal fade" id="customCsvHeader">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title w-100">Custom CSV Import</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                </button>
+            </div>
+            <div class="modal-body px-5">
+                <h5 class="py-3 text-center">Format your custom CSV in the following way</h5>
+                <ul>
+                    <li>You must have four column headers named <strong>Date</strong>, <strong>Amount</strong>, <strong>Notes</strong>, and <strong>Income</strong>.</li>
+                    <li>The amount cannot be blank and can be with or without decimals. All negative numbers will be converted to positive numbers.</li>
+                    <li>Date cannot be blank.</li>
+                    <li>Notes can be blank. Associate with an import rule for faster processing.</li>
+                    <li>if Income is blank, it will be assumed to be an espense. In order to specify that it is income, include the word <strong>true</strong> in the column.</li>
+                </ul>
+
+                <p>Example:</p>
+                <table class="table table-borderless border border-3 rounded-4 text-center">
+                    <tr class="border">
+                        <th class="border">
+                            Date
+                        </th>
+                        <th class="border">
+                            Amount
+                        </th>
+                        <th class="border">
+                            Notes
+                        </th>
+                        <th class="border">
+                            Income
+                        </th>
+                    </tr>
+                    <tr class="border">
+                        <td class="border">
+                            12/8/2022
+                        </td>
+                        <td class="border">
+                            100
+                        </td>
+                        <td class="border">
+                        </td>
+                        <td class="border">
+                            true
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border">
+                            12/8/2022
+                        </td>
+                        <td class="border">
+                            1.61
+                        </td>
+                        <td class="border">
+                            Costco Food Court
+                        </td>
+                        <td class="border">
+                            false
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border">
+                            12/8/2022
+                        </td>
+                        <td class="border">
+                            24
+                        </td>
+                        <td class="border">
+                        </td>
+                        <td class="border">
+                        </td>
+                    </tr>
+                </table>
+                <h5 class="pt-3 text-center">Select "other" when uploading the csv file.</h5>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="importCsvModal">
+    @await Html.PartialAsync("_ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Import/Expenses" })
+</div>
+<div class="modal fade" id="addImportRuleModal">
+    @await Html.PartialAsync("_AddEditImportRuleModal", new AddEditImportRuleModal() { Returnurl = "~/Settings", IsEdit = false })
 </div>
 @section Scripts {
     <script src="~/js/settings.js"></script>
