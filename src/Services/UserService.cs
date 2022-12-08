@@ -51,8 +51,11 @@ public class UserService : IUserService
         if (user == null)
             throw new ArgumentException(nameof(request.Username));
 
-        if (string.IsNullOrEmpty(request.OldPassword) || string.IsNullOrEmpty(request.NewPassword))
-            throw new ArgumentNullException("Passwords are missing");
+        if (string.IsNullOrEmpty(request.OldPassword) || string.IsNullOrEmpty(request.NewPassword) || string.IsNullOrEmpty(request.ConfirmPassword))
+            throw new ArgumentNullException("There is a password missing");
+
+        if (request.NewPassword != request.ConfirmPassword)
+            throw new ArgumentException(nameof(request.ConfirmPassword));
 
         var result = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
         if (!result.Succeeded)

@@ -1,6 +1,7 @@
 ﻿using CashTrack.Models.Common;
 using CashTrack.Models.ImportRuleModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using System;
 
 namespace CashTrack.Models.ImportCsvModels
@@ -59,8 +60,7 @@ namespace CashTrack.Models.ImportCsvModels
             }
         }
     }
-    public class OtherTransactionImport : ImportTransaction
+    public class OtherImport : ImportTransaction
     {
-        //TODO: figure this one out
     }
 }

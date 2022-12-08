@@ -4,6 +4,7 @@ using CashTrack.Models.ExportModels;
 using CashTrack.Models.UserModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.ExportService;
+using CashTrack.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
@@ -18,10 +19,12 @@ namespace CashTrack.Pages.Settings
     {
         private readonly IConfiguration _config;
         private readonly IExportService _exportService;
-        public Index(IConfiguration config, IExportService exportService)
+        private readonly IUserService _userService;
+        public Index(IConfiguration config, IExportService exportService, IUserService userService)
         {
             _config = config;
             _exportService = exportService;
+            _userService = userService;
         }
         public SelectList ExportOptions { get; set; }
         public int ExportOption { get; set; }
@@ -33,6 +36,29 @@ namespace CashTrack.Pages.Settings
         public IActionResult OnGet()
         {
             ExportOptions = new SelectList(ExportFileOptions.GetAll, "Key", "Value");
+            return Page();
+        }
+        public async Task<IActionResult> OnPostChangePassword()
+        {
+            if (string.IsNullOrEmpty(ChangePassword.OldPassword) || string.IsNullOrEmpty(ChangePassword.NewPassword))
+            {
+                ModelState.AddModelError("", "Please fill out both the old and new Passwords");
+                return Page();
+            }
+            if (ChangePassword.NewPassword != ChangePassword.ConfirmPassword)
+            {
+                ModelState.AddModelError("", "Confirm your new password matches and try again.");
+                return Page();
+            }
+            ChangePassword.Username = User.Identity.Name;
+            var result = await _userService.UpdatePasswordAsync(ChangePassword);
+
+            if (!result)
+            {
+                ModelState.AddModelError("", "There was an error changing your password. Try again.");
+                return Page();
+            }
+            TempData["SuccessMessage"] = "Successfully changed your password!";
             return Page();
         }
         public async Task<ActionResult> OnPostExport(int ExportOption, bool ExportAsReadable)

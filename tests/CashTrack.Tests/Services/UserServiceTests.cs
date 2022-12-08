@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using CashTrack.Tests.Services.Common;
 using Bogus.DataSets;
+using System;
 
 namespace CashTrack.Tests.Services
 {
@@ -109,7 +110,8 @@ namespace CashTrack.Tests.Services
             {
                 Username = newUser.FirstName,
                 OldPassword = newUser.Password,
-                NewPassword = "Han-Solo"
+                NewPassword = "Han-Solo",
+                ConfirmPassword = "Han-Solo"
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
             {
@@ -120,6 +122,44 @@ namespace CashTrack.Tests.Services
                 var result = await service.UpdatePasswordAsync(request);
                 result.ShouldBeTrue();
             }
+        }
+        [Fact]
+        public async Task Throws_When_Passwords_Dont_Match()
+        {
+            var request = new ChangePassword()
+            {
+                Username = "Arthur",
+                OldPassword = "Chewbaca",
+                NewPassword = "Han-Solo",
+                ConfirmPassword = "HanSolo"
+            };
+            _userManager.Setup(u => u.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(new UserEntity()
+            {
+                Id = 1,
+                FirstName = request.Username,
+                LastName = "Scott",
+                Email = "arthur@example.com"
+            });
+            await Task.Run(() => Should.Throw<ArgumentException>(async () => await _sut.UpdatePasswordAsync(request)));
+        }
+        [Fact]
+        public async Task Throws_When_Password_Is_Null()
+        {
+            var request = new ChangePassword()
+            {
+                Username = "Arthur",
+                OldPassword = "Chewbaca",
+                NewPassword = "Han-Solo",
+                ConfirmPassword = ""
+            };
+            _userManager.Setup(u => u.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(new UserEntity()
+            {
+                Id = 1,
+                FirstName = request.Username,
+                LastName = "Scott",
+                Email = "arthur@example.com"
+            });
+            await Task.Run(() => Should.Throw<ArgumentNullException>(async () => await _sut.UpdatePasswordAsync(request)));
         }
     }
 }
