@@ -8,7 +8,7 @@ namespace CashTrack.Common.Exceptions
         {
 
         }
-        public CategoryNotFoundException(string id) : base(String.Format($"Unable to find category with id {id}"))
+        public CategoryNotFoundException(string id) : base(String.Format($"Unable to find category with Id {id}"))
         {
 
         }

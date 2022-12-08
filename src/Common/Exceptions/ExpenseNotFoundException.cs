@@ -8,7 +8,7 @@ namespace CashTrack.Common.Exceptions
         {
 
         }
-        public ExpenseNotFoundException(string id) : base(String.Format($"No expense found with an id of {id}"))
+        public ExpenseNotFoundException(string id) : base(String.Format($"No expense found with an Id of {id}"))
         {
 
         }

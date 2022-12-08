@@ -5,16 +5,16 @@ using CashTrack.Repositories.UserRepository;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace CashTrack.Services.UserService;
 
 public interface IUserService
 {
-    Task<UserModels.Response> GetUserByIdAsync(int id);
-    Task<UserModels.Response[]> GetAllUsersAsync();
-    Task<UserModels.Response> CreateUserAsync(UserModels.AddEditUser request);
+    Task<User> GetUserByIdAsync(int id);
+    Task<User[]> GetAllUsersAsync();
+    Task<User> CreateUserAsync(AddEditUser request);
+    Task<bool> UpdatePasswordAsync(ChangePassword request);
 }
 public class UserService : IUserService
 {
@@ -25,7 +25,7 @@ public class UserService : IUserService
 
     public UserService(IUserRepository userRepo, IMapper mapper, UserManager<UserEntity> userManager, SignInManager<UserEntity> signInManager) => (_userRepo, _mapper, _userManager, _signInManager) = (userRepo, mapper, userManager, signInManager);
 
-    public async Task<UserModels.Response> CreateUserAsync(UserModels.AddEditUser request)
+    public async Task<User> CreateUserAsync(AddEditUser request)
     {
         var newUser = new UserEntity()
         {
@@ -43,27 +43,42 @@ public class UserService : IUserService
 
         await _signInManager.RefreshSignInAsync(user);
 
-        return _mapper.Map<UserModels.Response>(user);
+        return _mapper.Map<User>(user);
+    }
+    public async Task<bool> UpdatePasswordAsync(ChangePassword request)
+    {
+        var user = await _userManager.FindByNameAsync(request.Username);
+        if (user == null)
+            throw new ArgumentException(nameof(request.Username));
+
+        if (string.IsNullOrEmpty(request.OldPassword) || string.IsNullOrEmpty(request.NewPassword))
+            throw new ArgumentNullException("Passwords are missing");
+
+        var result = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
+        if (!result.Succeeded)
+            return false;
+
+        return true;
     }
 
-    public async Task<UserModels.Response[]> GetAllUsersAsync()
+    public async Task<User[]> GetAllUsersAsync()
     {
         var users = await _userRepo.Find(x => true);
-        return _mapper.Map<UserModels.Response[]>(users);
+        return _mapper.Map<User[]>(users);
     }
 
-    public async Task<UserModels.Response> GetUserByIdAsync(int id)
+    public async Task<User> GetUserByIdAsync(int id)
     {
         var user = await _userRepo.FindById(id);
-        return _mapper.Map<UserModels.Response>(user);
+        return _mapper.Map<User>(user);
     }
 }
 public class UserMapperProfile : Profile
 {
     public UserMapperProfile()
     {
-        CreateMap<UserEntity, UserModels.Response>()
-            .ForMember(u => u.id, o => o.MapFrom(src => src.Id))
+        CreateMap<UserEntity, User>()
+            .ForMember(u => u.Id, o => o.MapFrom(src => src.Id))
             .ForMember(u => u.FirstName, o => o.MapFrom(src => src.FirstName))
             .ForMember(u => u.LastName, o => o.MapFrom(src => src.LastName))
             .ForMember(u => u.Email, o => o.MapFrom(src => src.Email));

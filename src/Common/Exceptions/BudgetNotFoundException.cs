@@ -8,7 +8,7 @@ namespace CashTrack.Common.Exceptions
         {
 
         }
-        public BudgetNotFoundException(string id) : base(String.Format($"No Budget found with an id of {id}"))
+        public BudgetNotFoundException(string id) : base(String.Format($"No Budget found with an Id of {id}"))
         {
 
         }

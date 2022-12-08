@@ -1,14 +1,19 @@
 ﻿@page
 @using CashTrack.Models.ImportCsvModels
+@using CashTrack.Pages.Shared;
 @model CashTrack.Pages.Settings.Index
 @{
     ViewData["Title"] = "Settings";
     Layout = "_Layout";
 }
-                  <div class="modal fade" id="importCsvModal">
-        @await Html.PartialAsync("_ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Import/Expenses" })
-                  </div>
 <div class="container mt-3">
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+
     <form class="row mb-3" method="post">
         <div class="col-6">
             <div class="input-group">
@@ -35,8 +40,13 @@
         </div>
     </form>
     <div class="row">
-                <div>
-                    <button class="btn btn-primary" type="button" id="importButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">Import</button>
+        <div>
+            <button class="btn btn-primary" type="button" id="importButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">
+                Import
+            </button>
+            <div class="modal fade" id="importCsvModal">
+                @await Html.PartialAsync("_ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Import/Expenses" })
+            </div>
     </div>
 </div>
 </div>

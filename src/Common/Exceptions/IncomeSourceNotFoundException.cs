@@ -8,7 +8,7 @@ namespace CashTrack.Common.Exceptions
         {
 
         }
-        public IncomeSourceNotFoundException(string id) : base(String.Format($"Unable to find income source with id {id}"))
+        public IncomeSourceNotFoundException(string id) : base(String.Format($"Unable to find income source with Id {id}"))
         {
 
         }

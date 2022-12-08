@@ -9,7 +9,7 @@ namespace CashTrack.Common.Exceptions
         {
 
         }
-        public IncomeNotFoundException(string id) : base(String.Format($"No Income found with an id of {id}"))
+        public IncomeNotFoundException(string id) : base(String.Format($"No Income found with an Id of {id}"))
         {
 
         }

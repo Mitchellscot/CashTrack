@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 namespace CashTrack.Repositories.ExportRepository;
 public interface IExportRepository
 {
+    Task<BudgetExport[]> GetBudgets();
     Task<ExpenseExport[]> GetExpenses();
     Task<ImportRuleExport[]> GetImportRules();
     Task<IncomeExport[]> GetIncome();
@@ -21,7 +23,7 @@ public interface IExportRepository
     Task<MainCategoryExport[]> GetMainCategories();
     Task<MerchantExport[]> GetMerchants();
     Task<SubCategoryExport[]> GetSubCategories();
-
+    Task<ReadableBudgetExport[]> ReadableBudgetExport();
     Task<ReadableExpenseExport[]> GetReadableExpenses();
     Task<ReadableImportRuleExport[]> GetReadableImportRules();
     Task<ReadableIncomeExport[]> GetReadableIncome();
@@ -35,6 +37,31 @@ public class ExportRepository : IExportRepository
 {
     private readonly AppDbContext _ctx;
     public ExportRepository(AppDbContext ctx) => _ctx = ctx;
+    public async Task<BudgetExport[]> GetBudgets()
+    {
+        try
+        {
+            IQueryable<BudgetEntity> query = _ctx.Budgets.Include(x => x.SubCategory);
+            query = query.OrderBy(x => x.Id);
+            var budgetEntities = await query.ToArrayAsync();
+            if (!budgetEntities.Any())
+            {
+                return new BudgetExport[] { };
+            }
+            return budgetEntities.Select(x => new BudgetExport(
+                Id: x.Id.ToString(),
+                Month: @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(x.Month),
+                Year: x.Year.ToString(),
+                Amount: x.Amount.ToString(),
+                SubCategoryId: x.SubCategoryId?.ToString(),
+                BudgetType: x.BudgetType.ToString()
+                )).ToArray();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
     public async Task<ExpenseExport[]> GetExpenses()
     {
         try
@@ -225,6 +252,31 @@ public class ExportRepository : IExportRepository
                 MainCategoryId: x.MainCategoryId.ToString(),
                 InUse: x.InUse ? "1" : "0",
                 Notes: x.Notes
+                )).ToArray();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+    public async Task<ReadableBudgetExport[]> ReadableBudgetExport()
+    {
+        try
+        {
+            IQueryable<BudgetEntity> query = _ctx.Budgets.Include(x => x.SubCategory).ThenInclude(x => x.MainCategory);
+            query = query.OrderByDescending(x => x.Year).ThenByDescending(x => x.Month);
+            var budgetEntities = await query.ToArrayAsync();
+            if (!budgetEntities.Any())
+            {
+                return new ReadableBudgetExport[] { };
+            }
+            return budgetEntities.Select(x => new ReadableBudgetExport(
+                Month: @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(x.Month),
+                Year: x.Year.ToString(),
+                Amount: x.Amount.ToString(),
+                SubCategory: x.SubCategory?.Name,
+                MainCategory: x.SubCategory?.MainCategory.Name,
+                BudgetType: x.BudgetType
                 )).ToArray();
         }
         catch (Exception)

@@ -1,9 +1,9 @@
 using CashTrack.Common;
 using CashTrack.Models.Common;
 using CashTrack.Models.ExportModels;
+using CashTrack.Pages.Shared;
 using CashTrack.Services.ExportService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -13,14 +13,12 @@ using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Settings
 {
-    public class Index : PageModel
+    public class Index : PageModelBase
     {
-        private readonly ILogger<Index> _logger;
         private readonly IConfiguration _config;
         private readonly IExportService _exportService;
-        public Index(ILogger<Index> logger, IConfiguration config, IExportService exportService)
+        public Index(IConfiguration config, IExportService exportService)
         {
-            _logger = logger;
             _config = config;
             _exportService = exportService;
         }
@@ -43,9 +41,6 @@ namespace CashTrack.Pages.Settings
             }
 
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, Path.GetFileName(filePath));
-
         }
-
-
     }
 }

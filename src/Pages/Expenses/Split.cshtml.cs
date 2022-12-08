@@ -41,7 +41,7 @@ namespace CashTrack.Pages.Expenses
             var originalExpense = await _expenseService.GetExpenseByIdAsync(id);
             if (originalExpense == null)
             {
-                TempData["Message"] = $"Unable to find expense with id {id}";
+                TempData["Message"] = $"Unable to find expense with Id {id}";
                 return LocalRedirect("./Index");
             }
             SubCategoryId = originalExpense.SubCategoryId;
@@ -73,7 +73,7 @@ namespace CashTrack.Pages.Expenses
                         var expenseId = await _expenseService.CreateExpenseFromSplitAsync(expenseSplit);
                     }
                 }
-                var deleteSuccess = await _expenseService.DeleteExpenseAsync(int.Parse(RouteData.Values["id"].ToString()));
+                var deleteSuccess = await _expenseService.DeleteExpenseAsync(int.Parse(RouteData.Values["Id"].ToString()));
             }
             catch (Exception ex)
             {

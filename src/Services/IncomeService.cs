@@ -127,7 +127,7 @@ public class IncomeService : IIncomeService
     public async Task<int> UpdateIncomeAsync(Income request)
     {
         if (request.Id == null)
-            throw new ArgumentException("Need an id to update an income");
+            throw new ArgumentException("Need an Id to update an income");
 
         if (request.IsRefund)
             request.CategoryId = (await _categoryRepository.Find(x => x.Name == "Refund")).FirstOrDefault().Id;
