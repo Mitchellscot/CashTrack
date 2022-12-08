@@ -1,6 +1,7 @@
 using CashTrack.Common;
 using CashTrack.Models.Common;
 using CashTrack.Models.ExportModels;
+using CashTrack.Models.UserModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.ExportService;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +26,10 @@ namespace CashTrack.Pages.Settings
         public SelectList ExportOptions { get; set; }
         public int ExportOption { get; set; }
         public bool ExportAsReadable { get; set; }
+        [BindProperty]
+        public ChangePassword ChangePassword { get; set; }
+        [BindProperty]
+        public decimal Tax { get; set; }
         public IActionResult OnGet()
         {
             ExportOptions = new SelectList(ExportFileOptions.GetAll, "Key", "Value");
