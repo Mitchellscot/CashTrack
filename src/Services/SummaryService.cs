@@ -6,6 +6,7 @@ using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Services.BudgetService;
+using CashTrack.Services.Common;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace CashTrack.Services.SummaryService
     public interface ISummaryService
     {
         Task<MonthlySummaryResponse> GetMonthlySummaryAsync(MonthlySummaryRequest request);
+
     }
     public class SummaryService : ISummaryService
     {
@@ -33,13 +35,44 @@ namespace CashTrack.Services.SummaryService
         {
             var expenses = await _expenseRepo.Find(x => x.Date.Year == request.Year && x.Date.Month == request.Month && !x.ExcludeFromStatistics);
             var income = await _incomeRepo.Find(x => x.Date.Year == request.Year && x.Date.Month == request.Month && !x.IsRefund);
-            var budgets = await _budgetRepo.Find(x => x.Year == request.Year && x.Month == request.Month);
+            var budgets = await _budgetRepo.FindWithMainCategories(x => x.Year == request.Year && x.Month == request.Month);
 
             return new MonthlySummaryResponse()
             {
-                MonthlySummary = GetMonthlySummary(expenses, income, budgets, request.Year, request.Month)
+                MonthlySummary = GetMonthlySummary(expenses, income, budgets, request.Year, request.Month),
+                SummaryChartData = GetSummaryChartData(expenses, income, budgets)
             };
         }
+
+        internal MonthlySummaryChartData GetSummaryChartData(ExpenseEntity[] expenses, IncomeEntity[] income, BudgetEntity[] budgets)
+        {
+            var expenseMainLabels = expenses.Select(x => x.Category.MainCategory.Name).Distinct().ToList();
+            var budgetMainLabels = budgets.Where(x => x.SubCategoryId != null && x.Amount > 0 && x.BudgetType == BudgetType.Need || x.BudgetType == BudgetType.Want).Select(x => x.SubCategory.MainCategory.Name).Distinct().ToList();
+            expenseMainLabels.AddRange(budgetMainLabels);
+            var categoryLabels = expenseMainLabels.Distinct().ToArray();
+
+            var budgetedSavings = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
+
+            var budgetedIncome = budgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount);
+            var realizedIncome = income.Sum(x => x.Amount);
+
+            var budgetedExpensAmount = budgets.Where(x => x.BudgetType == BudgetType.Want || x.BudgetType == BudgetType.Need).Sum(x => x.Amount);
+            var realizedExpenseAmount = expenses.Sum(x => x.Amount);
+
+            var displaySavingsLabel = realizedExpenseAmount > 0 || budgetedSavings > 0;
+
+            var displayIncomeLabel = budgetedIncome > 0 || realizedIncome > 0;
+
+
+            return new MonthlySummaryChartData()
+            {
+                Labels = ChartUtilities.GenerateMonthlyChartLabels(displayIncomeLabel, categoryLabels, displaySavingsLabel),
+                BudgetedSavingsData = ChartUtilities.GetMonthlySavingsData(displayIncomeLabel, categoryLabels.Length, budgetedIncome),
+                BudgetedIncomeData = ChartUtilities.GetMonthlyIncomeData(budgetedIncome, categoryLabels.Length, displaySavingsLabel),
+                RealizedIncomeData = ChartUtilities.GetMonthlyIncomeData((int)decimal.Round(realizedIncome, 0), categoryLabels.Length, displaySavingsLabel)
+            };
+        }
+
         internal MonthlySummary GetMonthlySummary(ExpenseEntity[] expenses, IncomeEntity[] income, BudgetEntity[] budgets, int Year, int Month)
         {
 

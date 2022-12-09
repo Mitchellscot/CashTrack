@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = "Dashboard";
     Layout = "_Layout";
+    var currentMonth = Model.Month == DateTime.Now.Month && Model.Year == DateTime.Now.Year;
 }
 <div class="container-fluid">
     @if (Model.ReviewAmount > 0)
@@ -48,6 +49,66 @@
                 </div>
             </div>
         </div>
+    <div class="row">
+            @if (Model.SummaryResponse.MonthlySummary != null)
+            {
+                <div class="col-6 col-lg-3">
+                    <ul class="list-group text-center mt-3">
+                        <li class="list-group-item d-flex justify-content-between p-3">
+                            <span class="d-none d-md-block">
+                                Income: &nbsp;
+                            </span>
+                            <span class="fw-bold text-primary responsive-text">
+                                @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.RealizedIncome) / 
+                                @Model.SummaryResponse.MonthlySummary.BudgetedIncome
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-3">
+                            <span class="d-none d-md-block">
+                                Expenses:
+                            </span>
+                            <span class="fw-bold text-primary responsive-text">
+                                @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.RealizedExpenses) /
+                                @Model.SummaryResponse.MonthlySummary.BudgetedExpenses
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-3">
+                            <span class="d-none d-md-block">
+                                Savings:
+                            </span>
+                            <span class="fw-bold text-primary responsive-text">
+                                @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.RealizedSavings) /      @Model.SummaryResponse.MonthlySummary.BudgetedSavings
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-3">
+                            @if (currentMonth)
+                            {
+                                <span class="d-none d-md-block">
+                                Estimated Savings:
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="d-none d-md-block">
+                                Actual Savings:
+                                </span>
+                            }
+                            <span class="fw-bold text-primary responsive-text">
+                                @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.EstimatedSavings)
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-3">
+                            <span class="d-none d-md-block">
+                                Unspent:
+                            </span>
+                            <span class="fw-bold text-primary responsive-text">
+                                @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.Unspent)
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            }
+    </div>
     </div>
 </div>
 

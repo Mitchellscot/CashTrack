@@ -13,6 +13,7 @@ using CashTrack.Services.BudgetService;
 using CashTrack.Models.BudgetModels;
 using AutoMapper;
 using static CashTrack.Services.BudgetService.BudgetService;
+using CashTrack.Services.Common;
 
 namespace CashTrack.Tests.Services
 {
@@ -304,7 +305,7 @@ namespace CashTrack.Tests.Services
         {
             var budgets = await _repo.FindWithMainCategories(x => x.Year == 2012);
             var mainCategoryLabels = budgets.Where(x => x.SubCategoryId != null && x.Amount > 0).Select(x => x.SubCategory?.MainCategory.Name).OrderBy(x => x).Distinct().ToArray();
-            var response = _service.GetMonthlyExpenseData(budgets, true, true, true, mainCategoryLabels);
+            var response = ChartUtilities.GetMonthlyBudgetExpenseData(budgets, true, true, true, mainCategoryLabels);
             response.Count.ShouldBe(mainCategoryLabels.Length + 2);
             response.Sum(x => x.DataSet.Sum()).ShouldBe(22876);
         }

@@ -25,19 +25,20 @@ namespace CashTrack.Models.SummaryModels
         public List<RealizedExpenses> RealizedExpenses { get; set; }
 
     }
+
     public class BudgetedExpenses
     {
         public string SubCategoryName { get; set; }
-        public int[] DataSet { get; set; }
         public string Color { get; set; }
         public int MainCategoryId { get; set; }
+        public int[] DataSet { get; set; }
     }
     public class RealizedExpenses
     {
         public string SubCategoryName { get; set; }
-        public decimal[] DataSet { get; set; }
         public string Color { get; set; }
         public int MainCategoryId { get; set; }
+        public decimal[] DataSet { get; set; }
     }
     public record MonthlySummary
     {
