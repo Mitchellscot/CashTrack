@@ -1,4 +1,5 @@
 ﻿@page
+@using System.Globalization;
 @model IndexModel
 @{
     ViewData["Title"] = "Dashboard";
@@ -7,11 +8,34 @@
 <div class="container-fluid">
     @if (Model.ReviewAmount > 0)
     {
-        
         <div class="alert alert-danger">You have @Model.ReviewAmount transactions to review. <a asp-page="./Import/Expenses">Review them here</a></div>
     }
-    <div class="text-center">
-        <h1 class="display-4">Welcome @User.Identity.Name</h1>
+    <div class="container-fluid">
+        <div class="row mt-2 border-bottom d-flex justify-content-between">
+            <div class="d-flex col-auto align-self-center">
+                <h3 class="me-2">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month) @Model.Year</h3>
+                <a class="align-self-center" asp-page="./Annual">Annual</a>
+            </div>
+            <div class="col-auto d-flex">
+                <form method="get" class="d-flex btn-height">
+                    <div class="input-group me-2">
+
+                        <select onchange="this.form.submit()" style="min-width: 135px;" data-val="true" asp-for=@Model.Month asp-items="@Model.MonthList" class="form-select text-center" id="monthlyBudgetMonthSelection">
+                            <option value="@Model.Month" selected disabled hidden></option>
+                        </select>
+
+                        <select onchange="this.form.submit()" data-val="true" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="monthlyBudgetYearSelection">
+                            <option value="@Model.Year" selected disabled hidden></option>
+                        </select>
+                    </div>
+
+                </form>
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-secondary btn-height me-2 btn-text-overflow" type="button">View Details</button>
+                    <button class="btn btn-primary btn-height" type="button">Add</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
