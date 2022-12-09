@@ -13,7 +13,8 @@
     <div class="container-fluid">
         <div class="row mt-2 border-bottom d-flex justify-content-between">
             <div class="d-flex col-auto align-self-center">
-                <h3 class="me-2">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month) @Model.Year</h3>
+                <h3 class="me-2">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month) @Model.Year
+                </h3>
                 <a class="align-self-center" asp-page="./Annual">Annual</a>
             </div>
             <div class="col-auto d-flex">
@@ -27,12 +28,23 @@
                         <select onchange="this.form.submit()" data-val="true" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="monthlyBudgetYearSelection">
                             <option value="@Model.Year" selected disabled hidden></option>
                         </select>
-                    </div>
 
+                    </div>
                 </form>
                 <div class="d-flex justify-content-end">
                     <button class="btn btn-secondary btn-height me-2 btn-text-overflow" type="button">View Details</button>
-                    <button class="btn btn-primary btn-height" type="button">Add</button>
+                    <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item">Expense</li>
+                        <li class="dropdown-item">Income</li>
+                        <li class="dropdown-divider"></li>
+                        <li class="dropdown-item">Merchant</li>
+                        <li class="dropdown-item">Income Source</li>
+                        <li class="dropdown-divider"></li>
+                        <li class="dropdown-item">Income Category</li>
+                        <li class="dropdown-item">Sub Category</li>
+                        <li class="dropdown-item">Main Category</li>
+                    </ul>
                 </div>
             </div>
         </div>
