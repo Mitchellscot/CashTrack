@@ -38,7 +38,7 @@ using CashTrack.Common;
 using FluentValidation;
 using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Services.BudgetService;
-using CashTrack.Services.DashboardService;
+using CashTrack.Services.SummaryService;
 
 namespace CashTrack
 {
@@ -129,7 +129,7 @@ namespace CashTrack
             services.AddScoped<IIncomeReviewService, IncomeReviewService>();
             services.AddScoped<IExportService, ExportService>();
             services.AddScoped<IBudgetService, BudgetService>();
-            services.AddScoped<IDashboardService, DashboardService>();
+            services.AddScoped<ISummaryService, SummaryService>();
 
         }
         private static void ConfigureMiddleware(IApplicationBuilder app, IServiceProvider services, IWebHostEnvironment env)
