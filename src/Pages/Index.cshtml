@@ -1,5 +1,7 @@
 ﻿@page
 @using System.Globalization;
+@using Pages.Shared;
+@using System.Text.Json;
 @model IndexModel
 @{
     ViewData["Title"] = "Dashboard";
@@ -48,6 +50,14 @@
                     </ul>
                 </div>
             </div>
+        </div>
+        <div class="row mb-1">
+            @if (Model.SummaryResponse.MonthlySummary != null)
+            {
+                <div class="col">
+                    <canvas id="monthlySummaryChart" class="chart-height"></canvas>
+                </div>
+            }
         </div>
     <div class="row">
             @if (Model.SummaryResponse.MonthlySummary != null)
@@ -114,4 +124,16 @@
 
 @section Scripts {
     <script src="~/js/home.js"></script>
+    @await Html.PartialAsync("MonthlySummaryChart", new MonthlySummaryChart()
+    {
+        ElementId = "monthlySummaryChart",
+        Title = @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month),
+        BudgetedIncomeDataset = JsonSerializer.Serialize(Model.SummaryResponse.SummaryChartData.BudgetedIncomeData),
+        RealizedIncomeDataset = JsonSerializer.Serialize(Model.SummaryResponse.SummaryChartData.RealizedIncomeData),
+        BudgetedSavingsDataset = JsonSerializer.Serialize(Model.SummaryResponse.SummaryChartData.BudgetedSavingsData),
+        RealizedSavingsDataset = JsonSerializer.Serialize(Model.SummaryResponse.SummaryChartData.RealizedSavingsData),
+        BudgetedExpenseDatasets = Model.SummaryResponse.SummaryChartData.BudgetedExpenses,
+        RealizedExpenseDatasets = Model.SummaryResponse.SummaryChartData.RealizedExpenses
+
+    })
 }

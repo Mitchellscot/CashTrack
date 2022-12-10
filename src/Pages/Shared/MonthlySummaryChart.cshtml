@@ -1,0 +1,111 @@
+﻿@using System.Text.Json;
+@model CashTrack.Pages.Shared.MonthlySummaryChart
+@{
+
+}
+<script>
+    const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+    const @Model.ElementId = new Chart(@Model.VariableName, {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(@Model.Months),
+            datasets: [{
+                label: 'Budgeted Income',
+                data: @Model.BudgetedIncomeDataset,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: @Html.Raw(Model.BudgetedIncomeColor),
+                borderColor: @Html.Raw(Model.BudgetedIncomeColor),
+                borderWidth: 1,
+                stack: 'Stack 0'
+            },
+            {
+                label: 'Realized Income',
+                data: @Model.RealizedIncomeDataset,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: @Html.Raw(Model.RealizedIncomeColor),
+                borderColor: @Html.Raw(Model.RealizedIncomeColor),
+                borderWidth: 1,
+                stack: 'Stack 1'
+            },
+            @foreach(var data in Model.BudgetedExpenseDatasets)
+            {
+                <text>
+                {
+                    label: '@data.SubCategoryName',
+                    data: @JsonSerializer.Serialize(@data.DataSet),
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: '@Html.Raw(data.Color)',
+                    borderColor: '@Html.Raw(data.Color)',
+                    borderWidth: 1,
+                    stack: 'Stack 0'
+                },
+                </text>
+            },
+            @foreach(var data in Model.RealizedExpenseDatasets)
+            {
+                <text>
+                {
+                    label: '@data.SubCategoryName',
+                    data: @JsonSerializer.Serialize(@data.DataSet),
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: '@Html.Raw(data.Color)',
+                    borderColor: '@Html.Raw(data.Color)',
+                    borderWidth: 1,
+                    stack: 'Stack 1'
+                },
+                </text>
+            }
+            {
+                label: 'Budgeted Savings',
+                data: @Model.BudgetedSavingsDataset,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: @Html.Raw(Model.RealizedIncomeColor),
+                borderColor: @Html.Raw(Model.RealizedIncomeColor),
+                borderWidth: 1,
+                stack: 'Stack 0'
+            },
+            {
+                label: 'Realized Savings',
+                data: @Model,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: colorize(),
+                borderColor: colorize(),
+                borderWidth: 1,
+                stack: 'Stack 1'
+            },
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: {
+                intersect: false,
+            },
+            scales: {
+                x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false,
+                    position: 'top',
+                },
+                title: {
+                    display: false,
+                    text: '@Model.Title'
+                }
+            }
+        }
+        });
+function colorize() {
+        return (ctx) => {
+            const v = ctx.raw;
+            const c = v < 0 ? @Html.Raw(Model.InTheRedSavingsColor)
+            : @Html.Raw(Model.RealizedSavingsColor);
+    return c;
+  };
+};
+        </script>
