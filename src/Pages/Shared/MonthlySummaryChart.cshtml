@@ -8,7 +8,7 @@
     const @Model.ElementId = new Chart(@Model.VariableName, {
         type: 'bar',
         data: {
-            labels: @Html.Raw(@Model.Months),
+            labels: @Html.Raw(@Model.Labels),
             datasets: [{
                 label: 'Budgeted Income',
                 data: @Model.BudgetedIncomeDataset,
@@ -16,7 +16,7 @@
                 backgroundColor: @Html.Raw(Model.BudgetedIncomeColor),
                 borderColor: @Html.Raw(Model.BudgetedIncomeColor),
                 borderWidth: 1,
-                stack: 'Stack 0'
+                stack: 'Stack 1'
             },
             {
                 label: 'Realized Income',
@@ -25,7 +25,25 @@
                 backgroundColor: @Html.Raw(Model.RealizedIncomeColor),
                 borderColor: @Html.Raw(Model.RealizedIncomeColor),
                 borderWidth: 1,
+                stack: 'Stack 0'
+            },
+            {
+                label: 'Budgeted Savings',
+                data: @Model.BudgetedSavingsDataset,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: @Html.Raw(Model.BudgetedSavingsColor),
+                borderColor: @Html.Raw(Model.BudgetedSavingsColor),
+                borderWidth: 1,
                 stack: 'Stack 1'
+            },
+            {
+                label: 'Realized Savings',
+                data: @Model.RealizedSavingsDataset,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: colorize(),
+                borderColor: colorize(),
+                borderWidth: 1,
+                stack: 'Stack 0'
             },
             @foreach(var data in Model.BudgetedExpenseDatasets)
             {
@@ -36,11 +54,10 @@
                     color: 'rgba(0, 0, 0, 0)',
                     backgroundColor: '@Html.Raw(data.Color)',
                     borderColor: '@Html.Raw(data.Color)',
-                    borderWidth: 1,
-                    stack: 'Stack 0'
+                    borderWidth: 1
                 },
                 </text>
-            },
+            }
             @foreach(var data in Model.RealizedExpenseDatasets)
             {
                 <text>
@@ -50,29 +67,10 @@
                     color: 'rgba(0, 0, 0, 0)',
                     backgroundColor: '@Html.Raw(data.Color)',
                     borderColor: '@Html.Raw(data.Color)',
-                    borderWidth: 1,
-                    stack: 'Stack 1'
+                    borderWidth: 1
                 },
                 </text>
             }
-            {
-                label: 'Budgeted Savings',
-                data: @Model.BudgetedSavingsDataset,
-                color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: @Html.Raw(Model.RealizedIncomeColor),
-                borderColor: @Html.Raw(Model.RealizedIncomeColor),
-                borderWidth: 1,
-                stack: 'Stack 0'
-            },
-            {
-                label: 'Realized Savings',
-                data: @Model,
-                color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: colorize(),
-                borderColor: colorize(),
-                borderWidth: 1,
-                stack: 'Stack 1'
-            },
             ]
         },
         options: {

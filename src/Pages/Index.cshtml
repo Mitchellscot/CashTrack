@@ -124,6 +124,7 @@
 
 @section Scripts {
     <script src="~/js/home.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
     @await Html.PartialAsync("MonthlySummaryChart", new MonthlySummaryChart()
     {
         ElementId = "monthlySummaryChart",
@@ -132,6 +133,7 @@
         RealizedIncomeDataset = JsonSerializer.Serialize(Model.SummaryResponse.SummaryChartData.RealizedIncomeData),
         BudgetedSavingsDataset = JsonSerializer.Serialize(Model.SummaryResponse.SummaryChartData.BudgetedSavingsData),
         RealizedSavingsDataset = JsonSerializer.Serialize(Model.SummaryResponse.SummaryChartData.RealizedSavingsData),
+        Labels = JsonSerializer.Serialize(Model.SummaryResponse.SummaryChartData.Labels),
         BudgetedExpenseDatasets = Model.SummaryResponse.SummaryChartData.BudgetedExpenses,
         RealizedExpenseDatasets = Model.SummaryResponse.SummaryChartData.RealizedExpenses
 

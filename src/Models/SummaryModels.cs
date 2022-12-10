@@ -1,4 +1,5 @@
-﻿using CashTrack.Models.Common;
+﻿using CashTrack.Models.BudgetModels;
+using CashTrack.Models.Common;
 using System.Collections.Generic;
 
 namespace CashTrack.Models.SummaryModels
@@ -21,8 +22,8 @@ namespace CashTrack.Models.SummaryModels
         public int[] RealizedSavingsData { get; set; }
         public int[] BudgetedIncomeData { get; set; }
         public int[] RealizedIncomeData { get; set; }
-        public List<BudgetedExpenses> BudgetedExpenses { get; set; }
-        public List<RealizedExpenses> RealizedExpenses { get; set; }
+        public List<ExpenseDataset> BudgetedExpenses { get; set; }
+        public List<ExpenseDataset> RealizedExpenses { get; set; }
 
     }
 

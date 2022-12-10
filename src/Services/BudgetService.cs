@@ -108,7 +108,7 @@ namespace CashTrack.Services.BudgetService
                 {
                     Labels = ChartUtilities.GenerateMonthlyChartLabels(incomeExists, mainCategoryLabels, savingsExists, unallocatedExists),
                     //IncomeData = ChartUtilities.GetMonthlyIncomeData(incomeAmount, mainCategoryLabels.Length, savingsExists, unallocatedExists),
-                    ExpenseData = ChartUtilities.GetMonthlyBudgetExpenseData(budgets, incomeExists, savingsExists, unallocatedExists, mainCategoryLabels),
+                    ExpenseData = ChartUtilities.GetMonthlyBudgetExpenseData(budgets, incomeExists, savingsExists, mainCategoryLabels, unallocatedExists),
                     SavingsData = ChartUtilities.GetMonthlySavingsData(incomeExists, mainCategoryLabels.Length, adjustedSavings, unallocatedExists),
                     Unallocated = ChartUtilities.GetMonthlyUnallocatedData(incomeExists, mainCategoryLabels.Length, savingsExists, unallocatedAmount)
                 },

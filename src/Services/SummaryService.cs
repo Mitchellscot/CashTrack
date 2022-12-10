@@ -54,22 +54,30 @@ namespace CashTrack.Services.SummaryService
             var budgetedSavings = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
 
             var budgetedIncome = budgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount);
-            var realizedIncome = income.Sum(x => x.Amount);
+            var realizedIncomeAmount = income.Sum(x => x.Amount);
 
-            var budgetedExpensAmount = budgets.Where(x => x.BudgetType == BudgetType.Want || x.BudgetType == BudgetType.Need).Sum(x => x.Amount);
+            var budgetedExpenses = budgets.Where(x => x.BudgetType == BudgetType.Want || x.BudgetType == BudgetType.Need && x.SubCategoryId != null && x.Amount > 0).ToArray();
             var realizedExpenseAmount = expenses.Sum(x => x.Amount);
 
             var displaySavingsLabel = realizedExpenseAmount > 0 || budgetedSavings > 0;
 
-            var displayIncomeLabel = budgetedIncome > 0 || realizedIncome > 0;
+            var displayIncomeLabel = budgetedIncome > 0 || realizedIncomeAmount > 0;
+
+            //needs to be refactored
+            var realizedSavings = realizedExpenseAmount > realizedIncomeAmount ? (realizedIncomeAmount - realizedExpenseAmount) : 
+                (realizedExpenseAmount + budgetedSavings) >= realizedIncomeAmount && (realizedExpenseAmount + budgetedSavings) - realizedIncomeAmount > 0 ? 
+                (realizedExpenseAmount + budgetedSavings) - realizedIncomeAmount : (realizedExpenseAmount + budgetedSavings) <= realizedIncomeAmount ? realizedIncomeAmount - (realizedExpenseAmount + budgetedSavings) : realizedIncomeAmount == 0 && realizedExpenseAmount > 0 ? realizedExpenseAmount: realizedExpenseAmount == 0 && realizedIncomeAmount == 0 ? 0:0;
 
 
             return new MonthlySummaryChartData()
             {
                 Labels = ChartUtilities.GenerateMonthlyChartLabels(displayIncomeLabel, categoryLabels, displaySavingsLabel),
-                BudgetedSavingsData = ChartUtilities.GetMonthlySavingsData(displayIncomeLabel, categoryLabels.Length, budgetedIncome),
+                BudgetedSavingsData = ChartUtilities.GetMonthlySavingsData(displayIncomeLabel, categoryLabels.Length, budgetedSavings),
                 BudgetedIncomeData = ChartUtilities.GetMonthlyIncomeData(budgetedIncome, categoryLabels.Length, displaySavingsLabel),
-                RealizedIncomeData = ChartUtilities.GetMonthlyIncomeData((int)decimal.Round(realizedIncome, 0), categoryLabels.Length, displaySavingsLabel)
+                RealizedSavingsData = ChartUtilities.GetMonthlySavingsData(displayIncomeLabel, categoryLabels.Length, (int)decimal.Round(realizedSavings, 0)),
+                RealizedIncomeData = ChartUtilities.GetMonthlyIncomeData((int)decimal.Round(realizedIncomeAmount, 0), categoryLabels.Length, displaySavingsLabel),
+                BudgetedExpenses = ChartUtilities.GetMonthlyBudgetExpenseData(budgetedExpenses, displayIncomeLabel, displaySavingsLabel, categoryLabels),
+                RealizedExpenses = ChartUtilities.GetMonthlySummaryExpenseData(expenses, displayIncomeLabel, displaySavingsLabel, categoryLabels)
             };
         }
 
@@ -104,7 +112,7 @@ namespace CashTrack.Services.SummaryService
                 RealizedSavings = realizedSavings,
                 BudgetedSavings = budgetedSavings,
                 Unspent = unspent,
-                EstimatedSavings = estimatedSavings //change ui to say Actual Savings if in the past
+                EstimatedSavings = estimatedSavings
             };
         }
     }

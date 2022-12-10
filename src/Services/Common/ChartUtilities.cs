@@ -75,7 +75,7 @@ namespace CashTrack.Services.Common
             return data.ToArray();
         }
 
-        public static List<ExpenseDataset> GetMonthlyBudgetExpenseData(BudgetEntity[] budgets, bool incomeExists, bool savingsExists, bool unallocatedExists, string[] mainCategoryLabels)
+        public static List<ExpenseDataset> GetMonthlyBudgetExpenseData(BudgetEntity[] budgets, bool incomeExists, bool savingsExists, string[] mainCategoryLabels, bool unallocatedExists = false)
         {
             var arraySize = mainCategoryLabels.Length;
             arraySize = incomeExists ? arraySize + 1 : arraySize;
@@ -96,6 +96,37 @@ namespace CashTrack.Services.Common
                 var index = Array.IndexOf(mainCategoryLabels, expense.MainCategory);
                 var dataSet = new int[arraySize];
                 dataSet[index + adjustIndexForIncome] = expense.Amount;
+                var data = new ExpenseDataset()
+                {
+                    DataSet = dataSet,
+                    SubCategoryName = expense.Key,
+                    MainCategoryId = expense.MainCategoryId
+                };
+                expenseList.Add(data);
+            }
+            return AssignColorsToChartData(expenseList);
+        }
+        public static List<ExpenseDataset> GetMonthlySummaryExpenseData(ExpenseEntity[] expenses, bool incomeExists, bool savingsExists, string[] mainCategoryLabels, bool unallocatedExists = false)
+        {
+            var arraySize = mainCategoryLabels.Length;
+            arraySize = incomeExists ? arraySize + 1 : arraySize;
+            arraySize = savingsExists ? arraySize + 1 : arraySize;
+            arraySize = unallocatedExists ? arraySize + 1 : arraySize;
+
+            var amountsAndLabels = expenses.Where(x => x.Amount > 0).GroupBy(x => x.Category.Name)
+                .Select(x => (x.Key,
+                Amount: x.Sum(x => x.Amount),
+                MainCategory: x.Select(x =>
+                    x.Category.MainCategory.Name).FirstOrDefault(),
+                MainCategoryId: x.Select(x => x.Category.MainCategoryId).FirstOrDefault()
+                )).OrderBy(x => x.Key).ToList();
+            var expenseList = new List<ExpenseDataset>();
+            foreach (var expense in amountsAndLabels)
+            {
+                var adjustIndexForIncome = incomeExists ? 1 : 0;
+                var index = Array.IndexOf(mainCategoryLabels, expense.MainCategory);
+                var dataSet = new int[arraySize];
+                dataSet[index + adjustIndexForIncome] = (int)decimal.Round(expense.Amount, 0);
                 var data = new ExpenseDataset()
                 {
                     DataSet = dataSet,
