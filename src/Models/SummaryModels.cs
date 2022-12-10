@@ -12,35 +12,27 @@ namespace CashTrack.Models.SummaryModels
     }
     public record MonthlySummaryResponse
     {
-        public MonthlySummaryChartData SummaryChartData { get; set; }
+        public ExpenseSummaryChartData ExpenseSummaryChart { get; set; }
         public MonthlySummary MonthlySummary { get; set; }
+        public OverallSummaryChart OverallSummaryChart { get; set; }
     }
-    public record MonthlySummaryChartData
+    public record OverallSummaryChart
+    {
+        public string[] Labels { get; set; } = new string[] { "Income", "Expenses", "Savings" };
+        public int[] BudgetedIncome { get; set; }
+        public decimal[] RealizedIncome { get; set; }
+        public int[] BudgetedExpenses { get; set; }
+        public decimal[] RealizedExpenses { get; set; }
+        public int[] BudgetedSavings { get; set; }
+        public decimal[] RealizedSavings { get; set; }
+    }
+    public record ExpenseSummaryChartData
     {
         public string[] Labels { get; set; }
-        public int[] BudgetedSavingsData { get; set; }
-        public int[] RealizedSavingsData { get; set; }
-        public int[] BudgetedIncomeData { get; set; }
-        public int[] RealizedIncomeData { get; set; }
         public List<ExpenseDataset> BudgetedExpenses { get; set; }
         public List<ExpenseDataset> RealizedExpenses { get; set; }
-
     }
 
-    public class BudgetedExpenses
-    {
-        public string SubCategoryName { get; set; }
-        public string Color { get; set; }
-        public int MainCategoryId { get; set; }
-        public int[] DataSet { get; set; }
-    }
-    public class RealizedExpenses
-    {
-        public string SubCategoryName { get; set; }
-        public string Color { get; set; }
-        public int MainCategoryId { get; set; }
-        public decimal[] DataSet { get; set; }
-    }
     public record MonthlySummary
     {
         public decimal RealizedIncome { get; set; }

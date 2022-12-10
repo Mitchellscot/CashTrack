@@ -1,7 +1,5 @@
-﻿@using System.Text.Json;
-@model CashTrack.Pages.Shared.MonthlySummaryChart
+﻿@model CashTrack.Pages.Shared.OverallMonthlySummaryChart
 @{
-
 }
 <script>
     const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
@@ -11,70 +9,63 @@
             labels: @Html.Raw(@Model.Labels),
             datasets: [{
                 label: 'Budgeted Income',
-                data: @Model.BudgetedIncomeDataset,
+                data: @Model.BudgetedIncome,
                 color: 'rgba(0, 0, 0, 0)',
                 backgroundColor: @Html.Raw(Model.BudgetedIncomeColor),
                 borderColor: @Html.Raw(Model.BudgetedIncomeColor),
                 borderWidth: 1,
-                stack: 'Stack 1'
+                stack: 'Stack 0'
             },
             {
                 label: 'Realized Income',
-                data: @Model.RealizedIncomeDataset,
+                data: @Model.RealizedIncome,
                 color: 'rgba(0, 0, 0, 0)',
                 backgroundColor: @Html.Raw(Model.RealizedIncomeColor),
                 borderColor: @Html.Raw(Model.RealizedIncomeColor),
                 borderWidth: 1,
+                stack: 'Stack 1'
+            },
+            {
+                label: 'Budgeted Expenses',
+                data: @Model.BudgetedExpenses,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: @Html.Raw(Model.BudgetedExpensesColor),
+                borderColor: @Html.Raw(Model.BudgetedExpensesColor),
+                borderWidth: 1,
                 stack: 'Stack 0'
             },
             {
-                label: 'Budgeted Savings',
-                data: @Model.BudgetedSavingsDataset,
+                label: 'Realized Expenses',
+                data: @Model.RealizedExpenses,
                 color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: @Html.Raw(Model.BudgetedSavingsColor),
-                borderColor: @Html.Raw(Model.BudgetedSavingsColor),
+                backgroundColor: @Html.Raw(Model.RealizedExpensesColor),
+                borderColor: @Html.Raw(Model.RealizedExpensesColor),
                 borderWidth: 1,
                 stack: 'Stack 1'
             },
             {
+                label: 'Budgeted Savings',
+                data: @Model.BudgetedSavings,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: @Html.Raw(Model.BudgetedSavingsColor),
+                borderColor: @Html.Raw(Model.BudgetedSavingsColor),
+                borderWidth: 1,
+                stack: 'Stack 0'
+            },
+            {
                 label: 'Realized Savings',
-                data: @Model.RealizedSavingsDataset,
+                data: @Model.RealizedSavings,
                 color: 'rgba(0, 0, 0, 0)',
                 backgroundColor: colorize(),
                 borderColor: colorize(),
                 borderWidth: 1,
-                stack: 'Stack 0'
-            },
-            @foreach(var data in Model.BudgetedExpenseDatasets)
-            {
-                <text>
-                {
-                    label: '@data.SubCategoryName',
-                    data: @JsonSerializer.Serialize(@data.DataSet),
-                    color: 'rgba(0, 0, 0, 0)',
-                    backgroundColor: '@Html.Raw(data.Color)',
-                    borderColor: '@Html.Raw(data.Color)',
-                    borderWidth: 1
-                },
-                </text>
-            }
-            @foreach(var data in Model.RealizedExpenseDatasets)
-            {
-                <text>
-                {
-                    label: '@data.SubCategoryName',
-                    data: @JsonSerializer.Serialize(@data.DataSet),
-                    color: 'rgba(0, 0, 0, 0)',
-                    backgroundColor: '@Html.Raw(data.Color)',
-                    borderColor: '@Html.Raw(data.Color)',
-                    borderWidth: 1
-                },
-                </text>
+                stack: 'Stack 1'
             }
             ]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             interaction: {
                 intersect: false,
             },
@@ -89,7 +80,7 @@
             plugins: {
                 legend: {
                     display: false,
-                    position: 'top',
+                    position: 'bottom',
                 },
                 title: {
                     display: false,

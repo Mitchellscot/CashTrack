@@ -1,13 +1,12 @@
 ﻿using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
-using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.SummaryModels;
 using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.IncomeRepository;
-using CashTrack.Services.BudgetService;
 using CashTrack.Services.Common;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -40,44 +39,44 @@ namespace CashTrack.Services.SummaryService
             return new MonthlySummaryResponse()
             {
                 MonthlySummary = GetMonthlySummary(expenses, income, budgets, request.Year, request.Month),
-                SummaryChartData = GetSummaryChartData(expenses, income, budgets)
+                ExpenseSummaryChart = GetExpenseSummaryChartData(expenses, budgets),
+                OverallSummaryChart = GetOverallSummaryChart(expenses, income, budgets)
             };
         }
 
-        internal MonthlySummaryChartData GetSummaryChartData(ExpenseEntity[] expenses, IncomeEntity[] income, BudgetEntity[] budgets)
+        private OverallSummaryChart GetOverallSummaryChart(ExpenseEntity[] expenses, IncomeEntity[] income, BudgetEntity[] budgets)
+        {
+            var budgetedIncome = budgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount);
+            var realizedIncome = income.Sum(x => x.Amount);
+            var budgetedExpenses = budgets.Where(x => x.BudgetType == BudgetType.Need || x.BudgetType == BudgetType.Want).Sum(x => x.Amount);
+            var realizedExpenses = expenses.Sum(x => x.Amount);
+            var budgetedSavings = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
+            var realizedSavings = realizedIncome - realizedExpenses;
+            return new OverallSummaryChart()
+            {
+                BudgetedIncome = new[] { budgetedIncome, 0, 0 },
+                RealizedIncome= new[] { realizedIncome, 0, 0 },
+                BudgetedExpenses= new[] { 0, budgetedExpenses, 0 },
+                RealizedExpenses= new[] { 0, realizedExpenses, 0 },
+                BudgetedSavings = new[] { 0,0, budgetedSavings},
+                RealizedSavings = new[] { 0, 0,realizedSavings}
+            };
+        }
+
+        internal ExpenseSummaryChartData GetExpenseSummaryChartData(ExpenseEntity[] expenses, BudgetEntity[] budgets)
         {
             var expenseMainLabels = expenses.Select(x => x.Category.MainCategory.Name).Distinct().ToList();
             var budgetMainLabels = budgets.Where(x => x.SubCategoryId != null && x.Amount > 0 && x.BudgetType == BudgetType.Need || x.BudgetType == BudgetType.Want).Select(x => x.SubCategory.MainCategory.Name).Distinct().ToList();
             expenseMainLabels.AddRange(budgetMainLabels);
-            var categoryLabels = expenseMainLabels.Distinct().ToArray();
-
-            var budgetedSavings = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
-
-            var budgetedIncome = budgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount);
-            var realizedIncomeAmount = income.Sum(x => x.Amount);
+            var categoryLabels = expenseMainLabels.Distinct().OrderBy(x => x).ToArray();
 
             var budgetedExpenses = budgets.Where(x => x.BudgetType == BudgetType.Want || x.BudgetType == BudgetType.Need && x.SubCategoryId != null && x.Amount > 0).ToArray();
-            var realizedExpenseAmount = expenses.Sum(x => x.Amount);
 
-            var displaySavingsLabel = realizedExpenseAmount > 0 || budgetedSavings > 0;
-
-            var displayIncomeLabel = budgetedIncome > 0 || realizedIncomeAmount > 0;
-
-            //needs to be refactored
-            var realizedSavings = realizedExpenseAmount > realizedIncomeAmount ? (realizedIncomeAmount - realizedExpenseAmount) : 
-                (realizedExpenseAmount + budgetedSavings) >= realizedIncomeAmount && (realizedExpenseAmount + budgetedSavings) - realizedIncomeAmount > 0 ? 
-                (realizedExpenseAmount + budgetedSavings) - realizedIncomeAmount : (realizedExpenseAmount + budgetedSavings) <= realizedIncomeAmount ? realizedIncomeAmount - (realizedExpenseAmount + budgetedSavings) : realizedIncomeAmount == 0 && realizedExpenseAmount > 0 ? realizedExpenseAmount: realizedExpenseAmount == 0 && realizedIncomeAmount == 0 ? 0:0;
-
-
-            return new MonthlySummaryChartData()
+            return new ExpenseSummaryChartData()
             {
-                Labels = ChartUtilities.GenerateMonthlyChartLabels(displayIncomeLabel, categoryLabels, displaySavingsLabel),
-                BudgetedSavingsData = ChartUtilities.GetMonthlySavingsData(displayIncomeLabel, categoryLabels.Length, budgetedSavings),
-                BudgetedIncomeData = ChartUtilities.GetMonthlyIncomeData(budgetedIncome, categoryLabels.Length, displaySavingsLabel),
-                RealizedSavingsData = ChartUtilities.GetMonthlySavingsData(displayIncomeLabel, categoryLabels.Length, (int)decimal.Round(realizedSavings, 0)),
-                RealizedIncomeData = ChartUtilities.GetMonthlyIncomeData((int)decimal.Round(realizedIncomeAmount, 0), categoryLabels.Length, displaySavingsLabel),
-                BudgetedExpenses = ChartUtilities.GetMonthlyBudgetExpenseData(budgetedExpenses, displayIncomeLabel, displaySavingsLabel, categoryLabels),
-                RealizedExpenses = ChartUtilities.GetMonthlySummaryExpenseData(expenses, displayIncomeLabel, displaySavingsLabel, categoryLabels)
+                Labels = ChartUtilities.GenerateMonthlyChartLabels(false, categoryLabels, false),
+                BudgetedExpenses = ChartUtilities.GetMonthlyBudgetExpenseData(budgetedExpenses, false, false, categoryLabels),
+                RealizedExpenses = ChartUtilities.GetMonthlySummaryExpenseData(expenses, false, false, categoryLabels)
             };
         }
 

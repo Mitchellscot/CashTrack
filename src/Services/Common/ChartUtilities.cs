@@ -135,9 +135,9 @@ namespace CashTrack.Services.Common
                 };
                 expenseList.Add(data);
             }
-            return AssignColorsToChartData(expenseList);
+            return AssignColorsToChartData(expenseList, true);
         }
-        public static List<ExpenseDataset> AssignColorsToChartData(List<ExpenseDataset> chartData)
+        public static List<ExpenseDataset> AssignColorsToChartData(List<ExpenseDataset> chartData, bool isSummary = false)
         {
             var chartDataWithColors = new List<ExpenseDataset>();
             var mainCategories = chartData.Select(x => x.MainCategoryId).Distinct().ToList();
@@ -146,16 +146,24 @@ namespace CashTrack.Services.Common
                 var matchingExpenses = chartData.Where(x => x.MainCategoryId == id);
                 var coloredData = matchingExpenses.Select((x, index) =>
                 {
-                    x.Color = GetColorForExpenseDataset(index);
+                    x.Color = GetColorForExpenseDataset(index, isSummary);
                     return x;
                 }).ToList();
                 chartDataWithColors.AddRange(coloredData);
             }
             return chartDataWithColors;
         }
-        public static string GetColorForExpenseDataset(int index)
+        public static string GetColorForExpenseDataset(int index, bool isSummary = false)
         {
-            var colors = new[]
+            var colors = isSummary ? new[]
+            {
+                DarkChartColors.Red,
+                DarkChartColors.Orange,
+                DarkChartColors.Yellow,
+                DarkChartColors.Green,
+                DarkChartColors.Blue,
+                DarkChartColors.Purple
+            } : new[]
             {
                 LightChartColors.Pink,
                 LightChartColors.Orange,
@@ -164,6 +172,7 @@ namespace CashTrack.Services.Common
                 LightChartColors.Azure,
                 LightChartColors.Purple
             };
+
             if (index > colors.Length - 1)
             {
                 var localIndex = index;

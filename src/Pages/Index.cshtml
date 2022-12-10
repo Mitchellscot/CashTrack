@@ -16,7 +16,8 @@
     <div class="container-fluid">
         <div class="row mt-2 border-bottom d-flex justify-content-between">
             <div class="d-flex col-auto align-self-center">
-                <h3 class="me-2">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month) @Model.Year
+                <h3 class="me-2">
+                    @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month) @Model.Year
                 </h3>
                 <a class="align-self-center" asp-page="./Annual">Annual</a>
             </div>
@@ -59,7 +60,7 @@
                 </div>
             }
         </div>
-    <div class="row">
+        <div class="row d-flex">
             @if (Model.SummaryResponse.MonthlySummary != null)
             {
                 <div class="col-6 col-lg-3">
@@ -69,7 +70,7 @@
                                 Income: &nbsp;
                             </span>
                             <span class="fw-bold text-primary responsive-text">
-                                @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.RealizedIncome) / 
+                                @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.RealizedIncome) /
                                 @Model.SummaryResponse.MonthlySummary.BudgetedIncome
                             </span>
                         </li>
@@ -94,13 +95,13 @@
                             @if (currentMonth)
                             {
                                 <span class="d-none d-md-block">
-                                Estimated Savings:
+                                    Estimated Savings:
                                 </span>
                             }
                             else
                             {
                                 <span class="d-none d-md-block">
-                                Actual Savings:
+                                    Actual Savings:
                                 </span>
                             }
                             <span class="fw-bold text-primary responsive-text">
@@ -118,24 +119,40 @@
                     </ul>
                 </div>
             }
-    </div>
+
+            @if (Model.SummaryResponse.OverallSummaryChart != null)
+            {
+                <div class="col-6 col-lg-3 chart-height">
+                    <canvas id="overallSummaryChart"></canvas>
+                </div>
+            }
+
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <script src="~/js/home.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
-    @await Html.PartialAsync("MonthlySummaryChart", new MonthlySummaryChart()
+    @await Html.PartialAsync("MonthlyExpenseSummaryChart", new MonthlyExpenseSummaryChart()
     {
         ElementId = "monthlySummaryChart",
         Title = @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month),
-        BudgetedIncomeDataset = JsonSerializer.Serialize(Model.SummaryResponse.SummaryChartData.BudgetedIncomeData),
-        RealizedIncomeDataset = JsonSerializer.Serialize(Model.SummaryResponse.SummaryChartData.RealizedIncomeData),
-        BudgetedSavingsDataset = JsonSerializer.Serialize(Model.SummaryResponse.SummaryChartData.BudgetedSavingsData),
-        RealizedSavingsDataset = JsonSerializer.Serialize(Model.SummaryResponse.SummaryChartData.RealizedSavingsData),
-        Labels = JsonSerializer.Serialize(Model.SummaryResponse.SummaryChartData.Labels),
-        BudgetedExpenseDatasets = Model.SummaryResponse.SummaryChartData.BudgetedExpenses,
-        RealizedExpenseDatasets = Model.SummaryResponse.SummaryChartData.RealizedExpenses
+        Labels = JsonSerializer.Serialize(Model.SummaryResponse.ExpenseSummaryChart.Labels),
+        BudgetedExpenseDatasets = Model.SummaryResponse.ExpenseSummaryChart.BudgetedExpenses,
+        RealizedExpenseDatasets = Model.SummaryResponse.ExpenseSummaryChart.RealizedExpenses
 
+    })
+    @await Html.PartialAsync("OverallMonthlySummaryChart", new OverallMonthlySummaryChart()
+    {
+        ElementId = "overallSummaryChart",
+        Title = @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month),
+        Labels = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.Labels),
+        BudgetedIncome = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.BudgetedIncome),
+        RealizedIncome = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedIncome),
+        BudgetedExpenses = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.BudgetedExpenses),
+        RealizedExpenses = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedExpenses),
+        BudgetedSavings = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.BudgetedSavings),
+        RealizedSavings = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedSavings)
     })
 }
