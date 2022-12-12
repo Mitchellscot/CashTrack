@@ -327,23 +327,26 @@ namespace CashTrack.Services.BudgetService
             if (budgets.Length == 0)
                 return new Dictionary<string, int>();
 
+            var expenseTotal = budgets.Where(x => x.SubCategoryId != null).Sum(x => x.Amount);
+            var amountToPercentBy = expenseTotal > totalAnnualIncome ? expenseTotal : totalAnnualIncome;
+
             var expensePercentagesOfIncome = budgets.Where(x => x.SubCategoryId != null).GroupBy(x => x.SubCategory.Name).Select(x =>
             {
                 return (Name: x.Key, Amount: x.Sum(x => x.Amount));
             }).Select(x =>
             {
-                return (Name: x.Name, Percentage: x.Amount.ToPercentage(totalAnnualIncome));
+                return (Name: x.Name, Percentage: x.Amount.ToPercentage(amountToPercentBy));
             }).Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
 
             var savingsAllocated = GetAnnualSavingsData(budgets).Sum();
 
             if (savingsAllocated > 0)
-                expensePercentagesOfIncome.Add("Savings", savingsAllocated.ToPercentage(totalAnnualIncome));
+                expensePercentagesOfIncome.Add("Savings", savingsAllocated.ToPercentage(amountToPercentBy));
 
             var unAllocated = GetAnnualUnallocatedData(budgets).Sum();
 
             if (unAllocated > 0)
-                expensePercentagesOfIncome.Add("Unallocated", unAllocated.ToPercentage(totalAnnualIncome));
+                expensePercentagesOfIncome.Add("Unallocated", unAllocated.ToPercentage(amountToPercentBy));
 
             return expensePercentagesOfIncome;
         }
@@ -352,25 +355,28 @@ namespace CashTrack.Services.BudgetService
             if (budgets.Length == 0)
                 return new Dictionary<string, int>();
 
-            var expensePercentagesOfIncome = budgets.Where(x => x.SubCategoryId != null).GroupBy(x => x.SubCategory.MainCategory.Name).Select(x =>
+            var expenseTotal = budgets.Where(x => x.SubCategoryId != null).Sum(x => x.Amount);
+            var amountToPercentBy = expenseTotal > totalAnnualIncome ? expenseTotal : totalAnnualIncome;
+
+            var expensePercentages = budgets.Where(x => x.SubCategoryId != null).GroupBy(x => x.SubCategory.MainCategory.Name).Select(x =>
             {
                 return (Name: x.Key, Amount: x.Sum(x => x.Amount));
             }).Select(x =>
             {
-                return (Name: x.Name, Percentage: x.Amount.ToPercentage(totalAnnualIncome));
+                return (Name: x.Name, Percentage: x.Amount.ToPercentage(amountToPercentBy));
             }).Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
 
             var savingsAllocated = GetAnnualSavingsData(budgets).Sum();
 
             if (savingsAllocated > 0)
-                expensePercentagesOfIncome.Add("Savings", savingsAllocated.ToPercentage(totalAnnualIncome));
+                expensePercentages.Add("Savings", savingsAllocated.ToPercentage(amountToPercentBy));
 
             var unAllocated = GetAnnualUnallocatedData(budgets).Sum();
 
             if (unAllocated > 0)
-                expensePercentagesOfIncome.Add("Unallocated", unAllocated.ToPercentage(totalAnnualIncome));
+                expensePercentages.Add("Unallocated", unAllocated.ToPercentage(amountToPercentBy));
 
-            return expensePercentagesOfIncome;
+            return expensePercentages;
         }
         internal List<BudgetBreakdown> GetBudgetBreakdown(BudgetEntity[] budgets, int totalIncome)
         {

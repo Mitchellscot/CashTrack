@@ -1,5 +1,6 @@
 ﻿using CashTrack.Models.BudgetModels;
 using CashTrack.Models.Common;
+using Microsoft.VisualBasic;
 using System.Collections.Generic;
 
 namespace CashTrack.Models.SummaryModels
@@ -12,9 +13,28 @@ namespace CashTrack.Models.SummaryModels
     }
     public record MonthlySummaryResponse
     {
+        //TODO: Add an object for the progress bars
+        public MonthlyProgress MonthlyProgress { get; set; }
+        public AnnualSavingsProgress AnnualSavingsProgress { get; set; }
         public ExpenseSummaryChartData ExpenseSummaryChart { get; set; }
         public MonthlySummary MonthlySummary { get; set; }
         public OverallSummaryChart OverallSummaryChart { get; set; }
+        public Dictionary<string, int> SubCategoryPercentages { get; set; }
+        public Dictionary<string, int> MainCategoryPercentages { get; set; }
+    }
+    public record MonthlyProgress
+    {
+        public int RealizedIncome { get; set; }
+        public string RealizedIncomeMessage { get; set; }
+        public int BudgetedExpenses { get; set; }
+        public int BudgetedSavings { get; set; }
+        public int DiscretionarySpendingPercent { get; set; }
+        public decimal DiscretionarySpendingAmount { get; set; }
+    }
+    public record AnnualSavingsProgress
+    {
+        public int AnnualSavings { get; set; }
+        public string AnnualSavingsMessage { get; set; }
     }
     public record OverallSummaryChart
     {
@@ -25,6 +45,7 @@ namespace CashTrack.Models.SummaryModels
         public decimal[] RealizedExpenses { get; set; }
         public int[] BudgetedSavings { get; set; }
         public decimal[] RealizedSavings { get; set; }
+
     }
     public record ExpenseSummaryChartData
     {
@@ -43,5 +64,6 @@ namespace CashTrack.Models.SummaryModels
         public int BudgetedSavings { get; set; }
         public decimal Unspent { get; set; }
         public decimal EstimatedSavings { get; set; }
+        public decimal BudgetVariance { get; set; }
     }
 }

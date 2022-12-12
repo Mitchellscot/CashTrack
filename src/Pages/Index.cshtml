@@ -1,5 +1,6 @@
 ﻿@page
 @using System.Globalization;
+@using CashTrack.Pages.Budget;
 @using Pages.Shared;
 @using System.Text.Json;
 @model IndexModel
@@ -7,6 +8,10 @@
     ViewData["Title"] = "Dashboard";
     Layout = "_Layout";
     var currentMonth = Model.Month == DateTime.Now.Month && Model.Year == DateTime.Now.Year;
+    var realizedIncomePercentage = $"{@Model.SummaryResponse.MonthlyProgress.RealizedIncome}%";
+    var budgetedExpensesPercentage = $"{@Model.SummaryResponse.MonthlyProgress.BudgetedExpenses}%";
+    var budgetedSavingsPercentage = $"{@Model.SummaryResponse.MonthlyProgress.BudgetedSavings}%";
+    var discretionarySpending = $"{@Model.SummaryResponse.MonthlyProgress.DiscretionarySpendingPercent}%";
 }
 <div class="container-fluid">
     @if (Model.ReviewAmount > 0)
@@ -63,8 +68,8 @@
         <div class="row d-flex">
             @if (Model.SummaryResponse.MonthlySummary != null)
             {
-                <div class="col-6 col-lg-3">
-                    <ul class="list-group text-center mt-3">
+                <div class="col-6 col-lg-3 shadow-sm">
+                    <ul class="list-group text-center mt-2">
                         <li class="list-group-item d-flex justify-content-between p-3">
                             <span class="d-none d-md-block">
                                 Income: &nbsp;
@@ -116,17 +121,70 @@
                                 @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.Unspent)
                             </span>
                         </li>
+                        <li class="list-group-item d-flex justify-content-between p-3">
+                            <span class="d-none d-md-block">
+                                Budget Variance:
+                            </span>
+                            <span class="fw-bold text-primary responsive-text">
+                                @Model.SummaryResponse.MonthlySummary.BudgetVariance.ToString("P", CultureInfo.InvariantCulture)
+                            </span>
+                        </li>
                     </ul>
                 </div>
             }
-
             @if (Model.SummaryResponse.OverallSummaryChart != null)
             {
-                <div class="col-6 col-lg-3 chart-height">
+                <div class="col-6 col-lg-3 chart-height shadow-sm">
                     <canvas id="overallSummaryChart"></canvas>
                 </div>
             }
-
+            <div class="col-12 col-lg-6 border rounded-2 mt-2 shadow">
+                <div class="d-flex">
+                    <h4 class="mt-1 me-2">Budgeted Income</h4><i class="bi bi-question-circle text-primary action-icon align-self-center"></i>
+                </div>
+                <div class="progress border-bottom my-2">
+                    <div class="progress-bar bg-success" style="width: @realizedIncomePercentage">@realizedIncomePercentage</div>
+                </div>
+                <div class="d-flex">
+                    <h4 class="me-2">Budgeted Expenses</h4><i class="bi bi-question-circle text-primary action-icon align-self-center"></i>
+                </div>
+                <div class="progress my-2">
+                    <div class="progress-bar bg-danger" style="width: @budgetedExpensesPercentage">@budgetedExpensesPercentage</div>
+                </div>
+                <div class="d-flex">
+                    <h4 class="me-2">Budgeted Savings</h4><i class="bi bi-question-circle text-primary action-icon align-self-center"></i>
+                </div>
+                <div class="progress my-2">
+                    <div class="progress-bar bg-info" style="width: @budgetedSavingsPercentage">@budgetedSavingsPercentage</div>
+                </div>
+                <div class="d-flex">
+                    <h4 class="me-2">Discretionary Spending</h4><i class="bi bi-question-circle text-primary action-icon align-self-center"></i>
+                </div>
+                <div class="progress my-2">
+                    <div class="progress-bar bg-warning" style="width: @discretionarySpending">@Model.SummaryResponse.MonthlyProgress.DiscretionarySpendingAmount</div>
+                </div>
+                <div class="d-flex">
+                    <h4 class="me-2">Annual Savings Goal</h4><i class="bi bi-question-circle text-primary action-icon align-self-center"></i>
+                </div>
+                <div class="progress my-2">
+                    <div class="progress-bar" style="width: 25%">25%</div>
+                </div>
+                <p>In order to hit your annual savings goal, try to saving 1,320 this month.</p>
+            </div>
+        </div>
+        <div class="row">
+            @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.SubCategoryPercentages.Values.Sum() > 0)
+            {
+                <div class="col-6 col-lg-3 mt-3">
+                    <canvas id="subCategoryPie" class="chart-height"></canvas>
+                </div>
+            }
+            @if (Model.SummaryResponse.MainCategoryPercentages != null && Model.SummaryResponse.MainCategoryPercentages.Values.Sum() > 0)
+            {
+                <div class="col-6 col-lg-3 mt-3">
+                    <canvas id="mainCategoryPie" class="chart-height"></canvas>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -154,5 +212,19 @@
         RealizedExpenses = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedExpenses),
         BudgetedSavings = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.BudgetedSavings),
         RealizedSavings = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedSavings)
+    })
+    @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.SubCategoryPercentages.Select(x => x.Key).ToArray()))
+    {
+        ElementId = "subCategoryPie",
+        Dataset = JsonSerializer.Serialize(Model.SummaryResponse.SubCategoryPercentages.Select(x => x.Value).ToArray()),
+        Title = "Sub Category Percentages",
+        IsSummaryChart = true
+    })
+    @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.MainCategoryPercentages.Select(x => x.Key).ToArray()))
+    {
+        ElementId = "mainCategoryPie",
+        Dataset = JsonSerializer.Serialize(Model.SummaryResponse.MainCategoryPercentages.Select(x => x.Value).ToArray()),
+        Title = "Main Category Percentages",
+        IsSummaryChart = true
     })
 }
