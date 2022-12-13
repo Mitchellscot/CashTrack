@@ -1,5 +1,6 @@
 ﻿@page
 @using System.Globalization;
+@using CashTrack.Common;
 @using CashTrack.Pages.Budget;
 @using Pages.Shared;
 @using System.Text.Json;
@@ -12,6 +13,8 @@
     var budgetedExpensesPercentage = $"{@Model.SummaryResponse.MonthlyProgress.BudgetedExpenses}%";
     var budgetedSavingsPercentage = $"{@Model.SummaryResponse.MonthlyProgress.BudgetedSavings}%";
     var discretionarySpending = $"{@Model.SummaryResponse.MonthlyProgress.DiscretionarySpendingPercent}%";
+    var annualSavingsPercentage = $"{@Model.SummaryResponse.AnnualSavingsProgress.AnnualSavingsPercentDone}%";
+    var annualSavingsAmount = $"{@Model.SummaryResponse.AnnualSavingsProgress.AnnualSavingsAmount}";
 }
 <div class="container-fluid">
     @if (Model.ReviewAmount > 0)
@@ -57,14 +60,6 @@
                 </div>
             </div>
         </div>
-        <div class="row mb-1">
-            @if (Model.SummaryResponse.MonthlySummary != null)
-            {
-                <div class="col">
-                    <canvas id="monthlySummaryChart" class="chart-height"></canvas>
-                </div>
-            }
-        </div>
         <div class="row d-flex">
             @if (Model.SummaryResponse.MonthlySummary != null)
             {
@@ -75,8 +70,10 @@
                                 Income: &nbsp;
                             </span>
                             <span class="fw-bold text-primary responsive-text">
-                                @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.RealizedIncome) /
-                                @Model.SummaryResponse.MonthlySummary.BudgetedIncome
+                                @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.RealizedIncome)
+                                <span class="responsive-text">
+                                / @Model.SummaryResponse.MonthlySummary.BudgetedIncome
+                            </span>
                             </span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between p-3">
@@ -84,8 +81,10 @@
                                 Expenses:
                             </span>
                             <span class="fw-bold text-primary responsive-text">
-                                @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.RealizedExpenses) /
-                                @Model.SummaryResponse.MonthlySummary.BudgetedExpenses
+                                @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.RealizedExpenses)
+                                <span class="responsive-text">
+                                / @Model.SummaryResponse.MonthlySummary.BudgetedExpenses
+                            </span>
                             </span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between p-3">
@@ -93,7 +92,10 @@
                                 Savings:
                             </span>
                             <span class="fw-bold text-primary responsive-text">
-                                @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.RealizedSavings) /      @Model.SummaryResponse.MonthlySummary.BudgetedSavings
+                                    @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.RealizedSavings)
+                                <span class="responsive-text">
+                                / @Model.SummaryResponse.MonthlySummary.BudgetedSavings
+                            </span>
                             </span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between p-3">
@@ -109,9 +111,19 @@
                                     Actual Savings:
                                 </span>
                             }
+                            @if (Model.SummaryResponse.MonthlySummary.EstimatedSavings < 0)
+                            {
+                                <span class="fw-bold responsive-text text-danger">
+                                @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.EstimatedSavings)
+                            </span>
+                            }
+                            else
+                            {
                             <span class="fw-bold text-primary responsive-text">
                                 @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.EstimatedSavings)
                             </span>
+                            }
+
                         </li>
                         <li class="list-group-item d-flex justify-content-between p-3">
                             <span class="d-none d-md-block">
@@ -167,9 +179,9 @@
                     <h4 class="me-2">Annual Savings Goal</h4><i class="bi bi-question-circle text-primary action-icon align-self-center"></i>
                 </div>
                 <div class="progress my-2">
-                    <div class="progress-bar" style="width: 25%">25%</div>
+                    <div class="progress-bar" style="width: @annualSavingsPercentage">@annualSavingsAmount</div>
                 </div>
-                <p>In order to hit your annual savings goal, try to saving 1,320 this month.</p>
+                <p>@Model.SummaryResponse.AnnualSavingsProgress.AnnualSavingsMessage</p>
             </div>
         </div>
         <div class="row">
@@ -183,6 +195,28 @@
             {
                 <div class="col-6 col-lg-3 mt-3">
                     <canvas id="mainCategoryPie" class="chart-height"></canvas>
+                </div>
+            }
+            @if (Model.SummaryResponse.MainCategoryPercentages != null && Model.SummaryResponse.MainCategoryPercentages.Values.Sum() > 0)
+            {
+                <div class="col-12 col-lg-6 mt-3">
+                    <canvas id="dailyExpenseChart" class="chart-height"></canvas>
+                </div>
+            }
+        </div>
+        <div class="row mb-1">
+            @if (Model.SummaryResponse.MonthlySummary != null)
+            {
+                <div class="col">
+                    <canvas id="monthlySummaryChart" class="chart-height"></canvas>
+                </div>
+            }
+        </div>
+        <div class="row mb-1">
+            @if (Model.SummaryResponse.YearToDate != null)
+            {
+                <div class="col-12 col-lg-6 mt-3">
+                    <canvas id="ytdChart" class="chart-height"></canvas>
                 </div>
             }
         </div>
@@ -226,5 +260,26 @@
         Dataset = JsonSerializer.Serialize(Model.SummaryResponse.MainCategoryPercentages.Select(x => x.Value).ToArray()),
         Title = "Main Category Percentages",
         IsSummaryChart = true
+    })
+    @await Html.PartialAsync("DailyExpenseLineChart", new DailyExpenseLineChart()
+    {
+        ElementId = "dailyExpenseChart",
+        Dataset = JsonSerializer.Serialize(Model.SummaryResponse.DailyExpenseLineChart.Dataset),
+        Title = "Daily Expenses",
+        Labels = JsonSerializer.Serialize(Model.SummaryResponse.DailyExpenseLineChart.Labels),
+        Max = Model.SummaryResponse.DailyExpenseLineChart.Max,
+        ExpenseBudgetMax = Model.SummaryResponse.DailyExpenseLineChart.ExpenseBudgetMax,
+        DiscretionarySpendingMax = Model.SummaryResponse.DailyExpenseLineChart.DiscretionarySpendingMax,
+        IncomeMax = Model.SummaryResponse.DailyExpenseLineChart.IncomeMax
+    })
+        @await Html.PartialAsync("MonthlyYearToDateChart", new MonthlyYearToDateChart()
+    {
+        ElementId = "ytdChart",
+        Dataset = JsonSerializer.Serialize(Model.SummaryResponse.DailyExpenseLineChart.Dataset),
+        Title = "Daily Expenses",
+        Labels = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.Labels),
+        IncomeDataset = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.IncomeDataset),
+        ExpenseDataset = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.ExpenseDataset),
+        SavingsDataset = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.SavingsDataset)
     })
 }

@@ -8,6 +8,8 @@ using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -33,25 +35,146 @@ namespace CashTrack.Services.SummaryService
 
         public async Task<MonthlySummaryResponse> GetMonthlySummaryAsync(MonthlySummaryRequest request)
         {
-            var expenses = await _expenseRepo.Find(x => x.Date.Year == request.Year && x.Date.Month == request.Month && !x.ExcludeFromStatistics);
-            var income = await _incomeRepo.Find(x => x.Date.Year == request.Year && x.Date.Month == request.Month && !x.IsRefund);
-            var budgets = await _budgetRepo.FindWithMainCategories(x => x.Year == request.Year && x.Month == request.Month);
+            var expensesYTD = await _expenseRepo.Find(x => x.Date.Year == request.Year && x.Date.Month <= request.Month && !x.ExcludeFromStatistics);
+            var incomeYTD = await _incomeRepo.Find(x => x.Date.Year == request.Year && x.Date.Month <= request.Month && !x.IsRefund);
+            var annualBudgets = await _budgetRepo.FindWithMainCategories(x => x.Year == request.Year);
+
+            var monthlyIncome = incomeYTD.Where(x => x.Date.Month == request.Month).ToArray();
+            var monthlyExpenses = expensesYTD.Where(x => x.Date.Month == request.Month).ToArray();
+            var monthlyBudgets = annualBudgets.Where(x => x.Month == request.Month).ToArray();
 
             var incomeToCompare = request.Month == DateTime.Now.Month && request.Year == DateTime.Now.Year ?
-                budgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount) :
-                (int)decimal.Round(income.Sum(x => x.Amount), 0);
+                monthlyBudgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount) :
+                (int)decimal.Round(monthlyIncome.Sum(x => x.Amount), 0);
 
-            var monthlySummary = GetMonthlySummary(expenses, income, budgets, request.Year, request.Month);
-            var progress = GetMonthlyProgress(monthlySummary, request.Year, request.Month);
+            var monthlySummary = GetMonthlySummary(monthlyExpenses, monthlyIncome, monthlyBudgets, request.Year, request.Month);
 
             return new MonthlySummaryResponse()
             {
                 MonthlySummary = monthlySummary,
-                ExpenseSummaryChart = GetExpenseSummaryChartData(expenses, budgets),
-                OverallSummaryChart = GetOverallSummaryChart(expenses, income, budgets),
-                SubCategoryPercentages = GetSubCategoryPercentages(expenses, incomeToCompare),
-                MainCategoryPercentages = GetMainCategoryPercentages(expenses, incomeToCompare),
-                MonthlyProgress = progress
+                ExpenseSummaryChart = GetExpenseSummaryChartData(monthlyExpenses, monthlyBudgets),
+                OverallSummaryChart = GetOverallSummaryChart(monthlyExpenses, monthlyIncome, monthlyBudgets),
+                SubCategoryPercentages = GetSubCategoryPercentages(monthlyExpenses, incomeToCompare),
+                MainCategoryPercentages = GetMainCategoryPercentages(monthlyExpenses, incomeToCompare),
+                MonthlyProgress = GetMonthlyProgress(monthlySummary, request.Year, request.Month),
+                AnnualSavingsProgress = GetAnnualSavingsProgress(annualBudgets, expensesYTD, incomeYTD, request.Year, request.Month),
+                DailyExpenseLineChart = GetDailyExpenseLineChart(request.Month, request.Year, monthlyExpenses, monthlyBudgets, monthlyIncome),
+                YearToDate = GetMonthlyYearToDate(expensesYTD, incomeYTD, request.Month)
+            };
+        }
+
+        private MonthlyYearToDate GetMonthlyYearToDate(ExpenseEntity[] expenses, IncomeEntity[] incomes, int month)
+        {
+            var labels = Enumerable.Range(1, month).Select(i => @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(i)).ToArray();
+
+            var incomeData = incomes.GroupBy(x => x.Date.Month).Select(x => (int)decimal.Round(x.Sum(x => x.Amount), 0)).ToArray();
+            var expenseData = expenses.GroupBy(x => x.Date.Month).Select(x => (int)decimal.Round(x.Sum(x => x.Amount), 0)).ToArray();
+            var savings = incomeData.Zip(expenseData, (a, b) => (a - b)).ToArray();
+            return new MonthlyYearToDate()
+            {
+                IncomeDataset = incomeData,
+                ExpenseDataset = expenseData,
+                SavingsDataset = savings,
+                Labels = labels
+            };
+        }
+
+        private DailyExpenseChart GetDailyExpenseLineChart(int month, int year, ExpenseEntity[] expenses, BudgetEntity[] budgets, IncomeEntity[] income)
+        {
+            var date = new DateTime(year, month, 1);
+            var isCurrentMonth = DateTime.Now.Year == year && DateTime.Now.Month == month;
+            var lastDayOfChart = isCurrentMonth ? DateTime.Now.Day : date.AddMonths(1).AddMinutes(-1).Date.Day;
+
+            decimal monthlyAmount = 0;
+            var listOfDailyAmounts = new List<decimal>();
+            for (int i = 1; i <= lastDayOfChart; i++)
+            {
+                var dailyAmount = expenses.Where(x => x.Date.Day == i).Sum(x => x.Amount);
+                if (dailyAmount > 0)
+                {
+                    monthlyAmount += dailyAmount;
+                    listOfDailyAmounts.Add(decimal.Round(monthlyAmount, 2));
+                }
+                else
+                {
+                    listOfDailyAmounts.Add(monthlyAmount);
+                }
+            }
+            var max = 0;
+            var expenseMax = expenses.Sum(x => x.Amount);
+            var expenseBudgetMax = budgets.Where(x => x.BudgetType == BudgetType.Need || x.BudgetType == BudgetType.Want && x.Amount > 0 && x.SubCategoryId != null).Sum(x => x.Amount);
+            var budgetedSavings = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
+
+            var budgetedIncomeMax = budgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount);
+
+            var realizedIncomeMax = income.Sum(x => x.Amount);
+            var incomeToCompareBy = DateTime.Now.Year == year && DateTime.Now.Month == month && realizedIncomeMax > 0 ? budgetedIncomeMax : realizedIncomeMax;
+            var discretionaryMax = (incomeToCompareBy - budgetedSavings);
+            if (expenseMax <= expenseBudgetMax)
+            {
+                max = expenseBudgetMax;
+            }
+            else if (expenseMax <= discretionaryMax && expenseMax > expenseBudgetMax)
+            {
+                max = (int)decimal.Round(discretionaryMax, 0);
+            }
+            else if (expenseMax <= incomeToCompareBy && expenseMax > discretionaryMax)
+            {
+                max = (int)decimal.Round(incomeToCompareBy, 0);
+            }
+            else
+            {
+                max = (int)decimal.Round(expenseMax, 0);
+            }
+            return new DailyExpenseChart()
+            {
+                Dataset = listOfDailyAmounts.ToArray(),
+                Labels = Enumerable.Range(1, lastDayOfChart).ToArray(),
+                ExpenseBudgetMax = expenseBudgetMax,
+                DiscretionarySpendingMax = (int)decimal.Round(discretionaryMax, 0),
+                IncomeMax = (int)decimal.Round(incomeToCompareBy, 0),
+                ExpenseMax = (int)decimal.Round(expenseMax, 0),
+                Max = max
+            };
+        }
+
+        private AnnualSavingsProgress GetAnnualSavingsProgress(BudgetEntity[] budgets, ExpenseEntity[] expenses, IncomeEntity[] income, int year, int month)
+        {
+            var annualSavingsGoal = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
+            var previousExpenses = expenses.Where(x => x.Date.Year == year && x.Date.Month < month).Sum(x => x.Amount);
+            var previousIncome = income.Where(x => x.Date.Year == year && x.Date.Month < month).Sum(x => x.Amount);
+            var amountSaved = (previousIncome - previousExpenses) > 0 ? (previousIncome - previousExpenses) : 0;
+            var percentSaved = amountSaved.ToPercentage(annualSavingsGoal);
+
+            var displaySavingsMessage = DateTime.Now.Month == month && DateTime.Now.Year == year;
+            var message = string.Empty;
+            if (displaySavingsMessage)
+            {
+                var savingsGoalForTheCurrentMonth = budgets.Where(x => x.BudgetType == BudgetType.Savings && x.Month <= DateTime.Now.Month).Sum(x => x.Amount);
+                var currentSavings = (int)decimal.Round(amountSaved, 0);
+                var savingsGoalThisMonth = budgets.Where(x => x.BudgetType == BudgetType.Savings && x.Month == DateTime.Now.Month && x.Year == DateTime.Now.Year).Sum(x => x.Amount);
+                if ((currentSavings - savingsGoalForTheCurrentMonth) < 0)
+                {
+                    var extraMonthlySavings = (savingsGoalForTheCurrentMonth - currentSavings) / (13 - month);
+                    var extraOneTimeSavings = (savingsGoalForTheCurrentMonth - currentSavings) - savingsGoalThisMonth;
+                    if (DateTime.Now.Month == month)
+                    {
+                        message = $"Save an extra ${extraOneTimeSavings} this month to meet your goal";
+                    }
+                    else
+                        message = $"Save an extra ${extraOneTimeSavings} this month or an extra {extraMonthlySavings} each month in order to meet your goal";
+                }
+                else
+                {
+                    message = "You are on track to meet your savings goal for the year.";
+                }
+            }
+
+            return new AnnualSavingsProgress()
+            {
+                AnnualSavingsPercentDone = percentSaved,
+                AnnualSavingsAmount = amountSaved,
+                AnnualSavingsMessage = message
             };
         }
 

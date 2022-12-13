@@ -39,16 +39,22 @@
     }
     public static class DarkChartColors
     {
+        public const string RedLight = "rgba(203, 67, 53, .6)";
         public const string Red = "rgba(203, 67, 53, .8)";
         public const string RedBold = "rgba(203, 67, 53, 1)";
+        public const string OrangeLight = "rgba(211, 84, 0, .6)";
         public const string Orange = "rgba(211, 84, 0, .8)";
         public const string OrangeBold = "rgba(211, 84, 0, 1)";
+        public const string YellowLight = "rgba(241, 196, 15, .6)";
         public const string Yellow = "rgba(241, 196, 15, .8)";
         public const string YellowBold = "rgba(241, 196, 15, 1)";
+        public const string GreenLight = "rgba(39, 174, 96, .6)";
         public const string Green = "rgba(39, 174, 96, .8)";
         public const string GreenBold = "rgba(39, 174, 96, 1)";
+        public const string BlueLight = "rgba(31, 97, 141, .6)";
         public const string Blue = "rgba(31, 97, 141, .8)";
         public const string BlueBold = "rgba(31, 97, 141, 1)";
+        public const string PurpleLight = "rgba(136, 78, 160, .6)";
         public const string Purple = "rgba(136, 78, 160, .8)";
         public const string PurpleBold = "rgba(136, 78, 160, 1)";
     }

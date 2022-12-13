@@ -1,6 +1,6 @@
 ﻿using CashTrack.Models.BudgetModels;
 using CashTrack.Models.Common;
-using Microsoft.VisualBasic;
+using CashTrack.Pages.Shared;
 using System.Collections.Generic;
 
 namespace CashTrack.Models.SummaryModels
@@ -13,7 +13,6 @@ namespace CashTrack.Models.SummaryModels
     }
     public record MonthlySummaryResponse
     {
-        //TODO: Add an object for the progress bars
         public MonthlyProgress MonthlyProgress { get; set; }
         public AnnualSavingsProgress AnnualSavingsProgress { get; set; }
         public ExpenseSummaryChartData ExpenseSummaryChart { get; set; }
@@ -21,7 +20,29 @@ namespace CashTrack.Models.SummaryModels
         public OverallSummaryChart OverallSummaryChart { get; set; }
         public Dictionary<string, int> SubCategoryPercentages { get; set; }
         public Dictionary<string, int> MainCategoryPercentages { get; set; }
+        public DailyExpenseChart DailyExpenseLineChart { get; set; }
+        public MonthlyYearToDate YearToDate { get; set; }
+
     }
+    public class MonthlyYearToDate
+    {
+        public int[] IncomeDataset { get; set; }
+        public int[] ExpenseDataset { get; set; }
+        public int[] SavingsDataset { get; set; }
+        public string[] Labels { get; set; }
+    }
+
+    public class DailyExpenseChart
+    {
+        public decimal[] Dataset { get; set; }
+        public int[] Labels { get; set; }
+        public int ExpenseBudgetMax { get; set; }
+        public int DiscretionarySpendingMax { get; set; }
+        public int IncomeMax { get; set; }
+        public int ExpenseMax { get; set; }
+        public int Max { get; set; }
+    }
+
     public record MonthlyProgress
     {
         public int RealizedIncome { get; set; }
@@ -33,7 +54,8 @@ namespace CashTrack.Models.SummaryModels
     }
     public record AnnualSavingsProgress
     {
-        public int AnnualSavings { get; set; }
+        public int AnnualSavingsPercentDone { get; set; }
+        public decimal AnnualSavingsAmount { get; set; }
         public string AnnualSavingsMessage { get; set; }
     }
     public record OverallSummaryChart
