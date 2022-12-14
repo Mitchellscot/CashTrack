@@ -1,6 +1,9 @@
 ﻿using CashTrack.Common;
+using CashTrack.Common.Extensions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
+using CashTrack.Models.ExpenseModels;
+using CashTrack.Models.IncomeModels;
 using CashTrack.Models.SummaryModels;
 using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Repositories.ExpenseRepository;
@@ -56,19 +59,42 @@ namespace CashTrack.Services.SummaryService
                 OverallSummaryChart = GetOverallSummaryChart(monthlyExpenses, monthlyIncome, monthlyBudgets),
                 SubCategoryPercentages = GetSubCategoryPercentages(monthlyExpenses, incomeToCompare),
                 MainCategoryPercentages = GetMainCategoryPercentages(monthlyExpenses, incomeToCompare),
+                MerchantPercentages = GetMerchantPercentages(monthlyExpenses, incomeToCompare),
                 MonthlyProgress = GetMonthlyProgress(monthlySummary, request.Year, request.Month),
                 AnnualSavingsProgress = GetAnnualSavingsProgress(annualBudgets, expensesYTD, incomeYTD, request.Year, request.Month),
                 DailyExpenseLineChart = GetDailyExpenseLineChart(request.Month, request.Year, monthlyExpenses, monthlyBudgets, monthlyIncome),
-                YearToDate = GetMonthlyYearToDate(expensesYTD, incomeYTD, request.Month)
+                YearToDate = GetMonthlyYearToDate(expensesYTD, incomeYTD, request.Month),
+                TopExpenses = monthlyExpenses.Where(x => !x.ExcludeFromStatistics).OrderByDescending(x => x.Amount).Take(10).Select(x => new ExpenseQuickView() { Amount = x.Amount, Date = x.Date.ToShortDateString(), Id = x.Id, SubCategory = x.Category == null ? "none" : x.Category.Name }).ToList(),
             };
+        }
+
+        private Dictionary<string, int> GetMerchantPercentages(ExpenseEntity[] expenses, int income)
+        {
+            if (expenses.Length == 0)
+                return new Dictionary<string, int>();
+
+            var expenseAmount = expenses.Sum(x => x.Amount);
+            var amountToPercentBy = expenseAmount > income ? (int)decimal.Round(expenseAmount, 0) : income;
+
+            var expensePercentages = expenses.Where(x => !x.ExcludeFromStatistics && x.MerchantId != null).OrderBy(x => x.Merchant.Name).GroupBy(x => x.Merchant.Name).Select(x => (Name: x.Key, Amount: (int)decimal.Round(x.Sum(x => x.Amount)))).Select(x =>
+                (x.Name, Percentage: x.Amount.ToPercentage(amountToPercentBy)))
+                .Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
+
+            var expenseTotalsWithMerchantsAssigned = expensePercentages.Sum(x => x.Value);
+
+            var noMerchantPercentage = expenseTotalsWithMerchantsAssigned < 100 ? 100 - expenseTotalsWithMerchantsAssigned : 0;
+            if (noMerchantPercentage > 0)
+                expensePercentages.Add("No Merchant Assigned", noMerchantPercentage);
+            return expensePercentages;
         }
 
         private MonthlyYearToDate GetMonthlyYearToDate(ExpenseEntity[] expenses, IncomeEntity[] incomes, int month)
         {
             var labels = Enumerable.Range(1, month).Select(i => @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(i)).ToArray();
 
-            var incomeData = incomes.GroupBy(x => x.Date.Month).Select(x => (int)decimal.Round(x.Sum(x => x.Amount), 0)).ToArray();
-            var expenseData = expenses.GroupBy(x => x.Date.Month).Select(x => (int)decimal.Round(x.Sum(x => x.Amount), 0)).ToArray();
+            var incomeData = incomes.GroupBy(x => x.Date.Month).Select(x => (int)decimal.Round(x.Sum(x => x.Amount), 0)).ToArray().Accumulate();
+
+            var expenseData = expenses.GroupBy(x => x.Date.Month).Select(x => (int)decimal.Round(x.Sum(x => x.Amount), 0)).ToArray().Accumulate();
             var savings = incomeData.Zip(expenseData, (a, b) => (a - b)).ToArray();
             return new MonthlyYearToDate()
             {
@@ -78,6 +104,7 @@ namespace CashTrack.Services.SummaryService
                 Labels = labels
             };
         }
+
 
         private DailyExpenseChart GetDailyExpenseLineChart(int month, int year, ExpenseEntity[] expenses, BudgetEntity[] budgets, IncomeEntity[] income)
         {

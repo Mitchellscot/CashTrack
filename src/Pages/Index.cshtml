@@ -1,6 +1,7 @@
 ﻿@page
 @using System.Globalization;
 @using CashTrack.Common;
+@using CashTrack.Models.ExpenseModels;
 @using CashTrack.Pages.Budget;
 @using Pages.Shared;
 @using System.Text.Json;
@@ -15,6 +16,7 @@
     var discretionarySpending = $"{@Model.SummaryResponse.MonthlyProgress.DiscretionarySpendingPercent}%";
     var annualSavingsPercentage = $"{@Model.SummaryResponse.AnnualSavingsProgress.AnnualSavingsPercentDone}%";
     var annualSavingsAmount = $"{@Model.SummaryResponse.AnnualSavingsProgress.AnnualSavingsAmount}";
+    var monthQuery = Model.Year + "-" + Model.Month;
 }
 <div class="container-fluid">
     @if (Model.ReviewAmount > 0)
@@ -47,7 +49,14 @@
                     <button class="btn btn-secondary btn-height me-2 btn-text-overflow" type="button">View Details</button>
                     <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
                     <ul class="dropdown-menu">
-                        <li class="dropdown-item">Expense</li>
+                        <li class="dropdown-item">
+                            <button class="dropdown-item fakelink text-center"
+                            id="addExpenseButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addExpenseModal">
+                         Expense
+                    </button>
+                            </li>
                         <li class="dropdown-item">Income</li>
                         <li class="dropdown-divider"></li>
                         <li class="dropdown-item">Merchant</li>
@@ -150,7 +159,7 @@
                     <canvas id="overallSummaryChart"></canvas>
                 </div>
             }
-            <div class="col-12 col-lg-6 border rounded-2 mt-2 shadow">
+            <div class="col-12 col-lg-6 border rounded-2 mt-2 shadow-sm">
                 <div class="d-flex">
                     <h4 class="mt-1 me-2">Budgeted Income</h4><i class="bi bi-question-circle text-primary action-icon align-self-center"></i>
                 </div>
@@ -205,6 +214,64 @@
             }
         </div>
         <div class="row mb-1">
+            @if (Model.SummaryResponse.YearToDate != null)
+            {
+                <div class="col-12 col-lg-6 mt-3">
+                    <canvas id="ytdChart" class="chart-height"></canvas>
+                </div>
+            }
+            @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.MerchantPercentages.Values.Sum() > 0)
+            {
+                <div class="col-6 col-lg-3 mt-3">
+                    <canvas id="merchantPie" class="chart-height"></canvas>
+                </div>
+            }
+            @if (Model.SummaryResponse.TopExpenses != null)
+            {
+                <div class="col-6 col-lg-3 mt-3 border">
+                <div class="d-flex justify-content-center">
+                    <span class="mb-0 fw-bold d-none d-lg-block">Top Expenses</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Expenses/Index" asp-route-Query="2" asp-route-Q="@monthQuery" asp-route-PageNumber="1">
+                        View All
+                    </a>
+                </div>
+                <div class="table-responsive-lg">
+                    <table class="table table-sm align-middle text-center mb-0">
+                        <thead class="p-0 m-0">
+                            <tr>
+                                <th class="p-0 m-0">
+                                    Date
+                                </th>
+                                <th class="p-0 m-0">
+                                    Amount
+                                </th>
+                                <th class="p-0 m-0">
+                                    Category
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var expense in @Model.SummaryResponse.TopExpenses)
+                            {
+                                <tr>
+                                    <td>
+                                        @expense.Date
+                                    </td>
+                                    <td>
+                                        @String.Format("{0:n}", expense.Amount)
+                                    </td>
+                                    <td>
+                                        @expense.SubCategory
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>    
+                
+            }
+        </div>
+        <div class="row mb-1">
             @if (Model.SummaryResponse.MonthlySummary != null)
             {
                 <div class="col">
@@ -212,16 +279,24 @@
                 </div>
             }
         </div>
-        <div class="row mb-1">
-            @if (Model.SummaryResponse.YearToDate != null)
-            {
-                <div class="col-12 col-lg-6 mt-3">
-                    <canvas id="ytdChart" class="chart-height"></canvas>
-                </div>
-            }
-        </div>
     </div>
 </div>
+    @* Add Expense Modal *@
+    <div class="modal fade" id="addExpenseModal">
+        @await Html.PartialAsync("_AddExpenseModal",
+        new AddEditExpenseModal() {
+            IsEdit = false, 
+            Returnurl = "./Index", 
+            SubCategoryList = new SelectList(Model.SubCategoryList, "Id", "Category"), 
+            Date= DateTime.Today, 
+            MainCategoryList = new SelectList(Model.MainCategoryList, "Id", "Category"),
+            PageNumber = 1,
+            Query = 0,
+            Q = "",
+            Q2 = ""
+        });
+    </div>
+    @*End Add Expense Modal*@
 
 @section Scripts {
     <script src="~/js/home.js"></script>
@@ -281,5 +356,12 @@
         IncomeDataset = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.IncomeDataset),
         ExpenseDataset = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.ExpenseDataset),
         SavingsDataset = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.SavingsDataset)
+    })
+    @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.MerchantPercentages.Select(x => x.Key).ToArray()))
+    {
+        ElementId = "merchantPie",
+        Dataset = JsonSerializer.Serialize(Model.SummaryResponse.MerchantPercentages.Select(x => x.Value).ToArray()),
+        Title = "Merchant Percentages",
+        IsSummaryChart = true
     })
 }

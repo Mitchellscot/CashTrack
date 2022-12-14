@@ -1,5 +1,6 @@
 ﻿using CashTrack.Models.BudgetModels;
 using CashTrack.Models.Common;
+using CashTrack.Models.ExpenseModels;
 using CashTrack.Pages.Shared;
 using System.Collections.Generic;
 
@@ -20,8 +21,10 @@ namespace CashTrack.Models.SummaryModels
         public OverallSummaryChart OverallSummaryChart { get; set; }
         public Dictionary<string, int> SubCategoryPercentages { get; set; }
         public Dictionary<string, int> MainCategoryPercentages { get; set; }
+        public Dictionary<string, int> MerchantPercentages { get; set; }
         public DailyExpenseChart DailyExpenseLineChart { get; set; }
         public MonthlyYearToDate YearToDate { get; set; }
+        public List<ExpenseQuickView> TopExpenses { get; set; }
 
     }
     public class MonthlyYearToDate

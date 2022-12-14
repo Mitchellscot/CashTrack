@@ -20,9 +20,19 @@ namespace CashTrack.Pages.Budget
         {
             const string Unallocated = "Unallocated";
             const string Savings = "Savings";
+            const string NoMerchantAssigned = "No Merchant Assigned";
             var labelsArray = JsonSerializer.Deserialize<string[]>(this.Labels);
             Stack<string> colorStack = new Stack<string>();
-            if (labelsArray.Any(x => x == Unallocated) && labelsArray.Any(x => x == Savings))
+            if (labelsArray.Any(x => x == NoMerchantAssigned))
+            {
+                for (int i = 0; i < labelsArray.Length; i++)
+                {
+                    if (i == labelsArray.Length - 1)
+                        colorStack.Push(ThemeColors.SecondaryDark);
+                    else colorStack.Push(GetColorsForExpenses(i, this.IsSummaryChart));
+                }
+            }
+            else if (labelsArray.Any(x => x == Unallocated) && labelsArray.Any(x => x == Savings))
             {
                 for (int i = 0; i < labelsArray.Length; i++)
                 {

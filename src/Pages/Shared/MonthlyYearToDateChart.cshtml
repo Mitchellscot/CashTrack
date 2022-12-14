@@ -7,13 +7,15 @@
         type: 'line',
         data: {
             labels: @Html.Raw(@Model.Labels),
-            datasets:[{
-                label: 'Income',
-                data: @Model.IncomeDataset,
+            datasets:[
+            {
+                label: 'Savings',
+                data: @Model.SavingsDataset,
                 color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: '@Html.Raw(Model.IncomeColor)',
-                borderColor: '@Html.Raw(Model.IncomeColor)',
-                borderWidth: 3
+                backgroundColor: '@Html.Raw(Model.SavingsColor)',
+                borderColor: '@Html.Raw(Model.SavingsColor)',
+                borderWidth: 3,
+                fill: true
             },
             {
                 label: 'Expenses',
@@ -22,20 +24,27 @@
                 backgroundColor: '@Html.Raw(Model.ExpenseColor)',
                 borderColor: '@Html.Raw(Model.ExpenseColor)',
                 borderWidth: 3,
+                fill: true
             },
             {
-                label: 'Savings',
-                data: @Model.SavingsDataset,
+                label: 'Income',
+                data: @Model.IncomeDataset,
                 color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: '@Html.Raw(Model.SavingsColor)',
-                borderColor: '@Html.Raw(Model.SavingsColor)',
-                borderWidth: 3
-            }
+                backgroundColor: '@Html.Raw(Model.IncomeColor)',
+                borderColor: '@Html.Raw(Model.IncomeColor)',
+                borderWidth: 3,
+                fill: true
+            },
             ]
         },
         options: {
             responsive: true,
             plugins: {
+                tooltip: {
+                    callbacks: {
+                        footer: footer,
+                    }
+                },
                 title: {
                     display: false
                 },
@@ -45,4 +54,12 @@
             }
         },
     });
+        function footer(tooltipItems){
+        const object = tooltipItems[0];
+        const index = parseInt(object.parsed.x);
+        const currentTotal = object.dataset.data[index];
+        const previousValue = object.dataset.data[index-1];
+        const spent = (currentTotal - previousValue).toFixed(0);
+        return isNaN(previousValue) ? `Amount: ${currentTotal}` : `Amount: ${spent}`
+    };
 </script>

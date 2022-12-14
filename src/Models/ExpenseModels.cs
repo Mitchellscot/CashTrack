@@ -50,7 +50,7 @@ public class AddEditExpenseModal : Expense
     public string? Q { get; set; }
     public string? Q2 { get; set; }
 }
-public class ExpenseQuickViewForMerchantDetail : Transaction
+public class ExpenseQuickView : Transaction
 {
     new public string Date { get; set; }
     public string SubCategory { get; set; }
