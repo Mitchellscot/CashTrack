@@ -5,6 +5,7 @@
 
 const loadMainCategory = (e: Event): void => {
     const subCategoryId = (e.target as HTMLSelectElement).value;
+    console.log(subCategoryId)
     //edit modals have an expenseId set as the data attribute - the add modal does not have that.
     const expenseId = (e.target as HTMLSelectElement).dataset.id;
     fetch(`/api/maincategory/sub-category/${subCategoryId}`)

@@ -49,14 +49,14 @@
                     <button class="btn btn-secondary btn-height me-2 btn-text-overflow" type="button">View Details</button>
                     <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
                     <ul class="dropdown-menu">
-                        <li class="dropdown-item">
-                            <button class="dropdown-item fakelink text-center"
-                            id="addExpenseButton"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addExpenseModal">
-                         Expense
-                    </button>
-                            </li>
+                            <li>
+                                <button class="dropdown-item fakelink text-center"
+                                id="addExpenseButton"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addExpenseModal">
+                                Expense
+                            </button>
+                     </li>
                         <li class="dropdown-item">Income</li>
                         <li class="dropdown-divider"></li>
                         <li class="dropdown-item">Merchant</li>
@@ -283,7 +283,7 @@
 </div>
     @* Add Expense Modal *@
     <div class="modal fade" id="addExpenseModal">
-        @await Html.PartialAsync("_AddExpenseModal",
+        @await Html.PartialAsync("AddExpenseModal",
         new AddEditExpenseModal() {
             IsEdit = false, 
             Returnurl = "./Index", 
@@ -293,7 +293,8 @@
             PageNumber = 1,
             Query = 0,
             Q = "",
-            Q2 = ""
+            Q2 = "",
+            ShowAddCategoryButton = false
         });
     </div>
     @*End Add Expense Modal*@

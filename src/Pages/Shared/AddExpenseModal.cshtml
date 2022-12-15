@@ -66,32 +66,63 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-8">
-                            <div class="input-group">
-                                <div class="input-group-text">Category</div>
-                                <label class="visually-hidden" asp-for="@Model.SubCategoryId">Category</label>
-                                <select data-val="true" asp-for=@Model.SubCategoryId asp-items=@Model.SubCategoryList
+                        @if (Model.ShowAddCategoryButton)
+                        {
+                            <div class="col-8">
+                                <div class="input-group">
+                                    <div class="input-group-text">Category</div>
+                                    <label class="visually-hidden" asp-for="@Model.SubCategoryId">Category</label>
+                                    <select data-val="true" asp-for=@Model.SubCategoryId asp-items=@Model.SubCategoryList
                                         class="form-control text-center load-main-category-js"
                                         data-id=@Model.Id>
-                                    @if (!Model.IsEdit)
-                                    {
-                                        <option value="" selected disabled hidden>Select</option>
+                                        @if (!Model.IsEdit)
+                                        {
+                                            <option value="" selected disabled hidden>Select</option>
+                                        }
+                                    </select>
+                                    <div class="input-group-text">Main Category</div>
+                                    @{
+                                        var mainCategoryInputId =
+                                        Model.IsEdit ? $"editExpenseMainCategory-{Model.Id}" : "addExpenseMainCategory";
                                     }
-                                </select>
-                                <div class="input-group-text">Main Category</div>
-                                @{
-                                    var mainCategoryInputId =
-                                    Model.IsEdit ? $"editExpenseMainCategory-{Model.Id}" : "addExpenseMainCategory";
-                                }
-                                <input disabled type="text"
+                                    <input disabled type="text"
                                        class="form-control text-center bg-white"
                                        id=@mainCategoryInputId required />
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-4 d-flex justify-content-center">
-                            <a class="btn btn-secondary" data-bs-target="#addSubCategoryModal" data-bs-toggle="modal">Add New Category</a>
-                        </div>
-                        <span class="validation-text" asp-validation-for="@Model.SubCategoryId"></span>
+                            <div class="col-4 d-flex justify-content-center">
+
+                                <a class="btn btn-secondary" data-bs-target="#addSubCategoryModal" data-bs-toggle="modal">Add New Category</a>
+
+                            </div>
+                            <span class="validation-text" asp-validation-for="@Model.SubCategoryId"></span>
+                        }
+                        else
+                        {
+                            <div class="col">
+                                <div class="input-group">
+                                    <div class="input-group-text">Category</div>
+                                    <label class="visually-hidden" asp-for="@Model.SubCategoryId">Category</label>
+                                    <select data-val="true" asp-for=@Model.SubCategoryId asp-items=@Model.SubCategoryList
+                                        class="form-control text-center load-main-category-js"
+                                        data-id=@Model.Id>
+                                        @if (!Model.IsEdit)
+                                        {
+                                            <option value="" selected disabled hidden>Select</option>
+                                        }
+                                    </select>
+                                    <div class="input-group-text">Main Category</div>
+                                    @{
+                                        var mainCategoryInputId =
+                                        Model.IsEdit ? $"editExpenseMainCategory-{Model.Id}" : "addExpenseMainCategory";
+                                    }
+                                    <input disabled type="text"
+                                       class="form-control text-center bg-white"
+                                       id=@mainCategoryInputId required />
+                                </div>
+                            </div>
+                        }
+
                     </div>
                     <div class="row mb-3">
                         <div class="col-8">
@@ -130,10 +161,13 @@
             </form>
         </div>
     </div>
+    @if (Model.ShowAddCategoryButton)
+    {
         @* Add SubCategory Modal *@
-        @*TODO: Add a switch to the modal so it returns void after creating a sub category instead of returning to the returnURL*@
-    <div class="modal fade" id="addSubCategoryModal">
-        @await Html.PartialAsync("_AddEditSubCategoryModal", new AddEditSubCategoryModal() { Returnurl=$"{Model.Returnurl}#addExpenseModal", InUse=true, IsEdit=false, MainCategoryList=Model.MainCategoryList })
+        <div class="modal fade" id="addSubCategoryModal">
+            @await Html.PartialAsync("_AddEditSubCategoryModal", new AddEditSubCategoryModal() { Returnurl=$"{Model.Returnurl}#addExpenseModal", InUse=true, IsEdit=false, MainCategoryList=Model.MainCategoryList })
         </div>
-    @* End SubCategory Modal *@
+        @* End SubCategory Modal *@
+    }
+
 </div>
