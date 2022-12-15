@@ -65,7 +65,49 @@ namespace CashTrack.Services.SummaryService
                 DailyExpenseLineChart = GetDailyExpenseLineChart(request.Month, request.Year, monthlyExpenses, monthlyBudgets, monthlyIncome),
                 YearToDate = GetMonthlyYearToDate(expensesYTD, incomeYTD, request.Month),
                 TopExpenses = monthlyExpenses.Where(x => !x.ExcludeFromStatistics).OrderByDescending(x => x.Amount).Take(10).Select(x => new ExpenseQuickView() { Amount = x.Amount, Date = x.Date.ToShortDateString(), Id = x.Id, SubCategory = x.Category == null ? "none" : x.Category.Name }).ToList(),
+                ExpenseBreakdown = GetExpenseBreakdown(monthlyExpenses, incomeToCompare)
             };
+        }
+
+        private List<ExpenseBreakdown> GetExpenseBreakdown(ExpenseEntity[] expenses, int income)
+        {
+            var expenseStats = new List<ExpenseBreakdown>();
+            var subCategories = expenses.Where(x => x.Amount > 0 && !x.ExcludeFromStatistics && x.CategoryId != null).GroupBy(x => x.CategoryId).Select(x =>
+            {
+                return new ExpenseBreakdown()
+                {
+                    MainCategoryId = x.Select(x => x.Category.MainCategoryId).FirstOrDefault(),
+                    SubCategoryId = x.Key.Value,
+                    Category = x.Select(x => x.Category.Name).FirstOrDefault(),
+                    Amount = x.Sum(x => x.Amount),
+                    Percentage = x.Sum(x => x.Amount).ToPercentage(income)
+                };
+            }).ToList();
+            expenseStats.AddRange(subCategories);
+            var mainCategories = expenses.Where(x => x.Amount > 0 && !x.ExcludeFromStatistics && x.CategoryId != null).GroupBy(x => x.Category.MainCategory.Id).Select(x =>
+            {
+                return new ExpenseBreakdown()
+                {
+                    MainCategoryId = x.Key,
+                    SubCategoryId = 0,
+                    Category = x.Select(x => x.Category.MainCategory.Name).FirstOrDefault(),
+                    Amount = x.Sum(x => x.Amount),
+                    Percentage = x.Sum(x => x.Amount).ToPercentage(income)
+                };
+            }).ToList();
+            expenseStats.AddRange(mainCategories);
+            var savingsAmount = income - expenses.Sum(x => x.Amount);
+            var savings = new ExpenseBreakdown()
+            {
+                MainCategoryId = int.MaxValue - 1,
+                SubCategoryId = 0,
+                Category = "Savings",
+                Amount = savingsAmount,
+                Percentage = savingsAmount > 0 ? savingsAmount.ToPercentage(income) : 0
+            };
+            if (savings.Amount != 0)
+                expenseStats.Add(savings);
+            return expenseStats.OrderBy(x => x.MainCategoryId).ThenBy(x => x.SubCategoryId).ToList();
         }
 
         private Dictionary<string, int> GetMerchantPercentages(ExpenseEntity[] expenses, int income)

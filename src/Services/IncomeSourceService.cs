@@ -10,6 +10,7 @@ using CashTrack.Services.Common;
 using CashTrack.Models.IncomeModels;
 using CashTrack.Models.MerchantModels;
 using CashTrack.Models.SubCategoryModels;
+using CashTrack.Models.ExpenseModels;
 
 namespace CashTrack.Services.IncomeSourceService;
 
@@ -133,6 +134,27 @@ public class IncomeSourceService : IIncomeSourceService
         var source = await _sourceRepo.FindById(id);
         var incomes = await _incomeRepo.GetIncomeAndCategoriesBySourceId(id);
         var categories = incomes.Select(x => x.Category).Distinct().ToArray();
+
+        if (incomes.Sum(x => x.Amount) == 0)
+        {
+            return new IncomeSourceDetail()
+            {
+                Id = source.Id,
+                Name = source.Name,
+                SuggestOnLookup = source.SuggestOnLookup,
+                Notes = source.Notes,
+                City = source.City,
+                State = source.State,
+                IsOnline = source.IsOnline,
+                IncomeTotals = new Totals(),
+                MostUsedCategory = "None",
+                AnnualIncomeStatistcis = new List<AnnualStatistics>(),
+                MonthlyIncomeStatistcis = new List<MonthlyStatistics>(),
+                PaymentCategoryOcurances = new Dictionary<string, int>(),
+                PaymentCategoryTotals = new Dictionary<string, decimal>(),
+                RecentIncomes = new List<IncomeQuickView>()
+            };
+        }
 
         return new IncomeSourceDetail()
         {

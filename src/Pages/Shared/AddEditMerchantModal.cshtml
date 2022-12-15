@@ -1,40 +1,43 @@
-﻿@model CashTrack.Models.IncomeSourceModels.AddEditIncomeSourceModal
-
+﻿@model CashTrack.Models.MerchantModels.AddEditMerchantModal
+@{
+    var locationToHandler = Model.Returnurl == "~/Index" ? "/Merchants/Index" : "../Merchants/Index";
+}
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
         <div class="modal-header text-center">
             @{
                 var addOrEdit = Model.IsEdit ? "Edit" : "Add";
             }
-            <h5 class="modal-title w-100">@addOrEdit Income Source</h5>
+            <h5 class="modal-title w-100">@addOrEdit a Merchant</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal">
             </button>
         </div>
         <div class="modal-body">
             <div class="container-fluid">
                 <form method="post"
-                      asp-page="../Sources/Index"
-                      asp-page-handler="AddEditIncomeSourceModal"
-                      id="addIncomeSourceForm">
-                    <input asp-for="@Model.IsEdit" type="hidden" />
-                    <input asp-for="@Model.ReturnUrl" type="hidden" />
+                      asp-page=@locationToHandler
+                      asp-page-handler="AddEditMerchantModal"
+                      id="addEditMerchantForm">
                     @if (Model.IsEdit)
                     {
-                                <input asp-for="@Model.Id" type="hidden" />
+                            <input asp-for="@Model.Id" type="hidden" />
                     }
+                    <input asp-for="@Model.IsEdit" type="hidden" />
+                    <input asp-for="@Model.Returnurl" type="hidden" />
                     <div class="row mb-3">
                         <div class="col-8">
                             <label class="visually-hidden" asp-for="@Model.Name">Name</label>
                             <div class="input-group">
                                 <div class="input-group-text text-center">Name</div>
-                                <input data-val="true" asp-for=@Model.Name type="text" class="form-control" id="addIncomeSourceName">
+                                <input data-val="true" asp-for=@Model.Name type="text" class="form-control" id="addEditMerchantName">
                                 <span asp-validation-for="@Model.Name"></span>
                             </div>
                         </div>
                         <div class="col-4 align-self-center border rounded py-1">
+
                             <div class="form-check form-switch ">
-                                <label class="form-check-label" asp-for="@Model.SuggestOnLookup">Suggest On Lookup</label>
-                                <input class="form-check-input" type="checkbox" role="switch" id="addIncomeSourceSuggestOnLookup" data-val="true"
+                                <label class="form-check-label" asp-for="@Model.SuggestOnLookup">Suggest on Lookup</label>
+                                <input class="form-check-input" type="checkbox" role="switch" id="addEditMerchantSuggestOnLookup" data-val="true"
                                        asp-for="@Model.SuggestOnLookup" />
                                 <span asp-validation-for="@Model.SuggestOnLookup"></span>
                             </div>
@@ -45,7 +48,7 @@
                             <label class="visually-hidden" asp-for="@Model.City">City</label>
                             <div class="input-group">
                                 <div class="input-group-text">City</div>
-                                <input data-val="true" asp-for=@Model.City type="text" class="form-control text-center" id="addEditSourceCity">
+                                <input data-val="true" asp-for=@Model.City type="text" class="form-control text-center" id="addEditMerchantCity">
                                 <span asp-validation-for="@Model.City"></span>
                             </div>
                         </div>
@@ -57,7 +60,7 @@
                                     var states = new List<string> { "MN", "CA", "VA", "Various" };
                                     var dropdownList = new SelectList(states);
                                 }
-                                <select data-val="true" asp-for=@Model.State asp-items="dropdownList" data-width="100%" class="form-control text-center" id="addEditSourceState">
+                                <select data-val="true" asp-for=@Model.State asp-items="dropdownList" data-width="100%" class="form-control text-center" id="addEditMerchantState">
                                     <option value="" selected disabled hidden></option>
                                 </select>
                                 <span asp-validation-for="@Model.State"></span>
@@ -65,24 +68,24 @@
                         </div>
                         <div class="col-4 align-self-center border rounded py-1">
                             <div class="form-check form-switch ">
-                                <label class="form-check-label" asp-for="@Model.IsOnline">Online Source</label>
-                                <input class="form-check-input" type="checkbox" role="switch" id="addEditSourceIsOnline" data-val="true" asp-for="@Model.IsOnline" />
+                                <label class="form-check-label" asp-for="@Model.IsOnline">Online Merchant</label>
+                                <input class="form-check-input" type="checkbox" role="switch" id="addEditMerchantIsOnline" data-val="true" asp-for="@Model.IsOnline" />
                                 <span asp-validation-for="@Model.IsOnline"></span>
                             </div>
                         </div>
                     </div>
                     <div class="row mb-3 px-1">
                         <label class="visually-hidden" asp-for="@Model.Notes"></label>
-                        <textarea class="form-control" asp-for="@Model.Notes" id="addIncomeSourceNotes" rows="3" placeholder="Notes"></textarea>
+                        <textarea class="form-control" asp-for="@Model.Notes" id="addEditMerchantNotes" rows="3" placeholder="Notes"></textarea>
                     </div>
-                    <span class="validation-text" asp-validation-for="@Model.Notes"></span>
+                    <span asp-validation-for="@Model.Notes"></span>
                 </form>
             </div>
         </div>
         <div class="modal-footer d-flex justify-content-evenly">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <form>
-                <button type="submit" class="btn btn-primary" form="addIncomeSourceForm">@addOrEdit Income Source</button>
+                <button type="submit" class="btn btn-primary" form="addEditMerchantForm">Save</button>
             </form>
         </div>
     </div>

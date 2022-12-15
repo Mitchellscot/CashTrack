@@ -55,7 +55,7 @@
     </div>
     @*End Delete Modal*@
     <div class="modal fade" id="editMerchantModal">
-        @await Html.PartialAsync("_AddMerchantPartial", new AddEditMerchantModal() {
+        @await Html.PartialAsync("AddEditMerchantModal", new AddEditMerchantModal() {
         Name = Model.Merchant.Name,
         City = Model.Merchant.City,
         State = Model.Merchant.State,
