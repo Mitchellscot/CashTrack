@@ -25,23 +25,17 @@ namespace CashTrack.Models.SummaryModels
         public DailyExpenseChart DailyExpenseLineChart { get; set; }
         public MonthlyYearToDate YearToDate { get; set; }
         public List<ExpenseQuickView> TopExpenses { get; set; }
-        public List<ExpenseBreakdown> ExpenseBreakdown { get; set; }
-        public List<IncomeBreakdown> IncomeBreakdown { get; set; }
+        public List<TransactionBreakdown> TransactionBreakdown { get; set; }
     }
-    public record IncomeBreakdown
-    {
-        public string Category { get; set; }
-        public decimal Amount { get; set; }
-        public int Percentage { get; set; }
-    }
-    public record ExpenseBreakdown
+    public record TransactionBreakdown
     {
         public int MainCategoryId { get; set; }
         public int SubCategoryId { get; set; }
         public string Category { get; set; }
         public decimal Amount { get; set; }
-        public int Percentage { get; set; }
-        public bool IsMainCategory => SubCategoryId == int.MaxValue && MainCategoryId != 0;
+        public decimal Percentage { get; set; }
+        public bool IsMainCategory => SubCategoryId == 0 && MainCategoryId != 0;
+        public bool IsIncome => Category == "Income";
     }
     public class MonthlyYearToDate
     {
