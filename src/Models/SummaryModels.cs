@@ -31,7 +31,7 @@ namespace CashTrack.Models.SummaryModels
     public record IncomeBreakdown
     {
         public string Category { get; set; }
-        public int Amount { get; set; }
+        public decimal Amount { get; set; }
         public int Percentage { get; set; }
     }
     public record ExpenseBreakdown
@@ -41,7 +41,7 @@ namespace CashTrack.Models.SummaryModels
         public string Category { get; set; }
         public decimal Amount { get; set; }
         public int Percentage { get; set; }
-        public bool IsMainCategory => SubCategoryId == 0 && MainCategoryId != 0;
+        public bool IsMainCategory => SubCategoryId == int.MaxValue && MainCategoryId != 0;
     }
     public class MonthlyYearToDate
     {

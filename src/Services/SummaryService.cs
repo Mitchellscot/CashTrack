@@ -65,12 +65,32 @@ namespace CashTrack.Services.SummaryService
                 DailyExpenseLineChart = GetDailyExpenseLineChart(request.Month, request.Year, monthlyExpenses, monthlyBudgets, monthlyIncome),
                 YearToDate = GetMonthlyYearToDate(expensesYTD, incomeYTD, request.Month),
                 TopExpenses = monthlyExpenses.Where(x => !x.ExcludeFromStatistics).OrderByDescending(x => x.Amount).Take(10).Select(x => new ExpenseQuickView() { Amount = x.Amount, Date = x.Date.ToShortDateString(), Id = x.Id, SubCategory = x.Category == null ? "none" : x.Category.Name }).ToList(),
-                ExpenseBreakdown = GetExpenseBreakdown(monthlyExpenses, incomeToCompare)
+                ExpenseBreakdown = GetExpenseBreakdown(monthlyExpenses, incomeToCompare),
+                IncomeBreakdown = GetIncomeBreakdown(monthlyIncome, incomeToCompare)
             };
         }
 
+        private List<IncomeBreakdown> GetIncomeBreakdown(IncomeEntity[] income, int incomeToCompare)
+        {
+            if (income.Length == 0)
+                return new List<IncomeBreakdown>();
+
+            var incomeCategories = income.Where(x => x.Amount > 0 && !x.IsRefund && x.CategoryId != null).GroupBy(x => x.Category.Name).Select(x =>
+            {
+                return new IncomeBreakdown()
+                {
+                    Amount = x.Sum(x => x.Amount),
+                    Category = x.Key,
+                    Percentage = x.Sum(x => x.Amount).ToPercentage(incomeToCompare)
+                };
+            }).ToList();
+
+            return incomeCategories;
+        }
         private List<ExpenseBreakdown> GetExpenseBreakdown(ExpenseEntity[] expenses, int income)
         {
+            if (expenses.Length == 0)
+                return new List<ExpenseBreakdown>();
             var expenseStats = new List<ExpenseBreakdown>();
             var subCategories = expenses.Where(x => x.Amount > 0 && !x.ExcludeFromStatistics && x.CategoryId != null).GroupBy(x => x.CategoryId).Select(x =>
             {
@@ -89,7 +109,7 @@ namespace CashTrack.Services.SummaryService
                 return new ExpenseBreakdown()
                 {
                     MainCategoryId = x.Key,
-                    SubCategoryId = 0,
+                    SubCategoryId = int.MaxValue,
                     Category = x.Select(x => x.Category.MainCategory.Name).FirstOrDefault(),
                     Amount = x.Sum(x => x.Amount),
                     Percentage = x.Sum(x => x.Amount).ToPercentage(income)

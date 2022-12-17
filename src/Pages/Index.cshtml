@@ -424,14 +424,14 @@
                             {
                                 @if (budget.IsMainCategory || budget.MainCategoryId >= int.MaxValue - 1)
                                 {
-                                    <tr class="border-top border-bottom border-3 rounded-4">
+                                <tr class="border-top border-bottom border-3 rounded-4 .bg-secondary .bg-gradient">
                                         <td>
-                                            @budget.Category
+                                        <h6 class="fw-bold">@budget.Category</h6>
                                         </td>
-                                        <td class="border-end">
+                                        <td >
                                             &nbsp;
                                         </td>
-                                        <td class="border-end">
+                                        <td>
                                             @budget.Amount
                                         </td>
                                         <td>
