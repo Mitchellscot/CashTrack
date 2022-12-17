@@ -63,7 +63,7 @@
     </div>
     @*End Delete Modal*@
     <div class="modal fade" id="editIncomeCategoryModal">
-        @await Html.PartialAsync("_AddEditIncomeCategoryModal", new AddEditIncomeCategoryModal() {
+        @await Html.PartialAsync("AddEditIncomeCategoryModal", new AddEditIncomeCategoryModal() {
         Name = Model.IncomeCategory.Name,
         InUse = Model.IncomeCategory.InUse,
         Notes = Model.IncomeCategory.Notes,

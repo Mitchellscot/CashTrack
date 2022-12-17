@@ -55,7 +55,7 @@
     </div>
     @*End Delete Modal*@
     <div class="modal fade" id="editSourceModal">
-        @await Html.PartialAsync("_AddIncomeSourcePartial", new AddEditIncomeSourceModal() {
+        @await Html.PartialAsync("AddEditIncomeSourceModal", new AddEditIncomeSourceModal() {
         Name = Model.Source.Name,
         SuggestOnLookup = Model.Source.SuggestOnLookup,
         Notes = Model.Source.Notes,

@@ -1,7 +1,10 @@
-﻿@model CashTrack.Models.IncomeModels.AddEditIncomeModal
+﻿@using CashTrack.Models.IncomeCategoryModels;
+@model CashTrack.Models.IncomeModels.AddEditIncomeModal
 @{
     var addOrEdit = Model.IsEdit ? "Edit" : "Add";
     var addOrEditClassForSwitch = Model.IsEdit ? "refund-switch-edit-js" : "refund-switch-add-js";
+    //stupid hack to get it to work on the dashboard
+    var relativeUrlOfIncomePage = !Model.ShowAddCategoryButton ? "./Income/index" : "./index";
 }
 
 <div class="modal-dialog modal-lg">
@@ -26,7 +29,7 @@
                     var formId = Model.IsEdit ? $"editIncomeForm-{Model.Id}" : "addIncomeForm";
                 }
                 <form method="post"
-                      asp-page="../Income/index"
+                      asp-page=@relativeUrlOfIncomePage
                       asp-page-handler="AddEditIncomeModal"
                       id="@formId">
                     @if (Model.IsEdit)
@@ -95,8 +98,10 @@
                             </div>
                         </div>
                         <div class="col-4 d-flex justify-content-center">
-                            @*TODO: wire this up*@
-                            <a class="btn btn-secondary" type="button" asp-page="/IncomeCategory/Add">Add New Category</a>
+                            @if (Model.ShowAddCategoryButton)
+                            {
+                                <a class="btn btn-secondary" type="button" data-bs-target="#addIncomeCategoryModal" data-bs-toggle="modal">Add New Category</a>
+                            }
                         </div>
                         <span class="validation-text" asp-validation-for="@Model.CategoryId"></span>
                     </div>
@@ -130,7 +135,7 @@
             @*TODO: See if you need to show this when switch is checked*@
             @if (string.IsNullOrEmpty(Model.RefundNotes))
             {
-                <a asp-page="./Refund" asp-route-id="@Model.Id"
+                <a asp-page="./Income/Refund" asp-route-id="@Model.Id"
                type="button" class="btn btn-info display-none">Refund Expenses</a>
             }
             @{
@@ -144,4 +149,16 @@
             </form>
         </div>
     </div>
+    @if (Model.ShowAddCategoryButton)
+    {
+        @* Add Income Category Modal *@
+        <div class="modal fade" id="addIncomeCategoryModal">
+            @await Html.PartialAsync("AddEditIncomeCategoryModal", new AddEditIncomeCategoryModal() { Returnurl=$"{Model.Returnurl}#addIncomeModal",
+            InUse=true, 
+            IsEdit=false
+            })
+        </div>
+        @* End Income Category Modal *@
+    }
+
 </div>

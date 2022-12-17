@@ -140,7 +140,7 @@ public class MerchantService : IMerchantService
                 MonthlyExpenseStatistics = new List<MonthlyStatistics>(),
                 PurchaseCategoryOccurances = new Dictionary<string, int>(),
                 PurchaseCategoryTotals = new Dictionary<string, decimal>(),
-                RecentExpenses = new List<ExpenseQuickViewForMerchantDetail>(),
+                RecentExpenses = new List<ExpenseQuickView>(),
             };
 
         var subCategories = expenses.Select(x => x.Category).Distinct().ToArray();
@@ -169,7 +169,7 @@ public class MerchantService : IMerchantService
 
             RecentExpenses = expenses.OrderByDescending(e => e.Date)
             .Take(9)
-            .Select(x => new ExpenseQuickViewForMerchantDetail()
+            .Select(x => new ExpenseQuickView()
             {
                 Id = x.Id,
                 Date = x.Date.Date.ToShortDateString(),

@@ -1,0 +1,84 @@
+﻿@using CashTrack.Common;
+@model CashTrack.Pages.Shared.DailyExpenseLineChart
+@{
+    
+}
+<script>
+    const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+    const @Model.ElementId = new Chart(@Model.VariableName, {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(@Model.Labels),
+            datasets:[{
+                lable: 'Spent',
+                data: @Model.Dataset,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: colorize(),
+                borderColor: colorize(),
+                borderWidth: 1,
+                fill: true,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4,
+                segment:{
+                    borderColor: colorizeSegment(),
+                    backgroundColor: colorizeSegment()
+                }
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        footer: footer,
+                    }
+                },
+                title: {
+                    display: false
+                },
+                legend: {
+                    display: false
+                },
+            },
+            scales: {
+                y: {
+                    min: 0,
+                    max: @Model.Max,
+                }
+            }
+        },
+    });
+    function footer(tooltipItems){
+        const object = tooltipItems[0];
+        const index = parseInt(object.label);
+        const currentTotal = object.dataset.data[index-1];
+        const previousValue = object.dataset.data[index-2];
+        const spent = (currentTotal - previousValue).toFixed(0);
+        return isNaN(spent) ? `Spent: ${currentTotal}` : `Spent: ${spent}`
+    };
+    function colorize() {
+        return (ctx) => {
+            const v = ctx.raw;
+            if(v < @Model.ExpenseBudgetMax)
+                return '@Html.Raw(Model.BudgetedSpendingColor)'
+            else if (v < @Model.DiscretionarySpendingMax)
+                return '@Html.Raw(Model.DiscretionarySpendingColor)'
+            else if(v < @Model.IncomeMax)
+                return '@Html.Raw(Model.BudgetedIncomeColor)'
+            else return '@Html.Raw(Model.OverIncomeMaxColor)'
+
+        }
+    };
+    function colorizeSegment() {
+        return (ctx) => {
+            const v = ctx.p0.raw;
+            if(v < @Model.ExpenseBudgetMax)
+                return '@Html.Raw(Model.BudgetedSpendingColor)'
+            else if (v < @Model.DiscretionarySpendingMax)
+                return '@Html.Raw(Model.DiscretionarySpendingColor)'
+            else if(v < @Model.IncomeMax)
+                return '@Html.Raw(Model.BudgetedIncomeColor)'
+            else return '@Html.Raw(Model.OverIncomeMaxColor)'
+        }
+    };
+</script>

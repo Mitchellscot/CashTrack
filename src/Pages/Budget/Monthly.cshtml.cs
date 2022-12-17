@@ -17,7 +17,6 @@ namespace CashTrack.Pages.Budget
         private readonly IBudgetService _budgetService;
         private readonly ISubCategoryService _subCategoryService;
         private readonly IMainCategoriesService _mainCategoryService;
-
         public MonthlyModel(IBudgetService budgetService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoryService) => (_budgetService, _subCategoryService, _mainCategoryService) = (budgetService, subCategoryService, mainCategoryService);
 
         [BindProperty(SupportsGet = true)]

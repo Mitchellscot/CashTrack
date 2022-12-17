@@ -56,7 +56,7 @@
     </div>
     @* Add Income Modal *@
     <div class="modal fade" id="addIncomeModal">
-        @await Html.PartialAsync("_AddIncomeModal", new AddEditIncomeModal(){ Returnurl = "./Index", IsEdit = false, CategoryList = new SelectList(Model.CategoryList, "Id", "Category"), Date= DateTime.Today });
+        @await Html.PartialAsync("AddEditIncomeModal", new AddEditIncomeModal(){ Returnurl = "~/Income/Index", IsEdit = false, CategoryList = new SelectList(Model.CategoryList, "Id", "Category"), Date= DateTime.Today, ShowAddCategoryButton = true });
     </div>
     @*End Add Income Modal*@
     @if (Model.IncomeResponse != null && Model.IncomeResponse.TotalCount > 0)
@@ -162,7 +162,7 @@
                                     </button>
                                     @* Edit Income Modal *@
                                     <div class="modal fade" id="editIncomeModal-@income.Id">
-                                        @await Html.PartialAsync("_AddINcomeModal", new AddEditIncomeModal(){
+                                        @await Html.PartialAsync("AddEditIncomeModal", new AddEditIncomeModal(){
                                 IsEdit = true,
                                 Returnurl = "./Index",
                                 CategoryId = @income.CategoryId,
@@ -172,7 +172,8 @@
                                 IsRefund = income.IsRefund,
                                 Source = income.Source,
                                 Notes = income.Notes,
-                                Id = income.Id
+                                Id = income.Id,
+                                ShowAddCategoryButton = true
                                 })
                                     </div>
                                     @*End Edit Income Modal*@

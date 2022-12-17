@@ -73,7 +73,6 @@ ul.ui-autocomplete {
 .chart-height {
     max-height: 400px;
 }
-
 /*CLASSES ON TAG HELPERS ON OTHER PAGES*/
 /*THEY NEED TO GO HERE BECAUSE THEY DON'T GET COMPILED*/
 
@@ -95,6 +94,7 @@ ul.ui-autocomplete {
 #addExpenseSubCategory-error {
     color: red;
 }
+
 /*layout*/
 .sidebar-heading, a {
     text-decoration: none;

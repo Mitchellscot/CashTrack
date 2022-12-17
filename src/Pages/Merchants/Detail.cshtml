@@ -55,7 +55,7 @@
     </div>
     @*End Delete Modal*@
     <div class="modal fade" id="editMerchantModal">
-        @await Html.PartialAsync("_AddMerchantPartial", new AddEditMerchantModal() {
+        @await Html.PartialAsync("AddEditMerchantModal", new AddEditMerchantModal() {
         Name = Model.Merchant.Name,
         City = Model.Merchant.City,
         State = Model.Merchant.State,
@@ -163,7 +163,7 @@
         </div>
         <hr />
         <div class="row">
-            @if (Model.Merchant.AnnualExpenseStatistics.Any())
+            @if (Model.Merchant.AnnualExpenseStatistics.Any() && Model.Merchant.AnnualExpenseStatistics.Count() > 1)
             {
                 <div class="col-12 col-xl-6">
                     <canvas id="annualExpensesChart" height="400" class="chart-height"></canvas>
@@ -175,7 +175,7 @@
                     <canvas id="monthlyExpensesChart" height="400" class="chart-height"></canvas>
                 </div>
             }
-            @if (Model.Merchant.AnnualExpenseStatistics.Any())
+            @if (Model.Merchant.AnnualExpenseStatistics.Any() && Model.Merchant.AnnualExpenseStatistics.Count() > 1)
             {
                 <div class="col-12 col-xl-6">
                     <canvas id="annualStatisticsChart" height="400" class="chart-height"></canvas>

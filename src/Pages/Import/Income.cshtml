@@ -66,11 +66,11 @@
                           new ImportModel() { ReturnUrl = "~/Import/Income" })
                   </div>
                   <div class="modal fade" id="addSourceModal">
-                      @await Html.PartialAsync("_AddIncomeSourcePartial", 
+                      @await Html.PartialAsync("AddEditIncomeSourceModal", 
                       new AddEditIncomeSourceModal() { ReturnUrl = "~/Import/Income", SuggestOnLookup = true })
                       </div>
                       <div class="modal fade" id="addCategoryModal">
-                      @await Html.PartialAsync("_AddEditIncomeCategoryModal", 
+                      @await Html.PartialAsync("AddEditIncomeCategoryModal", 
                       new AddEditIncomeCategoryModal() { 
                           Returnurl = "~/Import/Income", 
                           IsEdit = false 

@@ -32,7 +32,7 @@
                 <a class="btn btn-secondary btn-height rounded-start float-start" asp-page="./Main/Index">Main Categories</a>
                 <button class="btn btn-primary float-end" id="addSubCategoryButton" data-bs-toggle="modal" data-bs-target="#addSubCategoryModal">Add Category</button>
                 <div class="modal fade" id="addSubCategoryModal">
-                    @await Html.PartialAsync("_AddEditSubCategoryModal", 
+                    @await Html.PartialAsync("AddEditSubCategoryModal", 
                     new AddEditSubCategoryModal() { 
                         Returnurl = "~/Expenses/Categories/Index", 
                         InUse = true, 

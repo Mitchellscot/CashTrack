@@ -49,8 +49,9 @@ public class AddEditExpenseModal : Expense
     public int? Query { get; set; }
     public string? Q { get; set; }
     public string? Q2 { get; set; }
+    public bool ShowAddCategoryButton { get; set; }
 }
-public class ExpenseQuickViewForMerchantDetail : Transaction
+public class ExpenseQuickView : Transaction
 {
     new public string Date { get; set; }
     public string SubCategory { get; set; }

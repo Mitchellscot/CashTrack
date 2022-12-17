@@ -5,6 +5,7 @@
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Expenses.Index
 @{
+    ViewData["Title"] = "Expenses | ";
     Layout = "_Layout";
 }
 
@@ -58,7 +59,7 @@
     </div>
     @* Add Expense Modal *@
     <div class="modal fade" id="addExpenseModal">
-        @await Html.PartialAsync("_AddExpenseModal",
+        @await Html.PartialAsync("AddExpenseModal",
         new AddEditExpenseModal() {
             IsEdit = false, 
             Returnurl = "./Index", 
@@ -68,7 +69,8 @@
             PageNumber = Model.PageNumber,
             Query = Model.Query,
             Q = Model.Q,
-            Q2 = Model.Q2
+            Q2 = Model.Q2,
+            ShowAddCategoryButton = true
         });
     </div>
     @*End Add Expense Modal*@
@@ -189,7 +191,7 @@
                                     @* Edit Expense Modal *@
 
                                     <div class="modal fade" id="editExpenseModal-@expense.Id">
-                                        @await Html.PartialAsync("_AddExpenseModal",
+                                        @await Html.PartialAsync("AddExpenseModal",
                                 new AddEditExpenseModal() {
                                 IsEdit = true,
                                 Returnurl = "./Index",
@@ -205,6 +207,7 @@
                                 PageNumber = Model.PageNumber,
                                 Query = Model.Query,
                                 Q = Model.Q,
+                                ShowAddCategoryButton = true,
                                 Q2 = Model.Q2
                                 });
                                     </div>

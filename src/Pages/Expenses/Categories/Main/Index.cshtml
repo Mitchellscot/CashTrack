@@ -74,7 +74,7 @@
                     </div>
                 </div>
                 <div class="modal fade" id="editMainCategoryModal-@category.Id">
-                    @await Html.PartialAsync("_AddEditMainCategoryModal", new AddEditMainCategoryModal() {
+                    @await Html.PartialAsync("AddEditMainCategoryModal", new AddEditMainCategoryModal() {
             ReturnUrl = "/Expenses/Categories/Main/Index",
             IsEdit = true,
             Name = category.Name,
@@ -144,7 +144,7 @@
         }
     </div>
     <div class="modal fade" id="addMainCategoryModal">
-        @await Html.PartialAsync("_AddEditMainCategoryModal", new AddEditMainCategoryModal() {
+        @await Html.PartialAsync("AddEditMainCategoryModal", new AddEditMainCategoryModal() {
         ReturnUrl = "/Expenses/Categories/Main/Index",
         IsEdit = false});
     </div>

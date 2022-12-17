@@ -63,7 +63,7 @@
     </ul>
     @*END NAV TABS*@
         <div class="modal fade" id="addSubCategoryModal">
-        @await Html.PartialAsync("_AddEditSubCategoryModal", new AddEditSubCategoryModal()
+        @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal()
         {
             Returnurl="/Budget/List",
             IsEdit = false,

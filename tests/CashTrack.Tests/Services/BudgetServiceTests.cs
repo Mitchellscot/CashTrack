@@ -3,10 +3,7 @@ using System.Threading.Tasks;
 using Xunit;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.BudgetRepository;
-using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Tests.Services.Common;
-using CashTrack.Models.ExpenseModels;
-using CashTrack.Models.Common;
 using System;
 using System.Linq;
 using CashTrack.Common.Exceptions;
@@ -16,6 +13,7 @@ using CashTrack.Services.BudgetService;
 using CashTrack.Models.BudgetModels;
 using AutoMapper;
 using static CashTrack.Services.BudgetService.BudgetService;
+using CashTrack.Services.Common;
 
 namespace CashTrack.Tests.Services
 {
@@ -307,7 +305,7 @@ namespace CashTrack.Tests.Services
         {
             var budgets = await _repo.FindWithMainCategories(x => x.Year == 2012);
             var mainCategoryLabels = budgets.Where(x => x.SubCategoryId != null && x.Amount > 0).Select(x => x.SubCategory?.MainCategory.Name).OrderBy(x => x).Distinct().ToArray();
-            var response = _service.GetMonthlyExpenseData(budgets, true, true, true, mainCategoryLabels);
+            var response = ChartUtilities.GetMonthlyBudgetExpenseData(budgets, true, true, mainCategoryLabels, true);
             response.Count.ShouldBe(mainCategoryLabels.Length + 2);
             response.Sum(x => x.DataSet.Sum()).ShouldBe(22876);
         }

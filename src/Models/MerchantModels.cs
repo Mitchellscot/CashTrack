@@ -48,7 +48,7 @@ public record MerchantDetail : Merchant
     public List<MonthlyStatistics> MonthlyExpenseStatistics { get; set; }
     public Dictionary<string, int> PurchaseCategoryOccurances { get; set; }
     public Dictionary<string, decimal> PurchaseCategoryTotals { get; set; }
-    public List<ExpenseQuickViewForMerchantDetail> RecentExpenses { get; set; }
+    public List<ExpenseQuickView> RecentExpenses { get; set; }
 }
 public class MerchantDropdownSelection
 {

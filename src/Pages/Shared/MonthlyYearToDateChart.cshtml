@@ -1,0 +1,65 @@
+﻿@model CashTrack.Pages.Shared.MonthlyYearToDateChart
+@{
+}
+<script>
+    const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+    const @Model.ElementId = new Chart(@Model.VariableName, {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(@Model.Labels),
+            datasets:[
+            {
+                label: 'Savings',
+                data: @Model.SavingsDataset,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: '@Html.Raw(Model.SavingsColor)',
+                borderColor: '@Html.Raw(Model.SavingsColor)',
+                borderWidth: 3,
+                fill: false
+            },
+            {
+                label: 'Expenses',
+                data: @Model.ExpenseDataset,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: '@Html.Raw(Model.ExpenseColor)',
+                borderColor: '@Html.Raw(Model.ExpenseColor)',
+                borderWidth: 3,
+                fill: false
+            },
+            {
+                label: 'Income',
+                data: @Model.IncomeDataset,
+                color: 'rgba(0, 0, 0, 0)',
+                backgroundColor: '@Html.Raw(Model.IncomeColor)',
+                borderColor: '@Html.Raw(Model.IncomeColor)',
+                borderWidth: 3,
+                fill: false
+            },
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        footer: footer,
+                    }
+                },
+                title: {
+                    display: false
+                },
+                legend: {
+                    display: true
+                },
+            }
+        },
+    });
+        function footer(tooltipItems){
+        const object = tooltipItems[0];
+        const index = parseInt(object.parsed.x);
+        const currentTotal = object.dataset.data[index];
+        const previousValue = object.dataset.data[index-1];
+        const spent = (currentTotal - previousValue).toFixed(0);
+        return isNaN(previousValue) ? `Amount: ${currentTotal}` : `Amount: ${spent}`
+    };
+</script>

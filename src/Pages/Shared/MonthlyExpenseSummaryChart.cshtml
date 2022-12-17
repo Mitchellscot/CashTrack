@@ -1,0 +1,69 @@
+﻿@using System.Text.Json;
+@model CashTrack.Pages.Shared.MonthlyExpenseSummaryChart
+@{
+
+}
+<script>
+    const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+    const @Model.ElementId = new Chart(@Model.VariableName, {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(@Model.Labels),
+            datasets: [
+            @foreach(var data in Model.BudgetedExpenseDatasets)
+            {
+                <text>
+                {
+                    label: '@data.SubCategoryName',
+                    data: @JsonSerializer.Serialize(@data.DataSet),
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: '@Html.Raw(data.Color)',
+                    borderColor: '@Html.Raw(data.Color)',
+                    borderWidth: 1,
+                    stack: 'Stack 1'
+                },
+                </text>
+            }
+            @foreach(var data in Model.RealizedExpenseDatasets)
+            {
+                <text>
+                {
+                    label: '@data.SubCategoryName',
+                    data: @JsonSerializer.Serialize(@data.DataSet),
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: '@Html.Raw(data.Color)',
+                    borderColor: '@Html.Raw(data.Color)',
+                    borderWidth: 1,
+                    stack: 'Stack 0'
+                },
+                </text>
+            }
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: {
+                intersect: false,
+                mode: 'point',
+            },
+            scales: {
+                x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: true,
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false,
+                    position: 'top',
+                },
+                title: {
+                    display: false,
+                    text: '@Model.Title'
+                }
+            }
+        }
+    });
+        </script>

@@ -61,7 +61,7 @@
     </div>
     @*End Delete Modal*@
     <div class="modal fade" id="editSubCategoryModal">
-        @await Html.PartialAsync("_AddEditSubCategoryModal", new AddEditSubCategoryModal() {
+        @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal() {
         Name = Model.SubCategory.Name,
         InUse = Model.SubCategory.InUse,
         Notes = Model.SubCategory.Notes,
