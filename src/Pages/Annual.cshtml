@@ -1,8 +1,50 @@
 ﻿@page
+@using CashTrack.Pages.Shared;
 @model CashTrack.Pages.Annual
 @{
 }
-<div>hi</div>
+<div class="container-fluid">
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
+    @await Html.PartialAsync("_MessagePartial",
+    new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
+    <div class="row mt-2 border-bottom d-flex justify-content-between">
+        <div class="d-flex col-auto align-self-center">
+        <h3 class="me-2">
+            @Model.Year
+        </h3>
+        @if (Model.SummaryResponse.LastImport != DateTime.MinValue)
+        {
+            <p class="fst-italic align-self-end ms-3">Last Import: @Model.SummaryResponse.LastImport.ToShortDateString()</p>
+        }
+        </div>
+        <div class="col-auto d-flex">
+            <form method="get" class="d-flex btn-height">
+                <div class="input-group me-2">
+                    <select onchange="this.form.submit()" data-val="true" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="monthlyBudgetYearSelection">
+                        <option value="@Model.Year" selected disabled hidden></option>
+                    </select>
+                </div>
+            </form>
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-secondary btn-height me-2 btn-text-overflow" type="button" data-bs-toggle="modal" data-bs-target="#expenseStats">View Details</button>
+                <div class="dropdown-center">
+                    <a class="btn btn-secondary dropdown-toggle me-2 btn-text-overflow btn-height" href="#" role="button" data-bs-toggle="dropdown">Time Span</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item text-center" asp-page="./Index">Monthly</a></li>
+                        <li><a class="dropdown-item text-center" asp-page="./Annual">Annual</a></li>
+                        <li><a class="dropdown-item text-center" asp-page="./Summary">All Time</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row d-flex">
+    </div>
+
+</div>
 
 @section Scripts {
     <script src="~/js/annual.js"></script>

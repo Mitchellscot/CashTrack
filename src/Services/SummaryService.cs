@@ -21,6 +21,7 @@ namespace CashTrack.Services.SummaryService
     public interface ISummaryService
     {
         Task<MonthlySummaryResponse> GetMonthlySummaryAsync(MonthlySummaryRequest request);
+        Task<AnnualSummaryResponse> GetAnnualSummaryAsync(AnnualSummaryRequest request);
 
     }
     public class SummaryService : ISummaryService
@@ -36,6 +37,16 @@ namespace CashTrack.Services.SummaryService
             _expenseRepo = expenseRepository;
             _incomeRepo = incomeRepository;
             _userRepository = userRepository;
+        }
+        public async Task<AnnualSummaryResponse> GetAnnualSummaryAsync(AnnualSummaryRequest request)
+        {
+            var isCurrentYear = request.Year == DateTime.Now.Year;
+
+            var user = await _userRepository.FindById(request.UserId);
+            return new AnnualSummaryResponse()
+            {
+                LastImport = user.LastImport
+            };
         }
 
         public async Task<MonthlySummaryResponse> GetMonthlySummaryAsync(MonthlySummaryRequest request)

@@ -7,6 +7,28 @@ using System.Collections.Generic;
 
 namespace CashTrack.Models.SummaryModels
 {
+    public record AnnualSummaryRequest
+    {
+        public int UserId { get; set; }
+        public int Year { get; set; }
+
+    }
+    public record AnnualSummaryResponse
+    {
+        public DateTime LastImport { get; set; }
+        //public AnnualProgress AnnualProgress { get; set; }
+        //public AnnualSavingsProgress AnnualSavingsProgress { get; set; }
+        //public ExpenseSummaryChartData ExpenseSummaryChart { get; set; }
+        //public MonthlySummary MonthlySummary { get; set; }
+        //public OverallSummaryChart OverallSummaryChart { get; set; }
+        //public Dictionary<string, int> SubCategoryPercentages { get; set; }
+        //public Dictionary<string, int> MainCategoryPercentages { get; set; }
+        //public Dictionary<string, int> MerchantPercentages { get; set; }
+        //public DailyExpenseChart DailyExpenseLineChart { get; set; }
+        //public MonthlyYearToDate YearToDate { get; set; }
+        //public List<ExpenseQuickView> TopExpenses { get; set; }
+        //public List<TransactionBreakdown> TransactionBreakdown { get; set; }
+    }
     public record MonthlySummaryRequest
     {
         public int UserId { get; set; }
