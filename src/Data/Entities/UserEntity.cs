@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CashTrack.Data.Entities
@@ -8,5 +9,6 @@ namespace CashTrack.Data.Entities
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public DateTime LastImport { get; set; } = DateTime.MinValue;
     }
 }

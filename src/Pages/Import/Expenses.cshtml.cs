@@ -10,10 +10,13 @@ using CashTrack.Services.ImportService;
 using CashTrack.Services.MainCategoriesService;
 using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
+using CashTrack.Services.UserService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Import
@@ -26,8 +29,9 @@ namespace CashTrack.Pages.Import
         private readonly IExpenseReviewService _expenseReviewService;
         private readonly IImportService _importService;
         private readonly IMainCategoriesService _mainCategoryService;
+        private readonly IUserService _userService;
 
-        public ExpensesModel(IExpenseReviewService expenseReviewService, ISubCategoryService subCategoryService, IExpenseService expenseService, IMerchantService merchantService, IImportService importService, IMainCategoriesService mainCategoryService)
+        public ExpensesModel(IExpenseReviewService expenseReviewService, ISubCategoryService subCategoryService, IExpenseService expenseService, IMerchantService merchantService, IImportService importService, IMainCategoriesService mainCategoryService, IUserService userService)
         {
             _merchantService = merchantService;
             _expenseService = expenseService;
@@ -35,6 +39,7 @@ namespace CashTrack.Pages.Import
             _expenseReviewService = expenseReviewService;
             _importService = importService;
             _mainCategoryService = mainCategoryService;
+            _userService = userService;
         }
         public ExpenseReviewResponse ExpenseReviewResponse { get; set; }
         [BindProperty(SupportsGet = true)]
@@ -69,7 +74,12 @@ namespace CashTrack.Pages.Import
             }
             var result = await _importService.ImportTransactions(Import);
             if (result.ToString().Contains("Added"))
+            {
                 SuccessMessage += result;
+                var updateSuccess = await _userService.UpdateLastImportDate(int.Parse(this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value));
+                if (!updateSuccess)
+                    InfoMessage = "Unable to update the last import date.";
+            }
             else
                 InfoMessage += result;
 

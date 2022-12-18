@@ -170,7 +170,7 @@
 </div>
 
 <div class="modal fade" id="importCsvModal">
-    @await Html.PartialAsync("_ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Import/Expenses" })
+    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Import/Expenses" })
 </div>
 <div class="modal fade" id="addImportRuleModal">
     @await Html.PartialAsync("_AddEditImportRuleModal", new AddEditImportRuleModal() { Returnurl = "~/Settings", IsEdit = false })

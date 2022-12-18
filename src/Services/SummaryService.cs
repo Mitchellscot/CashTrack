@@ -3,11 +3,11 @@ using CashTrack.Common.Extensions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
 using CashTrack.Models.ExpenseModels;
-using CashTrack.Models.IncomeModels;
 using CashTrack.Models.SummaryModels;
 using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.IncomeRepository;
+using CashTrack.Repositories.UserRepository;
 using CashTrack.Services.Common;
 using System;
 using System.Collections.Generic;
@@ -28,12 +28,14 @@ namespace CashTrack.Services.SummaryService
         private readonly IBudgetRepository _budgetRepo;
         private readonly IExpenseRepository _expenseRepo;
         private readonly IIncomeRepository _incomeRepo;
+        private readonly IUserRepository _userRepository;
 
-        public SummaryService(IBudgetRepository budgetRepository, IExpenseRepository expenseRepository, IIncomeRepository incomeRepository)
+        public SummaryService(IBudgetRepository budgetRepository, IExpenseRepository expenseRepository, IIncomeRepository incomeRepository, IUserRepository userRepository)
         {
             _budgetRepo = budgetRepository;
             _expenseRepo = expenseRepository;
             _incomeRepo = incomeRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<MonthlySummaryResponse> GetMonthlySummaryAsync(MonthlySummaryRequest request)
@@ -53,8 +55,11 @@ namespace CashTrack.Services.SummaryService
 
             var monthlySummary = GetMonthlySummary(monthlyExpenses, monthlyIncome, monthlyBudgets, request.Year, request.Month);
 
+            var user = await _userRepository.FindById(request.UserId);
+
             return new MonthlySummaryResponse()
             {
+                LastImport = user.LastImport,
                 MonthlySummary = monthlySummary,
                 ExpenseSummaryChart = GetExpenseSummaryChartData(monthlyExpenses, monthlyBudgets),
                 OverallSummaryChart = GetOverallSummaryChart(monthlyExpenses, monthlyIncome, monthlyBudgets),
@@ -66,27 +71,10 @@ namespace CashTrack.Services.SummaryService
                 DailyExpenseLineChart = GetDailyExpenseLineChart(request.Month, request.Year, monthlyExpenses, monthlyBudgets, monthlyIncome),
                 YearToDate = GetMonthlyYearToDate(expensesYTD, incomeYTD, request.Month),
                 TopExpenses = monthlyExpenses.Where(x => !x.ExcludeFromStatistics).OrderByDescending(x => x.Amount).Take(10).Select(x => new ExpenseQuickView() { Amount = x.Amount, Date = x.Date.ToShortDateString(), Id = x.Id, SubCategory = x.Category == null ? "none" : x.Category.Name }).ToList(),
-                TransactionBreakdown = GetTransactionBreakdown(monthlyExpenses, monthlyIncome, monthlyBudgets, isCurrentMonth),
+                TransactionBreakdown = GetTransactionBreakdown(monthlyExpenses, monthlyIncome, monthlyBudgets, isCurrentMonth)
             };
         }
 
-        private List<TransactionBreakdown> GetIncomeBreakdown(IncomeEntity[] income, int incomeToCompare, bool isCurrentMonth)
-        {
-            if (income.Length == 0)
-                return new List<TransactionBreakdown>();
-
-            var incomeCategories = income.Where(x => x.Amount > 0 && !x.IsRefund && x.CategoryId != null).GroupBy(x => x.Category.Name).Select(x =>
-            {
-                return new TransactionBreakdown()
-                {
-                    Amount = x.Sum(x => x.Amount),
-                    Category = x.Key,
-                    Percentage = x.Sum(x => x.Amount).ToPercentage(incomeToCompare)
-                };
-            }).ToList();
-
-            return incomeCategories;
-        }
         private List<TransactionBreakdown> GetTransactionBreakdown(ExpenseEntity[] expenses, IncomeEntity[] income, BudgetEntity[] budgets, bool isCurrentMonth)
         {
             if (expenses.Length == 0)
@@ -119,6 +107,37 @@ namespace CashTrack.Services.SummaryService
                 };
             }).ToList();
             stats.AddRange(mainCategories);
+
+            var incomeTransactions = new TransactionBreakdown()
+            {
+                MainCategoryId = int.MaxValue - 2,
+                SubCategoryId = 0,
+                Category = "Income",
+                Amount = incomeToCompareBy,
+                Percentage = 0
+            };
+            stats.Add(incomeTransactions);
+            var incomeCategories = income.Where(x => x.Amount > 0 && !x.IsRefund && x.CategoryId != null).GroupBy(x => x.Category.Id).Select(x =>
+            {
+                return new TransactionBreakdown()
+                {
+                    MainCategoryId = int.MaxValue - 2,
+                    SubCategoryId = x.Key,
+                    Category = x.Select(x => x.Category.Name).FirstOrDefault(),
+                    Amount = x.Sum(x => x.Amount),
+                    Percentage = x.Sum(x => x.Amount).ToDecimalPercentage(incomeToCompareBy)
+                };
+            }).ToList();
+            stats.AddRange(incomeCategories);
+            var expenseTransactions = new TransactionBreakdown()
+            {
+                MainCategoryId = int.MaxValue - 1,
+                SubCategoryId = 0,
+                Category = "Expenses",
+                Amount = expenses.Sum(x => x.Amount),
+                Percentage = 0
+            };
+            stats.Add(expenseTransactions);
             var savingsAmount = incomeToCompareBy - expenses.Sum(x => x.Amount);
             var savings = new TransactionBreakdown()
             {
@@ -130,26 +149,6 @@ namespace CashTrack.Services.SummaryService
             };
             if (savings.Amount != 0)
                 stats.Add(savings);
-
-            var incomeTransactions = new TransactionBreakdown()
-            {
-                MainCategoryId = int.MaxValue -2,
-                SubCategoryId = 0,
-                Category = "Income",
-                Amount = incomeToCompareBy,
-                Percentage = 0
-            };
-            stats.Add(incomeTransactions);
-
-            var expenseTransactions = new TransactionBreakdown()
-            {
-                MainCategoryId = int.MaxValue - 1,
-                SubCategoryId = 0,
-                Category = "Expenses",
-                Amount = expenses.Sum(x => x.Amount),
-                Percentage = 0
-            };
-            stats.Add(expenseTransactions);
 
             return stats.OrderBy(x => x.MainCategoryId).ThenBy(x => x.SubCategoryId).ToList();
         }
@@ -384,11 +383,12 @@ namespace CashTrack.Services.SummaryService
 
         internal MonthlySummary GetMonthlySummary(ExpenseEntity[] expenses, IncomeEntity[] income, BudgetEntity[] budgets, int Year, int Month)
         {
+            bool isCurrentMonth = DateTime.Now.Year == Year && DateTime.Now.Month == Month;
             var realizedIncome = income.Sum(x => x.Amount);
             var budgetedIncome = budgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount);
             //if the summary is generated in the current month, calculate based on projected income
             //if the summary is generated for a previous month, calculate based on realized income
-            var incomeToCompareBy = DateTime.Now.Year == Year && DateTime.Now.Month == Month ? budgetedIncome : realizedIncome;
+            var incomeToCompareBy = isCurrentMonth ? budgetedIncome : realizedIncome;
             var realizedExpenses = expenses.Sum(x => x.Amount);
             var budgetedNeeds = budgets.Where(x => x.BudgetType == BudgetType.Need).Sum(x => x.Amount);
             var budgetedWants = budgets.Where(x => x.BudgetType == BudgetType.Want).Sum(x => x.Amount);
@@ -400,8 +400,19 @@ namespace CashTrack.Services.SummaryService
             var realizedSavings = (realizedExpenses + budgetedSavings) <= incomeToCompareBy ?
                 budgetedSavings : dippingIntoBudgetedSavings ? incomeToCompareBy - realizedExpenses : 0;
 
-            var unspent = (realizedExpenses + budgetedSavings) <= incomeToCompareBy ? incomeToCompareBy - (realizedExpenses + budgetedSavings) : 0;
-
+            decimal unspent = 0;
+            if (!isCurrentMonth && (realizedExpenses + budgetedSavings) <= realizedIncome)
+            {
+                unspent = realizedIncome - (realizedExpenses + budgetedSavings);
+            }
+            else if (isCurrentMonth && realizedExpenses < budgetedExpenses)
+            {
+                unspent = budgetedIncome - (budgetedExpenses + budgetedSavings);
+            }
+            else if (isCurrentMonth && realizedExpenses > budgetedExpenses && (realizedExpenses + budgetedSavings) < budgetedIncome)
+            {
+                unspent = budgetedIncome - (realizedExpenses + budgetedSavings);
+            }
             var estimatedSavings = dippingIntoRealSavings ? (incomeToCompareBy - realizedExpenses) : dippingIntoBudgetedSavings ? realizedSavings : budgetedSavings + unspent;
             return new MonthlySummary()
             {

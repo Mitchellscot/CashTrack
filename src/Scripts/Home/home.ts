@@ -5,6 +5,8 @@ import { autoSuggestIncomeSourceNames } from '../Utility/source-autocomplete';
 import { forceRefundCategoryWhenRefundIsCheckedAddModal } from "../Utility/force-refund";
 import disableLocationIfMerchantIsOnline from "../Utility/online-merchant";
 import disableLocationIfSourceIsOnline from "../Utility/online-source";
+import initializeTooltips from "../Utility/initialize-tooltips";
+
 
 autoSuggestMerchantNames();
 loadMainCategoryOnSubCategorySelect();
@@ -13,5 +15,5 @@ autoSuggestIncomeSourceNames();
 disableLocationIfMerchantIsOnline();
 forceRefundCategoryWhenRefundIsCheckedAddModal();
 disableLocationIfSourceIsOnline();
-
+initializeTooltips();
 
