@@ -47,8 +47,8 @@ public class AddEditExpenseModal : Expense
     public SelectList MainCategoryList { get; set; }
     public int? PageNumber { get; set; }
     public int? Query { get; set; }
-    public string? Q { get; set; }
-    public string? Q2 { get; set; }
+    public string Q { get; set; }
+    public string Q2 { get; set; }
     public bool ShowAddCategoryButton { get; set; }
 }
 public class ExpenseQuickView : Transaction

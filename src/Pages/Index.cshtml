@@ -531,7 +531,7 @@
 @*End Expense Breakdown*@
 @section Scripts {
     <script src="~/js/home.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
+    <script asp-append-version="true" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @await Html.PartialAsync("MonthlyExpenseSummaryChart", new MonthlyExpenseSummaryChart()
     {
         ElementId = "monthlySummaryChart",
@@ -552,21 +552,29 @@
         BudgetedSavings = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.BudgetedSavings),
         RealizedSavings = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedSavings)
     })
-    @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.SubCategoryPercentages.Select(x => x.Key).ToArray()))
+    @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.SubCategoryPercentages.Values.Sum() > 0)
+    {
+        @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.SubCategoryPercentages.Select(x => x.Key).ToArray()))
     {
         ElementId = "subCategoryPie",
         Dataset = JsonSerializer.Serialize(Model.SummaryResponse.SubCategoryPercentages.Select(x => x.Value).ToArray()),
         Title = "Sub Category Percentages",
         IsSummaryChart = true
     })
-    @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.MainCategoryPercentages.Select(x => x.Key).ToArray()))
+    }
+    @if (Model.SummaryResponse.MainCategoryPercentages != null && Model.SummaryResponse.MainCategoryPercentages.Values.Sum() > 0)
     {
-        ElementId = "mainCategoryPie",
-        Dataset = JsonSerializer.Serialize(Model.SummaryResponse.MainCategoryPercentages.Select(x => x.Value).ToArray()),
-        Title = "Main Category Percentages",
-        IsSummaryChart = true
-    })
-    @await Html.PartialAsync("DailyExpenseLineChart", new DailyExpenseLineChart()
+        @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.MainCategoryPercentages.Select(x => x.Key).ToArray()))
+        {
+            ElementId = "mainCategoryPie",
+            Dataset = JsonSerializer.Serialize(Model.SummaryResponse.MainCategoryPercentages.Select(x => x.Value).ToArray()),
+            Title = "Main Category Percentages",
+            IsSummaryChart = true
+        })
+        }
+                    @if (Model.SummaryResponse.MainCategoryPercentages != null && Model.SummaryResponse.MainCategoryPercentages.Values.Sum() > 0)
+    {
+        @await Html.PartialAsync("DailyExpenseLineChart", new DailyExpenseLineChart()
     {
         ElementId = "dailyExpenseChart",
         Dataset = JsonSerializer.Serialize(Model.SummaryResponse.DailyExpenseLineChart.Dataset),
@@ -577,16 +585,22 @@
         DiscretionarySpendingMax = Model.SummaryResponse.DailyExpenseLineChart.DiscretionarySpendingMax,
         IncomeMax = Model.SummaryResponse.DailyExpenseLineChart.IncomeMax
     })
-    @await Html.PartialAsync("MonthlyYearToDateChart", new MonthlyYearToDateChart()
+    }
+    @if (Model.SummaryResponse.YearToDate != null && Model.SummaryResponse.TopExpenses.Count > 1)
     {
-        ElementId = "ytdChart",
-        Dataset = JsonSerializer.Serialize(Model.SummaryResponse.DailyExpenseLineChart.Dataset),
-        Title = "Daily Expenses",
-        Labels = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.Labels),
-        IncomeDataset = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.IncomeDataset),
-        ExpenseDataset = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.ExpenseDataset),
-        SavingsDataset = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.SavingsDataset)
-    })
+        @await Html.PartialAsync("MonthlyYearToDateChart", new MonthlyYearToDateChart()
+        {
+            ElementId = "ytdChart",
+            Dataset = JsonSerializer.Serialize(Model.SummaryResponse.DailyExpenseLineChart.Dataset),
+            Title = "Daily Expenses",
+            Labels = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.Labels),
+            IncomeDataset = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.IncomeDataset),
+            ExpenseDataset = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.ExpenseDataset),
+            SavingsDataset = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.SavingsDataset)
+        })
+        }
+    @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.MerchantPercentages.Values.Sum() > 0)
+    {
     @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.MerchantPercentages.Select(x => x.Key).ToArray()))
     {
         ElementId = "merchantPie",
@@ -594,5 +608,6 @@
         Title = "Merchant Percentages",
         IsSummaryChart = true
     })
+    }
 
 }

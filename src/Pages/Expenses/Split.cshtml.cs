@@ -39,7 +39,7 @@ namespace CashTrack.Pages.Expenses
         public SelectList SubCategories { get; set; }
         [BindProperty(SupportsGet = true)]
         public string ReturnUrl { get; set; }
-        public async Task<IActionResult> OnGet(int id, int? Split, decimal? Tax, string? ReturnUrl)
+        public async Task<IActionResult> OnGet(int id, int? Split, decimal? Tax, string ReturnUrl)
         {
             var originalExpense = await _expenseService.GetExpenseByIdAsync(id);
             if (originalExpense == null)
@@ -60,7 +60,7 @@ namespace CashTrack.Pages.Expenses
             this.ReturnUrl = ReturnUrl ?? "~/Expenses/Index";
             return Page();
         }
-        public async Task<IActionResult> OnPost(List<ExpenseSplit> expenseSplits, string? ReturnUrl)
+        public async Task<IActionResult> OnPost(List<ExpenseSplit> expenseSplits, string ReturnUrl)
         {
             if (!ModelState.IsValid)
             {
