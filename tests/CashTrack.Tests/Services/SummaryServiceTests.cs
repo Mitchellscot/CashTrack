@@ -14,6 +14,7 @@ using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
 using System.Collections;
 using System.Collections.Generic;
+using CashTrack.Repositories.UserRepository;
 
 namespace CashTrack.Tests.Services
 {
@@ -27,7 +28,8 @@ namespace CashTrack.Tests.Services
             var budgetRepo = new BudgetRepository(sharedDB);
             var expenseRepo = new ExpenseRepository(sharedDB);
             var incomeRepo = new IncomeRepository(sharedDB);
-            _service = new SummaryService(budgetRepo, expenseRepo, incomeRepo);
+            var userRepo = new UserRepository(sharedDB);
+            _service = new SummaryService(budgetRepo, expenseRepo, incomeRepo, userRepo);
             _db = sharedDB;
         }
         [Theory]
