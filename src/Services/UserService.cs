@@ -15,6 +15,7 @@ public interface IUserService
     Task<User[]> GetAllUsersAsync();
     Task<User> CreateUserAsync(AddEditUser request);
     Task<bool> UpdatePasswordAsync(ChangePassword request);
+    Task<bool> UpdateLastImportDate(int userId);
 }
 public class UserService : IUserService
 {
@@ -74,6 +75,17 @@ public class UserService : IUserService
     {
         var user = await _userRepo.FindById(id);
         return _mapper.Map<User>(user);
+    }
+
+    public async Task<bool> UpdateLastImportDate(int userId)
+    {
+        var user = await _userRepo.FindById(userId);
+        if (user == null)
+            throw new ArgumentException(nameof(user));
+
+        user.LastImport = DateTime.Now;
+        var update = await _userRepo.Update(user);
+        return update > 0;
     }
 }
 public class UserMapperProfile : Profile

@@ -2,18 +2,21 @@
 using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Pages.Shared;
+using System;
 using System.Collections.Generic;
 
 namespace CashTrack.Models.SummaryModels
 {
     public record MonthlySummaryRequest
     {
+        public int UserId { get; set; }
         public int Month { get; set; }
         public int Year { get; set; }
 
     }
     public record MonthlySummaryResponse
     {
+        public DateTime LastImport { get; set; }
         public MonthlyProgress MonthlyProgress { get; set; }
         public AnnualSavingsProgress AnnualSavingsProgress { get; set; }
         public ExpenseSummaryChartData ExpenseSummaryChart { get; set; }

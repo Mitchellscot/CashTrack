@@ -15,6 +15,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages
@@ -81,7 +84,7 @@ namespace CashTrack.Pages
             IncomeCategoryList = await _incomeCategoryService.GetIncomeCategoryDropdownListAsync();
             SubCategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
             MainCategoryList = await _mainCategoryService.GetMainCategoriesForDropdownListAsync();
-            SummaryResponse = await _summaryService.GetMonthlySummaryAsync(new MonthlySummaryRequest() { Year = this.Year, Month = this.Month });
+            SummaryResponse = await _summaryService.GetMonthlySummaryAsync(new MonthlySummaryRequest() { Year = this.Year, Month = this.Month, UserId = int.Parse(this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value) });
             YearSelectList = new SelectList(await _budgetService.GetAnnualBudgetYearsAsync());
             return Page();
         }

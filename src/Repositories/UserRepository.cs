@@ -68,10 +68,16 @@ public class UserRepository : IUserRepository
         //not paginating users
         throw new NotImplementedException();
     }
-    public Task<int> Update(UserEntity entity)
+    public async Task<int> Update(UserEntity entity)
     {
-        //using userManager to update
-        throw new NotImplementedException();
+        try
+        {
+            return await _context.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("An error occured while trying to save the last import date.");
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     public async Task<int> GetCount(Expression<Func<UserEntity, bool>> predicate)
