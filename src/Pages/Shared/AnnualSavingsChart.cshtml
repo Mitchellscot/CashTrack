@@ -7,94 +7,102 @@
         type: 'line',
         data: {
             labels: @Html.Raw(@Model.Labels),
-            datasets:[
-            {
-                label: 'Savings',
-                data: @Model.Dataset,
-                color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: colorize(),
-                borderColor: colorize(),
-                borderWidth: 5,
-                fill: true,
-                cubicInterpolationMode: 'monotone',
-                tension: 1,
-                segment:{
-                    borderColor: colorizeSegment(),
-                    backgroundColor: colorizeSegment()
-                }
-            },
-            {
-                label: 'Planned Savings',
-                data: @Model.BudgetedSavingsDataset,
-                color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: colorizeBudgeted(),
-                borderColor: colorizeBudgeted(),
-                borderWidth: 5,
-                fill: true,
-                cubicInterpolationMode: 'monotone',
-                tension: 1,
-                segment:{
-                    borderColor: colorizeBudgetedSegment(),
-                    backgroundColor: colorizeBudgetedSegment()
-                }
-            },
-            ]
+            datasets: [
+                {
+                    label: 'Savings',
+                    data: @Model.Dataset,
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: colorize(),
+                    borderColor: colorize(),
+                    borderWidth: 5,
+                    fill: true,
+                    cubicInterpolationMode: 'monotone',
+                    tension: 1,
+                    segment: {
+                        borderColor: colorizeSegment(),
+                        backgroundColor: colorizeSegment()
+                    }
+                },
+    @if (!string.IsNullOrEmpty(Model.SuggestedSavingsDataset))
+    {
+        <text>
+                    {
+                        label: 'Suggested To Meet Goal',
+                        data: @Model.SuggestedSavingsDataset,
+                        color: 'rgba(0, 0, 0, 0)',
+                        backgroundColor: @Html.Raw(Model.SuggestedSavingsColor),
+                        borderColor: @Html.Raw(Model.SuggestedSavingsColor),
+                        borderWidth: 5,
+                        borderDash: [5, 5],
+                        fill: false,
+                        cubicInterpolationMode: 'default',
+                        tension: 1
+                    },
+        </text>
+
+    }
+                ]
         },
         options: {
             responsive: true,
-            plugins:{
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        footer: footer,
+                    }
+                },
                 title: {
-                    display: false
+                    display: true,
+                    text: '@Model.Title'
                 },
                 legend: {
-                    display: false
+                    display: true,
+                    position: 'top',
+                    align: 'center',
+                    labels:{
+                        filter: (item, chart) => !item.text.includes('Savings')
+                    }
                 },
             }
         },
     });
-        function colorizeSegment() {
+    function colorizeSegment() {
         return (ctx) => {
             const i = ctx.p0DataIndex;
             const v = ctx.p0.raw;
-            if(v < 0 && i)
+            if (i >= @Model.MonthBudgetDataBegins)
+                return @Html.Raw(Model.BudgetedSavingsColor)
+                    else if (v < 0 && i < @Model.MonthBudgetDataBegins)
                 return @Html.Raw(Model.NegativeSavingsColor)
-            else if(v > 0)
+                    else if (v > 0 && i < @Model.MonthBudgetDataBegins)
                 return @Html.Raw(Model.SavingsColor)
-            else return @Html.Raw(Model.BudgetedSavingsColor)
-        }
+                }
     };
-        function colorize() {
+    function colorize() {
         return (ctx) => {
             const i = ctx.index;
             const v = ctx.raw;
-            if(v < 0 && i)
+            if (i > @Model.MonthBudgetDataBegins)
+                return @Html.Raw(Model.BudgetedSavingsColor)
+                    else if (v < 0 && i < @Model.MonthBudgetDataBegins)
                 return @Html.Raw(Model.NegativeSavingsColor)
-            else if(v > 0)
+                    else if (v > 0 && i < @Model.MonthBudgetDataBegins)
                 return @Html.Raw(Model.SavingsColor)
-            else return @Html.Raw(Model.BudgetedSavingsColor)
-        }
+
+                }
     };
-    function colorizeBudgeted() {
-        return (ctx) => {
-            const i = ctx.index;
-            const v = ctx.raw;
-            if(v < 0)
-                return @Html.Raw(Model.NegativeSavingsColor)
-            else if(v > 0)
-                return @Html.Raw(Model.BudgetedSavingsColor)
-            else return @Html.Raw(Model.BudgetedSavingsColor)
-        }
-    };
-    function colorizeBudgetedSegment() {
-        return (ctx) => {
-            const i = ctx.p0DataIndex;
-            const v = ctx.p0.raw;
-            if(v < 0 && i)
-                return @Html.Raw(Model.NegativeSavingsColor)
-            else if(v > 0)
-                return @Html.Raw(Model.BudgetedSavingsColor)
-            else return @Html.Raw(Model.BudgetedSavingsColor)
-        }
+    function footer(tooltipItems) {
+        const object = tooltipItems[0];
+        const index = parseInt(object.dataIndex);
+        const currentTotal = object.dataset.data[index];
+        const previousValue = object.dataset.data[index - 1];
+        const spent = (currentTotal - previousValue).toFixed(0);
+        if (index > @Model.MonthBudgetDataBegins)
+            return `Projected Monthly Savings: ${spent}`;
+        else if (isNaN(spent) && index < @Model.MonthBudgetDataBegins)
+            return `Saved: ${currentTotal}`;
+        else if (!isNaN(spent) && index <= @Model.MonthBudgetDataBegins)
+            return `Saved: ${spent}`;
     };
 
 </script>

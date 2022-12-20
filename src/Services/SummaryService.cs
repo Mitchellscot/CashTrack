@@ -92,25 +92,47 @@ namespace CashTrack.Services.SummaryService
             var incomeData = incomes.GroupBy(x => x.Date.Month).OrderBy(x => x.Key).Select(x => x.Sum(x => x.Amount)).ToArray();
 
             var expenseData = expenses.GroupBy(x => x.Date.Month).OrderBy(x => x.Key).Select(x => x.Sum(x => x.Amount)).ToArray();
-            var savings = incomeData.Zip(expenseData, (a, b) => (a - b)).ToList();
+            var calculatedSavings = incomeData.Zip(expenseData, (a, b) => (a - b)).ToList();
 
-            var lastMonth = savings.Count;
-            if (lastMonth != 12)
-                savings.AddRange(Enumerable.Range(lastMonth, 12).Select(i => decimal.MaxValue));
+            var lastMonth = calculatedSavings.Count;
 
-            var budgetDataSet = new List<int>();
-            var budgetData = budgets.Where(x => x.BudgetType == BudgetType.Savings && x.Month > lastMonth).GroupBy(x => x.Month).Select(x => { return (x.Key, x.Sum(x => x.Amount)); }).OrderBy(x => x.Key).Select(x => x.Item2).ToList();
-            if (budgetData.Any())
+            var budgetedSavings = budgets.Where(x => x.BudgetType == BudgetType.Savings && x.Month > lastMonth).GroupBy(x => x.Month).Select(x => { return (x.Key, decimal.Round(x.Sum(x => x.Amount), 0)); }).OrderBy(x => x.Key).Select(x => x.Item2).ToList();
+
+            if (!budgetedSavings.Any() && lastMonth != 12)
             {
-                budgetDataSet.AddRange(Enumerable.Range(0, lastMonth).Select(i => int.MaxValue));
-                budgetDataSet.AddRange(budgetData);
+                var iterations = 12 - lastMonth;
+                var lastMonthsSavingsRepeated = Enumerable.Repeat((int)decimal.Round(calculatedSavings.LastOrDefault(), 0), iterations).ToList();
+                calculatedSavings.AddRange(lastMonthsSavingsRepeated.Select(x => (decimal)x).ToList());
+            }
+            else
+            {
+                calculatedSavings.AddRange(budgetedSavings);
+            }
+            var savingsDataset = calculatedSavings.ToArray().Accumulate();
+
+            var projectedSavings = (int)decimal.Round(calculatedSavings.Sum() + budgetedSavings.Sum(), 0);
+            var annualSavingsGoal = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
+
+            var suggestedSavingsDataset = "";
+            if (projectedSavings < annualSavingsGoal && lastMonth != 12)
+            {
+                var iterations = 12 - lastMonth;
+                //fill in all the spots where realized savings exists
+                var suggestedSavings = Enumerable.Repeat(0, lastMonth - 1).ToList();
+                //add one more for the last month, to connect the line
+                suggestedSavings.Add((int)decimal.Round(savingsDataset.ElementAt(lastMonth - 1), 0));
+                var suggestedMonthlySavingsAmount = (annualSavingsGoal - (int)decimal.Round(incomeData.Zip(expenseData, (a, b) => (a - b)).ToList().Sum())) / iterations;
+                suggestedSavings.AddRange(Enumerable.Repeat(suggestedMonthlySavingsAmount, iterations));
+                var accumulatedSavings = suggestedSavings.ToArray().Accumulate().Select(x => x == 0 ? x = int.MaxValue : x);
+                suggestedSavingsDataset = JsonSerializer.Serialize(accumulatedSavings).Replace(int.MaxValue.ToString(), "NaN");
             }
 
             return new SavingsChart()
             {
-                SavingsDataset = JsonSerializer.Serialize(savings.ToArray()).Replace(decimal.MaxValue.ToString(), "NaN"),
-                BudgetedSavingsDataset = JsonSerializer.Serialize(budgetDataSet.ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
-                Labels = JsonSerializer.Serialize(labels)
+                SavingsDataset = JsonSerializer.Serialize(savingsDataset),
+                Labels = JsonSerializer.Serialize(labels),
+                MonthBudgetDataBegins = lastMonth - 1,
+                SuggestedSavingsDataset = suggestedSavingsDataset
             };
         }
 

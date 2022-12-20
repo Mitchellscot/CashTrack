@@ -45,8 +45,9 @@ namespace CashTrack.Models.SummaryModels
     public record SavingsChart
     {
         public string SavingsDataset { get; set; }
-        public string BudgetedSavingsDataset { get; set; }
+        public string SuggestedSavingsDataset { get; set; }
         public string Labels { get; set; }
+        public int MonthBudgetDataBegins { get; set; }
     }
     public record MonthlySummaryRequest
     {
