@@ -21,18 +21,24 @@ namespace CashTrack.Models.SummaryModels
         public List<ExpenseQuickView> TopExpenses { get; set; }
         public SavingsChart SavingsChart { get; set; }
         public IncomeExpenseChart IncomeExpenseChart { get; set; }
-        //public AnnualSavingsProgress AnnualSavingsProgress { get; set; }
-        //public ExpenseSummaryChartData ExpenseSummaryChart { get; set; }
-        //public MonthlySummary MonthlySummary { get; set; }
+        public AnnualSummaryTotals AnnualSummary { get; set; }
         public Dictionary<string, int> SubCategoryPercentages { get; set; }
         public Dictionary<string, int> MainCategoryPercentages { get; set; }
         public Dictionary<string, int> MerchantPercentages { get; set; }
         public Dictionary<string, decimal> IncomeSourcePercentages { get; set; }
         public List<MonthlyStatistics> MonthlyExpenseStatistics { get; set; }
-        //public DailyExpenseChart DailyExpenseLineChart { get; set; }
-        //public MonthlyYearToDate YearToDate { get; set; }
 
         //public List<TransactionBreakdown> TransactionBreakdown { get; set; }
+    }
+    public record AnnualSummaryTotals
+    {
+        public decimal Earned { get; set; }
+        public decimal Spent { get; set; }
+        public decimal Saved { get; set; }
+        public decimal SavingsGoalProgress { get; set; }
+        public int SuggestedMonthlySavingsToMeetGoal { get; set; }
+        public int AveragedSavedPerMonth { get; set; }
+        public int BudgetVariance { get; set; }
     }
     public record IncomeExpenseChart
     {

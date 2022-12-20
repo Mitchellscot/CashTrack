@@ -65,7 +65,44 @@ namespace CashTrack.Services.SummaryService
                 MerchantPercentages = GetMerchantPercentages(expensesYTD, incomeForPercentageCharts),
                 IncomeSourcePercentages = GetIncomeSourcePercentages(incomeYTD),
                 MonthlyExpenseStatistics = AggregateUtilities<ExpenseEntity>.GetAnnualStatisticsByMonth(expensesYTD, request.Year, true),
+                AnnualSummary = GetAnnualSummary(expensesYTD, incomeYTD, annualBudgets)
 
+            };
+        }
+
+        private AnnualSummaryTotals GetAnnualSummary(ExpenseEntity[] expenses, IncomeEntity[] incomes, BudgetEntity[] budgets)
+        {
+            var isCurrentYear = DateTime.Now.Year == expenses.FirstOrDefault().Date.Year;
+
+            var totalSpent = expenses.Sum(x => x.Amount);
+            var totalEarned = incomes.Sum(x => x.Amount);
+            var totalSaved = totalEarned - totalSpent;
+            var savingsGoal = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
+            var budgetedExpenses = budgets.Where(x => x.BudgetType == BudgetType.Want || x.BudgetType == BudgetType.Need).Sum(x => x.Amount);
+            var totalSavedAsInt = (int)decimal.Round(totalSaved, 0);
+            var percentTowardsSavingsGoal = totalSavedAsInt <= savingsGoal ? totalSavedAsInt.ToPercentage(savingsGoal) : 100;
+
+            var suggestedMonthlyAmount = 0;
+            var averageAmountSaved = 0;
+            if (isCurrentYear)
+            {
+                var lastMonthOfIncome = incomes.OrderBy(x => x.Date.Month).Select(x =>x.Date.Month).LastOrDefault() + 1;
+                var iterations = 13 - lastMonthOfIncome;
+                suggestedMonthlyAmount = (savingsGoal - totalSavedAsInt) / iterations;
+            }
+            else
+            {
+                averageAmountSaved = totalSavedAsInt / 12;
+            }
+            return new AnnualSummaryTotals()
+            {
+                Earned = totalEarned,
+                Spent = totalSpent,
+                Saved = totalSaved,
+                SavingsGoalProgress = percentTowardsSavingsGoal,
+                SuggestedMonthlySavingsToMeetGoal = suggestedMonthlyAmount,
+                AveragedSavedPerMonth = averageAmountSaved,
+                BudgetVariance = budgetedExpenses > 0 ? ((int)decimal.Round(totalSpent, 0) - budgetedExpenses) / budgetedExpenses : 0
             };
         }
 
