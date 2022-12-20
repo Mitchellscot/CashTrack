@@ -96,13 +96,13 @@
         const index = parseInt(object.dataIndex);
         const currentTotal = object.dataset.data[index];
         const previousValue = object.dataset.data[index - 1];
-        const spent = (currentTotal - previousValue).toFixed(0);
+        const saved = (currentTotal - previousValue).toFixed(0);
         if (index > @Model.MonthBudgetDataBegins)
-            return `Projected Monthly Savings: ${spent}`;
-        else if (isNaN(spent) && index < @Model.MonthBudgetDataBegins)
+            return `Projected Monthly Savings: ${saved}`;
+        else if (isNaN(saved) && index < @Model.MonthBudgetDataBegins)
             return `Saved: ${currentTotal}`;
-        else if (!isNaN(spent) && index <= @Model.MonthBudgetDataBegins)
-            return `Saved: ${spent}`;
+        else if (!isNaN(saved) && index <= @Model.MonthBudgetDataBegins)
+            return `Saved: ${saved}`;
     };
 
 </script>

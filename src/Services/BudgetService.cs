@@ -115,7 +115,7 @@ namespace CashTrack.Services.BudgetService
                 MonthlySummary = new BudgetSummary()
                 {
                     IncomeAmount = incomeAmount,
-                    ExpensesAmount = expensesAndSavingsAmount,
+                    ExpensesAmount = expenseAmounts,
                     NeedsAmount = needsAmount,
                     WantsAmount = wantsAmount,
                     SavingsAmount = adjustedSavings,

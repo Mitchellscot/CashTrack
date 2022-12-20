@@ -60,29 +60,58 @@ namespace CashTrack.Services.SummaryService
                 TopExpenses = expensesYTD.Where(x => !x.ExcludeFromStatistics && x.Category.MainCategory.Name != "Mortgage").OrderByDescending(x => x.Amount).Take(10).Select(x => new ExpenseQuickView() { Amount = x.Amount, Date = x.Date.ToShortDateString(), Id = x.Id, SubCategory = x.Category == null ? "none" : x.Category.Name }).ToList(),
                 SavingsChart = GetAnnualSavingsChart(incomeYTD, expensesYTD, annualBudgets),
                 SubCategoryPercentages = GetSubCategoryPercentages(expensesYTD, incomeForPercentageCharts),
+                IncomeExpenseChart = GetAnnualIncomeExpenseChart(expensesYTD, incomeYTD, annualBudgets),
                 MainCategoryPercentages = GetMainCategoryPercentages(expensesYTD, incomeForPercentageCharts),
                 MerchantPercentages = GetMerchantPercentages(expensesYTD, incomeForPercentageCharts),
                 IncomeSourcePercentages = GetIncomeSourcePercentages(incomeYTD)
+
             };
         }
 
-        private Dictionary<string, decimal> GetIncomeSourcePercentages(IncomeEntity[] income)
+        private IncomeExpenseChart GetAnnualIncomeExpenseChart(ExpenseEntity[] expenses, IncomeEntity[] incomes, BudgetEntity[] annualBudgets)
         {
-            if (income.Length == 0)
-                return new Dictionary<string, decimal>();
+            var labels = Enumerable.Range(1, 12).Select(i => @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(i)).ToArray();
 
-            var incomeAmount = income.Sum(x => x.Amount);
+            var incomeData = incomes.GroupBy(x => x.Date.Month).OrderBy(x => x.Key).Select(x => x.Sum(x => x.Amount)).ToList();
+            var expenseData = expenses.GroupBy(x => x.Date.Month).OrderBy(x => x.Key).Select(x => x.Sum(x => x.Amount)).ToList();
+            var lastIncomeMonth = incomeData.Count;
+            var lastExpenseMonth = expenseData.Count;
 
-            var incomePercentages = income.Where(x => !x.IsRefund && x.Category != null).OrderBy(x => x.Category.Name).GroupBy(x => x.Category.Name).Select(x => (Name: x.Key, Amount: x.Sum(x => x.Amount))).Select(x =>
-                (x.Name, Percentage: x.Amount.ToDecimalPercentage(incomeAmount)))
-                .Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
+            var budgetedIncome = annualBudgets.Where(x => x.BudgetType == BudgetType.Income && x.Month > lastIncomeMonth).GroupBy(x => x.Month).Select(x => { return (x.Key, decimal.Round(x.Sum(x => x.Amount), 0)); }).OrderBy(x => x.Key).Where(x => x.Key > lastIncomeMonth).Select(x => x.Item2).ToList();
 
-            var incomeWithCategories = incomePercentages.Sum(x => x.Value);
+            var budgetedExpenses = annualBudgets.Where(x => x.BudgetType == BudgetType.Need || x.BudgetType == BudgetType.Want).GroupBy(x => x.Month).Select(x => { return (x.Key, decimal.Round(x.Sum(x => x.Amount), 0)); }).OrderBy(x => x.Key).Where(x => x.Key > lastExpenseMonth).Select(x => x.Item2).ToList();
 
-            var noCategoryPercentage = incomeWithCategories < 100 ? 100 - incomeWithCategories : 0;
-            if (noCategoryPercentage > 0)
-                incomePercentages.Add("No Category Assigned", noCategoryPercentage);
-            return incomePercentages;
+            if (!budgetedIncome.Any() && lastIncomeMonth != 12)
+            {
+                var iterations = 12 - lastIncomeMonth;
+                var lastMonthsIncomeRepeated = Enumerable.Repeat((int)decimal.Round(incomeData.LastOrDefault(), 0), iterations).ToList();
+                incomeData.AddRange(lastMonthsIncomeRepeated.Select(x => (decimal)x).ToList());
+            }
+            else
+            {
+                incomeData.AddRange(budgetedIncome);
+            }
+
+            if (!budgetedExpenses.Any() && lastExpenseMonth != 12)
+            {
+                var iterations = 12 - lastIncomeMonth;
+                var lastMonthsExpensesRepeated = Enumerable.Repeat((int)decimal.Round(expenseData.LastOrDefault(), 0), iterations).ToList();
+                expenseData.AddRange(lastMonthsExpensesRepeated.Select(x => (decimal)x).ToList());
+            }
+            else
+            {
+                expenseData.AddRange(budgetedExpenses);
+            }
+            var incomeDataset = incomeData.ToArray().Accumulate();
+            var expenseDataset = expenseData.ToArray().Accumulate();
+            return new IncomeExpenseChart()
+            {
+                Labels = JsonSerializer.Serialize(labels),
+                IncomeDataset = JsonSerializer.Serialize(incomeDataset),
+                MonthBudgetIncomeDataBegins = lastIncomeMonth - 1,
+                ExpensesDataset = JsonSerializer.Serialize(expenseDataset),
+                MonthBudgetExpenseDataBegins = lastExpenseMonth - 1
+            };
         }
 
         private SavingsChart GetAnnualSavingsChart(IncomeEntity[] incomes, ExpenseEntity[] expenses, BudgetEntity[] budgets)
@@ -117,9 +146,7 @@ namespace CashTrack.Services.SummaryService
             if (projectedSavings < annualSavingsGoal && lastMonth != 12)
             {
                 var iterations = 12 - lastMonth;
-                //fill in all the spots where realized savings exists
                 var suggestedSavings = Enumerable.Repeat(0, lastMonth - 1).ToList();
-                //add one more for the last month, to connect the line
                 suggestedSavings.Add((int)decimal.Round(savingsDataset.ElementAt(lastMonth - 1), 0));
                 var suggestedMonthlySavingsAmount = (annualSavingsGoal - (int)decimal.Round(incomeData.Zip(expenseData, (a, b) => (a - b)).ToList().Sum())) / iterations;
                 suggestedSavings.AddRange(Enumerable.Repeat(suggestedMonthlySavingsAmount, iterations));
@@ -134,6 +161,24 @@ namespace CashTrack.Services.SummaryService
                 MonthBudgetDataBegins = lastMonth - 1,
                 SuggestedSavingsDataset = suggestedSavingsDataset
             };
+        }
+        private Dictionary<string, decimal> GetIncomeSourcePercentages(IncomeEntity[] income)
+        {
+            if (income.Length == 0)
+                return new Dictionary<string, decimal>();
+
+            var incomeAmount = income.Sum(x => x.Amount);
+
+            var incomePercentages = income.Where(x => !x.IsRefund && x.Category != null).OrderBy(x => x.Category.Name).GroupBy(x => x.Category.Name).Select(x => (Name: x.Key, Amount: x.Sum(x => x.Amount))).Select(x =>
+                (x.Name, Percentage: x.Amount.ToDecimalPercentage(incomeAmount)))
+                .Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
+
+            var incomeWithCategories = incomePercentages.Sum(x => x.Value);
+
+            var noCategoryPercentage = incomeWithCategories < 100 ? 100 - incomeWithCategories : 0;
+            if (noCategoryPercentage > 0)
+                incomePercentages.Add("No Category Assigned", noCategoryPercentage);
+            return incomePercentages;
         }
 
         public async Task<MonthlySummaryResponse> GetMonthlySummaryAsync(MonthlySummaryRequest request)

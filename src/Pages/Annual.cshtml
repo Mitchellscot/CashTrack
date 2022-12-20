@@ -102,6 +102,12 @@
                 <canvas id="savingsChart" class="chart-height"></canvas>
             </div>
         }
+        @if (Model.SummaryResponse.IncomeExpenseChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
+        {
+            <div class="col-12 col-lg-6 mt-3">
+                <canvas id="incomeExpenseChart" class="chart-height"></canvas>
+            </div>
+        }
     </div>
     <div class="row">
         @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.SubCategoryPercentages.Values.Sum() > 0)
@@ -157,6 +163,19 @@
             MonthBudgetDataBegins = Model.SummaryResponse.SavingsChart.MonthBudgetDataBegins,
             Title = "Annual Savings",
             Labels = Model.SummaryResponse.SavingsChart.Labels,
+        })
+    }
+    @if (Model.SummaryResponse.SavingsChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
+    {
+        @await Html.PartialAsync("AnnualIncomeExpenseChart", new AnnualIncomeExpenseChart()
+        {
+            ElementId = "incomeExpenseChart",
+            IncomeDataset = Model.SummaryResponse.IncomeExpenseChart.IncomeDataset,
+            MonthBudgetIncomeDataBegins = Model.SummaryResponse.IncomeExpenseChart.MonthBudgetIncomeDataBegins,
+            ExpenseDataset = Model.SummaryResponse.IncomeExpenseChart.ExpensesDataset,
+            MonthBudgetExpenseDataBegins = Model.SummaryResponse.IncomeExpenseChart.MonthBudgetExpenseDataBegins,
+            Title = "Income And Expenses",
+            Labels = Model.SummaryResponse.IncomeExpenseChart.Labels,
         })
     }
     @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.SubCategoryPercentages.Values.Sum() > 0)

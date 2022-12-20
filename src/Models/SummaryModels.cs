@@ -19,7 +19,7 @@ namespace CashTrack.Models.SummaryModels
         public OverallSummaryChart OverallSummaryChart { get; set; }
         public List<ExpenseQuickView> TopExpenses { get; set; }
         public SavingsChart SavingsChart { get; set; }
-        public CumulativeChart CumulativeChart { get; set; }
+        public IncomeExpenseChart IncomeExpenseChart { get; set; }
         //public AnnualSavingsProgress AnnualSavingsProgress { get; set; }
         //public ExpenseSummaryChartData ExpenseSummaryChart { get; set; }
         //public MonthlySummary MonthlySummary { get; set; }
@@ -32,15 +32,15 @@ namespace CashTrack.Models.SummaryModels
 
         //public List<TransactionBreakdown> TransactionBreakdown { get; set; }
     }
-    public record CumulativeChart
+    public record IncomeExpenseChart
     {
         public string Labels { get; set; }
         public string IncomeDataset { get; set; }
+        public int MonthBudgetIncomeDataBegins { get; set; }
         public string ExpensesDataset { get; set; }
-        public string SavingsDataset { get; set; }
-        public string BudgetedIncomeDataset { get; set; }
-        public string BudgetedExpensesDataset { get; set; }
-        public string BudgetedSavingsDataset { get; set; }
+        public int MonthBudgetExpenseDataBegins { get; set; }
+        //public string SavingsDataset { get; set; }
+        //public string BudgetedSavingsDataset { get; set; }
     }
     public record SavingsChart
     {
