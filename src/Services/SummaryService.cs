@@ -17,6 +17,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace CashTrack.Services.SummaryService
@@ -70,18 +71,23 @@ namespace CashTrack.Services.SummaryService
             var expenseData = expenses.GroupBy(x => x.Date.Month).OrderBy(x => x.Key).Select(x => x.Sum(x => x.Amount)).ToArray();
             var savings = incomeData.Zip(expenseData, (a, b) => (a - b)).ToList();
 
-            //if less than 12, fill with 0s, then replace 0s with NaN on the chart so that the line stops
+            var lastMonth = savings.Count;
+            if (lastMonth != 12)
+                savings.AddRange(Enumerable.Range(lastMonth, 12).Select(i => decimal.MaxValue));
 
-            var lastMonth = incomes.OrderBy(x => x.Date).Select(x => x.Date.Month).LastOrDefault();
-
-            var budgetData = budgets.Where(x => x.BudgetType == BudgetType.Savings && x.Month > lastMonth).GroupBy(x => x.Month).Select(x => { return (x.Key, x.Sum(x => decimal.Round(x.Amount)), 0); }).OrderBy(x => x.Key).Select(x => x.Item2).ToList();
+            var budgetDataSet = new List<int>();
+            var budgetData = budgets.Where(x => x.BudgetType == BudgetType.Savings && x.Month > lastMonth).GroupBy(x => x.Month).Select(x => { return (x.Key, x.Sum(x => x.Amount)); }).OrderBy(x => x.Key).Select(x => x.Item2).ToList();
             if (budgetData.Any())
-                savings.AddRange(budgetData);
+            {
+                budgetDataSet.AddRange(Enumerable.Range(0, lastMonth).Select(i => int.MaxValue));
+                budgetDataSet.AddRange(budgetData);
+            }
 
             return new SavingsChart()
             {
-                SavingsDataset = savings.ToArray(),
-                Labels = labels
+                SavingsDataset = JsonSerializer.Serialize(savings.ToArray()).Replace(decimal.MaxValue.ToString(), "NaN"),
+                BudgetedSavingsDataset = JsonSerializer.Serialize(budgetDataSet.ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+                Labels = JsonSerializer.Serialize(labels)
             };
         }
 

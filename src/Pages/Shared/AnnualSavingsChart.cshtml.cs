@@ -6,7 +6,9 @@ namespace CashTrack.Pages.Shared
     public class AnnualSavingsChart : ChartBase
     {
         public AnnualSavingsChart() : base() { }
-        public string SavingsColor = JsonSerializer.Serialize(ThemeColors.Info);
-        public string NegativeSavingsColor = JsonSerializer.Serialize(ThemeColors.InfoAlt);
+        public string BudgetedSavingsDataset { get; set; }
+        public string BudgetedSavingsColor = JsonSerializer.Serialize(DarkChartColors.Blue);
+        public string SavingsColor = JsonSerializer.Serialize(DarkChartColors.Green);
+        public string NegativeSavingsColor = JsonSerializer.Serialize(DarkChartColors.Red);
     }
 }

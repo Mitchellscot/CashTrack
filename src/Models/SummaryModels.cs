@@ -32,10 +32,10 @@ namespace CashTrack.Models.SummaryModels
         //public List<TransactionBreakdown> TransactionBreakdown { get; set; }
     }
     public class SavingsChart
-    { 
-        public decimal[] SavingsDataset { get; set; }
-        public string[] Labels { get; set; }
-        public int MonthBudgetedValuesAreShown { get; set; }
+    {
+        public string SavingsDataset { get; set; }
+        public string BudgetedSavingsDataset { get; set; }
+        public string Labels { get; set; }
     }
     public record MonthlySummaryRequest
     {

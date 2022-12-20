@@ -125,9 +125,10 @@
         @await Html.PartialAsync("AnnualSavingsChart", new AnnualSavingsChart()
         {
             ElementId = "savingsChart",
-            Dataset = JsonSerializer.Serialize(Model.SummaryResponse.SavingsChart.SavingsDataset),
+            Dataset = Model.SummaryResponse.SavingsChart.SavingsDataset,
+            BudgetedSavingsDataset = Model.SummaryResponse.SavingsChart.BudgetedSavingsDataset,
             Title = "Annual Savings",
-            Labels = JsonSerializer.Serialize(Model.SummaryResponse.SavingsChart.Labels),
+            Labels = Model.SummaryResponse.SavingsChart.Labels,
         })
     }
 }
