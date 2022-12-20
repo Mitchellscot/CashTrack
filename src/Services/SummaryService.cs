@@ -63,7 +63,8 @@ namespace CashTrack.Services.SummaryService
                 IncomeExpenseChart = GetAnnualIncomeExpenseChart(expensesYTD, incomeYTD, annualBudgets),
                 MainCategoryPercentages = GetMainCategoryPercentages(expensesYTD, incomeForPercentageCharts),
                 MerchantPercentages = GetMerchantPercentages(expensesYTD, incomeForPercentageCharts),
-                IncomeSourcePercentages = GetIncomeSourcePercentages(incomeYTD)
+                IncomeSourcePercentages = GetIncomeSourcePercentages(incomeYTD),
+                MonthlyExpenseStatistics = AggregateUtilities<ExpenseEntity>.GetAnnualStatisticsByMonth(expensesYTD, request.Year, true),
 
             };
         }

@@ -2,6 +2,7 @@
 using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Pages.Shared;
+using CashTrack.Services.Common;
 using System;
 using System.Collections.Generic;
 
@@ -27,6 +28,7 @@ namespace CashTrack.Models.SummaryModels
         public Dictionary<string, int> MainCategoryPercentages { get; set; }
         public Dictionary<string, int> MerchantPercentages { get; set; }
         public Dictionary<string, decimal> IncomeSourcePercentages { get; set; }
+        public List<MonthlyStatistics> MonthlyExpenseStatistics { get; set; }
         //public DailyExpenseChart DailyExpenseLineChart { get; set; }
         //public MonthlyYearToDate YearToDate { get; set; }
 
@@ -39,8 +41,6 @@ namespace CashTrack.Models.SummaryModels
         public int MonthBudgetIncomeDataBegins { get; set; }
         public string ExpensesDataset { get; set; }
         public int MonthBudgetExpenseDataBegins { get; set; }
-        //public string SavingsDataset { get; set; }
-        //public string BudgetedSavingsDataset { get; set; }
     }
     public record SavingsChart
     {

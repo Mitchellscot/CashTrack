@@ -94,6 +94,12 @@
                 </div>
             </div>
         }
+        @if(Model.SummaryResponse.MonthlyExpenseStatistics.Any())
+        {
+            <div class="col-12 col-xl-6">
+                <canvas id="monthlyStatisticsChart" height="400" class="chart-height"></canvas>
+            </div>
+        }
     </div>
     <div class="row">
         @if (Model.SummaryResponse.SavingsChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
@@ -153,6 +159,22 @@
         BudgetedSavings = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.BudgetedSavings),
         RealizedSavings = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedSavings)
     })
+    @if(Model.SummaryResponse.MonthlyExpenseStatistics.Any())
+    {
+    @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+    {
+        ChartType = ChartType.LineMultiAxis,
+        UseDefaultColor = true,
+        ElementId = "monthlyStatisticsChart",
+        Labels = JsonSerializer.Serialize(Model.SummaryResponse.MonthlyExpenseStatistics.Select(x => x.Month).ToArray()),
+        Dataset = JsonSerializer.Serialize(Model.SummaryResponse.MonthlyExpenseStatistics.Select(x => x.Count).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+        Dataset2 = JsonSerializer.Serialize(Model.SummaryResponse.MonthlyExpenseStatistics.Select(x => x.Average).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+        Dataset3 = JsonSerializer.Serialize(Model.SummaryResponse.MonthlyExpenseStatistics.Select(x => x.Min).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+        Dataset4 = JsonSerializer.Serialize(Model.SummaryResponse.MonthlyExpenseStatistics.Select(x => x.Max).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+        Title = "Monthly Expense Statistics",
+        Responsive = true
+    })
+    }
     @if (Model.SummaryResponse.SavingsChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
     {
         @await Html.PartialAsync("AnnualSavingsChart", new AnnualSavingsChart()
