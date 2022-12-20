@@ -1,4 +1,5 @@
 ﻿@page
+@using CashTrack.Pages.Budget;
 @using CashTrack.Pages.Shared;
 @using System.Globalization;
 @using System.Text.Json;
@@ -102,6 +103,32 @@
             </div>
         }
     </div>
+    <div class="row">
+        @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.SubCategoryPercentages.Values.Sum() > 0)
+        {
+            <div class="col-6 col-lg-3 mt-3">
+                <canvas id="subCategoryPie" class="chart-height"></canvas>
+            </div>
+        }
+        @if (Model.SummaryResponse.MainCategoryPercentages != null && Model.SummaryResponse.MainCategoryPercentages.Values.Sum() > 0)
+        {
+            <div class="col-6 col-lg-3 mt-3">
+                <canvas id="mainCategoryPie" class="chart-height"></canvas>
+            </div>
+        }
+        @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.MerchantPercentages.Values.Sum() > 0)
+        {
+            <div class="col-6 col-lg-3 mt-3">
+                <canvas id="merchantPie" class="chart-height"></canvas>
+            </div>
+        }
+        @if (Model.SummaryResponse.IncomeSourcePercentages != null && Model.SummaryResponse.IncomeSourcePercentages.Values.Sum() > 0)
+        {
+            <div class="col-6 col-lg-3 mt-3">
+                <canvas id="incomeSourcePie" class="chart-height"></canvas>
+            </div>
+        }
+    </div>
 
 </div>
 
@@ -129,6 +156,46 @@
             BudgetedSavingsDataset = Model.SummaryResponse.SavingsChart.BudgetedSavingsDataset,
             Title = "Annual Savings",
             Labels = Model.SummaryResponse.SavingsChart.Labels,
+        })
+    }
+    @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.SubCategoryPercentages.Values.Sum() > 0)
+    {
+        @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.SubCategoryPercentages.Select(x => x.Key).ToArray()))
+    {
+        ElementId = "subCategoryPie",
+        Dataset = JsonSerializer.Serialize(Model.SummaryResponse.SubCategoryPercentages.Select(x => x.Value).ToArray()),
+        Title = "Sub Category Percentages",
+        IsSummaryChart = true
+    })
+    }
+    @if (Model.SummaryResponse.MainCategoryPercentages != null && Model.SummaryResponse.MainCategoryPercentages.Values.Sum() > 0)
+    {
+        @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.MainCategoryPercentages.Select(x => x.Key).ToArray()))
+        {
+            ElementId = "mainCategoryPie",
+            Dataset = JsonSerializer.Serialize(Model.SummaryResponse.MainCategoryPercentages.Select(x => x.Value).ToArray()),
+            Title = "Main Category Percentages",
+            IsSummaryChart = true
+        })
+    }
+    @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.MerchantPercentages.Values.Sum() > 0)
+    {
+        @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.MerchantPercentages.Select(x => x.Key).ToArray()))
+        {
+            ElementId = "merchantPie",
+            Dataset = JsonSerializer.Serialize(Model.SummaryResponse.MerchantPercentages.Select(x => x.Value).ToArray()),
+            Title = "Merchant Percentages",
+            IsSummaryChart = true
+        })
+    }
+    @if (Model.SummaryResponse.IncomeSourcePercentages != null && Model.SummaryResponse.IncomeSourcePercentages.Values.Sum() > 0)
+    {
+        @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.IncomeSourcePercentages.Select(x => x.Key).ToArray()))
+        {
+            ElementId = "incomeSourcePie",
+            Dataset = JsonSerializer.Serialize(Model.SummaryResponse.IncomeSourcePercentages.Select(x => x.Value).ToArray()),
+            Title = "Income Source Percentages",
+            IsSummaryChart = true
         })
     }
 }

@@ -571,7 +571,7 @@
             Title = "Main Category Percentages",
             IsSummaryChart = true
         })
-        }
+    }
         @if (Model.SummaryResponse.MainCategoryPercentages != null && Model.SummaryResponse.MainCategoryPercentages.Values.Sum() > 0)
         {
             @await Html.PartialAsync("DailyExpenseLineChart", new DailyExpenseLineChart()

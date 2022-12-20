@@ -50,7 +50,7 @@ namespace CashTrack.Services.SummaryService
             var annualBudgets = await _budgetRepo.FindWithMainCategories(x => x.Year == request.Year);
             var budgetsYTD = annualBudgets.Where(x => x.Month <= DateTime.Now.Month).ToArray();
             var budgetsForCharts = isCurrentYear ? budgetsYTD : annualBudgets;
-
+            var incomeForPercentageCharts = Convert.ToInt32(incomeYTD.Sum(x => x.Amount));
 
             var user = await _userRepository.FindById(request.UserId);
             return new AnnualSummaryResponse()
@@ -58,8 +58,31 @@ namespace CashTrack.Services.SummaryService
                 LastImport = user.LastImport,
                 OverallSummaryChart = GetOverallSummaryChart(expensesYTD, incomeYTD, budgetsForCharts),
                 TopExpenses = expensesYTD.Where(x => !x.ExcludeFromStatistics && x.Category.MainCategory.Name != "Mortgage").OrderByDescending(x => x.Amount).Take(10).Select(x => new ExpenseQuickView() { Amount = x.Amount, Date = x.Date.ToShortDateString(), Id = x.Id, SubCategory = x.Category == null ? "none" : x.Category.Name }).ToList(),
-                SavingsChart = GetAnnualSavingsChart(incomeYTD, expensesYTD, annualBudgets)
+                SavingsChart = GetAnnualSavingsChart(incomeYTD, expensesYTD, annualBudgets),
+                SubCategoryPercentages = GetSubCategoryPercentages(expensesYTD, incomeForPercentageCharts),
+                MainCategoryPercentages = GetMainCategoryPercentages(expensesYTD, incomeForPercentageCharts),
+                MerchantPercentages = GetMerchantPercentages(expensesYTD, incomeForPercentageCharts),
+                IncomeSourcePercentages = GetIncomeSourcePercentages(incomeYTD)
             };
+        }
+
+        private Dictionary<string, decimal> GetIncomeSourcePercentages(IncomeEntity[] income)
+        {
+            if (income.Length == 0)
+                return new Dictionary<string, decimal>();
+
+            var incomeAmount = income.Sum(x => x.Amount);
+
+            var incomePercentages = income.Where(x => !x.IsRefund && x.Category != null).OrderBy(x => x.Category.Name).GroupBy(x => x.Category.Name).Select(x => (Name: x.Key, Amount: x.Sum(x => x.Amount))).Select(x =>
+                (x.Name, Percentage: x.Amount.ToDecimalPercentage(incomeAmount)))
+                .Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
+
+            var incomeWithCategories = incomePercentages.Sum(x => x.Value);
+
+            var noCategoryPercentage = incomeWithCategories < 100 ? 100 - incomeWithCategories : 0;
+            if (noCategoryPercentage > 0)
+                incomePercentages.Add("No Category Assigned", noCategoryPercentage);
+            return incomePercentages;
         }
 
         private SavingsChart GetAnnualSavingsChart(IncomeEntity[] incomes, ExpenseEntity[] expenses, BudgetEntity[] budgets)

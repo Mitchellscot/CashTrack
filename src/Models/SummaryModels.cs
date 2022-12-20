@@ -19,19 +19,30 @@ namespace CashTrack.Models.SummaryModels
         public OverallSummaryChart OverallSummaryChart { get; set; }
         public List<ExpenseQuickView> TopExpenses { get; set; }
         public SavingsChart SavingsChart { get; set; }
-        //public AnnualProgress AnnualProgress { get; set; }
+        public CumulativeChart CumulativeChart { get; set; }
         //public AnnualSavingsProgress AnnualSavingsProgress { get; set; }
         //public ExpenseSummaryChartData ExpenseSummaryChart { get; set; }
         //public MonthlySummary MonthlySummary { get; set; }
-        //public Dictionary<string, int> SubCategoryPercentages { get; set; }
-        //public Dictionary<string, int> MainCategoryPercentages { get; set; }
-        //public Dictionary<string, int> MerchantPercentages { get; set; }
+        public Dictionary<string, int> SubCategoryPercentages { get; set; }
+        public Dictionary<string, int> MainCategoryPercentages { get; set; }
+        public Dictionary<string, int> MerchantPercentages { get; set; }
+        public Dictionary<string, decimal> IncomeSourcePercentages { get; set; }
         //public DailyExpenseChart DailyExpenseLineChart { get; set; }
         //public MonthlyYearToDate YearToDate { get; set; }
 
         //public List<TransactionBreakdown> TransactionBreakdown { get; set; }
     }
-    public class SavingsChart
+    public record CumulativeChart
+    {
+        public string Labels { get; set; }
+        public string IncomeDataset { get; set; }
+        public string ExpensesDataset { get; set; }
+        public string SavingsDataset { get; set; }
+        public string BudgetedIncomeDataset { get; set; }
+        public string BudgetedExpensesDataset { get; set; }
+        public string BudgetedSavingsDataset { get; set; }
+    }
+    public record SavingsChart
     {
         public string SavingsDataset { get; set; }
         public string BudgetedSavingsDataset { get; set; }
