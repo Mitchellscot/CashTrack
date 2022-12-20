@@ -16,18 +16,26 @@ namespace CashTrack.Models.SummaryModels
     public record AnnualSummaryResponse
     {
         public DateTime LastImport { get; set; }
+        public OverallSummaryChart OverallSummaryChart { get; set; }
+        public List<ExpenseQuickView> TopExpenses { get; set; }
+        public SavingsChart SavingsChart { get; set; }
         //public AnnualProgress AnnualProgress { get; set; }
         //public AnnualSavingsProgress AnnualSavingsProgress { get; set; }
         //public ExpenseSummaryChartData ExpenseSummaryChart { get; set; }
         //public MonthlySummary MonthlySummary { get; set; }
-        //public OverallSummaryChart OverallSummaryChart { get; set; }
         //public Dictionary<string, int> SubCategoryPercentages { get; set; }
         //public Dictionary<string, int> MainCategoryPercentages { get; set; }
         //public Dictionary<string, int> MerchantPercentages { get; set; }
         //public DailyExpenseChart DailyExpenseLineChart { get; set; }
         //public MonthlyYearToDate YearToDate { get; set; }
-        //public List<ExpenseQuickView> TopExpenses { get; set; }
+
         //public List<TransactionBreakdown> TransactionBreakdown { get; set; }
+    }
+    public class SavingsChart
+    { 
+        public decimal[] SavingsDataset { get; set; }
+        public string[] Labels { get; set; }
+        public int MonthBudgetedValuesAreShown { get; set; }
     }
     public record MonthlySummaryRequest
     {

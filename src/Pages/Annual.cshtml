@@ -1,5 +1,7 @@
 ﻿@page
 @using CashTrack.Pages.Shared;
+@using System.Globalization;
+@using System.Text.Json;
 @model CashTrack.Pages.Annual
 @{
 }
@@ -42,11 +44,90 @@
         </div>
     </div>
     <div class="row d-flex">
+        @if (Model.SummaryResponse.OverallSummaryChart != null)
+        {
+            <div class="col-6 col-lg-3 chart-height shadow-sm">
+                <canvas id="overallSummaryChart"></canvas>
+            </div>
+        }
+        @if (Model.SummaryResponse.TopExpenses.Count > 1)
+        {
+            <div class="col-6 col-lg-3 mt-3">
+                <div class="d-flex justify-content-center">
+                    <span class="mb-0 fw-bold d-none d-lg-block">Top Expenses</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Expenses/Index" asp-route-Query="4" asp-route-Q="@Model.Year" asp-route-PageNumber="1">
+                        View All
+                    </a>
+                </div>
+                <div class="table-responsive-lg">
+                    <table class="table table-sm align-middle text-center mb-0">
+                        <thead class="p-0 m-0">
+                            <tr>
+                                <th class="p-0 m-0">
+                                    Date
+                                </th>
+                                <th class="p-0 m-0">
+                                    Amount
+                                </th>
+                                <th class="p-0 m-0">
+                                    Category
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var expense in @Model.SummaryResponse.TopExpenses)
+                            {
+                                <tr>
+                                    <td>
+                                        @expense.Date
+                                    </td>
+                                    <td>
+                                        @String.Format("{0:n}", expense.Amount)
+                                    </td>
+                                    <td>
+                                        @expense.SubCategory
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="row">
+        @if (Model.SummaryResponse.SavingsChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
+        {
+            <div class="col-12 col-lg-6 mt-3">
+                <canvas id="savingsChart" class="chart-height"></canvas>
+            </div>
+        }
     </div>
 
 </div>
 
 @section Scripts {
     <script src="~/js/annual.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.1.1/dist/chart.min.js" asp-append-version="true"></script>
+    <script asp-append-version="true" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @await Html.PartialAsync("OverallSummaryChart", new OverallSummaryChart()
+    {
+        ElementId = "overallSummaryChart",
+        Title = Model.Year.ToString(),
+        Labels = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.Labels),
+        BudgetedIncome = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.BudgetedIncome),
+        RealizedIncome = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedIncome),
+        BudgetedExpenses = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.BudgetedExpenses),
+        RealizedExpenses = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedExpenses),
+        BudgetedSavings = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.BudgetedSavings),
+        RealizedSavings = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedSavings)
+    })
+    @if (Model.SummaryResponse.SavingsChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
+    {
+        @await Html.PartialAsync("AnnualSavingsChart", new AnnualSavingsChart()
+        {
+            ElementId = "savingsChart",
+            Dataset = JsonSerializer.Serialize(Model.SummaryResponse.SavingsChart.SavingsDataset),
+            Title = "Annual Savings",
+            Labels = JsonSerializer.Serialize(Model.SummaryResponse.SavingsChart.Labels),
+        })
+    }
 }

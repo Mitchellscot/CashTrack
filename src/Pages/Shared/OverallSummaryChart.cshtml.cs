@@ -5,9 +5,9 @@ using System.Text.Json;
 
 namespace CashTrack.Pages.Shared
 {
-    public class OverallMonthlySummaryChart : ChartBase
+    public class OverallSummaryChart : ChartBase
     {
-        public OverallMonthlySummaryChart() : base() { }
+        public OverallSummaryChart() : base() { }
         public string BudgetedIncome { get; set; }
         public string RealizedIncome { get; set; }
         public string BudgetedExpenses { get; set; }

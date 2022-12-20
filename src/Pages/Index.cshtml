@@ -540,7 +540,7 @@
         BudgetedExpenseDatasets = Model.SummaryResponse.ExpenseSummaryChart.BudgetedExpenses,
         RealizedExpenseDatasets = Model.SummaryResponse.ExpenseSummaryChart.RealizedExpenses
     })
-    @await Html.PartialAsync("OverallMonthlySummaryChart", new OverallMonthlySummaryChart()
+    @await Html.PartialAsync("OverallSummaryChart", new OverallSummaryChart()
     {
         ElementId = "overallSummaryChart",
         Title = @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month),
@@ -572,19 +572,19 @@
             IsSummaryChart = true
         })
         }
-                    @if (Model.SummaryResponse.MainCategoryPercentages != null && Model.SummaryResponse.MainCategoryPercentages.Values.Sum() > 0)
-    {
-        @await Html.PartialAsync("DailyExpenseLineChart", new DailyExpenseLineChart()
-    {
-        ElementId = "dailyExpenseChart",
-        Dataset = JsonSerializer.Serialize(Model.SummaryResponse.DailyExpenseLineChart.Dataset),
-        Title = "Daily Expenses",
-        Labels = JsonSerializer.Serialize(Model.SummaryResponse.DailyExpenseLineChart.Labels),
-        Max = Model.SummaryResponse.DailyExpenseLineChart.Max,
-        ExpenseBudgetMax = Model.SummaryResponse.DailyExpenseLineChart.ExpenseBudgetMax,
-        DiscretionarySpendingMax = Model.SummaryResponse.DailyExpenseLineChart.DiscretionarySpendingMax,
-        IncomeMax = Model.SummaryResponse.DailyExpenseLineChart.IncomeMax
-    })
+        @if (Model.SummaryResponse.MainCategoryPercentages != null && Model.SummaryResponse.MainCategoryPercentages.Values.Sum() > 0)
+        {
+            @await Html.PartialAsync("DailyExpenseLineChart", new DailyExpenseLineChart()
+            {
+                ElementId = "dailyExpenseChart",
+                Dataset = JsonSerializer.Serialize(Model.SummaryResponse.DailyExpenseLineChart.Dataset),
+                Title = "Daily Expenses",
+                Labels = JsonSerializer.Serialize(Model.SummaryResponse.DailyExpenseLineChart.Labels),
+                Max = Model.SummaryResponse.DailyExpenseLineChart.Max,
+                ExpenseBudgetMax = Model.SummaryResponse.DailyExpenseLineChart.ExpenseBudgetMax,
+                DiscretionarySpendingMax = Model.SummaryResponse.DailyExpenseLineChart.DiscretionarySpendingMax,
+                IncomeMax = Model.SummaryResponse.DailyExpenseLineChart.IncomeMax
+            })
     }
     @if (Model.SummaryResponse.YearToDate != null && Model.SummaryResponse.TopExpenses.Count > 1)
     {
@@ -598,7 +598,7 @@
             ExpenseDataset = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.ExpenseDataset),
             SavingsDataset = JsonSerializer.Serialize(Model.SummaryResponse.YearToDate.SavingsDataset)
         })
-        }
+    }
     @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.MerchantPercentages.Values.Sum() > 0)
     {
     @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.MerchantPercentages.Select(x => x.Key).ToArray()))

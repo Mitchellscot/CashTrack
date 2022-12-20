@@ -436,7 +436,6 @@ namespace CashTrack.Services.BudgetService
 
             return monthlyBudgets.OrderBy(x => x.MainCategoryId).ThenBy(x => x.SubCategoryId).ToList();
         }
-
         private async Task<List<BudgetListItem>> ParseBudgetListQuery(BudgetListRequest request)
         {
             var budgetListItems = new List<BudgetEntity>();

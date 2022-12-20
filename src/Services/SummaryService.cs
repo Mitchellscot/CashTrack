@@ -3,6 +3,7 @@ using CashTrack.Common.Extensions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
 using CashTrack.Models.ExpenseModels;
+using CashTrack.Models.IncomeModels;
 using CashTrack.Models.SummaryModels;
 using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Repositories.ExpenseRepository;
@@ -12,8 +13,10 @@ using CashTrack.Services.Common;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
 namespace CashTrack.Services.SummaryService
@@ -41,11 +44,44 @@ namespace CashTrack.Services.SummaryService
         public async Task<AnnualSummaryResponse> GetAnnualSummaryAsync(AnnualSummaryRequest request)
         {
             var isCurrentYear = request.Year == DateTime.Now.Year;
+            var expensesYTD = await _expenseRepo.Find(x => x.Date.Year == request.Year && !x.ExcludeFromStatistics);
+            var incomeYTD = await _incomeRepo.Find(x => x.Date.Year == request.Year && !x.IsRefund);
+            var annualBudgets = await _budgetRepo.FindWithMainCategories(x => x.Year == request.Year);
+            var budgetsYTD = annualBudgets.Where(x => x.Month <= DateTime.Now.Month).ToArray();
+            var budgetsForCharts = isCurrentYear ? budgetsYTD : annualBudgets;
+
 
             var user = await _userRepository.FindById(request.UserId);
             return new AnnualSummaryResponse()
             {
-                LastImport = user.LastImport
+                LastImport = user.LastImport,
+                OverallSummaryChart = GetOverallSummaryChart(expensesYTD, incomeYTD, budgetsForCharts),
+                TopExpenses = expensesYTD.Where(x => !x.ExcludeFromStatistics && x.Category.MainCategory.Name != "Mortgage").OrderByDescending(x => x.Amount).Take(10).Select(x => new ExpenseQuickView() { Amount = x.Amount, Date = x.Date.ToShortDateString(), Id = x.Id, SubCategory = x.Category == null ? "none" : x.Category.Name }).ToList(),
+                SavingsChart = GetAnnualSavingsChart(incomeYTD, expensesYTD, annualBudgets)
+            };
+        }
+
+        private SavingsChart GetAnnualSavingsChart(IncomeEntity[] incomes, ExpenseEntity[] expenses, BudgetEntity[] budgets)
+        {
+            var labels = Enumerable.Range(1, 12).Select(i => @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(i)).ToArray();
+
+            var incomeData = incomes.GroupBy(x => x.Date.Month).OrderBy(x => x.Key).Select(x => x.Sum(x => x.Amount)).ToArray();
+
+            var expenseData = expenses.GroupBy(x => x.Date.Month).OrderBy(x => x.Key).Select(x => x.Sum(x => x.Amount)).ToArray();
+            var savings = incomeData.Zip(expenseData, (a, b) => (a - b)).ToList();
+
+            //if less than 12, fill with 0s, then replace 0s with NaN on the chart so that the line stops
+
+            var lastMonth = incomes.OrderBy(x => x.Date).Select(x => x.Date.Month).LastOrDefault();
+
+            var budgetData = budgets.Where(x => x.BudgetType == BudgetType.Savings && x.Month > lastMonth).GroupBy(x => x.Month).Select(x => { return (x.Key, x.Sum(x => decimal.Round(x.Amount)), 0); }).OrderBy(x => x.Key).Select(x => x.Item2).ToList();
+            if (budgetData.Any())
+                savings.AddRange(budgetData);
+
+            return new SavingsChart()
+            {
+                SavingsDataset = savings.ToArray(),
+                Labels = labels
             };
         }
 
@@ -188,9 +224,9 @@ namespace CashTrack.Services.SummaryService
         {
             var labels = Enumerable.Range(1, month).Select(i => @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(i)).ToArray();
 
-            var incomeData = incomes.GroupBy(x => x.Date.Month).Select(x => (int)decimal.Round(x.Sum(x => x.Amount), 0)).ToArray().Accumulate();
+            var incomeData = incomes.GroupBy(x => x.Date.Month).OrderBy(x => x.Key).Select(x => (int)decimal.Round(x.Sum(x => x.Amount), 0)).ToArray().Accumulate();
 
-            var expenseData = expenses.GroupBy(x => x.Date.Month).Select(x => (int)decimal.Round(x.Sum(x => x.Amount), 0)).ToArray().Accumulate();
+            var expenseData = expenses.GroupBy(x => x.Date.Month).OrderBy(x => x.Key).Select(x => (int)decimal.Round(x.Sum(x => x.Amount), 0)).ToArray().Accumulate();
             var savings = incomeData.Zip(expenseData, (a, b) => (a - b)).ToArray();
             return new MonthlyYearToDate()
             {
