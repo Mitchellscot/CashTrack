@@ -1,7 +1,8 @@
 ﻿using CashTrack.Models.BudgetModels;
-using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
-using CashTrack.Pages.Shared;
+using CashTrack.Models.IncomeSourceModels;
+using CashTrack.Models.MerchantModels;
+using CashTrack.Models.SubCategoryModels;
 using CashTrack.Services.Common;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,9 @@ namespace CashTrack.Models.SummaryModels
         public DateTime LastImport { get; set; }
         public OverallSummaryChart OverallSummaryChart { get; set; }
         public List<ExpenseQuickView> TopExpenses { get; set; }
+        public List<SubCategoryQuickView> TopCategories { get; set; }
+        public List<MerchantQuickView> TopMerchants { get; set; }
+        public List<IncomeSourceQuickView> TopSources { get; set; }
         public SavingsChart SavingsChart { get; set; }
         public IncomeExpenseChart IncomeExpenseChart { get; set; }
         public AnnualSummaryTotals AnnualSummary { get; set; }

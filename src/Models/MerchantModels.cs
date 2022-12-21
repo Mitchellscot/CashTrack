@@ -55,3 +55,9 @@ public class MerchantDropdownSelection
     public int Id { get; set; }
     public string Name { get; set; }
 }
+public record MerchantQuickView
+{
+    public string Name { get; set; }
+    public decimal Amount { get; set; }
+    public int Count { get; set; }
+}

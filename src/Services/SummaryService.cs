@@ -4,6 +4,9 @@ using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.IncomeModels;
+using CashTrack.Models.IncomeSourceModels;
+using CashTrack.Models.MerchantModels;
+using CashTrack.Models.SubCategoryModels;
 using CashTrack.Models.SummaryModels;
 using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Repositories.ExpenseRepository;
@@ -57,7 +60,42 @@ namespace CashTrack.Services.SummaryService
             {
                 LastImport = user.LastImport,
                 OverallSummaryChart = GetOverallSummaryChart(expensesYTD, incomeYTD, budgetsForCharts),
-                TopExpenses = expensesYTD.Where(x => !x.ExcludeFromStatistics && x.Category.MainCategory.Name != "Mortgage").OrderByDescending(x => x.Amount).Take(10).Select(x => new ExpenseQuickView() { Amount = x.Amount, Date = x.Date.ToShortDateString(), Id = x.Id, SubCategory = x.Category == null ? "none" : x.Category.Name }).ToList(),
+                TopExpenses = expensesYTD.Where(x => !x.ExcludeFromStatistics && x.Category.MainCategory.Name != "Mortgage")
+                .OrderByDescending(x => x.Amount)
+                .Take(10)
+                .Select(x => new ExpenseQuickView()
+                {
+                    Amount = x.Amount,
+                    Date = x.Date.ToShortDateString(),
+                    Id = x.Id,
+                    SubCategory = x.Category == null ? "none" : x.Category.Name
+                }).ToList(),
+                TopCategories = expensesYTD.Where(x => !x.ExcludeFromStatistics)
+                .GroupBy(x => x.Category.Name)
+                .Select(x => new SubCategoryQuickView()
+                {
+                    Amount = x.Sum(y => y.Amount),
+                    Name = x.Key,
+                    Count = x.Count()
+                }).OrderByDescending(x => x.Amount)
+                .Take(10).ToList(),
+                TopMerchants = expensesYTD.Where(x => !x.ExcludeFromStatistics && x.MerchantId != null)
+                .GroupBy(x => x.Merchant.Name)
+                .Select(x => new MerchantQuickView()
+                {
+                    Amount = x.Sum(y => y.Amount),
+                    Name = x.Key,
+                    Count = x.Count()
+                }).OrderByDescending(x => x.Amount)
+                .Take(10).ToList(),
+                TopSources = incomeYTD.Where(x => !x.IsRefund && x.SourceId != null)
+                    .GroupBy(x => x.Source.Name)
+                    .Select(x => new IncomeSourceQuickView()
+                    {
+                        Name = x.Key,
+                        Amount = x.Sum(x => x.Amount),
+                        Count = x.Count()
+                    }).OrderByDescending(x => x.Amount).Take(10).ToList(),
                 SavingsChart = GetAnnualSavingsChart(incomeYTD, expensesYTD, annualBudgets),
                 SubCategoryPercentages = GetSubCategoryPercentages(expensesYTD, incomeForPercentageCharts),
                 IncomeExpenseChart = GetAnnualIncomeExpenseChart(expensesYTD, incomeYTD, annualBudgets),
@@ -86,7 +124,7 @@ namespace CashTrack.Services.SummaryService
             var averageAmountSaved = 0;
             if (isCurrentYear)
             {
-                var lastMonthOfIncome = incomes.OrderBy(x => x.Date.Month).Select(x =>x.Date.Month).LastOrDefault() + 1;
+                var lastMonthOfIncome = incomes.OrderBy(x => x.Date.Month).Select(x => x.Date.Month).LastOrDefault() + 1;
                 var iterations = 13 - lastMonthOfIncome;
                 suggestedMonthlyAmount = (savingsGoal - totalSavedAsInt) / iterations;
             }

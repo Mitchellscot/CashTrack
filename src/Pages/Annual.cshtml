@@ -149,12 +149,12 @@
             </div>
         }
     </div>
-    <div class="row">
-                @if (Model.SummaryResponse.TopExpenses.Count > 1)
+    <div class="row gx-5">
+        @if (Model.SummaryResponse.TopExpenses.Count > 1)
         {
-            <div class="col-12 col-lg-6 mt-3">
+            <div class="col-12 col-lg-6 my-3">
                 <div class="row shadow">
-                    <div class="col-6">
+                    <div class="col-6 mb-1">
                         <div class="d-flex justify-content-center">
                             <span class="mb-0 fw-bold d-none d-lg-block">Top Expenses</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Expenses/Index" asp-route-Query="4" asp-route-Q="@Model.Year" asp-route-PageNumber="1">
                                 View All
@@ -203,27 +203,168 @@
                 </div>
             </div>
         }
-        @if (Model.SummaryResponse.MainCategoryPercentages != null && Model.SummaryResponse.MainCategoryPercentages.Values.Sum() > 0)
+        @if (Model.SummaryResponse.TopCategories.Count > 1)
         {
-            <div class="col-6 col-lg-3 mt-3">
-                <canvas id="mainCategoryPie" class="chart-height"></canvas>
+            <div class="col-12 col-lg-6 my-3">
+                <div class="row shadow">
+                    <div class="col-6 mb-1">
+                        <div class="d-flex justify-content-center">
+                            <span class="mb-0 fw-bold d-none d-lg-block">Top Categories</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Expenses/Categories/Index" asp-route-Query="3" asp-route-Q2=true asp-route-PageNumber="1">
+                                View All
+                            </a>
+                        </div>
+                        <div class="table-responsive-lg">
+                            <table class="table table-sm align-middle text-center mb-0">
+                                <thead class="p-0 m-0">
+                                    <tr>
+                                        <th class="p-0 m-0">
+                                            Category
+                                        </th>
+                                        <th class="p-0 m-0">
+                                            Amount
+                                        </th>
+                                        <th class="p-0 m-0">
+                                            Count
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var expense in @Model.SummaryResponse.TopCategories)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @expense.Name
+                                            </td>
+                                            <td>
+                                                @String.Format("{0:n}", expense.Amount)
+                                            </td>
+                                            <td>
+                                                @expense.Count
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @if (Model.SummaryResponse.MainCategoryPercentages != null && Model.SummaryResponse.MainCategoryPercentages.Values.Sum() > 0)
+                    {
+                        <div class="col-6 align-self-center">
+                            <canvas id="mainCategoryPie" class="chart-height"></canvas>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+    <div class="row gx-5">
+        @if(Model.SummaryResponse.TopMerchants != null)
+        {
+        <div class="col-12 col-lg-6 my-3">
+            <div class="row shadow">
+                <div class="col-6 mb-1">
+                    <div class="d-flex justify-content-center">
+                        <span class="mb-0 fw-bold d-none d-lg-block">Top Merchants</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Merchants/Index" asp-route-Query="3" asp-route-Q2=true asp-route-PageNumber="1">
+                            View All
+                        </a>
+                    </div>
+                    <div class="table-responsive-lg">
+                        <table class="table table-sm align-middle text-center mb-0">
+                            <thead class="p-0 m-0">
+                                <tr>
+                                    <th class="p-0 m-0">
+                                        Merchant
+                                    </th>
+                                    <th class="p-0 m-0">
+                                        Amount
+                                    </th>
+                                    <th class="p-0 m-0">
+                                        Count
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var expense in @Model.SummaryResponse.TopMerchants)
+                                {
+                                    <tr>
+                                        <td>
+                                            @expense.Name
+                                        </td>
+                                        <td>
+                                            @String.Format("{0:n}", expense.Amount)
+                                        </td>
+                                        <td>
+                                            @expense.Count
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @if (Model.SummaryResponse.MerchantPercentages != null && Model.SummaryResponse.MerchantPercentages.Values.Sum() > 0)
+                {
+                    <div class="col-6 align-self-center">
+                        <canvas id="merchantPie" class="chart-height"></canvas>
+                    </div>
+                }
+            </div>
+        </div>
+        }
+        @if (Model.SummaryResponse.TopSources != null)
+        {
+            <div class="col-12 col-lg-6 my-3">
+                <div class="row shadow">
+                    <div class="col-6 mb-1">
+                        <div class="d-flex justify-content-center">
+                            <span class="mb-0 fw-bold d-none d-lg-block">Top Income Sources</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Sources/Index" asp-route-PageNumber="1">
+                                View All
+                            </a>
+                        </div>
+                        <div class="table-responsive-lg">
+                            <table class="table table-sm align-middle text-center mb-0">
+                                <thead class="p-0 m-0">
+                                    <tr>
+                                        <th class="p-0 m-0">
+                                            Source
+                                        </th>
+                                        <th class="p-0 m-0">
+                                            Amount
+                                        </th>
+                                        <th class="p-0 m-0">
+                                            Count
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var expense in @Model.SummaryResponse.TopSources)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @expense.Name
+                                            </td>
+                                            <td>
+                                                @String.Format("{0:n}", expense.Amount)
+                                            </td>
+                                            <td>
+                                                @expense.Count
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @if (Model.SummaryResponse.IncomeSourcePercentages != null && Model.SummaryResponse.IncomeSourcePercentages.Values.Sum() > 0)
+                    {
+                        <div class="col-6 align-self-center mb-4">
+                            <canvas id="incomeSourcePie" class="chart-height"></canvas>
+                        </div>
+                    }
+                </div>
             </div>
         }
 
-    </div>
-    <div class="row">
-        @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.MerchantPercentages.Values.Sum() > 0)
-        {
-            <div class="col-6 col-lg-3 mt-3">
-                <canvas id="merchantPie" class="chart-height"></canvas>
-            </div>
-        }
-        @if (Model.SummaryResponse.IncomeSourcePercentages != null && Model.SummaryResponse.IncomeSourcePercentages.Values.Sum() > 0)
-        {
-            <div class="col-6 col-lg-3 mt-3">
-                <canvas id="incomeSourcePie" class="chart-height"></canvas>
-            </div>
-        }
     </div>
 
 </div>
