@@ -44,10 +44,10 @@
             </div>
         </div>
     </div>
-    <div class="row d-flex">
+    <div class="row gx-5">
         @if (Model.SummaryResponse.AnnualSummary != null)
             {
-                <div class="col-6 col-lg-3 shadow-sm mt-2">
+                <div class="col-6 col-lg-3 shadow mt-2">
                     <ul class="list-group text-center mt-2">
                         <li class="list-group-item d-flex justify-content-between p-3">
                             <span class="d-none d-md-block">
@@ -124,27 +124,27 @@
             }
         @if (Model.SummaryResponse.OverallSummaryChart != null)
         {
-            <div class="col-6 col-lg-3 chart-height shadow-sm">
+            <div class="col-6 col-lg-3 chart-height shadow pt-2">
                 <canvas id="overallSummaryChart"></canvas>
             </div>
         }
         @if(Model.SummaryResponse.MonthlyExpenseStatistics.Any())
         {
-            <div class="col-12 col-xl-6">
+            <div class="col-12 col-xl-6 shadow">
                 <canvas id="monthlyStatisticsChart" height="400" class="chart-height"></canvas>
             </div>
         }
     </div>
-    <div class="row">
+    <div class="row gx-5">
         @if (Model.SummaryResponse.SavingsChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
         {
-            <div class="col-12 col-lg-6 mt-3">
+            <div class="col-12 col-lg-6 mt-3 shadow">
                 <canvas id="savingsChart" class="chart-height"></canvas>
             </div>
         }
         @if (Model.SummaryResponse.IncomeExpenseChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
         {
-            <div class="col-12 col-lg-6 mt-3">
+            <div class="col-12 col-lg-6 mt-3 shadow">
                 <canvas id="incomeExpenseChart" class="chart-height"></canvas>
             </div>
         }
@@ -366,7 +366,14 @@
         }
 
     </div>
-
+    <div class="row">
+        @if (Model.SummaryResponse.AnnualMonthlySummaryChart != null)
+        {
+            <div class="col align-self-center mb-4 shadow">
+                <canvas id="annualMonthlySummaryChart" class="chart-height"></canvas>
+            </div>
+        }
+    </div>
 </div>
 
 @section Scripts {
@@ -377,11 +384,11 @@
         ElementId = "overallSummaryChart",
         Title = Model.Year.ToString(),
         Labels = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.Labels),
-        BudgetedIncome = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.BudgetedIncome),
+        BudgetedIncome = Model.SummaryResponse.OverallSummaryChart.BudgetedIncome,
         RealizedIncome = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedIncome),
-        BudgetedExpenses = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.BudgetedExpenses),
+        BudgetedExpenses = Model.SummaryResponse.OverallSummaryChart.BudgetedExpenses,
         RealizedExpenses = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedExpenses),
-        BudgetedSavings = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.BudgetedSavings),
+        BudgetedSavings = Model.SummaryResponse.OverallSummaryChart.BudgetedSavings,
         RealizedSavings = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedSavings)
     })
     @if(Model.SummaryResponse.MonthlyExpenseStatistics.Any())
@@ -461,8 +468,22 @@
         {
             ElementId = "incomeSourcePie",
             Dataset = JsonSerializer.Serialize(Model.SummaryResponse.IncomeSourcePercentages.Select(x => x.Value).ToArray()),
-            Title = "Income Source Percentages",
+            Title = "Income Category Percentages",
             IsSummaryChart = true
+        })
+    }
+    @if (Model.SummaryResponse.AnnualMonthlySummaryChart != null)
+    {
+        @await Html.PartialAsync("AnnualMonthlySummaryChart", new AnnualMonthlySummaryChart()
+        {
+            IncomeDataset = Model.SummaryResponse.AnnualMonthlySummaryChart.IncomeDataset,
+            ExpenseDataset = Model.SummaryResponse.AnnualMonthlySummaryChart.ExpenseDataset,
+            SavingsDataset = Model.SummaryResponse.AnnualMonthlySummaryChart.SavingsDataset,
+            BudgetedIncomeDataset = Model.SummaryResponse.AnnualMonthlySummaryChart.BudgetedIncomeDataset,
+            BudgetedExpenseDataset = Model.SummaryResponse.AnnualMonthlySummaryChart.BudgetedExpenseDataset,
+            BudgetedSavingsDataset = Model.SummaryResponse.AnnualMonthlySummaryChart.BudgetedSavingsDataset,
+            ElementId = "annualMonthlySummaryChart",
+            Title = "Monthly Summary"
         })
     }
 }

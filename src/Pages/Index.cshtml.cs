@@ -5,6 +5,7 @@ using CashTrack.Models.SummaryModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.BudgetService;
 using CashTrack.Services.ExpenseReviewService;
+using CashTrack.Services.ExpenseService;
 using CashTrack.Services.IncomeCategoryService;
 using CashTrack.Services.IncomeReviewService;
 using CashTrack.Services.MainCategoriesService;
@@ -24,7 +25,7 @@ namespace CashTrack.Pages
     public class IndexModel : PageModelBase
     {
         private readonly ISummaryService _summaryService;
-        private readonly IBudgetService _budgetService;
+        private readonly IExpenseService _expenseService;
         private readonly IExpenseReviewService _expenseReviewService;
         private readonly IIncomeReviewService _incomeReviewService;
         private readonly ISubCategoryService _subCategoryService;
@@ -55,10 +56,10 @@ namespace CashTrack.Pages
         public SubCategoryDropdownSelection[] SubCategoryList { get; set; }
         public MainCategoryDropdownSelection[] MainCategoryList { get; set; }
         public IncomeCategoryDropdownSelection[] IncomeCategoryList { get; set; }
-        public IndexModel(IBudgetService budgetService, IExpenseReviewService expenseReviewService, IIncomeReviewService incomeReviewService, ISummaryService summaryService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoryService, IIncomeCategoryService incomeCategoryService)
+        public IndexModel(IExpenseService expenseService, IExpenseReviewService expenseReviewService, IIncomeReviewService incomeReviewService, ISummaryService summaryService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoryService, IIncomeCategoryService incomeCategoryService)
         {
             _summaryService = summaryService;
-            _budgetService = budgetService;
+            _expenseService = expenseService;
             _expenseReviewService = expenseReviewService;
             _incomeReviewService = incomeReviewService;
             _subCategoryService = subCategoryService;
@@ -83,7 +84,7 @@ namespace CashTrack.Pages
             SubCategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
             MainCategoryList = await _mainCategoryService.GetMainCategoriesForDropdownListAsync();
             SummaryResponse = await _summaryService.GetMonthlySummaryAsync(new MonthlySummaryRequest() { Year = this.Year, Month = this.Month, UserId = int.Parse(this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value) });
-            YearSelectList = new SelectList(await _budgetService.GetAnnualBudgetYearsAsync());
+            YearSelectList = new SelectList(await _expenseService.GetAnnualSummaryYearsAsync());
             return Page();
         }
     }

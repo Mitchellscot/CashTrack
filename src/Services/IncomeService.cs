@@ -103,7 +103,7 @@ public class IncomeService : IIncomeService
     }
     public async Task<int> CreateIncomeAsync(Income request)
     {
-        var sourceId = 0;
+        int? sourceId = 0;
         if (request.Source != null)
             sourceId = (await _sourceRepository.Find(x => x.Name == request.Source)).FirstOrDefault().Id;
 

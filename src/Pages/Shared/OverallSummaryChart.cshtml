@@ -7,7 +7,11 @@
         type: 'bar',
         data: {
             labels: @Html.Raw(@Model.Labels),
-            datasets: [{
+            datasets: [
+            @if (!string.IsNullOrEmpty(Model.BudgetedIncome))
+            {
+                <text>
+            {
                 label: 'Budgeted Income',
                 data: @Model.BudgetedIncome,
                 color: 'rgba(0, 0, 0, 0)',
@@ -16,6 +20,8 @@
                 borderWidth: 1,
                 stack: 'Stack 0'
             },
+                </text>
+            }
             {
                 label: 'Realized Income',
                 data: @Model.RealizedIncome,
@@ -25,6 +31,9 @@
                 borderWidth: 1,
                 stack: 'Stack 1'
             },
+            @if (!string.IsNullOrEmpty(Model.BudgetedExpenses))
+            {
+                <text>
             {
                 label: 'Budgeted Expenses',
                 data: @Model.BudgetedExpenses,
@@ -34,6 +43,8 @@
                 borderWidth: 1,
                 stack: 'Stack 0'
             },
+                </text>
+            }
             {
                 label: 'Realized Expenses',
                 data: @Model.RealizedExpenses,
@@ -43,6 +54,9 @@
                 borderWidth: 1,
                 stack: 'Stack 1'
             },
+            @if (!string.IsNullOrEmpty(Model.BudgetedSavings))
+            {
+                <text>
             {
                 label: 'Budgeted Savings',
                 data: @Model.BudgetedSavings,
@@ -52,6 +66,8 @@
                 borderWidth: 1,
                 stack: 'Stack 0'
             },
+                </text>
+            }
             {
                 label: 'Realized Savings',
                 data: @Model.RealizedSavings,

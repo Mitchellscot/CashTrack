@@ -153,9 +153,12 @@
                             </span>
                             <span class="fw-bold text-primary responsive-text">
                                 @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.RealizedIncome)
-                                <span class="responsive-text">
-                                    / @Model.SummaryResponse.MonthlySummary.BudgetedIncome
-                                </span>
+                            @if(Model.SummaryResponse.MonthlySummary.BudgetedIncome != 0)
+                            {
+                            <span class="responsive-text">
+                                / @Model.SummaryResponse.MonthlySummary.BudgetedIncome
+                            </span>
+                            }
                             </span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between p-3">
@@ -164,21 +167,27 @@
                             </span>
                             <span class="fw-bold text-primary responsive-text">
                                 @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.RealizedExpenses)
+                            @if (Model.SummaryResponse.MonthlySummary.BudgetedExpenses != 0)
+                            {
                                 <span class="responsive-text">
                                     / @Model.SummaryResponse.MonthlySummary.BudgetedExpenses
                                 </span>
+                            }
                             </span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between p-3">
                             <span class="d-none d-md-block">
-                                Savings:
+                                Budgeted Savings:
                             </span>
                             <span class="fw-bold text-primary responsive-text">
                                 @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.RealizedSavings)
+                            @if (Model.SummaryResponse.MonthlySummary.BudgetedSavings != 0)
+                            {
                                 <span class="responsive-text">
                                     / @Model.SummaryResponse.MonthlySummary.BudgetedSavings
                                 </span>
-                            </span>
+                            }
+                        </span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between p-3">
                             @if (currentMonth)
@@ -545,11 +554,11 @@
         ElementId = "overallSummaryChart",
         Title = @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month),
         Labels = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.Labels),
-        BudgetedIncome = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.BudgetedIncome),
+        BudgetedIncome = Model.SummaryResponse.OverallSummaryChart.BudgetedIncome,
         RealizedIncome = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedIncome),
-        BudgetedExpenses = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.BudgetedExpenses),
+        BudgetedExpenses = Model.SummaryResponse.OverallSummaryChart.BudgetedExpenses,
         RealizedExpenses = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedExpenses),
-        BudgetedSavings = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.BudgetedSavings),
+        BudgetedSavings = Model.SummaryResponse.OverallSummaryChart.BudgetedSavings,
         RealizedSavings = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedSavings)
     })
     @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.SubCategoryPercentages.Values.Sum() > 0)

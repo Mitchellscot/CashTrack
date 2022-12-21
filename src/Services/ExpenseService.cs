@@ -34,6 +34,7 @@ public interface IExpenseService
     Task<int> UpdateExpenseAsync(Expense request);
     Task<bool> DeleteExpenseAsync(int id);
     Task<bool> RefundExpensesAsync(List<ExpenseRefund> refunds, int incomeId);
+    Task<int[]> GetAnnualSummaryYearsAsync();
 }
 public class ExpenseService : IExpenseService
 {
@@ -231,6 +232,11 @@ public class ExpenseService : IExpenseService
             return await _expenseRepo.UpdateMany(expenseUpdates);
         }
         else return false;
+    }
+
+    public async Task<int[]> GetAnnualSummaryYearsAsync()
+    {
+        return (await _expenseRepo.Find(x => true)).GroupBy(x => x.Date.Year).Select(x => x.Key).ToArray();
     }
 }
 public class ExpenseMapperProfile : Profile

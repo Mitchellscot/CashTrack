@@ -3,7 +3,6 @@ using CashTrack.Common.Extensions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
 using CashTrack.Models.ExpenseModels;
-using CashTrack.Models.IncomeModels;
 using CashTrack.Models.IncomeSourceModels;
 using CashTrack.Models.MerchantModels;
 using CashTrack.Models.SubCategoryModels;
@@ -16,10 +15,8 @@ using CashTrack.Services.Common;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -103,8 +100,70 @@ namespace CashTrack.Services.SummaryService
                 MerchantPercentages = GetMerchantPercentages(expensesYTD, incomeForPercentageCharts),
                 IncomeSourcePercentages = GetIncomeSourcePercentages(incomeYTD),
                 MonthlyExpenseStatistics = AggregateUtilities<ExpenseEntity>.GetAnnualStatisticsByMonth(expensesYTD, request.Year, true),
-                AnnualSummary = GetAnnualSummary(expensesYTD, incomeYTD, annualBudgets)
+                AnnualSummary = GetAnnualSummary(expensesYTD, incomeYTD, annualBudgets),
+                AnnualMonthlySummaryChart = GetAnnualMonthlySummaryChart(expensesYTD, incomeYTD, annualBudgets)
 
+            };
+        }
+
+        private AnnualMonthlySummaryChart GetAnnualMonthlySummaryChart(ExpenseEntity[] expenses, IncomeEntity[] incomes, BudgetEntity[] budgets)
+        {
+            var incomeData = incomes.GroupBy(x => x.Date.Month).OrderBy(x => x.Key).Select(x => x.Sum(x => x.Amount)).ToList();
+            var expenseData = expenses.GroupBy(x => x.Date.Month).OrderBy(x => x.Key).Select(x => x.Sum(x => x.Amount)).ToList();
+            var calculatedSavings = incomeData.Zip(expenseData, (a, b) => (a - b)).ToList();
+
+            var lastMonth = calculatedSavings.Count;
+            var lastExpenseMonth = expenseData.Count;
+
+            var budgetedIncome = budgets.Where(x => x.BudgetType == BudgetType.Income && x.Month > lastMonth).GroupBy(x => x.Month).Select(x => { return (x.Key, decimal.Round(x.Sum(x => x.Amount), 0)); }).OrderBy(x => x.Key).Where(x => x.Key > lastMonth).Select(x => x.Item2).ToList();
+
+            var budgetedExpenses = budgets.Where(x => x.BudgetType == BudgetType.Need || x.BudgetType == BudgetType.Want).GroupBy(x => x.Month).Select(x => { return (x.Key, decimal.Round(x.Sum(x => x.Amount), 0)); }).OrderBy(x => x.Key).Where(x => x.Key > lastExpenseMonth).Select(x => x.Item2).ToList();
+
+            var budgetedSavings = budgets.Where(x => x.BudgetType == BudgetType.Savings && x.Month > lastMonth).GroupBy(x => x.Month).Select(x => { return (x.Key, decimal.Round(x.Sum(x => x.Amount), 0)); }).OrderBy(x => x.Key).Select(x => x.Item2).ToList();
+
+            var budgetedIncomeDataset = Enumerable.Repeat(decimal.MaxValue, lastMonth).ToList();
+            var budgetedExpenseDataset = Enumerable.Repeat(decimal.MaxValue, lastExpenseMonth).ToList();
+            var budgetedSavingsDataset = Enumerable.Repeat(decimal.MaxValue, lastMonth).ToList();
+            if (!budgetedIncome.Any() && lastMonth != 12)
+            {
+                var iterations = 12 - lastMonth;
+                var lastMonthsIncomeRepeated = Enumerable.Repeat((int)decimal.Round(incomeData.LastOrDefault(), 0), iterations).ToList();
+                budgetedIncomeDataset.AddRange(lastMonthsIncomeRepeated.Select(x => (decimal)x).ToList());
+            }
+            else
+            {
+                budgetedIncomeDataset.AddRange(budgetedIncome);
+            }
+
+            if (!budgetedExpenses.Any() && lastExpenseMonth != 12)
+            {
+                var iterations = 12 - lastExpenseMonth;
+                var lastMonthsExpensesRepeated = Enumerable.Repeat((int)decimal.Round(expenseData.LastOrDefault(), 0), iterations).ToList();
+                budgetedExpenseDataset.AddRange(lastMonthsExpensesRepeated.Select(x => (decimal)x).ToList());
+            }
+            else
+            {
+                budgetedExpenseDataset.AddRange(budgetedExpenses);
+            }
+
+            if (!budgetedSavings.Any() && lastMonth != 12)
+            {
+                var iterations = 12 - lastMonth;
+                var lastMonthsSavingsRepeated = Enumerable.Repeat((int)decimal.Round(calculatedSavings.LastOrDefault(), 0), iterations).ToList();
+                budgetedSavingsDataset.AddRange(lastMonthsSavingsRepeated.Select(x => (decimal)x).ToList());
+            }
+            else
+            {
+                budgetedSavingsDataset.AddRange(budgetedSavings);
+            }
+            return new AnnualMonthlySummaryChart()
+            {
+                IncomeDataset = incomeData.Sum() > 0 ? JsonSerializer.Serialize(incomeData) : string.Empty,
+                ExpenseDataset = expenseData.Sum() > 0 ? JsonSerializer.Serialize(expenseData) : string.Empty,
+                SavingsDataset = calculatedSavings.Sum() > 0 ? JsonSerializer.Serialize(calculatedSavings) : string.Empty,
+                BudgetedIncomeDataset = budgetedIncome.Sum() > 0 ? JsonSerializer.Serialize(budgetedIncomeDataset).Replace(decimal.MaxValue.ToString(), "NaN") : string.Empty,
+                BudgetedExpenseDataset = budgetedExpenses.Sum() > 0 ? JsonSerializer.Serialize(budgetedExpenseDataset).Replace(decimal.MaxValue.ToString(), "NaN") : string.Empty,
+                BudgetedSavingsDataset = budgetedSavings.Sum() > 0 ? JsonSerializer.Serialize(budgetedSavingsDataset).Replace(decimal.MaxValue.ToString(), "NaN") : string.Empty
             };
         }
 
@@ -572,13 +631,16 @@ namespace CashTrack.Services.SummaryService
             var realizedExpenses = expenses.Sum(x => x.Amount);
             var budgetedSavings = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
             var realizedSavings = realizedIncome - realizedExpenses;
+            var budgetedIncomeDataset = budgetedIncome > 0 ? JsonSerializer.Serialize(new[] { budgetedIncome, 0, 0 }) : string.Empty;
+            var budgetedExpensesDataset = budgetedExpenses > 0 ? JsonSerializer.Serialize(new[] { 0, budgetedExpenses, 0 }) : string.Empty;
+            var budgetedSavingsDataset = budgetedSavings > 0 ? JsonSerializer.Serialize(new[] { 0, 0, budgetedSavings }) : string.Empty;
             return new OverallSummaryChart()
             {
-                BudgetedIncome = new[] { budgetedIncome, 0, 0 },
+                BudgetedIncome = budgetedIncomeDataset,
                 RealizedIncome = new[] { realizedIncome, 0, 0 },
-                BudgetedExpenses = new[] { 0, budgetedExpenses, 0 },
+                BudgetedExpenses = budgetedExpensesDataset,
                 RealizedExpenses = new[] { 0, realizedExpenses, 0 },
-                BudgetedSavings = new[] { 0, 0, budgetedSavings },
+                BudgetedSavings = budgetedSavingsDataset,
                 RealizedSavings = new[] { 0, 0, realizedSavings },
             };
         }

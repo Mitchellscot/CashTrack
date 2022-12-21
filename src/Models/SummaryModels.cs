@@ -31,8 +31,18 @@ namespace CashTrack.Models.SummaryModels
         public Dictionary<string, int> MerchantPercentages { get; set; }
         public Dictionary<string, decimal> IncomeSourcePercentages { get; set; }
         public List<MonthlyStatistics> MonthlyExpenseStatistics { get; set; }
+        public AnnualMonthlySummaryChart AnnualMonthlySummaryChart { get; set; }
 
         //public List<TransactionBreakdown> TransactionBreakdown { get; set; }
+    }
+    public record AnnualMonthlySummaryChart
+    {
+        public string IncomeDataset { get; set; }
+        public string ExpenseDataset { get; set; }
+        public string SavingsDataset { get; set; }
+        public string BudgetedIncomeDataset { get; set; }
+        public string BudgetedExpenseDataset { get; set; }
+        public string BudgetedSavingsDataset { get; set; }
     }
     public record AnnualSummaryTotals
     {
@@ -129,11 +139,11 @@ namespace CashTrack.Models.SummaryModels
     public record OverallSummaryChart
     {
         public string[] Labels { get; set; } = new string[] { "Income", "Expenses", "Savings" };
-        public int[] BudgetedIncome { get; set; }
+        public string BudgetedIncome { get; set; }
         public decimal[] RealizedIncome { get; set; }
-        public int[] BudgetedExpenses { get; set; }
+        public string BudgetedExpenses { get; set; }
         public decimal[] RealizedExpenses { get; set; }
-        public int[] BudgetedSavings { get; set; }
+        public string BudgetedSavings { get; set; }
         public decimal[] RealizedSavings { get; set; }
 
     }
