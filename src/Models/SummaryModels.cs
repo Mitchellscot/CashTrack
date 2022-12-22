@@ -90,6 +90,8 @@ namespace CashTrack.Models.SummaryModels
         public DailyExpenseChart DailyExpenseLineChart { get; set; }
         public MonthlyYearToDate YearToDate { get; set; }
         public List<ExpenseQuickView> TopExpenses { get; set; }
+        public List<SubCategoryQuickView> TopCategories { get; set; }
+        public List<MerchantQuickView> TopMerchants { get; set; }
         public List<TransactionBreakdown> TransactionBreakdown { get; set; }
     }
     public record TransactionBreakdown

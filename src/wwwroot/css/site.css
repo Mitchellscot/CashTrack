@@ -73,6 +73,9 @@ ul.ui-autocomplete {
 .chart-height {
     max-height: 400px;
 }
+.pie-stats {
+    min-height: 380px;
+}
 /*CLASSES ON TAG HELPERS ON OTHER PAGES*/
 /*THEY NEED TO GO HERE BECAUSE THEY DON'T GET COMPILED*/
 

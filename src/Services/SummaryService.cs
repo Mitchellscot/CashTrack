@@ -349,6 +349,24 @@ namespace CashTrack.Services.SummaryService
                 DailyExpenseLineChart = GetDailyExpenseLineChart(request.Month, request.Year, monthlyExpenses, monthlyBudgets, monthlyIncome),
                 YearToDate = GetMonthlyYearToDate(expensesYTD, incomeYTD, request.Month),
                 TopExpenses = monthlyExpenses.Where(x => !x.ExcludeFromStatistics).OrderByDescending(x => x.Amount).Take(10).Select(x => new ExpenseQuickView() { Amount = x.Amount, Date = x.Date.ToShortDateString(), Id = x.Id, SubCategory = x.Category == null ? "none" : x.Category.Name }).ToList(),
+                TopCategories = monthlyExpenses.Where(x => !x.ExcludeFromStatistics)
+                .GroupBy(x => x.Category.Name)
+                .Select(x => new SubCategoryQuickView()
+                {
+                    Amount = x.Sum(y => y.Amount),
+                    Name = x.Key,
+                    Count = x.Count()
+                }).OrderByDescending(x => x.Amount)
+                .Take(10).ToList(),
+                TopMerchants = monthlyExpenses.Where(x => !x.ExcludeFromStatistics && x.MerchantId != null)
+                .GroupBy(x => x.Merchant.Name)
+                .Select(x => new MerchantQuickView()
+                {
+                    Amount = x.Sum(y => y.Amount),
+                    Name = x.Key,
+                    Count = x.Count()
+                }).OrderByDescending(x => x.Amount)
+                .Take(10).ToList(),
                 TransactionBreakdown = GetTransactionBreakdown(monthlyExpenses, monthlyIncome, monthlyBudgets, isCurrentMonth)
             };
         }
