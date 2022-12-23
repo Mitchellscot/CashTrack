@@ -453,6 +453,12 @@
         }
     </div>
 </div>
+@await Html.PartialAsync("TransactionBreakdownModal", new TransactionBreakdownModalModel()
+{
+    Year = Model.Year,
+    Month= 0,
+    Transactions = Model.SummaryResponse.TransactionBreakdown
+})
 @* Add Expense Modal *@
 <div class="modal fade" id="addExpenseModal">
     @await Html.PartialAsync("AddEditExpenseModal",

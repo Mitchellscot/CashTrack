@@ -32,7 +32,7 @@ namespace CashTrack.Models.SummaryModels
         public Dictionary<string, decimal> IncomeSourcePercentages { get; set; }
         public List<MonthlyStatistics> MonthlyExpenseStatistics { get; set; }
         public AnnualMonthlySummaryChart AnnualMonthlySummaryChart { get; set; }
-        //public List<TransactionBreakdown> TransactionBreakdown { get; set; }
+        public List<TransactionBreakdown> TransactionBreakdown { get; set; }
     }
     public record AnnualMonthlySummaryChart
     {

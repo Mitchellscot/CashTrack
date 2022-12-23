@@ -101,7 +101,8 @@ namespace CashTrack.Services.SummaryService
                 IncomeSourcePercentages = GetIncomeSourcePercentages(incomeYTD),
                 MonthlyExpenseStatistics = AggregateUtilities<ExpenseEntity>.GetAnnualStatisticsByMonth(expensesYTD, request.Year, true),
                 AnnualSummary = GetAnnualSummary(expensesYTD, incomeYTD, annualBudgets),
-                AnnualMonthlySummaryChart = GetAnnualMonthlySummaryChart(expensesYTD, incomeYTD, annualBudgets)
+                AnnualMonthlySummaryChart = GetAnnualMonthlySummaryChart(expensesYTD, incomeYTD, annualBudgets),
+                TransactionBreakdown = GetTransactionBreakdown(expensesYTD, incomeYTD, budgetsYTD, false)
             };
         }
 

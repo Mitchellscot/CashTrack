@@ -561,89 +561,12 @@
     @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Index" })
 </div>
 @*End Import Transactions Modal*@
-@*Expense Breakdown*@
-<div class="modal fade" id="expenseStats">
-    @if (Model.SummaryResponse.TransactionBreakdown != null)
-    {
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header text-center">
-                    <button type="button" class="icon-button" onclick="window.print()"><i class="bi bi-printer align-self-center"></i></button>
-                    <h5 class="modal-title w-100">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month) @Model.Year Breakdown</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal">
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-borderless border border-3 rounded-4 text-center" id="print-area">
-                        <tr class="mb-5">
-                            <td class="text-center"><h4>Expenses</h4></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        @foreach (var budget in Model.SummaryResponse.TransactionBreakdown)
-                        {
-                            @if (budget.IsMainCategory || budget.MainCategoryId >= int.MaxValue - 1)
-                            {
-                                @if (budget.Category == "Income")
-                                {
-                                    <tr class="border-top border-bottom border-3 rounded-4 mt-5 border border-end-0 border border-start-0">
-                                        <td class="text-center"><h4>Summary</h4></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                }
-                                <tr class="border-top border-bottom border-3 rounded-4">
-                                    <td>
-                                        <h6 class="fw-bold">@budget.Category</h6>
-                                    </td>
-                                    <td class="border-end">
-                                        &nbsp;
-                                    </td>
-                                    <td class="border-end border-top">
-                                        @String.Format("{0:n}", budget.Amount)
-                                    </td>
-                                    <td class="border-top">
-                                        @if (budget.Percentage != 0)
-                                        {
-                                            <span>@budget.Percentage &#37;</span>
-                                        }
-                                    </td>
-                                </tr>
-
-                            }
-                            else
-                            {
-                                <tr class="border-end border-start">
-                                    <td>
-                                        &nbsp;
-                                    </td>
-                                    <td class="border-end">
-                                        @budget.Category
-                                    </td>
-                                    <td class="border-end border-top">
-                                        @String.Format("{0:n}", budget.Amount)
-                                    </td>
-                                    <td class="border-top">
-                                        @if (budget.Percentage != 0)
-                                        {
-                                            <span>@budget.Percentage &#37;</span>
-                                        }
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </table>
-                </div>
-                <div class="modal-footer d-flex justify-content-center">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    }
-</div>
-@*End Expense Breakdown*@
+@await Html.PartialAsync("TransactionBreakdownModal", new TransactionBreakdownModalModel()
+{
+    Year = Model.Year,
+    Month= Model.Month,
+    Transactions = Model.SummaryResponse.TransactionBreakdown
+})
 @section Scripts {
     <script src="~/js/home.js"></script>
     <script asp-append-version="true" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
