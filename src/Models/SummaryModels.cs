@@ -9,6 +9,11 @@ using System.Collections.Generic;
 
 namespace CashTrack.Models.SummaryModels
 {
+    public record PrintTransactionsRequest
+    {
+        public int Year { get; set; }
+        public int Month { get; set; }
+    }
     public record AnnualSummaryRequest
     {
         public int UserId { get; set; }

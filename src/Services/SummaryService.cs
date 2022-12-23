@@ -24,6 +24,7 @@ namespace CashTrack.Services.SummaryService
 {
     public interface ISummaryService
     {
+        Task<List<TransactionBreakdown>> GetTransactionsToPrint(PrintTransactionsRequest request);
         Task<MonthlySummaryResponse> GetMonthlySummaryAsync(MonthlySummaryRequest request);
         Task<AnnualSummaryResponse> GetAnnualSummaryAsync(AnnualSummaryRequest request);
 
@@ -377,6 +378,7 @@ namespace CashTrack.Services.SummaryService
         {
             if (expenses.Length == 0)
                 return new List<TransactionBreakdown>();
+
             var stats = new List<TransactionBreakdown>();
             var incomeToCompareBy = isCurrentMonth ? decimal.Round(budgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount), 1) : income.Sum(x => x.Amount);
 
@@ -727,6 +729,23 @@ namespace CashTrack.Services.SummaryService
                 EstimatedSavings = estimatedSavings,
                 BudgetVariance = budgetedExpenses > 0 ? (realizedExpenses - budgetedExpenses) / budgetedExpenses : 0
             };
+        }
+
+        public async Task<List<TransactionBreakdown>> GetTransactionsToPrint(PrintTransactionsRequest request)
+        {
+            if (request.Year < 1900)
+                return new List<TransactionBreakdown>();
+
+            var validatedMonth = request.Month > 0 && request.Month <= 12 ? request.Month : 0;
+            var isCurrentMonth = validatedMonth == DateTime.Now.Month;
+
+            var expenses = validatedMonth > 0 ? await _expenseRepo.Find(x => x.Date.Year == request.Year && x.Date.Month == request.Month && !x.ExcludeFromStatistics) : await _expenseRepo.Find(x => x.Date.Year == request.Year && !x.ExcludeFromStatistics);
+
+            var income = validatedMonth > 0 ? await _incomeRepo.Find(x => x.Date.Year == request.Year && x.Date.Month == request.Month && !x.IsRefund) : await _incomeRepo.Find(x => x.Date.Year == request.Year && !x.IsRefund);
+
+            var budgets = validatedMonth > 0 ? await _budgetRepo.FindWithMainCategories(x => x.Year == request.Year && x.Month == request.Month && x.BudgetType == BudgetType.Need || x.BudgetType == BudgetType.Want) : await _budgetRepo.FindWithMainCategories(x => x.Year == request.Year && x.BudgetType == BudgetType.Need || x.BudgetType == BudgetType.Want);
+
+            return GetTransactionBreakdown(expenses, income, budgets, isCurrentMonth);
         }
     }
 }
