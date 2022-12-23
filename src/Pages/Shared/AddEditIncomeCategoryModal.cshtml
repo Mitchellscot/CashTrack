@@ -27,7 +27,7 @@
                             <label class="visually-hidden" asp-for="@Model.Name">Name</label>
                             <div class="input-group">
                                 <div class="input-group-text text-center">Name</div>
-                                <input data-val="true" asp-for=@Model.Name type="text" class="form-control">
+                                <input required data-val="true" asp-for=@Model.Name type="text" class="form-control">
                                 <span asp-validation-for="@Model.Name"></span>
                             </div>
                         </div>

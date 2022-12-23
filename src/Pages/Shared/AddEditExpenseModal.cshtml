@@ -166,7 +166,7 @@
     {
         @* Add SubCategory Modal *@
         <div class="modal fade" id="addEditSubCategoryModal">
-            @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal() { Returnurl=$"{Model.Returnurl}#addExpenseModal", InUse=true, IsEdit=false, MainCategoryList=Model.MainCategoryList })
+            @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal() { Returnurl=$"{Model.Returnurl}", InUse=true, IsEdit=false, MainCategoryList=Model.MainCategoryList })
         </div>
         @* End SubCategory Modal *@
     }

@@ -11,6 +11,7 @@ using CashTrack.Models.IncomeModels;
 using CashTrack.Models.MerchantModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Models.ExpenseModels;
+using System;
 
 namespace CashTrack.Services.IncomeSourceService;
 
@@ -35,6 +36,9 @@ public class IncomeSourceService : IIncomeSourceService
 
     public async Task<int> CreateIncomeSourceAsync(IncomeSource request)
     {
+        if (string.IsNullOrEmpty(request.Name))
+            throw new ArgumentException("Income source must have a name");
+
         var categories = await _sourceRepo.Find(x => true);
         if (categories.Any(x => x.Name == request.Name))
             throw new DuplicateNameException(nameof(IncomeSourceEntity), request.Name);
@@ -90,7 +94,7 @@ public class IncomeSourceService : IIncomeSourceService
         //So if you create a new category, and no income is associated with it, it won't
         //show up on the category list. Maybe I should fix that.. TODO: ????
         var categories = income.Select(x => x.Category).Distinct().ToArray();
-        var count = await _sourceRepo.GetCount(x => true);
+        var count = await _sourceRepo.GetCount(x => x.Incomes.Count > 0);
         var sourceListItems = income.GroupBy(i => i.SourceId).Select(g =>
         {
             var results = g.Aggregate(new SourceListItemAggregator(g.Key, categories, sources), (acc, i) => acc.Accumulate(i), acc => acc.Compute());
@@ -103,7 +107,7 @@ public class IncomeSourceService : IIncomeSourceService
                 LastPayment = results.LastPayment,
                 Category = results.MostUsedCategory
             };
-        }).Where(x => x.Id > 0).OrderByDescending(x => x.LastPayment).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
+        }).Where(x => x.Id > 0 && x.Amount > 0).OrderByDescending(x => x.LastPayment).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
 
         return new IncomeSourceResponse(request.PageNumber, request.PageSize, count, sourceListItems);
     }

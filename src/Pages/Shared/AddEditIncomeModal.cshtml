@@ -153,7 +153,7 @@
     {
         @* Add Income Category Modal *@
         <div class="modal fade" id="addIncomeCategoryModal">
-            @await Html.PartialAsync("AddEditIncomeCategoryModal", new AddEditIncomeCategoryModal() { Returnurl=$"{Model.Returnurl}#addIncomeModal",
+            @await Html.PartialAsync("AddEditIncomeCategoryModal", new AddEditIncomeCategoryModal() { Returnurl=$"{Model.Returnurl}",
             InUse=true, 
             IsEdit=false
             })
