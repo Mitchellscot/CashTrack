@@ -42,23 +42,35 @@
     }
     public static class DarkChartColors
     {
-        public const string RedLight = "rgba(203, 67, 53, .6)";
+        public const string RedSoft = "rgba(203, 67, 53, .6)";
+        public const string RedLight = "rgba(255, 122, 133, .8)";
         public const string Red = "rgba(203, 67, 53, .8)";
+        public const string RedDark = "rgba(143, 0, 39, .8)";
         public const string RedBold = "rgba(203, 67, 53, 1)";
-        public const string OrangeLight = "rgba(211, 84, 0, .6)";
+        public const string OrangeSoft = "rgba(211, 84, 0, .6)";
+        public const string OrangeLight = "rgba(255, 137, 62, .8)";
         public const string Orange = "rgba(211, 84, 0, .8)";
+        public const string OrangeDark = "rgba(148, 29, 0, .8)";
         public const string OrangeBold = "rgba(211, 84, 0, 1)";
-        public const string YellowLight = "rgba(241, 196, 15, .6)";
+        public const string YellowSoft = "rgba(241, 196, 15, .6)";
+        public const string YellowLight = "rgba(255, 252, 89, .8)";
         public const string Yellow = "rgba(241, 196, 15, .8)";
+        public const string YellowDark = "rgba(180, 143, 0, .8)";
         public const string YellowBold = "rgba(241, 196, 15, 1)";
-        public const string GreenLight = "rgba(39, 174, 96, .6)";
+        public const string GreenSoft = "rgba(39, 174, 96, .6)";
+        public const string GreenLight = "rgba(106, 231, 148, .8)";
         public const string Green = "rgba(39, 174, 96, .8)";
+        public const string GreenDark = "rgba(0, 120, 48, .8)";
         public const string GreenBold = "rgba(39, 174, 96, 1)";
-        public const string BlueLight = "rgba(31, 97, 141, .6)";
+        public const string BlueSoft = "rgba(31, 97, 141, .6)";
+        public const string BlueLight = "rgba(92, 147, 195, .8)";
         public const string Blue = "rgba(31, 97, 141, .8)";
+        public const string BlueDark = "rgba(0, 51, 90, .8)";
         public const string BlueBold = "rgba(31, 97, 141, 1)";
-        public const string PurpleLight = "rgba(136, 78, 160, .6)";
+        public const string PurpleSoft = "rgba(136, 78, 160, .6)";
+        public const string PurpleLight = "rgba(191, 129, 215, .8)";
         public const string Purple = "rgba(136, 78, 160, .8)";
+        public const string PurpleDark = "rgba(84, 29, 108, .8)";
         public const string PurpleBold = "rgba(136, 78, 160, 1)";
     }
 }

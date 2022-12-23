@@ -102,7 +102,6 @@ namespace CashTrack.Services.SummaryService
                 MonthlyExpenseStatistics = AggregateUtilities<ExpenseEntity>.GetAnnualStatisticsByMonth(expensesYTD, request.Year, true),
                 AnnualSummary = GetAnnualSummary(expensesYTD, incomeYTD, annualBudgets),
                 AnnualMonthlySummaryChart = GetAnnualMonthlySummaryChart(expensesYTD, incomeYTD, annualBudgets)
-
             };
         }
 
@@ -367,7 +366,9 @@ namespace CashTrack.Services.SummaryService
                     Count = x.Count()
                 }).OrderByDescending(x => x.Amount)
                 .Take(10).ToList(),
-                TransactionBreakdown = GetTransactionBreakdown(monthlyExpenses, monthlyIncome, monthlyBudgets, isCurrentMonth)
+                TransactionBreakdown = GetTransactionBreakdown(monthlyExpenses, monthlyIncome, monthlyBudgets, isCurrentMonth),
+                DailyExpenseChart = ChartUtilities.GetDailyExpenseData(monthlyExpenses, false)
+
             };
         }
 

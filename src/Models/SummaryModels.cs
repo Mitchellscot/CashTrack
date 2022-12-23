@@ -32,7 +32,6 @@ namespace CashTrack.Models.SummaryModels
         public Dictionary<string, decimal> IncomeSourcePercentages { get; set; }
         public List<MonthlyStatistics> MonthlyExpenseStatistics { get; set; }
         public AnnualMonthlySummaryChart AnnualMonthlySummaryChart { get; set; }
-
         //public List<TransactionBreakdown> TransactionBreakdown { get; set; }
     }
     public record AnnualMonthlySummaryChart
@@ -93,6 +92,7 @@ namespace CashTrack.Models.SummaryModels
         public List<SubCategoryQuickView> TopCategories { get; set; }
         public List<MerchantQuickView> TopMerchants { get; set; }
         public List<TransactionBreakdown> TransactionBreakdown { get; set; }
+        public List<DailyExpenseDataset> DailyExpenseChart { get; set; }
     }
     public record TransactionBreakdown
     {
@@ -167,5 +167,11 @@ namespace CashTrack.Models.SummaryModels
         public decimal Unspent { get; set; }
         public decimal EstimatedSavings { get; set; }
         public decimal BudgetVariance { get; set; }
+    }
+    public class DailyExpenseDataset
+    {
+        public string SubCategoryName { get; set; }
+        public decimal[] DataSet { get; set; }
+        public string Color { get; set; }
     }
 }

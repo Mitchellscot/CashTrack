@@ -1,6 +1,8 @@
 ﻿using CashTrack.Common;
 using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
+using CashTrack.Models.ExpenseModels;
+using CashTrack.Models.SummaryModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -136,6 +138,74 @@ namespace CashTrack.Services.Common
                 expenseList.Add(data);
             }
             return AssignColorsToChartData(expenseList, true);
+        }
+        public static List<DailyExpenseDataset> GetDailyExpenseData(ExpenseEntity[] expenses, bool isAnnual)
+        {
+            if (!expenses.Any())
+                return new List<DailyExpenseDataset>();
+
+            var month = expenses.OrderBy(x => x.Date).Select(x => x.Date.Month).FirstOrDefault();
+            var year = expenses.FirstOrDefault().Date.Year;
+            var labels = isAnnual ? Enumerable.Range(1, DateTime.IsLeapYear(year) ? 366 : 365).ToArray() : Enumerable.Range(1, DateTime.DaysInMonth(year, month)).ToArray();
+
+            var amountsAndDatesByCategory = expenses.Where(x => x.Amount > 0 && !x.ExcludeFromStatistics)
+                .Select(x => (Category: x.Category.Name, x.Amount, x.Date.Day)).OrderBy(x => x.Category).ToLookup(x => x.Category);
+            var categories = amountsAndDatesByCategory.Select(x => x.Key).ToList();
+            var expenseList = new List<DailyExpenseDataset>();
+            foreach (var category in categories)
+            {
+                var dataSet = new decimal[labels.Length];
+                foreach (var grouping in amountsAndDatesByCategory[category])
+                {
+                    var dailyAmount = dataSet[grouping.Day - 1];
+                    dataSet[grouping.Day - 1] = dailyAmount + grouping.Amount;
+                }
+                var data = new DailyExpenseDataset()
+                {
+                    DataSet = dataSet,
+                    SubCategoryName = category
+                };
+                expenseList.Add(data);
+            }
+            var coloredExpenseList = expenseList.Select((x, index) =>
+            {
+                x.Color = GetColorForDailyExpenseDataset(index);
+                return x;
+            }).ToList();
+            return coloredExpenseList;
+        }
+        public static string GetColorForDailyExpenseDataset(int index)
+        {
+            var colors = new[]
+            {
+                DarkChartColors.RedLight,
+                DarkChartColors.OrangeLight,
+                DarkChartColors.YellowLight,
+                DarkChartColors.GreenLight,
+                DarkChartColors.BlueLight,
+                DarkChartColors.PurpleLight,
+                DarkChartColors.Red,
+                DarkChartColors.Orange,
+                DarkChartColors.Yellow,
+                DarkChartColors.Green,
+                DarkChartColors.Blue,
+                DarkChartColors.Purple,
+                DarkChartColors.RedDark,
+                DarkChartColors.OrangeDark,
+                DarkChartColors.YellowDark,
+                DarkChartColors.GreenDark,
+                DarkChartColors.BlueDark,
+                DarkChartColors.PurpleDark
+            };
+
+            if (index > colors.Length - 1)
+            {
+                var localIndex = index;
+                while (localIndex > colors.Length - 1)
+                    localIndex = (localIndex - colors.Length);
+                return colors[localIndex];
+            }
+            else return colors[index];
         }
         public static List<ExpenseDataset> AssignColorsToChartData(List<ExpenseDataset> chartData, bool isSummary = false)
         {

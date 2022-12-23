@@ -464,13 +464,24 @@
                 </div>
             </div>
         }
+        <div class="col-12 col-lg-6 align-self-center shadow">
+            <canvas id="dailyExpenseBarChart" class="chart-height"></canvas>
         </div>
-        <div class="row mb-1">
+        </div>
+@*        <div class="row mb-1">
             @if (Model.SummaryResponse.MonthlySummary != null)
             {
             <div class="col shadow">
                     <canvas id="monthlySummaryChart" class="chart-height"></canvas>
                 </div>
+            }
+        </div>*@
+        <div class="row mb-1">
+            @if (Model.SummaryResponse.DailyExpenseChart.Any())
+            {
+            <div class="col align-self-center">
+                <canvas id="monthlySummaryChart" class="chart-height"></canvas>
+            </div>
             }
         </div>
 
@@ -716,6 +727,16 @@
         Dataset = JsonSerializer.Serialize(Model.SummaryResponse.MerchantPercentages.Select(x => x.Value).ToArray()),
         Title = "Merchant Percentages",
         IsSummaryChart = true
+    })
+    }
+    @if (Model.SummaryResponse.DailyExpenseChart.Any())
+    {
+        @await Html.PartialAsync("DailyExpenseBarChart", new DailyExpenseBarChart()
+    {
+        ElementId = "dailyExpenseBarChart",
+        ExpenseDatasets = Model.SummaryResponse.DailyExpenseChart,
+        Title = "Daily Expenses",
+        Labels = JsonSerializer.Serialize(Enumerable.Range(1, DateTime.DaysInMonth(Model.Year, Model.Month)).ToArray())
     })
     }
 
