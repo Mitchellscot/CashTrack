@@ -66,7 +66,7 @@ namespace CashTrack.Pages.Income.Categories
             }
 
             TempData["SuccessMessage"] = IncomeCategoryModal.IsEdit ? "Successfully edited a Category!" : "Successfully added a new Category!";
-            return LocalRedirect(IncomeCategoryModal.Returnurl);
+            return RedirectToPage(IncomeCategoryModal.Returnurl);
         }
         private async Task<IActionResult> PrepareAndRenderPage()
         {

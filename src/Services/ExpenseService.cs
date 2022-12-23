@@ -115,9 +115,17 @@ public class ExpenseService : IExpenseService
     }
     public async Task<int> CreateExpenseAsync(Expense request)
     {
-        var merchantId = 0;
+        if (request.Amount <= 0)
+            throw new ArgumentException("Expense amount cannot be zero.");
+
+        int? merchantId = 0;
         if (request.Merchant != null)
-            merchantId = (await _merchantRepo.Find(x => x.Name == request.Merchant)).FirstOrDefault().Id;
+        {
+            var merchant = (await _merchantRepo.Find(x => x.Name == request.Merchant)).FirstOrDefault();
+            if (merchant == null)
+                throw new MerchantNotFoundException(nameof(request.Merchant));
+        }
+        merchantId = request.MerchantId;
 
         var expenseEntity = new ExpenseEntity()
         {

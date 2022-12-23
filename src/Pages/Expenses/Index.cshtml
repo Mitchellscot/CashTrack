@@ -59,10 +59,10 @@
     </div>
     @* Add Expense Modal *@
     <div class="modal fade" id="addExpenseModal">
-        @await Html.PartialAsync("AddExpenseModal",
+        @await Html.PartialAsync("AddEditExpenseModal",
         new AddEditExpenseModal() {
             IsEdit = false, 
-            Returnurl = "~/Expenses/Index", 
+            Returnurl = "/Expenses/Index", 
             SubCategoryList = new SelectList(Model.CategoryList, "Id", "Category"), 
             Date= DateTime.Today, 
             MainCategoryList = new SelectList(Model.MainCategoryList, "Id", "Category"),
@@ -191,10 +191,10 @@
                                     @* Edit Expense Modal *@
 
                                     <div class="modal fade" id="editExpenseModal-@expense.Id">
-                                        @await Html.PartialAsync("AddExpenseModal",
+                                        @await Html.PartialAsync("AddEditExpenseModal",
                                 new AddEditExpenseModal() {
                                 IsEdit = true,
-                                Returnurl = "./Index",
+                                Returnurl = "/Expenses/Index",
                                 SubCategoryId = expense.SubCategoryId,
                                 SubCategoryList = new SelectList(Model.CategoryList, "Id", "Category",
                                 expense.SubCategoryId),

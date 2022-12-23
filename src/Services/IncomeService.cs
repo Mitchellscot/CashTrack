@@ -10,6 +10,7 @@ using CashTrack.Repositories.IncomeSourceRepository;
 using CashTrack.Services.Common;
 using Microsoft.AspNetCore.Hosting;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -103,9 +104,20 @@ public class IncomeService : IIncomeService
     }
     public async Task<int> CreateIncomeAsync(Income request)
     {
+        if (request.Amount <= 0)
+            throw new ArgumentException("Income amount cannot be zero.");
+
         int? sourceId = 0;
         if (request.Source != null)
-            sourceId = (await _sourceRepository.Find(x => x.Name == request.Source)).FirstOrDefault().Id;
+        {
+            var source = (await _sourceRepository.Find(x => x.Name == request.Source)).FirstOrDefault(); ;
+            if (source == null)
+            {
+                throw new IncomeSourceNotFoundException(nameof(request.Source));
+            }
+            sourceId = source.Id;
+        }
+
 
         //this is set on the controller.
         if (request.IsRefund)

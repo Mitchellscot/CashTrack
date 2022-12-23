@@ -1,6 +1,5 @@
 ﻿@model CashTrack.Models.MerchantModels.AddEditMerchantModal
 @{
-    var locationToHandler = Model.Returnurl == "~/Index" ? "/Merchants/Index" : "../Merchants/Index";
 }
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -15,7 +14,7 @@
         <div class="modal-body">
             <div class="container-fluid">
                 <form method="post"
-                      asp-page=@locationToHandler
+                      asp-page="/Merchants/Index"
                       asp-page-handler="AddEditMerchantModal"
                       id="addEditMerchantForm">
                     @if (Model.IsEdit)

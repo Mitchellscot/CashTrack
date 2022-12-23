@@ -1,4 +1,12 @@
 ﻿@page
+@using CashTrack.Models.ExpenseModels;
+@using CashTrack.Models.ImportCsvModels;
+@using CashTrack.Models.IncomeCategoryModels;
+@using CashTrack.Models.IncomeModels;
+@using CashTrack.Models.IncomeSourceModels;
+@using CashTrack.Models.MainCategoryModels;
+@using CashTrack.Models.MerchantModels;
+@using CashTrack.Models.SubCategoryModels;
 @using CashTrack.Pages.Budget;
 @using CashTrack.Pages.Shared;
 @using System.Globalization;
@@ -41,15 +49,85 @@
                         <li><a class="dropdown-item text-center" asp-page="./Summary">All Time</a></li>
                     </ul>
                 </div>
+                <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <button class="dropdown-item fakelink text-center"
+                                id="addExpenseButton"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addExpenseModal">
+                            Expense
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dropdown-item fakelink text-center"
+                                id="addIncomeButton"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addIncomeModal">
+                            Income
+                        </button>
+                    </li>
+                    <li class="dropdown-divider"></li>
+                    <li class="dropdown-item">
+                        <button class="dropdown-item fakelink text-center"
+                                id="addMerchantButton"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addMerchantModal">
+                            Merchant
+                        </button>
+                    </li>
+                    <li class="dropdown-item">
+                        <button class="dropdown-item fakelink text-center"
+                                id="addMerchantButton"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addSourceModal">
+                            Income Source
+                        </button>
+                    </li>
+                    <li class="dropdown-divider"></li>
+                    <li class="dropdown-item">
+                        <button class="dropdown-item fakelink text-center"
+                                id="addIncomeCategoryButton"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addIncomeCategoryModal">
+                            Income Category
+                        </button>
+                    </li>
+                    <li class="dropdown-item">
+                        <button class="dropdown-item fakelink text-center"
+                                id="addSubCategoryButton"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addSubCategoryModal">
+                            Expense Category
+                        </button>
+                    </li>
+                    <li class="dropdown-item">
+                        <button class="dropdown-item fakelink text-center"
+                                id="addMainCategoryButton"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addMainCategoryModal">
+                            Main Category
+                        </button>
+                    </li>
+                    <li class="dropdown-divider"></li>
+                    <li>
+                        <button class="dropdown-item fakelink text-center"
+                                id="importCsvButton"
+                                data-bs-toggle="modal"
+                                data-bs-target="#importCsvModal">
+                            Import Transactions
+                        </button>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
-    <div class="row gx-5">
+    <div class="row mb-3">
         @if (Model.SummaryResponse.AnnualSummary != null)
             {
-                <div class="col-6 col-lg-3 shadow mt-2">
-                    <ul class="list-group text-center mt-2">
-                        <li class="list-group-item d-flex justify-content-between p-3">
+            <div class="col-6 col-lg-3 mt-1 d-flex flex-column align-content-center">
+                <ul class="list-group text-center mt-2 shadow flex-fill d-flex justify-content-between">
+                        <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                             <span class="d-none d-md-block">
                                 Earned: &nbsp;
                             </span>
@@ -57,7 +135,7 @@
                                 @String.Format("{0:n}", Model.SummaryResponse.AnnualSummary.Earned)
                             </span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between p-3">
+                    <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                             <span class="d-none d-md-block">
                                 Spent:
                             </span>
@@ -65,7 +143,7 @@
                                 @String.Format("{0:n}", Model.SummaryResponse.AnnualSummary.Spent)
                             </span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between p-3">
+                    <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                             <span class="d-none d-md-block">
                                 Saved:
                             </span>
@@ -73,7 +151,7 @@
                                 @String.Format("{0:n}", Model.SummaryResponse.AnnualSummary.Saved)
                             </span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between p-3">
+                        <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                             <span class="d-none d-md-block">
                                 Savings Goal:
                             </span>
@@ -91,7 +169,7 @@
                             }
 
                         </li>
-                        <li class="list-group-item d-flex justify-content-between p-3">
+                        <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                         @if (Model.Year == DateTime.Now.Year)
                         {
                             <span class="d-none d-md-block">
@@ -111,7 +189,7 @@
                             </span>
                         }
                         </li>
-                        <li class="list-group-item d-flex justify-content-between p-3">
+                        <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                             <span class="d-none d-md-block">
                                 Budget Variance:
                             </span>
@@ -124,28 +202,28 @@
             }
         @if (Model.SummaryResponse.OverallSummaryChart != null)
         {
-            <div class="col-6 col-lg-3 chart-height shadow pt-2">
-                <canvas id="overallSummaryChart"></canvas>
+            <div class="col-6 col-lg-3 d-flex">
+                <canvas id="overallSummaryChart" class="shadow align-self-center chart-height pt-2"></canvas>
             </div>
         }
         @if(Model.SummaryResponse.MonthlyExpenseStatistics.Any())
         {
-            <div class="col-12 col-xl-6 shadow">
-                <canvas id="monthlyStatisticsChart" height="400" class="chart-height"></canvas>
+            <div class="col-12 col-lg-6 d-flex">
+                <canvas id="monthlyStatisticsChart" class="chart-height shadow align-self-center"></canvas>
             </div>
         }
     </div>
-    <div class="row gx-5">
+    <div class="row mb-2">
         @if (Model.SummaryResponse.SavingsChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
         {
-            <div class="col-12 col-lg-6 mt-3 shadow">
-                <canvas id="savingsChart" class="chart-height"></canvas>
+            <div class="col-12 col-lg-6 d-flex">
+                <canvas id="savingsChart" class="chart-height shadow align-self-center"></canvas>
             </div>
         }
         @if (Model.SummaryResponse.IncomeExpenseChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
         {
-            <div class="col-12 col-lg-6 mt-3 shadow">
-                <canvas id="incomeExpenseChart" class="chart-height"></canvas>
+            <div class="col-12 col-lg-6 d-flex">
+                <canvas id="incomeExpenseChart" class="chart-height shadow align-self-center"></canvas>
             </div>
         }
     </div>
@@ -154,7 +232,7 @@
         {
             <div class="col-12 col-lg-6 my-3">
                 <div class="row shadow">
-                    <div class="col-6 mb-1 pie-stats">
+                    <div class="col-6 pie-stats">
                         <div class="d-flex justify-content-center">
                             <span class="mb-0 fw-bold d-none d-lg-block">Top Expenses</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Expenses/Index" asp-route-Query="4" asp-route-Q="@Model.Year" asp-route-PageNumber="1">
                                 View All
@@ -196,8 +274,8 @@
                 </div>
                 @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.SubCategoryPercentages.Values.Sum() > 0)
                 {
-                    <div class="col-6 align-self-center">
-                        <canvas id="subCategoryPie" class="chart-height"></canvas>
+                    <div class="col-6 d-flex">
+                            <canvas id="subCategoryPie" class="chart-height align-self-center"></canvas>
                     </div>
                 }
                 </div>
@@ -207,7 +285,7 @@
         {
             <div class="col-12 col-lg-6 my-3">
                 <div class="row shadow">
-                    <div class="col-6 mb-1 pie-stats">
+                    <div class="col-6 pie-stats">
                         <div class="d-flex justify-content-center">
                             <span class="mb-0 fw-bold d-none d-lg-block">Top Categories</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Expenses/Categories/Index" asp-route-Query="3" asp-route-Q2=true asp-route-PageNumber="1">
                                 View All
@@ -249,8 +327,8 @@
                     </div>
                     @if (Model.SummaryResponse.MainCategoryPercentages != null && Model.SummaryResponse.MainCategoryPercentages.Values.Sum() > 0)
                     {
-                        <div class="col-6 align-self-center">
-                            <canvas id="mainCategoryPie" class="chart-height"></canvas>
+                        <div class="col-6 d-flex">
+                            <canvas id="mainCategoryPie" class="chart-height align-self-center"></canvas>
                         </div>
                     }
                 </div>
@@ -262,7 +340,7 @@
         {
         <div class="col-12 col-lg-6 my-3">
             <div class="row shadow">
-                    <div class="col-6 mb-1 pie-stats">
+                    <div class="col-6 pie-stats">
                     <div class="d-flex justify-content-center">
                         <span class="mb-0 fw-bold d-none d-lg-block">Top Merchants</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Merchants/Index" asp-route-Query="3" asp-route-Q2=true asp-route-PageNumber="1">
                             View All
@@ -304,8 +382,8 @@
                 </div>
                 @if (Model.SummaryResponse.MerchantPercentages != null && Model.SummaryResponse.MerchantPercentages.Values.Sum() > 0)
                 {
-                    <div class="col-6 align-self-center">
-                        <canvas id="merchantPie" class="chart-height"></canvas>
+                    <div class="col-6 d-flex">
+                            <canvas id="merchantPie" class="chart-height align-self-center"></canvas>
                     </div>
                 }
             </div>
@@ -315,7 +393,7 @@
         {
             <div class="col-12 col-lg-6 my-3">
                 <div class="row shadow">
-                    <div class="col-6 mb-1 pie-stats">
+                    <div class="col-6 pie-stats">
                         <div class="d-flex justify-content-center">
                             <span class="mb-0 fw-bold d-none d-lg-block">Top Income Sources</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Sources/Index" asp-route-PageNumber="1">
                                 View All
@@ -357,8 +435,8 @@
                     </div>
                     @if (Model.SummaryResponse.IncomeSourcePercentages != null && Model.SummaryResponse.IncomeSourcePercentages.Values.Sum() > 0)
                     {
-                        <div class="col-6 align-self-center">
-                            <canvas id="incomeSourcePie" class="chart-height"></canvas>
+                        <div class="col-6 d-flex">
+                            <canvas id="incomeSourcePie" class="chart-height align-self-center"></canvas>
                         </div>
                     }
                 </div>
@@ -366,16 +444,95 @@
         }
 
     </div>
-    <div class="row">
+    <div class="row mb-3">
         @if (Model.SummaryResponse.AnnualMonthlySummaryChart != null)
         {
-            <div class="col align-self-center mb-4 shadow">
-                <canvas id="annualMonthlySummaryChart" class="chart-height"></canvas>
+            <div class="col d-flex">
+                <canvas id="annualMonthlySummaryChart" class="chart-height align-self-center shadow"></canvas>
             </div>
         }
     </div>
 </div>
+@* Add Expense Modal *@
+<div class="modal fade" id="addExpenseModal">
+    @await Html.PartialAsync("AddEditExpenseModal",
+    new AddEditExpenseModal() {
+    IsEdit = false,
+    Returnurl = "/Annual",
+    SubCategoryList = new SelectList(Model.SubCategoryList, "Id", "Category"),
+    Date= DateTime.Today,
+    MainCategoryList = new SelectList(Model.MainCategoryList, "Id", "Category"),
+    PageNumber = 1,
+    Query = 0,
+    Q = "",
+    Q2 = "",
+    ShowAddCategoryButton = false
+    });
+</div>
+@*End Add Expense Modal*@
+@* Add Income Modal *@
+<div class="modal fade" id="addIncomeModal">
+    @await Html.PartialAsync("AddEditIncomeModal", new AddEditIncomeModal(){
+    Returnurl = "/Annual",
+    IsEdit = false,
+    CategoryList = new SelectList(Model.IncomeCategoryList, "Id", "Category"),
+    Date= DateTime.Today,
+    ShowAddCategoryButton = false
+    });
+</div>
+@*End Add Income Modal*@
+@*Add Merchant Modal*@
+<div class="modal fade" id="addMerchantModal">
+    @await Html.PartialAsync("AddEditMerchantModal", new AddEditMerchantModal() {
+    Returnurl = "/Annual",
+    SuggestOnLookup = true,
+    IsEdit = false
+    })
+</div>
+@*EndAdd Merchant Modal*@
+@*Add Income Source Modal*@
+<div class="modal fade" id="addSourceModal">
+    @await Html.PartialAsync("AddEditIncomeSourceModal", new AddEditIncomeSourceModal()
+    {
+    ReturnUrl = "/Annual",
+    IsEdit = false,
+    SuggestOnLookup = true
+    })
+</div>
+@*End Add Income Source Modal*@
+@*Add Sub Category Modal*@
+<div class="modal fade" id="addSubCategoryModal">
+    @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal()
+    { Returnurl="/Annual",
+    InUse=true,
+    IsEdit=false,
+    MainCategoryList=new SelectList(Model.MainCategoryList, "Id", "Category"),
 
+    })
+</div>
+@*End Sub Category Modal*@
+@*Add Main Category Modal*@
+<div class="modal fade" id="addMainCategoryModal">
+    @await Html.PartialAsync("AddEditMainCategoryModal", new AddEditMainCategoryModal() {
+    ReturnUrl = "/Annual",
+    IsEdit = false});
+</div>
+@*EndAdd Main Category Modal*@
+@*Add Income Category Modal*@
+<div class="modal fade" id="addIncomeCategoryModal">
+    @await Html.PartialAsync("AddEditIncomeCategoryModal",
+    new AddEditIncomeCategoryModal() {
+    Returnurl = "/Annual",
+    InUse = true,
+    IsEdit = false,
+    })
+</div>
+@*End Add Income Category Modal*@
+@*Import Transactions Modal*@
+<div class="modal fade" id="importCsvModal">
+    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Annual" })
+</div>
+@*End Import Transactions Modal*@
 @section Scripts {
     <script src="~/js/annual.js"></script>
     <script asp-append-version="true" src="https://cdn.jsdelivr.net/npm/chart.js"></script>

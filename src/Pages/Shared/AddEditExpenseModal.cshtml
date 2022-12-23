@@ -18,7 +18,7 @@
                     var buttonId = Model.IsEdit ? $"editExpenseButton-{Model.Id}" : "addExpenseButton";
                 }
                 <form method="post"
-                      asp-page="../Expenses/Index"
+                      asp-page="/Expenses/Index"
                       asp-page-handler="AddEditExpenseModal"
                       asp-route-pageNumber=@Model.PageNumber
                       asp-route-query=@Model.Query.Value
@@ -37,7 +37,7 @@
                             <label class="visually-hidden" asp-for="@Model.Date">Date</label>
                             <div class="input-group">
                                 <div class="input-group-text text-center">Date</div>
-                                <input data-val="true" asp-for=@Model.Date type="date" class="form-control" asp-format="{0:yyyy-MM-dd}">
+                                <input required data-val="true" asp-for=@Model.Date type="date" class="form-control" asp-format="{0:yyyy-MM-dd}">
                                 <span asp-validation-for="@Model.Date"></span>
                             </div>
                         </div>
@@ -51,6 +51,7 @@
                                        min="0.00"
                                        step="any"
                                        class="form-control format-amount-js text-center"
+                                       required
                                        placeholder="0.00">
                                 <span asp-validation-for="@Model.Amount"></span>
                             </div>
@@ -72,7 +73,7 @@
                                 <div class="input-group">
                                     <div class="input-group-text">Category</div>
                                     <label class="visually-hidden" asp-for="@Model.SubCategoryId">Category</label>
-                                    <select data-val="true" asp-for=@Model.SubCategoryId asp-items=@Model.SubCategoryList
+                                    <select required data-val="true" asp-for=@Model.SubCategoryId asp-items=@Model.SubCategoryList
                                         class="form-control text-center load-main-category-js"
                                         data-id=@Model.Id>
                                         @if (!Model.IsEdit)
@@ -103,7 +104,7 @@
                                 <div class="input-group">
                                     <div class="input-group-text">Category</div>
                                     <label class="visually-hidden" asp-for="@Model.SubCategoryId">Category</label>
-                                    <select data-val="true" asp-for=@Model.SubCategoryId asp-items=@Model.SubCategoryList
+                                    <select required data-val="true" asp-for=@Model.SubCategoryId asp-items=@Model.SubCategoryList
                                         class="form-control text-center load-main-category-js"
                                         data-id=@Model.Id>
                                         @if (!Model.IsEdit)

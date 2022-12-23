@@ -184,7 +184,7 @@ namespace CashTrack.Services.SummaryService
             {
                 var lastMonthOfIncome = incomes.OrderBy(x => x.Date.Month).Select(x => x.Date.Month).LastOrDefault() + 1;
                 var iterations = 13 - lastMonthOfIncome;
-                suggestedMonthlyAmount = (savingsGoal - totalSavedAsInt) / iterations;
+                suggestedMonthlyAmount = iterations > 0 ? (savingsGoal - totalSavedAsInt) / iterations : (savingsGoal - totalSavedAsInt);
             }
             else
             {

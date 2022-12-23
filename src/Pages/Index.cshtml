@@ -145,9 +145,9 @@
     <div class="row mb-3">
         @if (Model.SummaryResponse.MonthlySummary != null)
         {
-            <div class="col-6 col-lg-3 mt-1">
-                <ul class="list-group text-center mt-2 shadow">
-                    <li class="list-group-item d-flex justify-content-between p-3">
+            <div class="col-6 col-lg-3 mt-1 d-flex flex-column align-content-center">
+                <ul class="list-group text-center mt-2 shadow flex-fill d-flex justify-content-between">
+                    <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Income: &nbsp;
                         </span>
@@ -161,7 +161,7 @@
                             }
                         </span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between p-3">
+                    <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Expenses:
                         </span>
@@ -175,7 +175,7 @@
                             }
                         </span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between p-3">
+                    <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Budgeted Savings:
                         </span>
@@ -189,7 +189,7 @@
                             }
                         </span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between p-3">
+                    <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                         @if (currentMonth)
                         {
                             <span class="d-none d-md-block">
@@ -216,7 +216,7 @@
                         }
 
                     </li>
-                    <li class="list-group-item d-flex justify-content-between p-3">
+                    <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Unspent:
                         </span>
@@ -224,7 +224,7 @@
                             @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.Unspent)
                         </span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between p-3">
+                    <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Budget Variance:
                         </span>
@@ -296,14 +296,14 @@
             </div>
         }
 
-        @if (Model.SummaryResponse.DailyExpenseLineChart != null && Model.SummaryResponse.DailyExpenseLineChart.Dataset.Any())
+        @if (Model.SummaryResponse.DailyExpenseLineChart != null && Model.SummaryResponse.DailyExpenseLineChart.ExpenseMax != 0)
         {
             <div class="col-12 col-lg-6 d-flex">
                 <canvas id="dailyExpenseChart" class="chart-height shadow align-self-center"></canvas>
             </div>
         }
     </div>
-    <div class="row mb-1">
+    <div class="row mb-1 gx-5">
         @if (Model.SummaryResponse.TopExpenses.Count > 1)
         {
             <div class="col-12 col-lg-6 my-3">
@@ -475,19 +475,18 @@
     <div class="row mb-3">
         @if (Model.SummaryResponse.MonthlySummary != null)
         {
-            <div class="col align-self-center">
-                <canvas id="monthlySummaryChart" class="chart-height shadow"></canvas>
+            <div class="col d-flex">
+                <canvas id="monthlySummaryChart" class="chart-height shadow align-self-center"></canvas>
             </div>
         }
     </div>
-
 </div>
 @* Add Expense Modal *@
 <div class="modal fade" id="addExpenseModal">
-    @await Html.PartialAsync("AddExpenseModal",
+    @await Html.PartialAsync("AddEditExpenseModal",
     new AddEditExpenseModal() {
     IsEdit = false,
-    Returnurl = "~/Index",
+    Returnurl = "/Index",
     SubCategoryList = new SelectList(Model.SubCategoryList, "Id", "Category"),
     Date= DateTime.Today,
     MainCategoryList = new SelectList(Model.MainCategoryList, "Id", "Category"),
@@ -502,7 +501,7 @@
 @* Add Income Modal *@
 <div class="modal fade" id="addIncomeModal">
     @await Html.PartialAsync("AddEditIncomeModal", new AddEditIncomeModal(){
-    Returnurl = "~/Index",
+    Returnurl = "/Index",
     IsEdit = false,
     CategoryList = new SelectList(Model.IncomeCategoryList, "Id", "Category"),
     Date= DateTime.Today,
@@ -513,7 +512,7 @@
 @*Add Merchant Modal*@
 <div class="modal fade" id="addMerchantModal">
     @await Html.PartialAsync("AddEditMerchantModal", new AddEditMerchantModal() {
-    Returnurl = "~/Index",
+    Returnurl = "/Index",
     SuggestOnLookup = true,
     IsEdit = false
     })
@@ -523,7 +522,7 @@
 <div class="modal fade" id="addSourceModal">
     @await Html.PartialAsync("AddEditIncomeSourceModal", new AddEditIncomeSourceModal()
     {
-    ReturnUrl = "~/Index",
+    ReturnUrl = "/Index",
     IsEdit = false,
     SuggestOnLookup = true
     })
@@ -532,7 +531,7 @@
 @*Add Sub Category Modal*@
 <div class="modal fade" id="addSubCategoryModal">
     @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal()
-    { Returnurl="~/Index",
+    { Returnurl="/Index",
     InUse=true,
     IsEdit=false,
     MainCategoryList=new SelectList(Model.MainCategoryList, "Id", "Category"),
@@ -543,7 +542,7 @@
 @*Add Main Category Modal*@
 <div class="modal fade" id="addMainCategoryModal">
     @await Html.PartialAsync("AddEditMainCategoryModal", new AddEditMainCategoryModal() {
-    ReturnUrl = "~/Index",
+    ReturnUrl = "/Index",
     IsEdit = false});
 </div>
 @*EndAdd Main Category Modal*@
@@ -551,7 +550,7 @@
 <div class="modal fade" id="addIncomeCategoryModal">
     @await Html.PartialAsync("AddEditIncomeCategoryModal",
     new AddEditIncomeCategoryModal() {
-    Returnurl = "~/Index",
+    Returnurl = "/Index",
     InUse = true,
     IsEdit = false,
     })
@@ -559,7 +558,7 @@
 @*End Add Income Category Modal*@
 @*Import Transactions Modal*@
 <div class="modal fade" id="importCsvModal">
-    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Index" })
+    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Index" })
 </div>
 @*End Import Transactions Modal*@
 @*Expense Breakdown*@

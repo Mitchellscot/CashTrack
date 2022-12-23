@@ -83,7 +83,7 @@ namespace CashTrack.Pages.Import
             else
                 InfoMessage += result;
 
-            return LocalRedirect(Import.ReturnUrl);
+            return RedirectToPage(Import.ReturnUrl);
         }
         public async Task<IActionResult> OnPostExpenseAdd()
         {

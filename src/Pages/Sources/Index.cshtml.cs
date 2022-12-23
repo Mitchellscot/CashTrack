@@ -74,7 +74,7 @@ namespace CashTrack.Pages.Sources
             }
 
             TempData["SuccessMessage"] = SourceModal.IsEdit ? "Successfully edited an Income Source!" : "Successfully added a new Income Source!";
-            return LocalRedirect(SourceModal.ReturnUrl);
+            return RedirectToPage(SourceModal.ReturnUrl);
         }
 
     }
