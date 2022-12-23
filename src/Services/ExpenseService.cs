@@ -34,6 +34,7 @@ public interface IExpenseService
     Task<int> UpdateExpenseAsync(Expense request);
     Task<bool> DeleteExpenseAsync(int id);
     Task<bool> RefundExpensesAsync(List<ExpenseRefund> refunds, int incomeId);
+    Task<int[]> GetAnnualSummaryYearsAsync();
 }
 public class ExpenseService : IExpenseService
 {
@@ -114,9 +115,17 @@ public class ExpenseService : IExpenseService
     }
     public async Task<int> CreateExpenseAsync(Expense request)
     {
-        var merchantId = 0;
+        if (request.Amount <= 0)
+            throw new ArgumentException("Expense amount cannot be zero.");
+
+        int? merchantId = 0;
         if (request.Merchant != null)
-            merchantId = (await _merchantRepo.Find(x => x.Name == request.Merchant)).FirstOrDefault().Id;
+        {
+            var merchant = (await _merchantRepo.Find(x => x.Name == request.Merchant)).FirstOrDefault();
+            if (merchant == null)
+                throw new MerchantNotFoundException(nameof(request.Merchant));
+        }
+        merchantId = request.MerchantId;
 
         var expenseEntity = new ExpenseEntity()
         {
@@ -231,6 +240,11 @@ public class ExpenseService : IExpenseService
             return await _expenseRepo.UpdateMany(expenseUpdates);
         }
         else return false;
+    }
+
+    public async Task<int[]> GetAnnualSummaryYearsAsync()
+    {
+        return (await _expenseRepo.Find(x => true)).GroupBy(x => x.Date.Year).Select(x => x.Key).ToArray();
     }
 }
 public class ExpenseMapperProfile : Profile

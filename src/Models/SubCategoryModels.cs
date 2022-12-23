@@ -31,7 +31,11 @@ public class AddEditSubCategoryModal : SubCategory
     public string Returnurl { get; set; }
     public SelectList MainCategoryList { get; set; }
 }
-
+public class SubCategoryQuickView : Category
+{ 
+    public decimal Amount { get; set; }
+    public int Count { get; set; }
+}
 public class SubCategoryListItem : Category
 {
     public string MainCategoryName { get; set; }

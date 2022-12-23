@@ -8,6 +8,7 @@ const config = {
         login: './Scripts/Account/login.ts',
         site: './Scripts/Site/site.ts',
         home: './Scripts/Home/home.ts',
+        annual: './Scripts/Home/annual.ts',
         expenses: './Scripts/Expenses/expenses.ts',
         split: './Scripts/Expenses/split.ts',
         importExpenses: './Scripts/Import/importExpenses.ts',

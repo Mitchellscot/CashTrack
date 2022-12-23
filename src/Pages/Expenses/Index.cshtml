@@ -21,7 +21,7 @@
 
     <div class="row mb-1">
         <div class="col-xl-6 col-12 mb-1 mr-auto">
-            <form method="get">
+            <form method="get" class="shadow-sm">
                 <div class="input-group">
                     <div class="input-group-prepend d-none d-sm-block">
                         <div class="input-group-text">Search</div>
@@ -59,10 +59,10 @@
     </div>
     @* Add Expense Modal *@
     <div class="modal fade" id="addExpenseModal">
-        @await Html.PartialAsync("AddExpenseModal",
+        @await Html.PartialAsync("AddEditExpenseModal",
         new AddEditExpenseModal() {
             IsEdit = false, 
-            Returnurl = "./Index", 
+            Returnurl = "/Expenses/Index", 
             SubCategoryList = new SelectList(Model.CategoryList, "Id", "Category"), 
             Date= DateTime.Today, 
             MainCategoryList = new SelectList(Model.MainCategoryList, "Id", "Category"),
@@ -79,7 +79,7 @@
     {
         <div class="row">
             <div class="table-responsive">
-                <table class="table table-bordered table-hover table-sm mb-0">
+                <table class="table table-bordered table-hover table-sm mb-3 shadow">
                     <thead>
                         <tr class="text-center table-primary">
                             <th width="10%">
@@ -191,10 +191,10 @@
                                     @* Edit Expense Modal *@
 
                                     <div class="modal fade" id="editExpenseModal-@expense.Id">
-                                        @await Html.PartialAsync("AddExpenseModal",
+                                        @await Html.PartialAsync("AddEditExpenseModal",
                                 new AddEditExpenseModal() {
                                 IsEdit = true,
-                                Returnurl = "./Index",
+                                Returnurl = "/Expenses/Index",
                                 SubCategoryId = expense.SubCategoryId,
                                 SubCategoryList = new SelectList(Model.CategoryList, "Id", "Category",
                                 expense.SubCategoryId),

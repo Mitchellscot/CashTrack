@@ -10,6 +10,6 @@ namespace CashTrack.Tests
             => (_settings) = (settings);
 
         public T Value => _settings;
-        public T Get(string name) => throw new System.NotImplementedException();
+        public T Get(string? name) => throw new System.NotImplementedException();
     }
 }

@@ -12,10 +12,10 @@ namespace CashTrack.Pages.Shared
         public int Max { get; set; }
         public int ExpenseBudgetMax { get; set; }
         public int DiscretionarySpendingMax { get; set; }
-        public int IncomeMax { get; set; }  
-        public string BudgetedSpendingColor = DarkChartColors.YellowLight;
-        public string DiscretionarySpendingColor = DarkChartColors.OrangeLight;
-        public string BudgetedIncomeColor = DarkChartColors.RedLight;
-        public string OverIncomeMaxColor = DarkChartColors.PurpleLight;
+        public int IncomeMax { get; set; }
+        public string BudgetedSpendingColor = DarkChartColors.YellowSoft;
+        public string DiscretionarySpendingColor = DarkChartColors.OrangeSoft;
+        public string BudgetedIncomeColor = DarkChartColors.RedSoft;
+        public string OverIncomeMaxColor = DarkChartColors.PurpleSoft;
     }
 }

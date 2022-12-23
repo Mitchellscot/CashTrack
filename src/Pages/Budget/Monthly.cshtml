@@ -256,7 +256,7 @@
 </div>
 @section Scripts {
     <script src="~/js/budget.js" asp-append-version="true"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
+    <script asp-append-version="true" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @await Html.PartialAsync("MonthlyBudgetChart", new MonthlyBudgetChart()
     {
         ElementId = "monthlyBudgetChart",

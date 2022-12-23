@@ -153,7 +153,7 @@ namespace CashTrack.Tests.Services
         public async Task Get_Source_List_Items()
         {
             var result = await _service.GetIncomeSourcesAsync(new IncomeSourceRequest());
-            result.TotalCount.ShouldBe(14);
+            result.TotalCount.ShouldBe(9);
             result.PageNumber.ShouldBe(1);
             result.PageSize.ShouldBe(20);
             var items = result.ListItems.ToArray();

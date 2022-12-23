@@ -63,16 +63,16 @@
                       </ul>
                       <div class="modal fade" id="importCsvModal">
                           @await Html.PartialAsync("ImportTransactionsModal", 
-                          new ImportModel() { ReturnUrl = "~/Import/Income" })
+                          new ImportModel() { ReturnUrl = "/Import/Income" })
                   </div>
                   <div class="modal fade" id="addSourceModal">
                       @await Html.PartialAsync("AddEditIncomeSourceModal", 
-                      new AddEditIncomeSourceModal() { ReturnUrl = "~/Import/Income", SuggestOnLookup = true })
+                      new AddEditIncomeSourceModal() { ReturnUrl = "/Import/Income", SuggestOnLookup = true })
                       </div>
                       <div class="modal fade" id="addCategoryModal">
                       @await Html.PartialAsync("AddEditIncomeCategoryModal", 
                       new AddEditIncomeCategoryModal() { 
-                          Returnurl = "~/Import/Income", 
+                          Returnurl = "/Import/Income", 
                           IsEdit = false 
                       })
                       </div>

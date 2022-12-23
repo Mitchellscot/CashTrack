@@ -56,14 +56,14 @@
     </div>
     @* Add Income Modal *@
     <div class="modal fade" id="addIncomeModal">
-        @await Html.PartialAsync("AddEditIncomeModal", new AddEditIncomeModal(){ Returnurl = "~/Income/Index", IsEdit = false, CategoryList = new SelectList(Model.CategoryList, "Id", "Category"), Date= DateTime.Today, ShowAddCategoryButton = true });
+        @await Html.PartialAsync("AddEditIncomeModal", new AddEditIncomeModal(){ Returnurl = "/Income/Index", IsEdit = false, CategoryList = new SelectList(Model.CategoryList, "Id", "Category"), Date= DateTime.Today, ShowAddCategoryButton = true });
     </div>
     @*End Add Income Modal*@
     @if (Model.IncomeResponse != null && Model.IncomeResponse.TotalCount > 0)
     {
         <div class="row">
             <div class="table-responsive">
-                <table class="table table-bordered table-hover table-sm mb-0">
+                <table class="table table-bordered table-hover table-sm mb-3 shadow">
                     <thead>
                         <tr class="text-center table-primary">
                             <th width="10%">

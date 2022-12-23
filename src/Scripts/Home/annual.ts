@@ -13,5 +13,3 @@ autoSuggestIncomeSourceNames();
 disableLocationIfMerchantIsOnline();
 forceRefundCategoryWhenRefundIsCheckedAddModal();
 disableLocationIfSourceIsOnline();
-
-

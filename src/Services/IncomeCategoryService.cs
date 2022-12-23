@@ -36,6 +36,9 @@ public class IncomeCategoryService : IIncomeCategoryService
 
     public async Task<int> CreateIncomeCategoryAsync(AddEditIncomeCategoryModal request)
     {
+        if (string.IsNullOrEmpty(request.Name))
+            throw new ArgumentException("Income Category must have a name");
+
         var categories = await _repo.Find(x => true);
         if (categories.Any(x => x.Name == request.Name))
             throw new DuplicateNameException(nameof(IncomeCategoryEntity), request.Name);

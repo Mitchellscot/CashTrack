@@ -45,7 +45,7 @@ namespace CashTrack.Pages.Expenses.Categories.Main
             }
 
             TempData["SuccessMessage"] = MainCategoryModal.IsEdit ? "Successfully edited a Category!" : "Successfully added a new Category!";
-            return LocalRedirect(MainCategoryModal.ReturnUrl);
+            return RedirectToPage(MainCategoryModal.ReturnUrl);
         }
         public async Task<IActionResult> OnPostDelete(int id)
         {

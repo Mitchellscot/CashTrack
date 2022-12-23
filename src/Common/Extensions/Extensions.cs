@@ -27,7 +27,23 @@ namespace CashTrack.Common.Extensions
                     values[i] = array[i];
                     continue;
                 }
-                    
+
+
+                values[i] = values[i - 1] + array[i];
+            }
+            return values;
+        }
+        public static decimal[] Accumulate(this decimal[] array)
+        {
+            var values = new decimal[array.Length];
+            for (int i = 0; i <= array.Length - 1; i++)
+            {
+                if (i == 0)
+                {
+                    values[i] = array[i];
+                    continue;
+                }
+
 
                 values[i] = values[i - 1] + array[i];
             }

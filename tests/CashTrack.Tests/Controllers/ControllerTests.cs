@@ -39,7 +39,7 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
 
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<IncomeCategoryDropdownSelection[]>(result);
-        responseObject.Length.ShouldBe(10);
+        responseObject!.Length.ShouldBe(10);
         responseObject.Last().Category.ShouldBe("Bonus");
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         PrintRequestAndResponse("/api/IncomeCategory", result);
@@ -51,7 +51,7 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
 
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<SubCategoryDropdownSelection[]>(result);
-        responseObject.Length.ShouldBe(31);
+        responseObject!.Length.ShouldBe(31);
         responseObject.Last().Category.ShouldBe("Travel Misc");
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         PrintRequestAndResponse("/api/SubCategory", result);
@@ -63,7 +63,7 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
 
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<MerchantDropdownSelection[]>(result);
-        responseObject.Length.ShouldBe(16);
+        responseObject!.Length.ShouldBe(16);
         responseObject.Last().Name.ShouldBe("Torch of India");
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         PrintRequestAndResponse("/api/Merchants/dropdown", result);
@@ -75,7 +75,7 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
 
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<SourceDropdownSelection[]>(result);
-        responseObject.Length.ShouldBe(14);
+        responseObject!.Length.ShouldBe(14);
         responseObject.Last().Name.ShouldBe("SCT Tips");
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         PrintRequestAndResponse("/api/incomesource/dropdown", result);
@@ -87,7 +87,7 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
 
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<MainCategoryDropdownSelection[]>(result);
-        responseObject.Length.ShouldBe(16);
+        responseObject!.Length.ShouldBe(16);
         responseObject.Last().Category.ShouldBe("Vacation");
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         PrintRequestAndResponse("/api/MainCategory", result);
@@ -129,7 +129,7 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
 
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<string[]>(result);
-        responseObject[0].ShouldBe(name);
+        responseObject![0]!.ShouldBe(name);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         PrintRequestAndResponse("/api/IncomeSource?sourceName=", result);
     }
@@ -144,7 +144,7 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
 
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<string[]>(result);
-        responseObject[0].ShouldBe(name);
+        responseObject![0]!.ShouldBe(name);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         PrintRequestAndResponse("/api/subcategory/autocomplete?categoryName=", result);
     }
@@ -158,7 +158,7 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
 
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<string[]>(result);
-        responseObject[0].ShouldBe(name);
+        responseObject![0]!.ShouldBe(name);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         PrintRequestAndResponse("/api/incomecategory/autocomplete?categoryName=", result);
     }
@@ -173,7 +173,7 @@ public class ControllerTests : IClassFixture<CustomWebApplicationFactory<CashTra
 
         var result = await response.Content.ReadAsStringAsync();
         var responseObject = JsonConvert.DeserializeObject<string[]>(result);
-        responseObject.Length.ShouldBe(1);
+        responseObject!.Length.ShouldBe(1);
         responseObject[0].ShouldContain(name);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         PrintRequestAndResponse("/api/merchants?merchantName=", result);

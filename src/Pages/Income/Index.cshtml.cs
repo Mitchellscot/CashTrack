@@ -133,30 +133,25 @@ namespace CashTrack.Pages.Incomes
                 await PrepareForm(Query);
                 return Page();
             }
+            var incomeId = 0;
+            //even if you don't click the refund switch, if the category is refund then we redirect to refund page.
+            var isRefund = await _categoryService.CheckIfIncomeCategoryIsRefund(Income.CategoryId);
+            if (Income.IsRefund == false && isRefund == true)
+            {
+                Income.IsRefund = isRefund;
+            }
+
             try
             {
-                var incomeId = 0;
-                //even if you don't click the refund switch, if the category is refund then we redirect to refund page.
-                var isRefund = await _categoryService.CheckIfIncomeCategoryIsRefund(Income.CategoryId);
-                if (Income.IsRefund == false && isRefund == true)
-                {
-                    Income.IsRefund = isRefund;
-                }
-
                 if (Income.CreateNewSource && !string.IsNullOrEmpty(Income.Source))
                 {
                     var incomeSourceCreationSuccess = await _sourceService.CreateIncomeSourceAsync(new IncomeSource() { Name = Income.Source, SuggestOnLookup = true });
                 }
-                if (Income.Amount > 0)
-                {
-                    incomeId = Income.IsEdit ? await _incomeService.UpdateIncomeAsync(Income) : await _incomeService.CreateIncomeAsync(Income);
-                }
+                incomeId = Income.IsEdit ? await _incomeService.UpdateIncomeAsync(Income) : await _incomeService.CreateIncomeAsync(Income);
                 if (Income.IsRefund || isRefund)
                 {
                     return RedirectToPage("./Refund", new { id = incomeId });
                 }
-                TempData["SuccessMessage"] = Income.IsEdit ? "Sucessfully updated the Income!" : "Sucessfully added new Income!";
-                return RedirectToPage("./Index", new { Query = Query, Q = Q, PageNumber = PageNumber == 0 ? 1 : PageNumber });
             }
             catch (CategoryNotFoundException)
             {
@@ -170,6 +165,10 @@ namespace CashTrack.Pages.Incomes
                 await PrepareForm(Query);
                 return Page();
             }
+
+            TempData["SuccessMessage"] = Income.IsEdit ? "Sucessfully updated the Income!" : "Sucessfully added new Income!";
+            return RedirectToPage(Income.Returnurl, new { Query = Query, Q = Q, PageNumber = PageNumber == 0 ? 1 : PageNumber });
+
         }
         public async Task<IActionResult> OnPostDelete(int incomeId, int query, string q, int pageNumber)
         {

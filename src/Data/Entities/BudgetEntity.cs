@@ -15,7 +15,7 @@ namespace CashTrack.Data.Entities
         [Range(0, int.MaxValue)]
         public int Amount { get; set; }
         public int? SubCategoryId { get; set; }
-        public SubCategoryEntity? SubCategory { get; set; }
+        public SubCategoryEntity SubCategory { get; set; }
         public BudgetType BudgetType { get; set; }
     }
 }

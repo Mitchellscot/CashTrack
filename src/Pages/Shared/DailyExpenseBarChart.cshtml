@@ -1,0 +1,60 @@
+﻿@using System.Text.Json;
+@model CashTrack.Pages.Shared.DailyExpenseBarChart
+@{
+}
+<script>
+    const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+    const @Model.ElementId = new Chart(@Model.VariableName, {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(@Model.Labels),
+            datasets:[
+                @foreach(var data in Model.ExpenseDatasets)
+                {
+                    <text>
+                    {
+                        lable: '@data.SubCategoryName',
+                        data: @JsonSerializer.Serialize(@data.DataSet),
+                        color: 'rgba(0, 0, 0, 0)',
+                        backgroundColor: '@Html.Raw(data.Color)',
+                        borderColor: '@Html.Raw(data.Color)',
+                        borderWidth: 1,
+                        stack: 'Stack 0'
+                    },
+                    </text>        
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        footer: footer,
+                    }
+                },
+                title: {
+                    display: false
+                },
+                legend: {
+                    display: false
+                },
+            },
+            scales: {
+                x: {
+                    display: true,
+                },
+                y: {
+                    display: true,
+                    type: 'logarithmic',
+                }
+            }
+        },
+    });
+        function footer(tooltipItems){
+        const object = tooltipItems[0];
+        console.log(object)
+        return `${object.dataset.lable}`
+    };
+
+</script>

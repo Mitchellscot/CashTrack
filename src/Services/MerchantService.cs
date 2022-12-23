@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using CashTrack.Models.Common;
+using System;
 
 namespace CashTrack.Services.MerchantService;
 
@@ -42,7 +43,7 @@ public class MerchantService : IMerchantService
     {
         var merchantListItems = await ParseMerchantQuery(request);
 
-        var count = await _merchantRepo.GetCount(x => true);
+        var count = await _merchantRepo.GetCount(x => x.Expenses.Count > 0);
 
         return new MerchantResponse(request.PageNumber, request.PageSize, count, merchantListItems);
     }
@@ -207,6 +208,9 @@ public class MerchantService : IMerchantService
 
     public async Task<int> CreateMerchantAsync(Merchant request)
     {
+        if (string.IsNullOrEmpty(request.Name))
+            throw new ArgumentException("Merchant must have a name.");
+
         var merchants = await _merchantRepo.Find(x => x.Name == request.Name);
         if (merchants.Any())
             throw new DuplicateNameException(nameof(MerchantEntity), request.Name);
@@ -214,11 +218,11 @@ public class MerchantService : IMerchantService
         var merchantEntity = new MerchantEntity()
         {
             Name = request.Name,
-            SuggestOnLookup= request.SuggestOnLookup,
-            City= request.City,
-            State= request.State,
-            IsOnline= request.IsOnline,
-            Notes= request.Notes
+            SuggestOnLookup = request.SuggestOnLookup,
+            City = request.City,
+            State = request.State,
+            IsOnline = request.IsOnline,
+            Notes = request.Notes
         };
 
         return await _merchantRepo.Create(merchantEntity);

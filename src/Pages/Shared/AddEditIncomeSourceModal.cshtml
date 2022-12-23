@@ -1,6 +1,5 @@
 ﻿@model CashTrack.Models.IncomeSourceModels.AddEditIncomeSourceModal
 @{
-    var locationOfHandler = Model.ReturnUrl == "~/Index" ? "./Sources/Index" : "../Sources/Index";
 }
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -15,7 +14,7 @@
         <div class="modal-body">
             <div class="container-fluid">
                 <form method="post"
-                      asp-page=@locationOfHandler
+                      asp-page="/Sources/Index"
                       asp-page-handler="AddEditIncomeSourceModal"
                       id="addIncomeSourceForm">
                     <input asp-for="@Model.IsEdit" type="hidden" />
@@ -29,7 +28,7 @@
                             <label class="visually-hidden" asp-for="@Model.Name">Name</label>
                             <div class="input-group">
                                 <div class="input-group-text text-center">Name</div>
-                                <input data-val="true" asp-for=@Model.Name type="text" class="form-control" id="addIncomeSourceName">
+                                <input required data-val="true" asp-for=@Model.Name type="text" class="form-control" id="addIncomeSourceName">
                                 <span asp-validation-for="@Model.Name"></span>
                             </div>
                         </div>

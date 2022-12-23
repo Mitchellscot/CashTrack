@@ -1,0 +1,108 @@
+﻿@model CashTrack.Pages.Shared.AnnualSavingsChart
+@{
+}
+<script>
+    const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+    const @Model.ElementId = new Chart(@Model.VariableName, {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(@Model.Labels),
+            datasets: [
+                {
+                    label: 'Savings',
+                    data: @Model.Dataset,
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: colorize(),
+                    borderColor: colorize(),
+                    borderWidth: 5,
+                    fill: true,
+                    cubicInterpolationMode: 'monotone',
+                    tension: 1,
+                    segment: {
+                        borderColor: colorizeSegment(),
+                        backgroundColor: colorizeSegment()
+                    }
+                },
+    @if (!string.IsNullOrEmpty(Model.SuggestedSavingsDataset))
+    {
+        <text>
+                    {
+                        label: 'Suggested To Meet Goal',
+                        data: @Model.SuggestedSavingsDataset,
+                        color: 'rgba(0, 0, 0, 0)',
+                        backgroundColor: @Html.Raw(Model.SuggestedSavingsColor),
+                        borderColor: @Html.Raw(Model.SuggestedSavingsColor),
+                        borderWidth: 5,
+                        borderDash: [5, 5],
+                        fill: false,
+                        cubicInterpolationMode: 'default',
+                        tension: 1
+                    },
+        </text>
+
+    }
+                ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        footer: footer,
+                    }
+                },
+                title: {
+                    display: true,
+                    text: '@Model.Title'
+                },
+                legend: {
+                    display: true,
+                    position: 'top',
+                    align: 'center',
+                    labels:{
+                        filter: (item, chart) => !item.text.includes('Savings')
+                    }
+                },
+            }
+        },
+    });
+    function colorizeSegment() {
+        return (ctx) => {
+            const i = ctx.p0DataIndex;
+            const v = ctx.p0.raw;
+            if (i >= @Model.MonthBudgetDataBegins)
+                return @Html.Raw(Model.BudgetedSavingsColor)
+                    else if (v < 0 && i < @Model.MonthBudgetDataBegins)
+                return @Html.Raw(Model.NegativeSavingsColor)
+                    else if (v > 0 && i < @Model.MonthBudgetDataBegins)
+                return @Html.Raw(Model.SavingsColor)
+                }
+    };
+    function colorize() {
+        return (ctx) => {
+            const i = ctx.index;
+            const v = ctx.raw;
+            if (i > @Model.MonthBudgetDataBegins)
+                return @Html.Raw(Model.BudgetedSavingsColor)
+                    else if (v < 0 && i < @Model.MonthBudgetDataBegins)
+                return @Html.Raw(Model.NegativeSavingsColor)
+                    else if (v > 0 && i < @Model.MonthBudgetDataBegins)
+                return @Html.Raw(Model.SavingsColor)
+
+                }
+    };
+    function footer(tooltipItems) {
+        const object = tooltipItems[0];
+        const index = parseInt(object.dataIndex);
+        const currentTotal = object.dataset.data[index];
+        const previousValue = object.dataset.data[index - 1];
+        const saved = (currentTotal - previousValue).toFixed(0);
+        if (index > @Model.MonthBudgetDataBegins)
+            return `Projected Monthly Savings: ${saved}`;
+        else if (isNaN(saved) && index < @Model.MonthBudgetDataBegins)
+            return `Saved: ${currentTotal}`;
+        else if (!isNaN(saved) && index <= @Model.MonthBudgetDataBegins)
+            return `Saved: ${saved}`;
+    };
+
+</script>

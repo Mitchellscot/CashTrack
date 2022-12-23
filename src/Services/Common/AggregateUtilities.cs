@@ -129,6 +129,39 @@ namespace CashTrack.Services.Common
 
             return monthlyStatistics;
         }
+        public static List<MonthlyStatistics> GetAnnualStatisticsByMonth(T[] transactions, int year, bool setupForNaN = false)
+        {
+
+            var thisYear = DateTime.Now.Year;
+            var currentMonth = DateTime.Now.Month;
+            var monthlyStatistics = new List<MonthlyStatistics>();
+            for (var i = 1; i <= 12; i++)
+            {
+
+                var stats = GetMonthlyStatisticsFromMonthYear(year, i, transactions);
+                if (stats.Any(x => x.MonthNumber == i))
+                {
+                    monthlyStatistics.Add(stats.FirstOrDefault(m => m.MonthNumber == i));
+                }
+                else
+                {
+                    monthlyStatistics.Add(new MonthlyStatistics()
+                    {
+                        MonthNumber = i,
+                        Month = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(i),
+                        Average = setupForNaN ? int.MaxValue : 0,
+                        Min = setupForNaN ? int.MaxValue : 0,
+                        Max = setupForNaN ? int.MaxValue : 0,
+                        Total = setupForNaN ? int.MaxValue : 0,
+                        Count = setupForNaN ? int.MaxValue : 0
+                    });
+                }
+            }
+            if (monthlyStatistics.Select(x => x.Total).Sum() == 0)
+                return new List<MonthlyStatistics>();
+
+            return monthlyStatistics;
+        }
         private static List<MonthlyStatistics> GetMonthlyStatisticsFromMonthYear(int year, int month, T[] transactions)
         {
             var thisYearsTransactions = transactions.Where(x => x.Date.Year == year).ToList();

@@ -8,7 +8,7 @@ namespace CashTrack.Common.Exceptions
         {
 
         }
-        public MerchantNotFoundException(string id) : base(String.Format($"No merchant found with an Id of {id}"))
+        public MerchantNotFoundException(string name) : base(String.Format($"No merchant found named {name}"))
         {
 
         }

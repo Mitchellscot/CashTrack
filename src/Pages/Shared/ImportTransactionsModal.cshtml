@@ -2,7 +2,7 @@
 @using CashTrack.Models.ImportRuleModels
 @model CashTrack.Models.ImportCsvModels.ImportModel
 @{
-    var locationOfPageHandler = Model.ReturnUrl == "./Index" ? "./Import/Expenses" : "../Import/Expenses";
+
 }
 
 <div class="modal-dialog modal-lg">
@@ -15,7 +15,7 @@
         <div class="modal-body">
             <div class="container-fluid">
                 <form method="post" enctype="multipart/form-data"
-                      asp-page=@locationOfPageHandler
+                      asp-page="/Import/Expenses"
                       asp-page-handler="ImportCsv"
                       id="ImportCsvForm">
                     <input type="hidden" asp-for="@Model.ReturnUrl" />

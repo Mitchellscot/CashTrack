@@ -7,7 +7,7 @@
     ViewData["Title"] = "Settings | ";
     Layout = "_Layout";
 }
-<div class="container mt-3">
+<div class="container mt-3 border shadow-sm px-5 py-3">
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() { Message = Model.InfoMessage, MessageType = MessageType.Info, Show = Model.InfoMessage != null })
     @await Html.PartialAsync("_MessagePartial",
@@ -17,7 +17,7 @@
 
     <h1>Settings</h1>
 
-    <form asp-page-handler="ChangePassword" class="row my-3 border rounded border-2 px-5 pt-2 pb-5 d-flex justify-content-around align-content-center" method="post">
+    <form asp-page-handler="ChangePassword" class="row my-3 border rounded border-2 px-5 pt-2 pb-5 d-flex justify-content-around align-content-center shadow" method="post">
         <div class="form-group col-md-3 col-6">
             <label asp-for="ChangePassword.OldPassword" class="form-label mt-4">Old Password</label>
             <input asp-for="ChangePassword.OldPassword" type="password" class="form-control" id="oldPasswordInput" placeholder="* * * * * *">
@@ -37,7 +37,7 @@
 
 
     <h2>Export</h2>
-    <form class="row my-3 border rounded border-2" method="post">
+    <form class="row my-3 border rounded border-2 shadow" method="post">
         <div class="col-5 p-5 d-flex justify-content-start">
             <div class="input-group">
                 <div class="input-group-prepend d-none d-lg-block">
@@ -66,7 +66,7 @@
 
     <h2>Import</h2>
 
-    <div class="row my-3 border rounded border-2 p-5 d-flex justify-content-around">
+    <div class="row my-3 border rounded border-2 p-5 d-flex justify-content-around shadow">
         <div class="col-md-3 col-6 py-md-0 py-2">
             <a asp-page="/Import/Rules" class="btn btn-secondary btn-height">Import Rules</a>
         </div>
@@ -170,10 +170,10 @@
 </div>
 
 <div class="modal fade" id="importCsvModal">
-    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Import/Expenses" })
+    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Import/Expenses" })
 </div>
 <div class="modal fade" id="addImportRuleModal">
-    @await Html.PartialAsync("_AddEditImportRuleModal", new AddEditImportRuleModal() { Returnurl = "~/Settings", IsEdit = false })
+    @await Html.PartialAsync("AddEditImportRuleModal", new AddEditImportRuleModal() { Returnurl = "/Settings", IsEdit = false })
 </div>
 @section Scripts {
     <script src="~/js/settings.js"></script>

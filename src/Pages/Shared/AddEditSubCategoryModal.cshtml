@@ -14,7 +14,7 @@
         <div class="modal-body">
             <div class="container-fluid">
                 <form method="post"
-                      asp-page="/Expenses/Categories/index"
+                      asp-page="/Expenses/Categories/Index"
                       asp-page-handler="AddEditSubCategoryModal"
                       id="addEditSubCategoryForm">
                     @if (Model.IsEdit)
@@ -28,7 +28,7 @@
                             <label class="visually-hidden" asp-for="@Model.Name">Name</label>
                             <div class="input-group">
                                 <div class="input-group-text text-center">Name</div>
-                                <input data-val="true" asp-for=@Model.Name type="text" class="form-control">
+                                <input required data-val="true" asp-for=@Model.Name type="text" class="form-control">
                                 <span asp-validation-for="@Model.Name"></span>
                             </div>
                         </div>
@@ -46,7 +46,7 @@
                             <div class="input-group">
                                 <div class="input-group-text">Category</div>
                                 <label class="visually-hidden" asp-for="@Model.MainCategoryId">Main Category</label>
-                                <select asp-for=@Model.MainCategoryId asp-items=@Model.MainCategoryList class="form-control text-center">
+                                <select required asp-for=@Model.MainCategoryId asp-items=@Model.MainCategoryList class="form-control text-center">
                                     @if (!Model.IsEdit)
                                     {
                                         <option value="" selected disabled hidden>Select</option>

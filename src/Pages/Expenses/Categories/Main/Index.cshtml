@@ -41,8 +41,8 @@
     <div class="row mb-1">
         @if (Model.MainCategoryResponse.MainCategoryChartData != null)
         {
-            <div class="col">
-                <canvas id="mainCategoryExpenseChart" class="chart-height"></canvas>
+            <div class="col d-flex">
+                <canvas id="mainCategoryExpenseChart" class="chart-height shadow align-content-center"></canvas>
             </div>
         }
     </div>
@@ -51,7 +51,7 @@
         <div class="row m-2 px-3 rows-cols d-flex g-3 align-items-center justify-content-evenly">
             @foreach (var category in Model.MainCategoryResponse.MainCategories)
             {
-                <div class="card mx-1" style="width: 18rem;">
+                <div class="card mx-1 shadow" style="width: 18rem;">
                     <div class="card-header">
                         @category.Name <span class="text-muted">(@category.NumberOfSubCategories)</span>
                     </div>
@@ -150,7 +150,7 @@
     </div>
     @section Scripts {
         <script src="~/js/mainCategories.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" asp-append-version="true"></script>
+        <script asp-append-version="true" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
     {
     ChartType = ChartType.StackedBar,

@@ -115,7 +115,7 @@ namespace CashTrack.Services.BudgetService
                 MonthlySummary = new BudgetSummary()
                 {
                     IncomeAmount = incomeAmount,
-                    ExpensesAmount = expensesAndSavingsAmount,
+                    ExpensesAmount = expenseAmounts,
                     NeedsAmount = needsAmount,
                     WantsAmount = wantsAmount,
                     SavingsAmount = adjustedSavings,
@@ -436,7 +436,6 @@ namespace CashTrack.Services.BudgetService
 
             return monthlyBudgets.OrderBy(x => x.MainCategoryId).ThenBy(x => x.SubCategoryId).ToList();
         }
-
         private async Task<List<BudgetListItem>> ParseBudgetListQuery(BudgetListRequest request)
         {
             var budgetListItems = new List<BudgetEntity>();

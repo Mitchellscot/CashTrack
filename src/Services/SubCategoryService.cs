@@ -9,10 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CashTrack.Services.Common;
 using CashTrack.Models.Common;
-using Microsoft.AspNetCore.Rewrite;
-using System.Xml.Linq;
 using CashTrack.Models.ExpenseModels;
-using CashTrack.Models.MerchantModels;
 using System.Collections.Generic;
 
 namespace CashTrack.Services.SubCategoryService;
@@ -166,6 +163,9 @@ public class SubCategoryService : ISubCategoryService
     }
     public async Task<int> CreateSubCategoryAsync(SubCategory request)
     {
+        if (string.IsNullOrEmpty(request.Name))
+            throw new ArgumentException("Sub category must have a name");
+
         var categories = await _subCategoryRepo.Find(x => true);
         if (categories.Any(x => x.Name == request.Name))
             throw new DuplicateNameException(nameof(SubCategoryEntity), request.Name);
