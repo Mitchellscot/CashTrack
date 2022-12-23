@@ -28,7 +28,7 @@ namespace CashTrack.Pages.Budget
                 for (int i = 0; i < labelsArray.Length; i++)
                 {
                     if (i == labelsArray.Length - 1)
-                        colorStack.Push(ThemeColors.SecondaryDark);
+                        colorStack.Push(ThemeColors.Primary);
                     else colorStack.Push(GetColorsForExpenses(i, this.IsSummaryChart));
                 }
             }
