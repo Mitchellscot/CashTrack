@@ -117,7 +117,7 @@
             {
             <div class="col-6 col-lg-3 mt-1 d-flex flex-column align-content-center">
                 <ul class="list-group text-center mt-2 shadow flex-fill d-flex justify-content-between">
-                        <li class="flex-fill list-group-item d-flex justify-content-between p-2">
+                        <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                             <span class="d-none d-md-block">
                                 Earned: &nbsp;
                             </span>
@@ -125,7 +125,7 @@
                                 @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.Earned)
                             </span>
                         </li>
-                    <li class="flex-fill list-group-item d-flex justify-content-between p-2">
+                    <li class="flex-fill list-group-item d-flex justify-content-between pt-3 pb-2 px-3">
                             <span class="d-none d-md-block">
                                 Spent:
                             </span>
@@ -133,7 +133,7 @@
                                 @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.Spent)
                             </span>
                         </li>
-                    <li class="flex-fill list-group-item d-flex justify-content-between p-2">
+                    <li class="flex-fill list-group-item d-flex justify-content-between pt-3 pb-2 px-3">
                             <span class="d-none d-md-block">
                                 Saved:
                             </span>
@@ -141,7 +141,7 @@
                                 @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.Saved)
                             </span>
                         </li>
-                        <li class="flex-fill list-group-item d-flex justify-content-between p-2">
+                    <li class="flex-fill list-group-item d-flex justify-content-between pt-3 pb-2 px-3">
                             <span class="d-none d-md-block">
                                 Averaged Monthly Savings:
                             </span>
@@ -149,7 +149,7 @@
                                      @Model.SummaryResponse.SummaryTotals.AveragedSavedPerMonth
                                 </span>
                         </li>
-                        <li class="flex-fill list-group-item d-flex justify-content-between p-2">
+                    <li class="flex-fill list-group-item d-flex justify-content-between pt-3 pb-2 px-3">
                             <span class="d-none d-md-block">
                                 Average Yearly Savings:
                             </span>
@@ -157,7 +157,7 @@
                                 @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.AveragedSavedPerYear)
                             </span>
                         </li>
-                        <li class="flex-fill list-group-item d-flex justify-content-between p-2">
+                    <li class="flex-fill list-group-item d-flex justify-content-between pt-3 pb-2 px-3">
                             <span class="d-none d-md-block">
                                 Expense Growth Per Year:
                             </span>
@@ -165,7 +165,7 @@
                                 @Model.SummaryResponse.SummaryTotals.ExpenseGrowthPerYear &#37;
                             </span>
                         </li>
-                        <li class="flex-fill list-group-item d-flex justify-content-between p-2">
+                    <li class="flex-fill list-group-item d-flex justify-content-between pt-3 pb-2 px-3">
                             <span class="d-none d-md-block">
                                 Income Growth Per Year:
                             </span>
@@ -182,12 +182,12 @@
                 <canvas id="overallSummaryChart" class="shadow align-self-center chart-height pt-2"></canvas>
             </div>
         }
-@*        @if(Model.SummaryResponse.MonthlyExpenseStatistics.Any())
+        @if(Model.SummaryResponse.PercentChangesChart.Labels != null)
         {
             <div class="col-12 col-lg-6 d-flex">
-                <canvas id="monthlyStatisticsChart" class="chart-height shadow align-self-center"></canvas>
+                <canvas id="percentChangesChart" class="chart-height shadow align-self-center"></canvas>
             </div>
-        }*@
+        }
     </div>
         <div class="row mb-2">
         @if (Model.SummaryResponse.SavingsChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
@@ -196,12 +196,12 @@
                 <canvas id="savingsChart" class="chart-height shadow align-self-center"></canvas>
             </div>
         }
-@*        @if (Model.SummaryResponse.IncomeExpenseChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
+        @if (Model.SummaryResponse.IncomeExpenseChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
         {
             <div class="col-12 col-lg-6 d-flex">
                 <canvas id="incomeExpenseChart" class="chart-height shadow align-self-center"></canvas>
             </div>
-        }*@
+        }
     </div>
     <div class="row mb-2">
         @if (Model.SummaryResponse.IncomeStatistics != null && Model.SummaryResponse.TopExpenses.Count > 1)
@@ -557,6 +557,29 @@
             Dataset = Model.SummaryResponse.SavingsChart.SavingsDataset,
             Title = "Savings By Year",
             Labels = Model.SummaryResponse.SavingsChart.Labels,
+        })
+    }
+    @if (Model.SummaryResponse.IncomeExpenseChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
+    {
+        @await Html.PartialAsync("AllTimeIncomeExpenseChart", new AllTimeIncomeExpenseChart()
+        {
+            ElementId = "incomeExpenseChart",
+            IncomeDataset = Model.SummaryResponse.IncomeExpenseChart.IncomeDataset,
+            ExpenseDataset = Model.SummaryResponse.IncomeExpenseChart.ExpenseDataset,
+            Title = "Income And Expenses",
+            Labels = Model.SummaryResponse.IncomeExpenseChart.Labels,
+        })
+    }
+    @if (Model.SummaryResponse.PercentChangesChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
+    {
+        @await Html.PartialAsync("AllTimePercentChangeChart", new AllTimePercentChangeChart()
+        {
+            ElementId = "percentChangesChart",
+            IncomeDataset = Model.SummaryResponse.PercentChangesChart.IncomeDataset,
+            ExpenseDataset = Model.SummaryResponse.PercentChangesChart.ExpenseDataset,
+            SavingsDataset = Model.SummaryResponse.PercentChangesChart.SavingsDataset,
+            Title = "Percent Changes By Year",
+            Labels = Model.SummaryResponse.PercentChangesChart.Labels,
         })
     }
 }

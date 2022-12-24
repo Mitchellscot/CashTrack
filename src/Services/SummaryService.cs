@@ -100,6 +100,68 @@ namespace CashTrack.Services.SummaryService
                 SummaryTotals = GetAllTimeSummaryTotals(expenses, income),
                 AnnualSummaryChart = GetAllTimeAnnualSummaryChart(expenses, income),
                 SavingsChart = GetAllTimeSavingsChart(expenses, income),
+                IncomeExpenseChart = GetAllTimeIncomeExpenseChart(expenses, income),
+                PercentChangesChart = GetAllTimePercentChanges(expenses, income)
+
+            };
+        }
+
+        private AllTimeAnnualPercentChanges GetAllTimePercentChanges(ExpenseEntity[] expenses, IncomeEntity[] income)
+        {
+            if (!income.Any())
+                return new AllTimeAnnualPercentChanges();
+            if (!expenses.Any())
+                return new AllTimeAnnualPercentChanges();
+
+            var firstYear = income.OrderBy(x => x.Date).FirstOrDefault().Date.Year;
+            var years = Enumerable.Range(firstYear, (DateTime.Now.Year - firstYear) + 1).ToArray();
+            var yearsToZip = years.Prepend(0).SkipLast(1);
+            var labels = years.Zip(yearsToZip, (a, b) => b > 0 ? $"{b.ToString().Substring(2)}-{a.ToString().Substring(2)}" : "0").Where(x => x != "0").ToArray();
+
+            var expenseData = expenses.GroupBy(x => x.Date.Year).OrderBy(x => x.Key).Select(x => x.Sum(x => x.Amount)).ToArray();
+            var expensesToZip = expenseData.Prepend(0).SkipLast(1);
+            var expensePercentChanges = expensesToZip.Zip(expenseData,
+                (x, y) => x > 0 ? decimal.Round(((y - x) / x * 100), 1) : 0).Where(x => x != 0).ToArray();
+
+
+            var incomeData = income.GroupBy(x => x.Date.Year).OrderBy(x => x.Key).Select(x => x.Sum(x => x.Amount)).ToArray();
+            var incomeToZip = incomeData.Prepend(0).SkipLast(1);
+            var incomePercentChanges = incomeToZip.Zip(incomeData,
+                (x, y) => x > 0 ? decimal.Round(((y - x) / x * 100), 1) : 0).Where(x => x != 0).ToArray();
+
+
+            var calculatedSavings = incomeData.Zip(expenseData, (a, b) => (a - b)).ToList();
+            var savingsToZip = calculatedSavings.Prepend(0).SkipLast(1);
+            var savingsPercentChanges = savingsToZip.Zip(calculatedSavings,
+                (x, y) => x > 0 ? decimal.Round(((y - x) / x * 100), 1) : 0).Where(x => x != 0).ToArray();
+
+            return new AllTimeAnnualPercentChanges()
+            {
+                ExpenseDataset = expensePercentChanges.Length > 0 ? JsonSerializer.Serialize(expensePercentChanges) : string.Empty,
+                IncomeDataset = incomePercentChanges.Length > 0 ? JsonSerializer.Serialize(incomePercentChanges) : string.Empty,
+                SavingsDataset = savingsPercentChanges.Length > 0 ? JsonSerializer.Serialize(savingsPercentChanges) : string.Empty,
+                Labels = labels.Count() > 0 ? JsonSerializer.Serialize(labels) : string.Empty,
+            };
+
+        }
+
+        private AllTimeIncomeExpenseChart GetAllTimeIncomeExpenseChart(ExpenseEntity[] expenses, IncomeEntity[] income)
+        {
+            if (!income.Any())
+                return new AllTimeIncomeExpenseChart();
+            if (!expenses.Any())
+                return new AllTimeIncomeExpenseChart();
+
+            var firstYear = income.OrderBy(x => x.Date).FirstOrDefault().Date.Year;
+            var labels = Enumerable.Range(firstYear, (DateTime.Now.Year - firstYear) + 1).ToArray();
+            var incomeData = income.GroupBy(x => x.Date.Year).OrderBy(x => x.Key).Select(x => x.Sum(x => x.Amount)).ToArray();
+            var expenseData = expenses.GroupBy(x => x.Date.Year).OrderBy(x => x.Key).Select(x => x.Sum(x => x.Amount)).ToArray();
+
+            return new AllTimeIncomeExpenseChart()
+            {
+                ExpenseDataset = expenseData.Sum() > 0 ? JsonSerializer.Serialize(expenseData) : string.Empty,
+                IncomeDataset = incomeData.Sum() > 0 ? JsonSerializer.Serialize(incomeData) : string.Empty,
+                Labels = expenseData.Sum() > 0 ? JsonSerializer.Serialize(labels) : string.Empty
             };
         }
 
@@ -159,7 +221,7 @@ namespace CashTrack.Services.SummaryService
             var averageSavedPerMonth = monthsSinceFirstPurchase > 0 ? decimal.Round((saved / monthsSinceFirstPurchase), 2) : saved;
             var yearsSinceFirstPurchase = (DateTime.Now.Year - dateOfFirstPurchase.Year);
             var averageSavedPerYear = yearsSinceFirstPurchase > 0 ? (saved / yearsSinceFirstPurchase) : saved;
-
+            //TODO: Change to use .Zip()
             var expenseYears = expenses.GroupBy(x => x.Date.Year).Select(x =>
             {
                 return (Year: x.Key, Amount: x.Sum(x => x.Amount));

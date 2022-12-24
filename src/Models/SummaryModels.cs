@@ -27,12 +27,20 @@ namespace CashTrack.Models.SummaryModels
         public AllTimeAnnualSummaryChart AnnualSummaryChart { get; set; }
         public AllTimeSavingsChart SavingsChart { get; set; }
         public AllTimeIncomeExpenseChart IncomeExpenseChart { get; set; }
+        public AllTimeAnnualPercentChanges PercentChangesChart { get; set; }
+    }
+    public record AllTimeAnnualPercentChanges
+    {
+        public string SavingsDataset { get; set; }
+        public string IncomeDataset { get; set; }
+        public string ExpenseDataset { get; set; }
+        public string Labels { get; set; }
     }
     public record AllTimeIncomeExpenseChart
     {
         public string IncomeDataset { get; set; }
         public string ExpenseDataset { get; set; }
-        public string SavingsDataset { get; set; }
+        public string Labels { get; set; }
     }
     public record AllTimeSavingsChart
     {
