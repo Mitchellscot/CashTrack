@@ -269,7 +269,7 @@ namespace CashTrack.Services.SummaryService
             var annualBudgets = await _budgetRepo.FindWithMainCategories(x => x.Year == request.Year);
             var budgetsYTD = annualBudgets.Where(x => x.Month <= DateTime.Now.Month).ToArray();
             var budgetsForCharts = isCurrentYear ? budgetsYTD : annualBudgets;
-            var incomeForPercentageCharts = incomeYTD.Sum(x => x.Amount);
+            var incomeForPercentageCharts = Convert.ToInt32(incomeYTD.Sum(x => x.Amount));
 
             var user = await _userRepository.FindById(request.UserId);
             return new AnnualSummaryResponse()
@@ -542,9 +542,9 @@ namespace CashTrack.Services.SummaryService
                 MonthlySummary = monthlySummary,
                 ExpenseSummaryChart = GetExpenseSummaryChartData(monthlyExpenses, monthlyBudgets),
                 OverallSummaryChart = GetOverallSummaryChart(monthlyExpenses, monthlyIncome, monthlyBudgets),
-                SubCategoryPercentages = GetSubCategoryPercentages(monthlyExpenses, decimal.Round(incomeToCompare, 0)),
+                SubCategoryPercentages = GetSubCategoryPercentages(monthlyExpenses, incomeToCompare),
                 MainCategoryPercentages = GetMainCategoryPercentages(monthlyExpenses, decimal.Round(incomeToCompare, 0)),
-                MerchantPercentages = GetMerchantPercentages(monthlyExpenses, decimal.Round(incomeToCompare, 0)),
+                MerchantPercentages = GetMerchantPercentages(monthlyExpenses, incomeToCompare),
                 MonthlyProgress = GetMonthlyProgress(monthlySummary, request.Year, request.Month),
                 AnnualSavingsProgress = GetAnnualSavingsProgress(annualBudgets, expensesYTD, incomeYTD, request.Year, request.Month),
                 DailyExpenseLineChart = GetDailyExpenseLineChart(request.Month, request.Year, monthlyExpenses, monthlyBudgets, monthlyIncome),
@@ -672,15 +672,15 @@ namespace CashTrack.Services.SummaryService
             return expensePercentages;
         }
 
-        private Dictionary<string, decimal> GetSubCategoryPercentages(ExpenseEntity[] expenses, decimal income)
+        private Dictionary<string, int> GetSubCategoryPercentages(ExpenseEntity[] expenses, int income)
         {
             if (expenses.Length == 0)
-                return new Dictionary<string, decimal>();
+                return new Dictionary<string, int>();
 
             var expenseAmount = expenses.Sum(x => x.Amount);
             var amountToPercentBy = expenseAmount > income ? (int)decimal.Round(expenseAmount, 0) : income;
             var expensePercentages = expenses.OrderBy(x => x.Category.MainCategoryId).Where(x => !x.ExcludeFromStatistics).GroupBy(x => x.Category.Name).Select(x => (Name: x.Key, Amount: x.Sum(x => x.Amount)))
-                .Select(x => (x.Name, Percentage: x.Amount.ToDecimalPercentage(amountToPercentBy)))
+                .Select(x => (x.Name, Percentage: x.Amount.ToPercentage(amountToPercentBy)))
                 .Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
 
             var savingsPercentage = income > expenseAmount ? (income - expenseAmount).ToPercentage(income) : 0;
@@ -690,16 +690,16 @@ namespace CashTrack.Services.SummaryService
 
             return expensePercentages;
         }
-        private Dictionary<string, decimal> GetMerchantPercentages(ExpenseEntity[] expenses, decimal income)
+        private Dictionary<string, int> GetMerchantPercentages(ExpenseEntity[] expenses, int income)
         {
             if (expenses.Length == 0)
-                return new Dictionary<string, decimal>();
+                return new Dictionary<string, int>();
 
             var expenseAmount = expenses.Sum(x => x.Amount);
             var amountToPercentBy = expenseAmount > income ? decimal.Round(expenseAmount, 0) : income;
 
             var expensePercentages = expenses.Where(x => !x.ExcludeFromStatistics && x.MerchantId != null).OrderBy(x => x.Merchant.Name).GroupBy(x => x.Merchant.Name).Select(x => (Name: x.Key, Amount: x.Sum(x => x.Amount))).Select(x =>
-                (x.Name, Percentage: x.Amount.ToDecimalPercentage(amountToPercentBy)))
+                (x.Name, Percentage: x.Amount.ToPercentage(amountToPercentBy)))
                 .Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
 
             var expenseTotalsWithMerchantsAssigned = expensePercentages.Sum(x => x.Value);
