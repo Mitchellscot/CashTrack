@@ -9,10 +9,59 @@ using System.Collections.Generic;
 
 namespace CashTrack.Models.SummaryModels
 {
+    public record AllTimeSummaryResponse
+    {
+        public AllTimeSummaryTotals SummaryTotals { get; set; }
+        public OverallSummaryChart OverallSummaryChart { get; set; }
+        public List<ExpenseQuickView> TopExpenses { get; set; }
+        public List<SubCategoryQuickView> TopCategories { get; set; }
+        public List<MerchantQuickView> TopMerchants { get; set; }
+        public List<IncomeSourceQuickView> TopSources { get; set; }
+        public Dictionary<string, decimal> SubCategoryPercentages { get; set; }
+        public Dictionary<string, decimal> MainCategoryPercentages { get; set; }
+        public Dictionary<string, decimal> MerchantPercentages { get; set; }
+        public Dictionary<string, decimal> IncomeSourcePercentages { get; set; }
+        public List<TransactionBreakdown> TransactionBreakdown { get; set; }
+        public List<AnnualStatistics> ExpenseStatistics { get; set; }
+        public List<AnnualStatistics> IncomeStatistics { get; set; }
+        public AllTimeAnnualSummaryChart AnnualSummaryChart { get; set; }
+        public AllTimeSavingsChart SavingsChart { get; set; }
+        public AllTimeIncomeExpenseChart IncomeExpenseChart { get; set; }
+    }
+    public record AllTimeIncomeExpenseChart
+    {
+        public string IncomeDataset { get; set; }
+        public string ExpenseDataset { get; set; }
+        public string SavingsDataset { get; set; }
+    }
+    public record AllTimeSavingsChart
+    {
+        public string SavingsDataset { get; set; }
+        public string Labels { get; set; }
+    }
+    public record AllTimeAnnualSummaryChart
+    {
+        public string IncomeDataset { get; set; }
+        public string ExpenseDataset { get; set; }
+        public string SavingsDataset { get; set; }
+        public string Labels { get; set; }
+    }
+    public record AllTimeSummaryTotals
+    {
+        public decimal Earned { get; set; }
+        public decimal Spent { get; set; }
+        public decimal Saved { get; set; }
+        public decimal AveragedSavedPerMonth { get; set; }
+        public decimal AveragedSavedPerYear { get; set; }
+        public decimal ExpenseGrowthPerYear { get; set; }
+        public decimal IncomeGrowthPerYear { get; set; }
+
+    }
     public record PrintTransactionsRequest
     {
         public int Year { get; set; }
         public int Month { get; set; }
+        public bool AllTimeSummary => this.Year == default && this.Month == default;
     }
     public record AnnualSummaryRequest
     {
@@ -28,12 +77,12 @@ namespace CashTrack.Models.SummaryModels
         public List<SubCategoryQuickView> TopCategories { get; set; }
         public List<MerchantQuickView> TopMerchants { get; set; }
         public List<IncomeSourceQuickView> TopSources { get; set; }
-        public SavingsChart SavingsChart { get; set; }
-        public IncomeExpenseChart IncomeExpenseChart { get; set; }
+        public AnnualSavingsChart SavingsChart { get; set; }
+        public AnnualIncomeExpenseChart IncomeExpenseChart { get; set; }
         public AnnualSummaryTotals AnnualSummary { get; set; }
-        public Dictionary<string, int> SubCategoryPercentages { get; set; }
-        public Dictionary<string, int> MainCategoryPercentages { get; set; }
-        public Dictionary<string, int> MerchantPercentages { get; set; }
+        public Dictionary<string, decimal> SubCategoryPercentages { get; set; }
+        public Dictionary<string, decimal> MainCategoryPercentages { get; set; }
+        public Dictionary<string, decimal> MerchantPercentages { get; set; }
         public Dictionary<string, decimal> IncomeSourcePercentages { get; set; }
         public List<MonthlyStatistics> MonthlyExpenseStatistics { get; set; }
         public AnnualMonthlySummaryChart AnnualMonthlySummaryChart { get; set; }
@@ -58,7 +107,7 @@ namespace CashTrack.Models.SummaryModels
         public int AveragedSavedPerMonth { get; set; }
         public int BudgetVariance { get; set; }
     }
-    public record IncomeExpenseChart
+    public record AnnualIncomeExpenseChart
     {
         public string Labels { get; set; }
         public string IncomeDataset { get; set; }
@@ -66,7 +115,7 @@ namespace CashTrack.Models.SummaryModels
         public string ExpensesDataset { get; set; }
         public int MonthBudgetExpenseDataBegins { get; set; }
     }
-    public record SavingsChart
+    public record AnnualSavingsChart
     {
         public string SavingsDataset { get; set; }
         public string SuggestedSavingsDataset { get; set; }
@@ -88,9 +137,9 @@ namespace CashTrack.Models.SummaryModels
         public ExpenseSummaryChartData ExpenseSummaryChart { get; set; }
         public MonthlySummary MonthlySummary { get; set; }
         public OverallSummaryChart OverallSummaryChart { get; set; }
-        public Dictionary<string, int> SubCategoryPercentages { get; set; }
-        public Dictionary<string, int> MainCategoryPercentages { get; set; }
-        public Dictionary<string, int> MerchantPercentages { get; set; }
+        public Dictionary<string, decimal> SubCategoryPercentages { get; set; }
+        public Dictionary<string, decimal> MainCategoryPercentages { get; set; }
+        public Dictionary<string, decimal> MerchantPercentages { get; set; }
         public DailyExpenseChart DailyExpenseLineChart { get; set; }
         public MonthlyYearToDate YearToDate { get; set; }
         public List<ExpenseQuickView> TopExpenses { get; set; }

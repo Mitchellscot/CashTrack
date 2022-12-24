@@ -3,7 +3,7 @@
 @model CashTrack.Pages.PrintModel
 @{
     var month = Model.Month > 0 ? @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month) : "";
-    var title = Model.Month > 0 && Model.Month <= 12 ? @month + " " + Model.Year.ToString() : Model.Year.ToString();
+    var title = Model.Month > 0 && Model.Month <= 12 ? @month + " " + Model.Year.ToString() : Model.Month > 0 ? Model.Year.ToString() : "All Time";
     Layout = "_Layout-Printable";
     ViewData["Title"] = title;
 }

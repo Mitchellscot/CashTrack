@@ -2,6 +2,7 @@
 @model CashTrack.Pages.Shared.TransactionBreakdownModalModel
 @{
     var month = Model.Month > 0 ? @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month) : "";
+    var title = Model.Month > 0 && Model.Month <= 12 ? @month + " " + Model.Year.ToString() : Model.Month > 0 ? Model.Year.ToString() : "All Time";
 }
 <div class="modal fade" id="expenseStats">
         <div class="modal-dialog modal-lg">
@@ -11,7 +12,7 @@
                     {
                         <div class="d-flex justify-content-between">
                         <a asp-page="./print" asp-route-year="@Model.Year" asp-route-month="@Model.Month" class="btn btn-primary mb-3">PRINT <i class="bi bi-printer align-self-center icon-button"></i></a>
-                        <h5 class="modal-title">@month @Model.Year Breakdown</h5>
+                        <h5 class="modal-title">@title Expense Breakdown</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal">
                         </button>
                     </div>

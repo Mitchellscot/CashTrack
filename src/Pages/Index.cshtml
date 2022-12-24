@@ -48,7 +48,6 @@
             }
         </div>
         <div class="col-auto d-flex">
-
             <form method="get" class="d-flex btn-height">
                 <div class="input-group me-2">
                     <select onchange="this.form.submit()" style="min-width: 135px;" data-val="true" asp-for=@Model.Month asp-items="@Model.MonthList" class="form-select text-center" id="monthlyBudgetMonthSelection">
@@ -62,9 +61,9 @@
             <div class="d-flex justify-content-end">
                 <button class="btn btn-secondary btn-height me-2 btn-text-overflow" type="button" data-bs-toggle="modal" data-bs-target="#expenseStats">View Details</button>
                 <div class="dropdown-center">
-                    <a class="btn btn-secondary dropdown-toggle me-2 btn-text-overflow btn-height" href="#" role="button" data-bs-toggle="dropdown">Time Span</a>
+                    <a class="btn btn-primary dropdown-toggle me-2 btn-text-overflow btn-height" href="#" role="button" data-bs-toggle="dropdown">Summary</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item text-center" asp-page="./Index">Monthly</a></li>
+                        <li><a class="dropdown-item text-center" asp-page="./Index">Month</a></li>
                         <li><a class="dropdown-item text-center" asp-page="./Annual">Annual</a></li>
                         <li><a class="dropdown-item text-center" asp-page="./Summary">All Time</a></li>
                     </ul>
@@ -285,7 +284,7 @@
             <div class="progress my-2">
                 <div class="progress-bar" style="width: @annualSavingsPercentage">@annualSavingsAmount</div>
             </div>
-            <p>@Model.SummaryResponse.AnnualSavingsProgress.AnnualSavingsMessage</p>
+            <p class="text-muted text-center">@Model.SummaryResponse.AnnualSavingsProgress.AnnualSavingsMessage</p>
         </div>
     </div>
     <div class="row mb-2">
