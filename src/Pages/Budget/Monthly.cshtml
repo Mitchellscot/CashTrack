@@ -173,16 +173,16 @@
     <div class="row mb-1">
         @if (Model.BudgetPageResponse.MonthlyBudgetChartData != null)
         {
-            <div class="col">
-                <canvas id="monthlyBudgetChart" class="chart-height"></canvas>
+            <div class="col d-flex">
+                <canvas id="monthlyBudgetChart" class="chart-height shadow align-self-center"></canvas>
             </div>
         }
     </div>
-    <div class="row mb-1">
+    <div class="row mb-1 g-3">
         @if (Model.BudgetPageResponse.MonthlySummary != null)
         {
             <div class="col-6 col-lg-3">
-                <ul class="list-group text-center mt-3">
+                <ul class="list-group text-center mt-3 shadow">
                     <li class="list-group-item d-flex justify-content-between p-3">
                         <span class="d-none d-md-block">
                             Income: &nbsp;
@@ -236,27 +236,27 @@
         }
         @if (Model.BudgetPageResponse.TypePercentages != null && Model.BudgetPageResponse.TypePercentages.Values.Sum() > 0)
         {
-            <div class="col-6 col-lg-3 mt-3">
-                <canvas id="typePercentagesDonut" class="chart-height"></canvas>
+            <div class="col-6 col-lg-3 mt-3 d-flex">
+                <canvas id="typePercentagesDonut" class="chart-height align-self-center px-1"></canvas>
             </div>
         }
         @if (Model.BudgetPageResponse.SubCategoryPercentages != null && Model.BudgetPageResponse.SubCategoryPercentages.Values.Sum() > 0)
         {
-            <div class="col-6 col-lg-3 mt-3">
-                <canvas id="subCategoryPie" class="chart-height"></canvas>
+            <div class="col-6 col-lg-3 mt-3 d-flex">
+                <canvas id="subCategoryPie" class="chart-height align-self-center px-1"></canvas>
             </div>
         }
         @if (Model.BudgetPageResponse.MainCategoryPercentages != null && Model.BudgetPageResponse.MainCategoryPercentages.Values.Sum() > 0)
         {
-            <div class="col-6 col-lg-3 mt-3">
-                <canvas id="mainCategoryPie" class="chart-height"></canvas>
+            <div class="col-6 col-lg-3 mt-3 d-flex">
+                <canvas id="mainCategoryPie" class="chart-height align-self-center px-1"></canvas>
             </div>
         }
     </div>
 </div>
 @section Scripts {
     <script src="~/js/budget.js" asp-append-version="true"></script>
-    <script asp-append-version="true" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script asp-append-version="true" src="https://cdn.jsdelivr.net/npm/chart.js@4.1.1/dist/chart.umd.js"></script>
     @await Html.PartialAsync("MonthlyBudgetChart", new MonthlyBudgetChart()
     {
         ElementId = "monthlyBudgetChart",
