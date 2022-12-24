@@ -1,0 +1,90 @@
+﻿@model CashTrack.Pages.Shared.AllTimeIncomeExpenseChart
+@{
+}
+<script>
+    const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
+    const @Model.ElementId = new Chart(@Model.VariableName, {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(@Model.Labels),
+            datasets: [
+                {
+                    label: 'Expenses',
+                    data: @Model.ExpenseDataset,
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: @Html.Raw(Model.ExpenseColor),
+                    borderColor: @Html.Raw(Model.ExpenseColor),
+                    borderWidth: 5,
+                    fill: true,
+                    cubicInterpolationMode: 'monotone',
+                    tension: 1,
+                    segment: {
+                        borderColor: @Html.Raw(Model.ExpenseColor),
+                        backgroundColor: @Html.Raw(Model.ExpenseColor)
+                    }
+                },
+                {
+                    label: 'Income',
+                    data: @Model.IncomeDataset,
+                    color: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: @Html.Raw(Model.IncomeColor),
+                    borderColor: @Html.Raw(Model.IncomeColor),
+                    borderWidth: 5,
+                    fill: true,
+                    cubicInterpolationMode: 'monotone',
+                    tension: 1,
+                    segment: {
+                        borderColor: @Html.Raw(Model.IncomeColor),
+                        backgroundColor: @Html.Raw(Model.IncomeColor)
+                    }
+                }
+                ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        footer: footer,
+                    }
+                },
+                title: {
+                    display: true,
+                    text: '@Model.Title'
+                },
+                legend: {
+                    display: false,
+                    position: 'top',
+                    align: 'center',
+                    labels:{
+                        filter: (item, chart) => !item.text.includes('Savings')
+                    }
+                },
+            }
+        },
+    });
+    function footer(tooltipItems) {
+        const object = tooltipItems[0];
+        const index = parseInt(object.dataIndex);
+        if(object.dataset.label === "Income")
+        {
+            const currentTotal = object.dataset.data[index];
+            const previousValue = object.dataset.data[index - 1];
+            const amount = (((currentTotal - previousValue).toFixed(0)) / previousValue * 100).toFixed(1);
+            if (isNaN(amount))
+                return `Percent Change: 0%`;
+            else if (!isNaN(amount))
+                return `Percent Change: ${amount}%`;
+        }
+        else if(object.dataset.label === "Expenses")
+        {
+            const currentTotal = object.dataset.data[index];
+            const previousValue = object.dataset.data[index - 1];
+            const amount = (((currentTotal - previousValue).toFixed(0)) / previousValue * 100).toFixed(1);
+            if (isNaN(amount))
+                return `Percent Change: 0%`;
+            else if (!isNaN(amount))
+                return `Percent Change: ${amount}%`;
+        }
+    };
+</script>
