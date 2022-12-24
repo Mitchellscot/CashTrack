@@ -163,40 +163,41 @@
             @if (Model.Source.AnnualIncomeStatistcis.Any())
             {
                 <div class="col-12 col-xl-6 d-flex">
-                    <canvas id="annualIncomesChart" height="400" class="chart-height shadow align-content-center"></canvas>
+                    <canvas id="annualIncomesChart" height="400" class="chart-height shadow align-content-center px-1"></canvas>
             </div>
             }
             @if(Model.Source.MonthlyIncomeStatistcis.Any())
             {
                 <div class="col-12 col-xl-6 d-flex">
-                    <canvas id="monthlyIncomesChart" height="400" class="chart-height shadow align-content-center"></canvas>
+                    <canvas id="monthlyIncomesChart" height="400" class="chart-height shadow align-content-center px-1"></canvas>
                 </div>
             }
             @if (Model.Source.AnnualIncomeStatistcis.Any())
             {
                 <div class="col-12 col-xl-6 d-flex">
-                    <canvas id="annualStatisticsChart" height="400" class="chart-height shadow align-content-center"></canvas>
+                    <canvas id="annualStatisticsChart" height="400" class="chart-height shadow align-content-center px-1"></canvas>
             </div>
             }
             @if (Model.Source.MonthlyIncomeStatistcis.Any())
             {
                 <div class="col-12 col-xl-6 d-flex">
-                    <canvas id="monthlyStatisticsChart" height="400" class="chart-height shadow align-content-center"></canvas>
+                    <canvas id="monthlyStatisticsChart" height="400" class="chart-height shadow align-content-center px-1"></canvas>
             </div>
             }
             @if (Model.Source.PaymentCategoryTotals.Count() > 1)
             {
                 <div class="col-12 col-md-6 d-flex">
-                    <canvas id="categoryTotalsPie" height="400" class="chart-height shadow align-content-center"></canvas>
+                    <canvas id="categoryTotalsPie" height="400" class="chart-height shadow align-content-center px-1"></canvas>
             </div>
             }
             @if (Model.Source.PaymentCategoryOcurances.Count() > 1)
             {
             <div class="col-12 col-md-6 d-flex">
-                <canvas id="categoryOccurancesDonut" height="400" class="chart-height shadow align-content-center"></canvas>
+                <canvas id="categoryOccurancesDonut" height="400" class="chart-height shadow align-content-center px-1"></canvas>
             </div>
             }
     </div>
+</div>
 </div>
 @section Scripts {
 <script src="~/js/sourceDetail.js" asp-append-version="true"></script>

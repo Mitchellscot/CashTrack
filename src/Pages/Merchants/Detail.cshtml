@@ -166,37 +166,37 @@
             @if (Model.Merchant.AnnualExpenseStatistics.Any() && Model.Merchant.AnnualExpenseStatistics.Count() > 1)
             {
                 <div class="col-12 col-xl-6 d-flex">
-                    <canvas id="annualExpensesChart" height="400" class="chart-height shadow align-content-center"></canvas>
+                    <canvas id="annualExpensesChart" height="400" class="chart-height shadow align-content-center px-1"></canvas>
             </div>
             }
             @if(Model.Merchant.MonthlyExpenseStatistics.Any())
             {
                 <div class="col-12 col-xl-6 d-flex">
-                    <canvas id="monthlyExpensesChart" height="400" class="chart-height shadow align-content-center"></canvas>
+                    <canvas id="monthlyExpensesChart" height="400" class="chart-height shadow align-content-center px-1"></canvas>
                 </div>
             }
             @if (Model.Merchant.AnnualExpenseStatistics.Any() && Model.Merchant.AnnualExpenseStatistics.Count() > 1)
             {
                 <div class="col-12 col-xl-6 d-flex">
-                    <canvas id="annualStatisticsChart" height="400" class="chart-height shadow align-content-center"></canvas>
+                    <canvas id="annualStatisticsChart" height="400" class="chart-height shadow align-content-center px-1"></canvas>
             </div>
             }
             @if (Model.Merchant.MonthlyExpenseStatistics.Any())
             {
                 <div class="col-12 col-xl-6 d-flex">
-                    <canvas id="monthlyStatisticsChart" height="400" class="chart-height shadow align-content-center"></canvas>
+                    <canvas id="monthlyStatisticsChart" height="400" class="chart-height shadow align-content-center px-1"></canvas>
             </div>
             }
             @if (Model.Merchant.PurchaseCategoryTotals.Count() > 1)
             {
                 <div class="col-12 col-md-6 d-flex">
-                    <canvas id="categoryTotalsPie" height="400" class="chart-height shadow align-content-center"></canvas>
+                    <canvas id="categoryTotalsPie" height="400" class="chart-height shadow align-content-center px-1"></canvas>
             </div>
             }
             @if (Model.Merchant.PurchaseCategoryOccurances.Count() > 1)
             {
             <div class="col-12 col-md-6 d-flex">
-                <canvas id="categoryOccurancesDonut" height="400" class="chart-height shadow align-content-center"></canvas>
+                <canvas id="categoryOccurancesDonut" height="400" class="chart-height shadow align-content-center px-1"></canvas>
             </div>
             }
         </div>

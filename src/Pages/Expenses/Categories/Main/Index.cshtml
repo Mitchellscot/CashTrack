@@ -46,6 +46,33 @@
             </div>
         }
     </div>
+        <div class="row mx-1 my-3">
+        @if (Model.MainCategoryResponse.MainCategoryPercentages != null)
+        {
+            <div class="col-xl-3 col-md-6 col-12 d-flex">
+                <canvas id="mainCategoryPercentagesChart" class="chart-height shadow align-content-center"></canvas>
+            </div>
+        }
+        @if (Model.MainCategoryResponse.CategoryPurchaseOccurances != null)
+        {
+            <div class="col-xl-3 col-md-6 col-12 d-flex">
+                <canvas id="subCategoryPurchaseOccurancesChart" class="chart-height shadow align-content-center"></canvas>
+            </div>
+        }
+        @if (Model.MainCategoryResponse.SubCategoryPercentages != null)
+        {
+            <div class="col-xl-3 col-md-6 col-12 d-flex">
+                <canvas id="subCategoryPercentagesChart" class="chart-height shadow align-content-center"></canvas>
+            </div>
+        }
+        @if (Model.MainCategoryResponse.SavingsPercentages != null)
+        {
+            <div class="col-xl-3 col-md-6 col-12 d-flex">
+                <canvas id="savingsPercentagesChart" class="chart-height shadow align-content-center"></canvas>
+            </div>
+        }
+    </div>
+        <hr />
     @if (Model.MainCategoryResponse != null && Model.MainCategoryResponse.MainCategories.Count() > 0)
     {
         <div class="row m-2 px-3 rows-cols d-flex g-3 align-items-center justify-content-evenly">
@@ -113,41 +140,15 @@
                 </div>
                 @*End Delete Modal*@
             }
-            <hr />
-
         </div>
     }
-    <div class="row m-1">
-        @if (Model.MainCategoryResponse.MainCategoryPercentages != null)
-        {
-            <div class="col-xl-3 col-md-6 col-12">
-                <canvas id="mainCategoryPercentagesChart" class="chart-height"></canvas>
-            </div>
-        }
-        @if (Model.MainCategoryResponse.CategoryPurchaseOccurances != null)
-        {
-            <div class="col-xl-3 col-md-6 col-12">
-                <canvas id="subCategoryPurchaseOccurancesChart" class="chart-height"></canvas>
-            </div>
-        }
-        @if (Model.MainCategoryResponse.SubCategoryPercentages != null)
-        {
-            <div class="col-xl-3 col-md-6 col-12">
-                <canvas id="subCategoryPercentagesChart" class="chart-height"></canvas>
-            </div>
-        }
-        @if (Model.MainCategoryResponse.SavingsPercentages != null)
-        {
-            <div class="col-xl-3 col-md-6 col-12">
-                <canvas id="savingsPercentagesChart" class="chart-height"></canvas>
-            </div>
-        }
-    </div>
+
     <div class="modal fade" id="addMainCategoryModal">
         @await Html.PartialAsync("AddEditMainCategoryModal", new AddEditMainCategoryModal() {
         ReturnUrl = "/Expenses/Categories/Main/Index",
         IsEdit = false});
     </div>
+</div>
     @section Scripts {
         <script src="~/js/mainCategories.js"></script>
         <script asp-append-version="true" src="https://cdn.jsdelivr.net/npm/chart.js"></script>

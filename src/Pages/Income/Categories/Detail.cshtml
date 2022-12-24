@@ -75,7 +75,7 @@
     <div class="container border">
         <div class="row">
             <div class="col-4 col-lg-3 mt-3">
-                <ul class="list-group text-center">
+                <ul class="list-group text-center shadow">
                     <li class="list-group-item d-flex justify-content-between">
                         <span class="d-none d-md-block">Month: &nbsp;</span>
                         <span class="fw-bold text-primary">@Model.IncomeCategory.IncomeTotals.TotalSpentThisMonth</span>
@@ -117,7 +117,7 @@
                 </ul>
             </div>
 
-            <div class="col-4 col-lg-5">
+            <div class="col-4 col-lg-5 shadow px-3">
                 <form method="get">
                     <div class="input-group mx-auto m-3">
                         <span class="input-group-text d-none d-lg-block">Name</span>
@@ -153,7 +153,7 @@
                 </div>
             </div>
 
-            <div class="col-4">
+            <div class="col-4 shadow">
                 <div class="d-flex justify-content-center">
                     <span class="mb-0 fw-bold d-none d-lg-block">
                         Recent Income
@@ -202,41 +202,41 @@
             </div>
         </div>
         <hr />
-        <div class="row">
+        <div class="row g-3">
             @if (Model.IncomeCategory.AnnualIncomeStatistics.Any())
             {
-                <div class="col-12 col-xl-6">
-                    <canvas id="annualIncomesChart" height="400" class="chart-height"></canvas>
+                <div class="col-12 col-xl-6 d-flex">
+                    <canvas id="annualIncomesChart" height="400" class="chart-height shadow align-content-center px-1"></canvas>
             </div>
             }
             @if(Model.IncomeCategory.MonthlyIncomeStatistics.Any())
             {
-                <div class="col-12 col-xl-6">
-                    <canvas id="monthlyIncomesChart" height="400" class="chart-height"></canvas>
+                <div class="col-12 col-xl-6 d-flex">
+                    <canvas id="monthlyIncomesChart" height="400" class="chart-height shadow align-content-center px-1"></canvas>
                 </div>
             }
             @if (Model.IncomeCategory.AnnualIncomeStatistics.Any())
             {
-                <div class="col-12 col-xl-6">
-                    <canvas id="annualStatisticsChart" height="400" class="chart-height"></canvas>
+                <div class="col-12 col-xl-6 d-flex">
+                    <canvas id="annualStatisticsChart" height="400" class="chart-height shadow align-content-center px-1"></canvas>
             </div>
             }
             @if (Model.IncomeCategory.MonthlyIncomeStatistics.Any())
             {
-                <div class="col-12 col-xl-6">
-                    <canvas id="monthlyStatisticsChart" height="400" class="chart-height"></canvas>
+                <div class="col-12 col-xl-6 d-flex">
+                    <canvas id="monthlyStatisticsChart" height="400" class="chart-height shadow align-content-center px-1"></canvas>
             </div>
             }
             @if (Model.IncomeCategory.SourcePurchaseTotals.Count() > 1)
             {
-                <div class="col-12 col-md-6">
-                    <canvas id="categoryTotalsPie" height="400" class="chart-height"></canvas>
+                <div class="col-12 col-md-6 d-flex">
+                    <canvas id="categoryTotalsPie" height="400" class="chart-height shadow align-content-center px-1"></canvas>
             </div>
             }
             @if (Model.IncomeCategory.SourcePurchaseOccurances.Count() > 1)
             {
-            <div class="col-12 col-md-6">
-                <canvas id="categoryOccurancesDonut" height="400" class="chart-height"></canvas>
+            <div class="col-12 col-md-6 d-flex">
+                <canvas id="categoryOccurancesDonut" height="400" class="chart-height shadow align-content-center px-1"></canvas>
             </div>
             }
         </div>
