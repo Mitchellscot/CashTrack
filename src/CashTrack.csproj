@@ -102,6 +102,7 @@
 		<TypeScriptCompile Include="Scripts\Utility\subcategory-autocomplete.ts" />
 	</ItemGroup>
 	<ItemGroup>
+		<Folder Include="wwwroot\css\" />
 		<Folder Include="wwwroot\js\" />
 	</ItemGroup>
 	<ProjectExtensions>

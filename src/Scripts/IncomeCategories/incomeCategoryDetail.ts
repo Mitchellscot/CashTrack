@@ -1,1 +1,1 @@
-﻿console.log('income category detail page');
+console.log('income category detail page');

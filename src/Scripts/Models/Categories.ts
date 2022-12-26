@@ -1,5 +1,6 @@
-﻿//used in api calls to get categories for a dropdown list.
-export default interface Category {
-    id: number;
-    category: string;
-}
+// Used in api calls to get categories for a dropdown list.
+type Category = {
+	id: number;
+	category: string;
+};
+export default Category;

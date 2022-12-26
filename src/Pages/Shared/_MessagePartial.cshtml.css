@@ -1,17 +1,17 @@
 ﻿.main-container {
-    position: relative;
+  position: relative;
 }
 .message-partial {
-    position: absolute; 
-    right: 40%; 
-    top: 0; 
-    z-index: 1200;
-    display: none;
+  position: absolute;
+  right: 40%;
+  top: 0;
+  z-index: 1200;
+  display: none;
 }
 .icon-size {
-    font-size: 1.5rem;
+  font-size: 1.5rem;
 }
 .hide {
-    transition: opacity 500ms;
-    opacity: 0;
+  transition: opacity 500ms;
+  opacity: 0;
 }

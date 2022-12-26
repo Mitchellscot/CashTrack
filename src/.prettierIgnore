@@ -1,0 +1,5 @@
+﻿.gitignore
+wwwroot
+Properties
+obj
+bin

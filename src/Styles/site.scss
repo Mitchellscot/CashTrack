@@ -1,48 +1,59 @@
-body {
+﻿body {
     overflow-x: hidden;
 }
+
 td {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
 .validation-summary-errors ul {
     padding-left: 0;
     list-style: none;
 }
+
 ul.ui-autocomplete {
     z-index: 1201;
 }
+
 .fakeLink {
     border: 0px;
     background-color: transparent;
     color: gray;
     cursor: pointer;
 }
+
 .fakelink:hover {
     text-decoration: none;
 }
+
 .icon-button {
     background: none;
     padding: 0px;
     border: none;
 }
+
 .white-on-disabled:disabled {
     background: transparent !important;
 }
+
 .btn-height {
     max-height: 38px;
 }
 
 .icon-size-sm {
-    font-size: .75rem;
+    font-size: 0.75rem;
 }
+
 .icon-size-md {
     font-size: 1rem;
 }
+
 .icon-size-lg {
     font-size: 1.25rem;
 }
+
 .icon-size-xl {
     font-size: 1.5rem;
 }
@@ -58,11 +69,13 @@ ul.ui-autocomplete {
 .visibility-hidden {
     visibility: hidden;
 }
+
 .display-none {
     display: none;
 }
+
 .responsive-text {
-    font-size: calc(100% + .05vw + .05vh);
+    font-size: calc(100% + 0.05vw + 0.05vh);
     overflow: hidden;
 }
 
@@ -70,9 +83,11 @@ ul.ui-autocomplete {
     font-size: 1.2rem;
     font-weight: 500;
 }
+
 .chart-height {
     max-height: 400px;
 }
+
 .pie-stats {
     min-height: 380px;
 }
@@ -84,8 +99,9 @@ ul.ui-autocomplete {
     max-height: 38px;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis
+    text-overflow: ellipsis;
 }
+
 #addExpenseDate-error {
     color: red;
 }
@@ -99,9 +115,11 @@ ul.ui-autocomplete {
 }
 
 /*layout*/
-.sidebar-heading, a {
+.sidebar-heading,
+a {
     text-decoration: none;
 }
+
 .logout-button {
     cursor: pointer;
     font-size: 1.8rem;

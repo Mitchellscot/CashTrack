@@ -1,9 +1,10 @@
 ﻿@media print {
-    body * {
-        display: none !important;
-    }
+  body * {
+    display: none !important;
+  }
 
-    #print-area, #print-area * {
-        display: block !important;
-    }
+  #print-area,
+  #print-area * {
+    display: block !important;
+  }
 }

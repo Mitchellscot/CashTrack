@@ -1,9 +1,9 @@
 ﻿.sub-category-table-header-row {
-    height: 34px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: 34px;
-    white-space: nowrap;
+  height: 34px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 34px;
+  white-space: nowrap;
 }
 /*
 .main-category-column {
