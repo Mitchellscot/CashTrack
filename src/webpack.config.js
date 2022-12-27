@@ -26,7 +26,7 @@ const config = {
     subCategoryDetail: './Scripts/SubCategories/subCategoryDetail.ts',
     incomeCategoryDetail: './Scripts/IncomeCategories/incomeCategoryDetail.ts',
     mainCategories: './Scripts/MainCategories/mainCategories.ts',
-    budget: './Scripts/Budget/budget.ts'
+    budget: './Scripts/Budget/budget.ts',
   },
   output: {
     filename: '[name].js',
@@ -48,7 +48,7 @@ const config = {
         test: /\.(ts|tsx)$/i,
         loader: 'ts-loader',
         exclude: ['/node_modules/'],
-      }
+      },
     ],
   },
   resolve: {

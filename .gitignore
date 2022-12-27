@@ -449,3 +449,5 @@ appsettings*
 /src/ref
 /src/runtimes
 /src/wwwroot/js/*.js
+/src/wwwroot/css/*.css
+/src/wwwroot/css/*.map
