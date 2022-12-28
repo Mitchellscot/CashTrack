@@ -46,7 +46,6 @@ namespace CashTrack
     {
         public static void Main(string[] args)
         {
-            //basically .NET 6 with in a Main method with a startup class
             var builder = WebApplication.CreateBuilder(args);
 
             var connectionString = ConfigureConfiguration(builder, builder.Environment);
