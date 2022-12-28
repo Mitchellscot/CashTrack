@@ -7,4 +7,4 @@ Work in progress.
 
 When adding css open a seperate terminal and run sass watch instead of relying on hot reload
 
-npx sass Styles/index.scss wwwroot/css/index.css --watch
+npx sass -- update Styles/index.scss wwwroot/css/index.css --watch
