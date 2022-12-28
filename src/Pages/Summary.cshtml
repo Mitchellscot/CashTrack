@@ -445,6 +445,86 @@
         }
     </div>
 </div>
+@* Add Expense Modal *@
+<div class="modal fade" id="addExpenseModal">
+    @await Html.PartialAsync("AddEditExpenseModal",
+    new AddEditExpenseModal() {
+    IsEdit = false,
+    Returnurl = "/Summary",
+    SubCategoryList = new SelectList(Model.SubCategoryList, "Id", "Category"),
+    Date= DateTime.Today,
+    MainCategoryList = new SelectList(Model.MainCategoryList, "Id", "Category"),
+    PageNumber = 1,
+    Query = 0,
+    Q = "",
+    Q2 = "",
+    ShowAddCategoryButton = false
+    });
+</div>
+@*End Add Expense Modal*@
+@* Add Income Modal *@
+<div class="modal fade" id="addIncomeModal">
+    @await Html.PartialAsync("AddEditIncomeModal", new AddEditIncomeModal(){
+    Returnurl = "/Summary",
+    IsEdit = false,
+    CategoryList = new SelectList(Model.IncomeCategoryList, "Id", "Category"),
+    Date= DateTime.Today,
+    ShowAddCategoryButton = false
+    });
+</div>
+@*End Add Income Modal*@
+@*Add Merchant Modal*@
+<div class="modal fade" id="addMerchantModal">
+    @await Html.PartialAsync("AddEditMerchantModal", new AddEditMerchantModal() {
+    Returnurl = "/Summary",
+    SuggestOnLookup = true,
+    IsEdit = false
+    })
+</div>
+@*EndAdd Merchant Modal*@
+@*Add Income Source Modal*@
+<div class="modal fade" id="addSourceModal">
+    @await Html.PartialAsync("AddEditIncomeSourceModal", new AddEditIncomeSourceModal()
+    {
+    ReturnUrl = "/Summary",
+    IsEdit = false,
+    SuggestOnLookup = true
+    })
+</div>
+@*End Add Income Source Modal*@
+@*Add Sub Category Modal*@
+<div class="modal fade" id="addSubCategoryModal">
+    @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal()
+    { Returnurl="/Summary",
+    InUse=true,
+    IsEdit=false,
+    MainCategoryList=new SelectList(Model.MainCategoryList, "Id", "Category"),
+
+    })
+</div>
+@*End Sub Category Modal*@
+@*Add Main Category Modal*@
+<div class="modal fade" id="addMainCategoryModal">
+    @await Html.PartialAsync("AddEditMainCategoryModal", new AddEditMainCategoryModal() {
+    ReturnUrl = "/Summary",
+    IsEdit = false});
+</div>
+@*EndAdd Main Category Modal*@
+@*Add Income Category Modal*@
+<div class="modal fade" id="addIncomeCategoryModal">
+    @await Html.PartialAsync("AddEditIncomeCategoryModal",
+    new AddEditIncomeCategoryModal() {
+    Returnurl = "/Summary",
+    InUse = true,
+    IsEdit = false,
+    })
+</div>
+@*End Add Income Category Modal*@
+@*Import Transactions Modal*@
+<div class="modal fade" id="importCsvModal">
+    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Summary" })
+</div>
+@*End Import Transactions Modal*@
 @await Html.PartialAsync("TransactionBreakdownModal", new TransactionBreakdownModalModel()
 {
     Year = 0,
