@@ -38,7 +38,7 @@ namespace CashTrack.Data
         {
             base.OnModelCreating(mb);
             //to seed a new dev or prod database, set this to true
-            mb.Initialize(_env.EnvironmentName, true);
+            mb.Initialize(_env.EnvironmentName, false);
             //used to convert decimals and DateTime for the sqllite in memory database.
             if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
                 ConfigureForSqlLite(mb);
