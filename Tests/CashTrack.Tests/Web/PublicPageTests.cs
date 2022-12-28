@@ -61,7 +61,7 @@ public class PublicPageTests : IClassFixture<CustomWebApplicationFactory<CashTra
 
         var result = await response.Content.ReadAsStringAsync();
         //this might change in the future.
-        result.ShouldContain($"<title>Dashboard Cashtrack</title>");
+        result.ShouldContain($"<title>Dashboard | CashTrack</title>");
 
         defaultPage.EnsureSuccessStatusCode();
         response.EnsureSuccessStatusCode();
