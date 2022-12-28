@@ -128,7 +128,7 @@
 	<Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" Condition="'$(Configuration)'=='Release'" BeforeTargets="BeforeBuild">
 		<Exec Command="npm run build" />
 	</Target>
-	<Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" Condition="'$(Configuration)'=='Debug'" BeforeTargets="BeforeBuild">
+	<Target Name="NpmRunDev" DependsOnTargets="NpmInstall" Condition="'$(Configuration)'=='Debug'" BeforeTargets="BeforeBuild">
 		<Exec Command="npm run dev" />
 	</Target>
 </Project>
