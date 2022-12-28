@@ -2,6 +2,7 @@
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Expenses.SplitModel
 @{
+    ViewData["Title"] = "Split Expense | ";
     Layout = "_Layout";
 }
 <div class="container">
@@ -98,11 +99,11 @@
                                 <input type="hidden" asp-for="ExpenseSplits[i].Merchant" value="@Model.Merchant" id="merchant-@i">
                                 <td>
                                     <input placeholder="0.00"
-                                       class="form-control expense-split-amount split-amount-js"
+                                       class="form-control split-amount-js amount-100-wide"
                                        id="amount-@i" type="number" min="0.00" step="0.01"
                                        asp-for="ExpenseSplits[i].Amount"
                                        data-tax-amount="@Model.Tax" data-index="@i" />
-                                    <span class="expense-split-amount-validation"
+                                    <span class="validation-text"
                                       asp-validation-for="ExpenseSplits[i].Amount"></span>
                                 </td>
                                 <td class="text-center">

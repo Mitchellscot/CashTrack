@@ -1,0 +1,30 @@
+﻿@import 'variables';
+
+.action-icon {
+    font-size: 1.4rem;
+}
+
+.icon-size-sm {
+    font-size: 0.75rem;
+}
+
+.icon-size-md {
+    font-size: 1rem;
+}
+
+.icon-size-lg {
+    font-size: 1.25rem;
+}
+
+.icon-size-xl {
+    font-size: 1.5rem;
+}
+
+.detail-zoom {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.color-on-hover:hover * {
+    color: $SUCCESS_COLOR !important;
+}

@@ -4,6 +4,8 @@
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Income.Categories.IndexModel
 @{
+    ViewData["Title"] = "Categories | ";
+    Layout = "_Layout";
 }
 <div class="container-fluid">
     @await Html.PartialAsync("_MessagePartial",
@@ -54,7 +56,7 @@
             <div class="table-sm">
                 <table class="table table-bordered table-sm table-hover mb-3 shadow">
                     <thead>
-                        <tr class="text-center table-primary Income-category-table-header-row">
+                        <tr class="text-center table-primary">
                             <th>
                                 Name
                             </th>

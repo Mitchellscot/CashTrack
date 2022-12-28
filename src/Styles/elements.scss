@@ -1,0 +1,19 @@
+﻿@import 'variables';
+@import 'mixins';
+
+body {
+    overflow-x: hidden;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+}
+
+td {
+    @include text-control;
+}
+
+tr {
+    @include text-control;
+    height: $ROW_HEIGHT;
+    max-height: $ROW_HEIGHT;
+}

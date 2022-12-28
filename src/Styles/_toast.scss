@@ -1,0 +1,16 @@
+﻿.main-container {
+    position: relative;
+}
+
+.message-partial {
+    position: absolute;
+    right: 40%;
+    top: 0;
+    z-index: 1090;
+    display: none;
+}
+
+.hide {
+    transition: opacity 500ms;
+    opacity: 0;
+}

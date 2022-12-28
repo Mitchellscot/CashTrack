@@ -1,0 +1,91 @@
+﻿@import 'variables';
+.ui-autocomplete {
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: default;
+}
+
+.ui-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: block;
+    outline: 0;
+}
+
+.ui-menu .ui-menu {
+    position: absolute;
+}
+
+.ui-menu .ui-menu-item {
+    margin: 0;
+    cursor: pointer;
+}
+
+.ui-menu .ui-menu-item-wrapper {
+    position: relative;
+    padding: 3px 1em 3px .4em;
+}
+
+.ui-menu .ui-menu-divider {
+    margin: 5px 0;
+    height: 0;
+    font-size: 0;
+    line-height: 0;
+    border-width: 1px 0 0 0;
+}
+
+.ui-menu .ui-state-focus,
+.ui-menu .ui-state-active {
+    margin: -1px;
+    background-color: $primary;
+    color: white;
+    text-transform: uppercase;
+}
+
+.ui-widget {
+    font-family: $FONT_FAM;
+    font-size: 1em;
+}
+
+.ui-widget .ui-widget {
+    font-size: 1em;
+}
+
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button {
+    font-family: $FONT_FAM;
+    font-size: 1em;
+}
+
+.ui-widget.ui-widget-content {
+    border: 1px solid $gray-400;
+}
+
+.ui-widget-content {
+    border: 1px solid #dddddd;
+    background: $WHITE_COLOR;
+    color: $TEXT_COLOR;
+}
+
+.ui-widget-content a {
+    color: $TEXT_COLOR;
+}
+
+.ui-helper-hidden {
+    display: none;
+}
+
+.ui-helper-hidden-accessible {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}

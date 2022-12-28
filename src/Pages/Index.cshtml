@@ -14,7 +14,7 @@
 @using System.Text.Json;
 @model IndexModel
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Dashboard | ";
     Layout = "_Layout";
     var currentMonth = Model.Month == DateTime.Now.Month && Model.Year == DateTime.Now.Year;
     var realizedIncomePercentage = $"{@Model.SummaryResponse.MonthlyProgress.RealizedIncome}%";
@@ -71,7 +71,7 @@
                 <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
                 <ul class="dropdown-menu">
                     <li>
-                        <button class="dropdown-item fakelink text-center"
+                        <button class="dropdown-item text-center"
                                 id="addExpenseButton"
                                 data-bs-toggle="modal"
                                 data-bs-target="#addExpenseModal">
@@ -79,7 +79,7 @@
                         </button>
                     </li>
                     <li>
-                        <button class="dropdown-item fakelink text-center"
+                        <button class="dropdown-item text-center"
                                 id="addIncomeButton"
                                 data-bs-toggle="modal"
                                 data-bs-target="#addIncomeModal">
@@ -88,7 +88,7 @@
                     </li>
                     <li class="dropdown-divider"></li>
                     <li class="dropdown-item">
-                        <button class="dropdown-item fakelink text-center"
+                        <button class="dropdown-item text-center"
                                 id="addMerchantButton"
                                 data-bs-toggle="modal"
                                 data-bs-target="#addMerchantModal">
@@ -96,7 +96,7 @@
                         </button>
                     </li>
                     <li class="dropdown-item">
-                        <button class="dropdown-item fakelink text-center"
+                        <button class="dropdown-item text-center"
                                 id="addMerchantButton"
                                 data-bs-toggle="modal"
                                 data-bs-target="#addSourceModal">
@@ -105,7 +105,7 @@
                     </li>
                     <li class="dropdown-divider"></li>
                     <li class="dropdown-item">
-                        <button class="dropdown-item fakelink text-center"
+                        <button class="dropdown-item text-center"
                                 id="addIncomeCategoryButton"
                                 data-bs-toggle="modal"
                                 data-bs-target="#addIncomeCategoryModal">
@@ -113,7 +113,7 @@
                         </button>
                     </li>
                     <li class="dropdown-item">
-                        <button class="dropdown-item fakelink text-center"
+                        <button class="dropdown-item text-center"
                                 id="addSubCategoryButton"
                                 data-bs-toggle="modal"
                                 data-bs-target="#addSubCategoryModal">
@@ -121,7 +121,7 @@
                         </button>
                     </li>
                     <li class="dropdown-item">
-                        <button class="dropdown-item fakelink text-center"
+                        <button class="dropdown-item text-center"
                                 id="addMainCategoryButton"
                                 data-bs-toggle="modal"
                                 data-bs-target="#addMainCategoryModal">
@@ -130,7 +130,7 @@
                     </li>
                     <li class="dropdown-divider"></li>
                     <li>
-                        <button class="dropdown-item fakelink text-center"
+                        <button class="dropdown-item text-center"
                                 id="importCsvButton"
                                 data-bs-toggle="modal"
                                 data-bs-target="#importCsvModal">

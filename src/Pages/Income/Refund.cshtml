@@ -2,6 +2,7 @@
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Incomes.RefundModel
 @{
+    ViewData["Title"] = "Refund | ";
     Layout = "_Layout";
 }
 <div class="container">
@@ -212,7 +213,7 @@
                                 </td>
                                 <td class="d-flex justify-content-center px-0">
                                     <input name="SelectedExpenses[@expense.Id].RefundAmount" value="@expense.RefundAmount"
-                                   type="number" class="form-control text-center width-100 refund-amount-js"
+                                   type="number" class="form-control text-center amount-100-wide refund-amount-js"
                                    id="refundAmount-@expense.Id" min="0.00" max="@expense.OriginalAmount" step="any" data-index=@expense.Id />
                                 </td>
                                 <td class="px-0" id="modifiedAmount-@expense.Id">

@@ -4,6 +4,8 @@
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Expenses.Categories.IndexModel
 @{
+    ViewData["Title"] = "Categories | ";
+    Layout = "_Layout";
 }
 <div class="container-fluid">
     @await Html.PartialAsync("_MessagePartial",
@@ -49,94 +51,94 @@
             <div class="table-responsive table-sm">
                 <table class="table table-bordered table-sm table-hover mb-3 shadow">
                     <thead>
-                        <tr class="text-center table-primary sub-category-table-header-row">
+                        <tr class="text-center table-primary">
                             <th>
                                 Name
                                 @{
                                     var currentFilter1 = Model.Query == 0 && Model.Q2 == true ? "text-success" : "text-white";
                                 }
-                                        <a asp-page="./Index" asp-route-Query="0" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                        <a asp-page="./Index" asp-route-Query="0" asp-route-Q2="true" class="icon-button float-end color-on-hover">
                                             <i class="bi bi-arrow-up icon-size @currentFilter1"></i>
                                         </a>
                                 @{
                                     var currentFilter2 = Model.Query == 0 && Model.Q2 == false ? "text-success" : "text-white";
                                 }
-                                        <a asp-page="./Index" asp-route-Query="0" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                        <a asp-page="./Index" asp-route-Query="0" asp-route-Q2="false" class="icon-button float-end color-on-hover">
                                             <i class="bi bi-arrow-down icon-size @currentFilter2"></i>
                                         </a>
                                 </th>
-                                <th>
+                                <th class="main-category-column">
                                 Main Category
                                 @{
                                     var currentFilter3 = Model.Query == SubCategoryOrderBy.MainCategory && Model.Q2 == true ? "text-success" : "text-white";
                                 }
-                                        <a asp-page="./Index" asp-route-Query="1" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                        <a asp-page="./Index" asp-route-Query="1" asp-route-Q2="true" class="icon-button float-end color-on-hover">
                                             <i class="bi bi-arrow-up icon-size @currentFilter3"></i>
                                         </a>
                                 @{
                                     var currentFilter4 = Model.Query == SubCategoryOrderBy.MainCategory && Model.Q2 == false ? "text-success" : "text-white";
                                 }
-                                        <a asp-page="./Index" asp-route-Query="1" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                        <a asp-page="./Index" asp-route-Query="1" asp-route-Q2="false" class="icon-button float-end color-on-hover">
                                             <i class="bi bi-arrow-down icon-size @currentFilter4"></i>
                                         </a>
                                 </th>
-                                <th>
+                                <th class="purchases-column">
                                 Purchases
                                 @{
                                     var currentFilter5 = Model.Query == SubCategoryOrderBy.Purchases && Model.Q2 == true ? "text-success" : "text-white";
                                 }
-                                        <a asp-page="./Index" asp-route-Query="2" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                        <a asp-page="./Index" asp-route-Query="2" asp-route-Q2="true" class="icon-button float-end color-on-hover">
                                             <i class="bi bi-arrow-up icon-size @currentFilter5"></i>
                                         </a>
                                 @{
                                     var currentFilter6 = Model.Query == SubCategoryOrderBy.Purchases && Model.Q2 == false ? "text-success" : "text-white";
                                 }
-                                        <a asp-page="./Index" asp-route-Query="2" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                        <a asp-page="./Index" asp-route-Query="2" asp-route-Q2="false" class="icon-button float-end color-on-hover">
                                             <i class="bi bi-arrow-down icon-size @currentFilter6"></i>
                                         </a>
                                 </th>
-                                <th>
+                                <th class="amount-column">
                                 Amount
                                 @{
                                     var currentFilter7 = Model.Query == SubCategoryOrderBy.Amount && Model.Q2 == true ? "text-success" : "text-white";
                                 }
-                                        <a asp-page="./Index" asp-route-Query="3" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                        <a asp-page="./Index" asp-route-Query="3" asp-route-Q2="true" class="icon-button float-end color-on-hover">
                                             <i class="bi bi-arrow-up icon-size @currentFilter7"></i>
                                         </a>
                                 @{
                                     var currentFilter8 = Model.Query == SubCategoryOrderBy.Amount && Model.Q2 == false ? "text-success" : "text-white";
                                 }
-                                        <a asp-page="./Index" asp-route-Query="3" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                        <a asp-page="./Index" asp-route-Query="3" asp-route-Q2="false" class="icon-button float-end color-on-hover">
                                             <i class="bi bi-arrow-down icon-size @currentFilter8"></i>
                                         </a>
                                 </th>
-                                <th>
+                                <th class="last-purchase-column">
                                 Last Purchase
                                 @{
                                     var currentFilter9 = Model.Query == SubCategoryOrderBy.LastPurchase && Model.Q2 == true ? "text-success" : "text-white";
                                 }
-                                        <a asp-page="./Index" asp-route-Query="4" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                        <a asp-page="./Index" asp-route-Query="4" asp-route-Q2="true" class="icon-button float-end color-on-hover">
                                             <i class="bi bi-arrow-up icon-size @currentFilter9"></i>
                                         </a>
                                 @{
                                     var currentFilter10 = Model.Query == SubCategoryOrderBy.LastPurchase && Model.Q2 == false ? "text-success" : "text-white";
                                 }
-                                        <a asp-page="./Index" asp-route-Query="4" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                        <a asp-page="./Index" asp-route-Query="4" asp-route-Q2="false" class="icon-button float-end color-on-hover">
                                             <i class="bi bi-arrow-down icon-size @currentFilter10"></i>
                                         </a>
                                 </th>
-                                <th>
+                                <th class="in-use-column">
                                 In Use
                                 @{
                                     var currentFilter11 = Model.Query == SubCategoryOrderBy.InUse && Model.Q2 == true ? "text-success" : "text-white";
                                 }
-                                        <a asp-page="./Index" asp-route-Query="5" asp-route-Q2="true" class="icon-button float-end orderIcon">
+                                        <a asp-page="./Index" asp-route-Query="5" asp-route-Q2="true" class="icon-button float-end color-on-hover">
                                             <i class="bi bi-arrow-up icon-size @currentFilter11"></i>
                                         </a>
                                 @{
                                     var currentFilter12 = Model.Query == SubCategoryOrderBy.InUse && Model.Q2 == false ? "text-success" : "text-white";
                                 }
-                                        <a asp-page="./Index" asp-route-Query="5" asp-route-Q2="false" class="icon-button float-end orderIcon">
+                                        <a asp-page="./Index" asp-route-Query="5" asp-route-Q2="false" class="icon-button float-end color-on-hover">
                                             <i class="bi bi-arrow-down icon-size @currentFilter12"></i>
                                         </a>
                                 </th>

@@ -5,6 +5,7 @@
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Sources.DetailModel
 @{
+    ViewData["Title"] = "Income Source | ";
     Layout = "_Layout";
 }
 
@@ -110,7 +111,7 @@
                            asp-for="@Model.Source.IsOnline" disabled value="@isActiveText" />
                 </div>
                 <div class="form-floating mx-auto">
-                    <textarea type="text" class="form-control white-on-disabled py-0 source-notes" id="sourceDescription" asp-for="@Model.Source.Notes" disabled></textarea>
+                    <textarea type="text" class="form-control white-on-disabled py-0 notes-height" id="sourceDescription" asp-for="@Model.Source.Notes" disabled></textarea>
                     @if (string.IsNullOrEmpty(Model.Source.Notes))
                     {
                         <label asp-for="@Model.Source.Notes">Description</label>

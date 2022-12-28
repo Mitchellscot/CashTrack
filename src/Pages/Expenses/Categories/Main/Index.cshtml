@@ -4,6 +4,8 @@
 @using System.Text.Json
 @model CashTrack.Pages.Expenses.Categories.Main.IndexModel
 @{
+    ViewData["Title"] = "Categories | ";
+    Layout = "_Layout";
 }
 <div class="container-fluid">
     @await Html.PartialAsync("_MessagePartial",

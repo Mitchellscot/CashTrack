@@ -6,6 +6,7 @@
     "@typescript-eslint/eslint-plugin": "^5.47.0",
     "@typescript-eslint/parser": "^5.47.0",
     "@webpack-cli/generators": "^2.5.0",
+    "bootswatch": "^5.2.3",
     "clean-webpack-plugin": "^4.0.0",
     "eslint": "^8.30.0",
     "eslint-config-prettier": "^8.5.0",
@@ -27,8 +28,8 @@
   "description": "A Budget App",
   "name": "cash-track",
   "scripts": {
-    "build": "webpack --mode=production --node-env=production && sass --no-source-map --style=compressed Styles:wwwroot/css",
-    "dev": "webpack --mode=development --node-env=development && sass --update --style=expanded --source-map-urls=relative Styles:wwwroot/css"
+    "build": "webpack --mode=production --node-env=production && sass --no-source-map --style=compressed Styles/index.scss wwwroot/css/index.css",
+    "dev": "webpack --mode=development --node-env=development && sass --update --style=expanded Styles/index.scss wwwroot/css/index.css"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.6",

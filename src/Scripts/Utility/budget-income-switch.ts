@@ -1,8 +1,8 @@
 export const disableSelectInputsOnIncomeSwitch = (): void => {
 	const checkBox
-    = document.getElementById('budgetIncomeSwitch');
+		= document.getElementById('budgetIncomeSwitch');
 	const modalButton
-    = document.getElementById('addBudgetButton');
+		= document.getElementById('addBudgetButton');
 	checkBox?.addEventListener(
 		'click',
 		(): void => {
