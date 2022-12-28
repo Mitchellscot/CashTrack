@@ -108,9 +108,7 @@
 		<Folder Include="wwwroot\js\" />
 	</ItemGroup>
 	<ProjectExtensions>
-		<VisualStudio>
-			<UserProperties wwwroot_4lib_4bootstrap_4dist_4css_4bootstrap_1css_1map__JsonSchema="" wwwroot_4lib_4bootstrap_4dist_4js_4bootstrap_1bundle_1js_1map__JsonSchema="" />
-		</VisualStudio>
+		<VisualStudio><UserProperties /></VisualStudio>
 	</ProjectExtensions>
 	<Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
 		<PropertyGroup>
@@ -120,8 +118,10 @@
 		<Touch Files="node_modules/.install-stamp" AlwaysCreate="true" />
 	</Target>
 
-	<Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
+	<Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" Condition="'$(Configuration)'=='Release'" BeforeTargets="BeforeBuild">
+		<Exec Command="npm run build" />
+	</Target>
+	<Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" Condition="'$(Configuration)'=='Debug'" BeforeTargets="BeforeBuild">
 		<Exec Command="npm run dev" />
 	</Target>
-
 </Project>
