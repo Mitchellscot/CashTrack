@@ -1,5 +1,6 @@
-﻿//used in api calls to get categories for a dropdown list.
-export default interface MerchantSource {
-    id: number;
-    name: string;
-}
+// Used in api calls to get categories for a dropdown list.
+type MerchantSource = {
+	id: number;
+	name: string;
+};
+export default MerchantSource;

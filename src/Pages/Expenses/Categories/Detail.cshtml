@@ -4,6 +4,7 @@
 @using System.Text.Json
 @model CashTrack.Pages.Expenses.Categories.DetailModel
 @{
+    ViewData["Title"] = "Categories | ";
     Layout = "_Layout";
 }
 
@@ -151,7 +152,7 @@
                 </div>
                 <div class="form-floating mx-auto">
                     <textarea type="text"
-                              class="form-control white-on-disabled py-0 subcategory-notes"
+                              class="form-control white-on-disabled py-0 notes-height"
                               id="categoryNotes"
                               asp-for="@Model.SubCategory.Notes" disabled></textarea>
                     @if (string.IsNullOrEmpty(Model.SubCategory.Notes))

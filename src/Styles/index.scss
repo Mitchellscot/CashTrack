@@ -1,0 +1,16 @@
+﻿//@use is new and is not an error, intellisense isn't updated yet
+@use '../node_modules/bootswatch/dist/flatly/bootstrap'; //contains bootstrap
+@use 'autocomplete';
+@use 'buttons';
+@use 'charts';
+@use 'icons';
+@use 'inputs';
+@use 'layout';
+@use 'text';
+@use 'tables';
+@use 'toast';
+@use 'validation';
+@use 'visibility';
+@use 'helpers';
+@use 'mixins';
+@use 'elements';

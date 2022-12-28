@@ -1,1 +1,1 @@
-﻿console.log('main categories page');
+console.log('main categories page');

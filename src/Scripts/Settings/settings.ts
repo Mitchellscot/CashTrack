@@ -1,4 +1,4 @@
-﻿import * as ImportRuleModal from "../Utility/importrule-modal";
+import * as ImportRuleModal from '../Utility/importrule-modal';
 
 ImportRuleModal.formatCategorySelectListOnAddButtonClick();
 ImportRuleModal.removeSelectListsWhenFilterOptionIsChecked();

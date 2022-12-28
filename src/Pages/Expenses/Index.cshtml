@@ -24,7 +24,7 @@
             <form method="get" class="shadow-sm">
                 <div class="input-group">
                     <div class="input-group-prepend d-none d-sm-block">
-                        <div class="input-group-text">Search</div>
+                        <div class="input-group-text rounded-0 rounded-start">Search</div>
                     </div>
                     <select data-width="100%" asp-items="Model.QueryOptions" class="form-select text-center" id="querySelect" asp-for="Query">
                     </select>
@@ -42,7 +42,7 @@
         <div class="col-xl-3 col-6 px-xl-0 d-none d-sm-block">
             <div class="btn-group" role="group">
                 <div class="input-group-prepend d-none d-md-block">
-                    <div class="input-group-text">Current</div>
+                    <div class="input-group-text rounded-0 rounded-start">Current</div>
                 </div>
                 <a asp-page="./Index" asp-route-query="11" asp-route-pageNumber="@Model.PageNumber" class="btn btn-secondary">Month</a>
                 <a asp-page="./Index" asp-route-query="12" asp-route-pageNumber="@Model.PageNumber" class="btn btn-secondary">Quarter</a>
@@ -53,8 +53,8 @@
         <div class="col-3 col-xl-1 d-none d-sm-block">
             <span class="validation-text" asp-validation-for="@Model.Q"></span>
         </div>
-        <div class="col-xs-12 col-xl-2 col-3 d-flex justify-content-md-between justify-content-xs-between me-xl-0">
-            <button class="btn btn-primary text-wrap import-link" data-bs-toggle="modal" data-bs-target="#addExpenseModal" id="addExpenseButton">Add Expense</button>
+        <div class="col-xs-12 col-xl-2 col-3me-xl-0 d-flex justify-content-end">
+            <button class="btn btn-primary text-wrap btn-height" data-bs-toggle="modal" data-bs-target="#addExpenseModal" id="addExpenseButton">Add Expense</button>
         </div>
     </div>
     @* Add Expense Modal *@
@@ -128,7 +128,7 @@
                                     {
                                         <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#refundNotes-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
-                                            <i class="bi bi-bootstrap-reboot text-primary action-icon" role="img"></i>
+                                            <i class="bi bi-bootstrap-reboot text-primary icon-size-lg" role="img"></i>
                                         </button>
                                         @*Begin Refund Notes Modal*@
                                         <div class="modal fade" id="refundNotes-@expense.Id">
@@ -141,14 +141,14 @@
                                     {
                                         <button type="button" data-bs-toggle="modal" disabled
                                     data-bs-target="#detailModal-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
-                                            <i class="bi bi-file-earmark-check text-white action-icon visibility-hidden" role="img"></i>
+                                            <i class="bi bi-file-earmark-check text-white icon-size-lg visibility-hidden" role="img"></i>
                                         </button>
                                     }
                                     @if (!string.IsNullOrEmpty(expense.Notes))
                                     {
                                         <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#detailModal-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
-                                            <i class="bi bi-file-earmark-check text-primary action-icon" role="img"></i>
+                                            <i class="bi bi-file-earmark-check text-primary icon-size-lg" role="img"></i>
                                         </button>
                                         @*Begin Detail Modal*@
                                         <div class="modal fade" id="detailModal-@expense.Id">
@@ -161,11 +161,11 @@
                                     {
                                         <button type="button" data-bs-toggle="modal" disabled
                                     data-bs-target="#detailModal-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
-                                            <i class="bi bi-file-earmark-check text-white action-icon visibility-hidden"></i>
+                                            <i class="bi bi-file-earmark-check text-white icon-size-lg visibility-hidden"></i>
                                         </button>
                                         <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#refundNotes-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
-                                            <i class="bi bi-bootstrap-reboot text-primary action-icon"></i>
+                                            <i class="bi bi-bootstrap-reboot text-primary icon-size-lg"></i>
                                         </button>
                                         @*Begin Refund Notes Modal*@
                                         <div class="modal fade" id="refundNotes-@expense.Id">
@@ -177,7 +177,7 @@
                                     {
                                         <button type="button" data-bs-toggle="modal" disabled
                                     data-bs-target="#detailModal-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
-                                            <i class="bi bi-file-earmark-check text-white action-icon visibility-hidden"></i>
+                                            <i class="bi bi-file-earmark-check text-white icon-size-lg visibility-hidden"></i>
                                         </button>
                                     }
                                     <button type="button"
@@ -185,7 +185,7 @@
                                     data-bs-target="#editExpenseModal-@expense.Id"
                                     class="icon-button px-2 load-main-category-edit-modal-js">
 @*when the icon is clicked, even though the javascript is on the button itself, the data is pulled from the icon...*@
-                                        <i class="bi bi-pencil text-primary action-icon" data-sub-category-id=@expense.SubCategoryId
+                                        <i class="bi bi-pencil text-primary icon-size-lg" data-sub-category-id=@expense.SubCategoryId
                                    data-id=@expense.Id></i>
                                     </button>
                                     @* Edit Expense Modal *@
@@ -215,7 +215,7 @@
                                     @*End Edit Expense Modal*@
                                     <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-@expense.Id" class="icon-button ps-2 ps-0 me-0">
-                                        <i class="bi bi-trash text-primary action-icon"></i>
+                                        <i class="bi bi-trash text-primary icon-size-lg"></i>
                                     </button>
                                     @*Delete Model*@
                                     <div class="modal fade" id="deleteModal-@expense.Id">

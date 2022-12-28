@@ -1,1 +1,1 @@
-﻿console.log('sub category detail page');
+console.log('sub category detail page');

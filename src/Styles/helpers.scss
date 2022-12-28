@@ -1,0 +1,19 @@
+﻿@media print {
+    body * {
+        display: none !important;
+    }
+
+    #print-area,
+    #print-area * {
+        display: block !important;
+    }
+}
+
+ul.ui-autocomplete {
+    z-index: 1056; //bootstrap modal is set to 1055
+}
+
+
+.no-hyperlink-underline {
+    text-decoration: none;
+}

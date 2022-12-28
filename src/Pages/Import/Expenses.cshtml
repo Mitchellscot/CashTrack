@@ -5,6 +5,7 @@
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Import.ExpensesModel
 @{
+    ViewData["Title"] = "Import | ";
     Layout = "_Layout";
 }
 <div class="container-fluid mb-0">
@@ -36,7 +37,7 @@
             </a>
             <ul class="dropdown-menu">
                 <li class="text-center">
-                    <button class="dropdown-item fakelink text-center"
+                    <button class="dropdown-item text-center"
                             id="addMerchant"
                             data-bs-toggle="modal"
                             data-bs-target="#addMerchantModal">
@@ -44,7 +45,7 @@
                     </button>
                 </li>
                 <li class="text-center">
-                    <button class="dropdown-item fakelink text-center"
+                    <button class="dropdown-item text-center"
                             id="addSubCategory"
                             data-bs-toggle="modal"
                             data-bs-target="#addSubCategoryModal">
@@ -53,7 +54,7 @@
                 </li>
                 <li class="dropdown-divider"></li>
                 <li class="text-center">
-                    <button class="dropdown-item fakelink text-center"
+                    <button class="dropdown-item text-center"
                             id="importCsvButton"
                             data-bs-toggle="modal"
                             data-bs-target="#importCsvModal">
@@ -61,7 +62,7 @@
                     </button>
                 </li>
                 <li>
-                    <a class="dropdown-item fakelink text-center"
+                    <a class="dropdown-item text-center"
                        asp-page="./Rules">
                         Import Rules
                     </a>

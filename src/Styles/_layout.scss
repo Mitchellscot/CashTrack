@@ -1,0 +1,53 @@
+﻿@import 'variables';
+
+.brand {
+    position: relative;
+    left: -8px;
+    background-color: rgba(0, 0, 0, 0.25);
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);
+}
+
+.logo {
+    font-weight: 900;
+    font-size: calc(100% + 0.5vw + 0.7vh);
+    text-transform: uppercase;
+    overflow: hidden;
+}
+.sidebar {
+    z-index: 0; /* Behind the navbar */
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
+}
+.sidebar-background-color {
+    position: absolute;
+    z-index: -1; /* Behind the navbar */
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
+    min-height: 100%;
+    top: 0;
+}
+
+@media (max-width: $MD_BREAKPOINT) {
+    .sidebar {
+        top: 5rem;
+        padding: 0;
+    }
+}
+
+.sidebar .nav-link {
+    font-size: calc(100% + 0.7vw + 0.7vh);
+    user-select: none;
+}
+
+.nav-sub-link {
+    font-weight: 900;
+    font-size: calc(100% + 0.5vw + 0.5vh);
+    user-select: none;
+}
+
+.sidebar-heading {
+    font-size: 0.2rem;
+}
+
+.sidebar-heading,
+a {
+    text-decoration: none;
+}
