@@ -24,7 +24,7 @@ function autoSuggestSourceEventListener(x: Event) {
 			$(x.target as HTMLInputElement).autocomplete({source: response as MerchantSource[]});
 		})
 		.catch(err => {
-			console.log(err);
+			console.error(err);
 		});
 }
 

@@ -54,7 +54,7 @@ const loadAverages = (e: Event): void => {
 			twoYearsAgoTotals.textContent = averages.twoYearsAgoTotals.toString();
 		})
 		.catch(err => {
-			console.log(err);
+			console.error(err);
 		});
 };
 
@@ -80,7 +80,7 @@ const loadMainCategory = (e: Event): void => {
 			mainCategoryInput.value = category;
 		})
 		.catch(err => {
-			console.log(err);
+			console.error(err);
 		});
 };
 
@@ -100,8 +100,6 @@ const loadAveragesEdit = (e: Event): void => {
 		document.getElementById(`averagesTable-${id!}`) as HTMLTableElement
 	);
 	const subCategoryId = (e.target as HTMLSelectElement).value;
-	console.log(subCategoryId);
-	console.log(id);
 	const sixMonthAverages = (
 		document.getElementById(`sixMonthAverages-${id!}`) as HTMLTableCellElement
 	);
@@ -141,7 +139,7 @@ const loadAveragesEdit = (e: Event): void => {
 			twoYearsAgoTotals.textContent = averages.twoYearsAgoTotals.toString();
 		})
 		.catch(err => {
-			console.log(err);
+			console.error(err);
 		});
 };
 
@@ -167,6 +165,6 @@ const loadMainCategoryEdit = (e: Event): void => {
 			mainCategoryInput.value = category;
 		})
 		.catch(err => {
-			console.log(err);
+			console.error(err);
 		});
 };

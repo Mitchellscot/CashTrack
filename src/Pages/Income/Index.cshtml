@@ -40,7 +40,7 @@
         <div class="col-xl-3 col-6 px-xl-0 d-none d-sm-block">
             <div class="btn-group" role="group">
                 <div class="input-group-prepend d-none d-md-block">
-                    <div class="input-group-text">Current</div>
+                    <div class="input-group-text rounded-0 rounded-start">Current</div>
                 </div>
                 <a asp-page="./Index" asp-route-Query="8" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary">Month</a>
                 <a asp-page="./Index" asp-route-Query="9" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary">Quarter</a>
@@ -51,7 +51,7 @@
         <div class="col-3 col-xl-1 d-none d-sm-block">
             <span class="validation-text" asp-validation-for="@Model.Q"></span>
         </div>
-        <div class="col-xs-12 col-xl-2 col-3 d-flex justify-content-md-between justify-content-xs-between me-xl-0">
+        <div class="col-xs-12 col-xl-2 col-3 d-flex justify-content-md-end justify-content-xs-between me-xl-0">
             <button class="btn btn-primary text-wrap btn-height" data-bs-toggle="modal" data-bs-target="#addIncomeModal" id="addIncomeButton">Add Income</button>
         </div>
     </div>

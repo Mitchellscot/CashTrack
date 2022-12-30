@@ -84,7 +84,7 @@ function adjustSelectListOptions(
 				}
 			})
 			.catch(err => {
-				console.log(err);
+				console.error(err);
 			});
 
 		fetch('/api/merchants/dropdown')
@@ -99,7 +99,7 @@ function adjustSelectListOptions(
 				}
 			})
 			.catch(err => {
-				console.log(err);
+				console.error(err);
 			});
 	} else {
 		while (categorySelect.firstChild) {
@@ -122,7 +122,7 @@ function adjustSelectListOptions(
 				}
 			})
 			.catch(err => {
-				console.log(err);
+				console.error(err);
 			});
 
 		fetch('/api/incomesource/dropdown')
@@ -137,7 +137,7 @@ function adjustSelectListOptions(
 				}
 			})
 			.catch(err => {
-				console.log(err);
+				console.error(err);
 			});
 	}
 }
@@ -194,7 +194,7 @@ function addCategorySelectListValuesForExpense(): void {
 			}
 		})
 		.catch(err => {
-			console.log(err);
+			console.error(err);
 		});
 
 	fetch('/api/merchants/dropdown')
@@ -207,7 +207,7 @@ function addCategorySelectListValuesForExpense(): void {
 			}
 		})
 		.catch(err => {
-			console.log(err);
+			console.error(err);
 		});
 }
 

@@ -59,7 +59,7 @@ namespace CashTrack.Pages.Settings
                 return Page();
             }
             TempData["SuccessMessage"] = "Successfully changed your password!";
-            return Page();
+            return LocalRedirect("/Settings");
         }
         public async Task<ActionResult> OnPostExport(int ExportOption, bool ExportAsReadable)
         {

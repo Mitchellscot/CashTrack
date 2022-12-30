@@ -49,12 +49,12 @@
         </div>
         <div class="col-4 d-flex justify-content-center">
             <div class="form-check me-3 d-flex align-items-center">
-                <input class="form-check-input me-2" type="radio" asp-for="ExportAsReadable" value="false">
-                <label asp-for="ExportAsReadable" class="form-check-label">Raw Data</label>
+                <input class="form-check-input me-2" id="ExportAsReadable-false" type="radio" asp-for="ExportAsReadable" value="false">
+                <label asp-for="ExportAsReadable" id="ExportAsReadable-false" class="form-check-label">Raw Data</label>
             </div>
             <div class="form-check d-flex align-items-center">
-                <input class="form-check-input me-2" type="radio" asp-for="ExportAsReadable" value="true">
-                <label asp-for="ExportAsReadable" class="form-check-label">Readable Data</label>
+                <input class="form-check-input me-2" id="ExportAsReadable-true" type="radio" asp-for="ExportAsReadable" value="true">
+                <label asp-for="ExportAsReadable" id="ExportAsReadable-true" class="form-check-label">Readable Data</label>
             </div>
         </div>
         <div class="col-3 d-flex justify-content-center">
@@ -74,19 +74,19 @@
             <button class="btn btn-primary btn-height" id="addImportRuleButton" data-bs-toggle="modal" data-bs-target="#addImportRuleModal">Add Import Rule</button>
         </div>
         <div class="col-md-3 col-6 py-md-0 py-2">
-            <button class="btn btn-primary btn-height" type="button" id="importButton" data-bs-toggle="modal" data-bs-target="#customCsvHeader">
+            <button class="btn btn-primary btn-height" type="button" id="imporCustomCSVtButton" data-bs-toggle="modal" data-bs-target="#customCsvHeaderModal">
                 Custom CSV Headers
             </button>
         </div>
         <div class="col-md-3 col-6 py-md-0 py-2">
-            <button class="btn btn-primary btn-height" type="button" id="importButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">
+            <button class="btn btn-primary btn-height" type="button" id="importCSVButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">
                 Import From CSV
             </button>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="customCsvHeader">
+<div class="modal fade" id="customCsvHeaderModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header text-center">
