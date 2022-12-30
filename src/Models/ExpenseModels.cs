@@ -103,5 +103,5 @@ public class ExpenseRefund
         get => _refundAmount;
         set => _refundAmount = Decimal.Round(value, 2);
     }
-    public bool ApplyFullAmount { get; set; }
+    public bool? ApplyFullAmount { get; set; }
 }

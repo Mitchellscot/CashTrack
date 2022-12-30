@@ -7,6 +7,7 @@ using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace CashTrack.Pages.Expenses
         public SplitModel(IExpenseService expenseService, ISubCategoryService subCategoryService, IMerchantService merchantService, IOptions<AppSettingsOptions> appSettings) => (_expenseService, _subCategoryService, _merchantService, _appSettings) = (expenseService, subCategoryService, merchantService, appSettings);
 
         [BindProperty]
-        public List<ExpenseSplit> ExpenseSplits { get; set; }
+        public List<ExpenseSplit> ExpenseSplits { get; set; } = new List<ExpenseSplit>();
         public decimal Total { get; set; }
         public DateTime Date { get; set; }
         public string Merchant { get; set; }
@@ -56,6 +57,14 @@ namespace CashTrack.Pages.Expenses
             Merchant = originalExpense.Merchant;
             this.Tax = Tax ?? _appSettings.Value.DefaultTax;
             this.Split = Split ?? 2;
+            for (int i = 0; i < this.Split; i++)
+            {
+                ExpenseSplits.Add(new ExpenseSplit()
+                {
+                    SubCategoryId = SubCategoryId,
+                    Amount = 0.00M
+                });
+            };
             SplitOptions = new SelectList(Enumerable.Range(2, 7));
             this.ReturnUrl = ReturnUrl ?? "~/Expenses/Index";
             return Page();
@@ -66,24 +75,48 @@ namespace CashTrack.Pages.Expenses
             {
                 return Page();
             }
+            var id = Convert.ToInt32(HttpContext.GetRouteData().Values["Id"]);
+            var originalExpense = await _expenseService.GetExpenseByIdAsync(id);
+            if (originalExpense == null)
+            {
+                TempData["Message"] = $"Unable to find expense with Id {id}";
+                return LocalRedirect("./Index");
+            }
+            var totalAmount = expenseSplits.Sum(x => x.Amount);
+            var originalAmount = originalExpense.Amount;
+            if (totalAmount != originalAmount)
+            {
+                ModelState.AddModelError("", "Original amount was not split evenly among the new expenses.");
+                return Page();
+            }
+            int expenseId = 0;
+            var deleteSuccess = false;
             try
             {
                 foreach (var expenseSplit in expenseSplits)
                 {
                     if (expenseSplit.Amount > 0)
                     {
-                        var expenseId = await _expenseService.CreateExpenseFromSplitAsync(expenseSplit);
+                        expenseId = await _expenseService.CreateExpenseFromSplitAsync(expenseSplit);
                     }
                 }
-                var deleteSuccess = await _expenseService.DeleteExpenseAsync(int.Parse(RouteData.Values["Id"].ToString()));
+                deleteSuccess = await _expenseService.DeleteExpenseAsync(int.Parse(RouteData.Values["Id"].ToString()));
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
                 return Page();
             }
-            TempData["Message"] = "Sucessfully Split the Expense!";
-            return LocalRedirect(ReturnUrl ?? "~/Expenses/Index");
+            if (expenseId > 0 && deleteSuccess)
+            {
+                TempData["SuccessMessage"] = "Sucessfully Split the Expense!";
+                return LocalRedirect(ReturnUrl ?? "~/Expenses/Index");
+            }
+            else
+            {
+                TempData["Message"] = "There was an error splitting the expense";
+                return LocalRedirect(ReturnUrl ?? "~/Expenses/Index");
+            }
         }
     }
 }

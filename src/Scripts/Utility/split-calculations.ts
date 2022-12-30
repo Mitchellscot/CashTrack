@@ -49,7 +49,7 @@ function updateExpenseTotalAmount(
 	isTaxed: boolean,
 ): void {
 	const totalAmountElement = document.getElementById(`totalAmount-${index}`)!;
-	const calculatedAmount = formatAmount((amount + amount) * taxAmount);
+	const calculatedAmount = formatAmount(amount + (amount * taxAmount));
 	totalAmountElement.innerHTML = isTaxed
 		? isNaN(calculatedAmount)
 			? '0'

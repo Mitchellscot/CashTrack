@@ -10,6 +10,7 @@ using FluentValidation;
 using System;
 using FluentValidation.AspNetCore;
 using CashTrack.Common.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace CashTrack.Pages
 {
@@ -18,12 +19,12 @@ namespace CashTrack.Pages
     {
         private readonly SignInManager<UserEntity> _signInManager;
         private readonly UserManager<UserEntity> _userManager;
-        private readonly IValidator<AuthenticationModels.Request> _validator;
+        private readonly ILogger<LoginModel> _logger;
 
         public string ReturnUrl { get; set; }
         [BindProperty]
         public AuthenticationModels.Request LoginRequest { get; set; }
-        public LoginModel(IValidator<AuthenticationModels.Request> validator, SignInManager<UserEntity> signInManager, UserManager<UserEntity> userManager) => (_validator, _signInManager, _userManager) = (validator, signInManager, userManager);
+        public LoginModel(SignInManager<UserEntity> signInManager, UserManager<UserEntity> userManager, ILogger<LoginModel> logger) => (_signInManager, _userManager, _logger) = (signInManager, userManager, logger);
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -39,6 +40,7 @@ namespace CashTrack.Pages
             var result = await _signInManager.PasswordSignInAsync(LoginRequest.UserName, LoginRequest.Password, true, false);
             if (result.Succeeded)
             {
+                _logger.LogInformation($"{LoginRequest.UserName} has logged in at {DateTime.Now} CST Time");
                 return LocalRedirect(ReturnUrl);
             }
             else

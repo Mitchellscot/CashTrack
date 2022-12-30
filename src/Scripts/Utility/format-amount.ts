@@ -16,6 +16,7 @@ export const formatAmountForEvent = (e: Event): void => {
 
 export const formatAmount = (amount: string | number): number => parseFloat(
 	(
-		(Math.round(parseFloat(amount.toString()) * 10) ** 2) / (10 ** 2)
-	).toFixed(2),
-);
+		// eslint-disable-next-line prefer-exponentiation-operator
+		(Math.round(parseFloat(amount.toString()) * Math.pow(10, 2)) / Math.pow(10, 2)
+		).toFixed(2)
+	));
