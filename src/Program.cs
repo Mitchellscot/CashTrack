@@ -39,6 +39,8 @@ using FluentValidation;
 using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Services.BudgetService;
 using CashTrack.Services.SummaryService;
+using CashTrack.Common.Middleware;
+using Microsoft.Extensions.Options;
 
 namespace CashTrack
 {
@@ -57,7 +59,6 @@ namespace CashTrack
 
             ConfigureMiddleware(app, app.Services, app.Environment);
             ConfigureEndpoints(app, app.Services);
-
             app.Run();
 
         }
@@ -132,6 +133,8 @@ namespace CashTrack
             services.AddScoped<IBudgetService, BudgetService>();
             services.AddScoped<ISummaryService, SummaryService>();
 
+            services.AddScoped<IpAddressMiddleware>();
+
         }
         private static void ConfigureMiddleware(IApplicationBuilder app, IServiceProvider services, IWebHostEnvironment env)
         {
@@ -142,6 +145,7 @@ namespace CashTrack
                 app.UseHttpsRedirection();
             }
             app.UseStaticFiles();
+            app.UseMiddleware<IpAddressMiddleware>();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
