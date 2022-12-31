@@ -1,4 +1,5 @@
-﻿namespace CashTrack.Models.AuthenticationModels;
+﻿#nullable enable
+namespace CashTrack.Models.AuthenticationModels;
 
 public class AuthenticationModels
 {

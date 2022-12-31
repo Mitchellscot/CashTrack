@@ -59,7 +59,7 @@ namespace CashTrack.Pages
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation($"{LoginRequest.UserName} has logged out at {DateTime.Now} CST Time from {HttpContext.Request.Host.Host}");
-            return LocalRedirect(Url.Content("~/login"));
+            return RedirectToPage("/");
         }
     }
 }

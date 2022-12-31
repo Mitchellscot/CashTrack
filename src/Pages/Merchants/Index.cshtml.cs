@@ -79,7 +79,7 @@ namespace CashTrack.Pages.Merchants
             }
 
             TempData["SuccessMessage"] = MerchantModal.IsEdit ? "Successfully edited a Merchant!" : "Successfully added a new Merchant!";
-            return RedirectToPage(MerchantModal.Returnurl);
+            return LocalRedirect(Url.Content(MerchantModal.ReturnUrl));
         }
 
     }

@@ -167,7 +167,7 @@ namespace CashTrack.Pages.Incomes
             }
 
             TempData["SuccessMessage"] = Income.IsEdit ? "Sucessfully updated the Income!" : "Sucessfully added new Income!";
-            return RedirectToPage(Income.Returnurl, new { Query = Query, Q = Q, PageNumber = PageNumber == 0 ? 1 : PageNumber });
+            return LocalRedirect($"{Income.ReturnUrl}?query={Query}&q={Q}&pageNumber={PageNumber}");
 
         }
         public async Task<IActionResult> OnPostDelete(int incomeId, int query, string q, int pageNumber)

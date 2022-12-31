@@ -74,10 +74,10 @@
         @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Import/Expenses" })
     </div>
     <div class="modal fade" id="addMerchantModal">
-        @await Html.PartialAsync("AddEditMerchantModal", new AddEditMerchantModal() { Returnurl = "/Import/Expenses", SuggestOnLookup = true, IsEdit = false })
+        @await Html.PartialAsync("AddEditMerchantModal", new AddEditMerchantModal() { ReturnUrl = "/Import/Expenses", SuggestOnLookup = true, IsEdit = false })
     </div>
     <div class="modal fade" id="addSubCategoryModal">
-        @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal() { Returnurl="/Import/Expenses", InUse=true, IsEdit=false, MainCategoryList= new SelectList(Model.MainCategoryList, "Id", "Category") })
+        @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal() { ReturnUrl="~/Import/Expenses", InUse=true, IsEdit=false, MainCategoryList= new SelectList(Model.MainCategoryList, "Id", "Category") })
     </div>
 
 

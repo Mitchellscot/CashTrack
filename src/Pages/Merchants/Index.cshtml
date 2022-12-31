@@ -35,7 +35,7 @@
             <span asp-validation-for="@Model.SearchTerm"></span>
             <button class="btn btn-primary float-end" id="addMerchantButton" data-bs-toggle="modal" data-bs-target="#addMerchantModal">Add Merchant</button>
             <div class="modal fade" id="addMerchantModal">
-                @await Html.PartialAsync("AddEditMerchantModal", new AddEditMerchantModal() { Returnurl = "/Merchants/Index", SuggestOnLookup = true, IsEdit = false })
+                @await Html.PartialAsync("AddEditMerchantModal", new AddEditMerchantModal() { ReturnUrl = "/Merchants/Index", SuggestOnLookup = true, IsEdit = false })
             </div>
         </div>
 

@@ -28,7 +28,7 @@ public record Merchant
 public record AddEditMerchantModal : Merchant
 {
     public bool IsEdit { get; set; }
-    public string Returnurl { get; set; }
+    public string ReturnUrl { get; set; }
 }
 public record MerchantListItem
 {

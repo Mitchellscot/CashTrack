@@ -42,7 +42,7 @@ public class Expense : Transaction
 public class AddEditExpenseModal : Expense
 {
     public bool IsEdit { get; set; }
-    public string Returnurl { get; set; }
+    public string ReturnUrl { get; set; }
     public SelectList SubCategoryList { get; set; }
     public SelectList MainCategoryList { get; set; }
     public int? PageNumber { get; set; }
