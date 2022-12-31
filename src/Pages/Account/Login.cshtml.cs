@@ -11,6 +11,7 @@ using System;
 using FluentValidation.AspNetCore;
 using CashTrack.Common.Extensions;
 using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
 
 namespace CashTrack.Pages
 {
@@ -23,8 +24,13 @@ namespace CashTrack.Pages
 
         public string ReturnUrl { get; set; }
         [BindProperty]
-        public AuthenticationModels.Request LoginRequest { get; set; }
+        public AuthenticationModels.Request LoginRequest { get; set; } = new AuthenticationModels.Request();
         public LoginModel(SignInManager<UserEntity> signInManager, UserManager<UserEntity> userManager, ILogger<LoginModel> logger) => (_signInManager, _userManager, _logger) = (signInManager, userManager, logger);
+
+        public IActionResult OnGet()
+        {
+            return Page();
+        }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -40,7 +46,7 @@ namespace CashTrack.Pages
             var result = await _signInManager.PasswordSignInAsync(LoginRequest.UserName, LoginRequest.Password, true, false);
             if (result.Succeeded)
             {
-                _logger.LogInformation($"{LoginRequest.UserName} has logged in at {DateTime.Now} CST Time");
+                _logger.LogInformation($"{LoginRequest.UserName} has logged in at {DateTime.Now} CST Time from {HttpContext.Request.Host.Host}");
                 return LocalRedirect(ReturnUrl);
             }
             else
@@ -52,7 +58,8 @@ namespace CashTrack.Pages
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
-            return LocalRedirect("/login");
+            _logger.LogInformation($"{LoginRequest.UserName} has logged out at {DateTime.Now} CST Time from {HttpContext.Request.Host.Host}");
+            return LocalRedirect(Url.Content("~/login"));
         }
     }
 }
