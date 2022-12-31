@@ -46,7 +46,7 @@ namespace CashTrack.Pages
             var result = await _signInManager.PasswordSignInAsync(LoginRequest.UserName, LoginRequest.Password, true, false);
             if (result.Succeeded)
             {
-                _logger.LogInformation($"{LoginRequest.UserName} has logged in at {DateTime.Now} CST Time from {HttpContext.Request.Host.Host}");
+                _logger.LogInformation($"{LoginRequest.UserName} has logged in at {DateTime.Now} CST Time from {HttpContext.Connection.RemoteIpAddress}");
                 return LocalRedirect(ReturnUrl);
             }
             else
