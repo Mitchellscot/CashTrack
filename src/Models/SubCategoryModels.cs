@@ -28,11 +28,11 @@ public class SubCategory : Category
 public class AddEditSubCategoryModal : SubCategory
 {
     public bool IsEdit { get; set; }
-    public string Returnurl { get; set; }
+    public string ReturnUrl { get; set; }
     public SelectList MainCategoryList { get; set; }
 }
 public class SubCategoryQuickView : Category
-{ 
+{
     public decimal Amount { get; set; }
     public int Count { get; set; }
 }

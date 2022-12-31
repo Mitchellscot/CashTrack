@@ -36,7 +36,7 @@ namespace CashTrack.Pages.Expenses.Categories
 
         public async Task<IActionResult> OnGet()
         {
-            
+
             if (SearchTerm != null)
             {
                 try
@@ -83,7 +83,7 @@ namespace CashTrack.Pages.Expenses.Categories
             }
 
             TempData["SuccessMessage"] = SubCategoryModal.IsEdit ? "Successfully edited a Category!" : "Successfully added a new Category!";
-            return RedirectToPage(SubCategoryModal.Returnurl);
+            return LocalRedirect(Url.Content(SubCategoryModal.ReturnUrl));
         }
         private async Task<IActionResult> PrepareAndRenderPage()
         {

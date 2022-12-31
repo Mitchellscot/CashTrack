@@ -67,7 +67,7 @@
         InUse = Model.IncomeCategory.InUse,
         Notes = Model.IncomeCategory.Notes,
         IsEdit = true,
-        Returnurl="/Income/Categories/Index"
+        ReturnUrl="~/Income/Categories/Index"
         })
     </div>
 
@@ -159,7 +159,7 @@
                     </span>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <a class="link-success float-end text-decoration-underline"
-                       asp-page="/Income/Index" asp-route-Query="8"
+                       asp-page="/Income/Index" asp-route-Query="7"
                        asp-route-Q="@Model.IncomeCategory.Id"
                        asp-route-pageNumber="1">
                         View All

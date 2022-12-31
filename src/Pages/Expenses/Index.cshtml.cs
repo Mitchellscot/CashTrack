@@ -170,7 +170,7 @@ namespace CashTrack.Pages.Expenses
                 var success = Expense.IsEdit ? await _expenseService.UpdateExpenseAsync(Expense) : await _expenseService.CreateExpenseAsync(Expense);
 
                 TempData["SuccessMessage"] = Expense.Id.HasValue ? "Sucessfully updated the Expense!" : "Sucessfully added a new Expense!";
-                return RedirectToPage(Expense.Returnurl, new { query = query, q = q, q2 = q2, pageNumber = pageNumber });
+                return LocalRedirect($"{Expense.ReturnUrl}?query={query}&q={q}&q2={q2}&pageNumber={pageNumber}");
             }
             catch (CategoryNotFoundException)
             {

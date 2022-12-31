@@ -115,7 +115,7 @@ const adjustFormBasedOnQueryValue = (queryValue: number) => {
 					}
 				})
 				.catch(err => {
-					console.log(err);
+					console.error(err);
 				});
 			firstInput.type = 'text';
 			break;
@@ -147,7 +147,7 @@ const adjustFormBasedOnQueryValue = (queryValue: number) => {
 					}
 				})
 				.catch(err => {
-					console.log(err);
+					console.error(err);
 				});
 			firstInput.type = 'text';
 			break;

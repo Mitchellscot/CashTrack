@@ -27,7 +27,7 @@ public class AddEditIncomeCategoryModal : Category
     public string Notes { get; set; }
     public bool InUse { get; set; } = true;
     public bool IsEdit { get; set; }
-    public string Returnurl { get; set; }
+    public string ReturnUrl { get; set; }
 
 }
 public class IncomeCategoryDetail : Category

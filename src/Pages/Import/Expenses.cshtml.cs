@@ -83,7 +83,7 @@ namespace CashTrack.Pages.Import
             else
                 InfoMessage += result;
 
-            return RedirectToPage(Import.ReturnUrl);
+            return LocalRedirect(Url.Content(Import.ReturnUrl));
         }
         public async Task<IActionResult> OnPostExpenseAdd()
         {
@@ -110,7 +110,7 @@ namespace CashTrack.Pages.Import
             }
 
             TempData["SuccessMessage"] = "Sucessfully Added A New Expense!";
-            return RedirectToPage($"../Import/Expenses", new { pageNumber = PageNumber });
+            return RedirectToPage("../Import/Expenses", new { pageNumber = PageNumber });
         }
         public async Task<IActionResult> OnPostRemoveExpense(int pageNumber)
         {
@@ -124,7 +124,7 @@ namespace CashTrack.Pages.Import
                 return await PrepareAndRenderPage();
             }
             TempData["SuccessMessage"] = "Successfully Removed the Expense!";
-            return RedirectToPage($"../Import/Expenses", new { pageNumber = pageNumber });
+            return RedirectToPage("../Import/Expenses", new { pageNumber = pageNumber });
         }
         public async Task<IActionResult> OnPostSplitExpense(string ReturnUrl)
         {
@@ -149,7 +149,7 @@ namespace CashTrack.Pages.Import
                 ModelState.AddModelError("", ex.Message);
                 return await PrepareAndRenderPage();
             }
-            return RedirectToPage($"../Expenses/Split", new { id = expenseId, ReturnUrl = ReturnUrl });
+            return RedirectToPage("../Expenses/Split", new { id = expenseId, ReturnUrl = ReturnUrl });
         }
         private async Task<IActionResult> PrepareAndRenderPage()
         {

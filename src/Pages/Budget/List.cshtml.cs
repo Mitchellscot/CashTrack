@@ -45,18 +45,18 @@ namespace CashTrack.Pages.Budget
                 if (success > 0)
                 {
                     TempData["SuccessMessage"] = "Successfully Budgeted!";
-                    return RedirectToPage(this.BudgetModal.ReturnUrl);
+                    return LocalRedirect(Url.Content(BudgetModal.ReturnUrl));
                 }
                 else
                 {
                     TempData["InfoMessage"] = "Budget was not saved.";
-                    return RedirectToPage(this.BudgetModal.ReturnUrl);
+                    return LocalRedirect(Url.Content(BudgetModal.ReturnUrl));
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                return RedirectToPage(this.BudgetModal.ReturnUrl, new { PageNumber = this.BudgetModal.PageNumber, Query = this.BudgetModal.Query, Q2 = this.BudgetModal.Q2 });
+                return LocalRedirect($"{Url.Content(BudgetModal.ReturnUrl)}?pageNumber={BudgetModal.PageNumber}&query={BudgetModal.Query}&q2={BudgetModal.Q2}");
             }
         }
         public async Task<IActionResult> OnPostEditBudgetModal()
@@ -67,12 +67,12 @@ namespace CashTrack.Pages.Budget
                 if (success > 0)
                 {
                     TempData["SuccessMessage"] = "Successfully Edited Budget!";
-                    return RedirectToPage(this.BudgetModal.ReturnUrl);
+                    return LocalRedirect(Url.Content(BudgetModal.ReturnUrl));
                 }
                 else
                 {
                     TempData["InfoMessage"] = "Budget was not saved.";
-                    return RedirectToPage(this.BudgetModal.ReturnUrl);
+                    return LocalRedirect(Url.Content(BudgetModal.ReturnUrl));
                 }
             }
             catch (Exception ex)

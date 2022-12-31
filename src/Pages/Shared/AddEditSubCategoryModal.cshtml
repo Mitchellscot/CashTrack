@@ -22,13 +22,13 @@
                         <input asp-for="@Model.Id" type="hidden" />
                     }
                     <input asp-for="@Model.IsEdit" type="hidden" />
-                    <input asp-for="@Model.Returnurl" type="hidden" />
+                    <input asp-for="@Model.ReturnUrl" type="hidden" />
                     <div class="row mb-3">
                         <div class="col-8">
                             <label class="visually-hidden" asp-for="@Model.Name">Name</label>
                             <div class="input-group">
                                 <div class="input-group-text text-center">Name</div>
-                                <input required data-val="true" asp-for=@Model.Name type="text" class="form-control">
+                                <input required data-val="true" asp-for=@Model.Name type="text" class="form-control text-center">
                                 <span asp-validation-for="@Model.Name"></span>
                             </div>
                         </div>

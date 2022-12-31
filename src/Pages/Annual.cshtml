@@ -466,7 +466,7 @@
     @await Html.PartialAsync("AddEditExpenseModal",
     new AddEditExpenseModal() {
     IsEdit = false,
-    Returnurl = "/Annual",
+    ReturnUrl = "~/Annual",
     SubCategoryList = new SelectList(Model.SubCategoryList, "Id", "Category"),
     Date= DateTime.Today,
     MainCategoryList = new SelectList(Model.MainCategoryList, "Id", "Category"),
@@ -481,7 +481,7 @@
 @* Add Income Modal *@
 <div class="modal fade" id="addIncomeModal">
     @await Html.PartialAsync("AddEditIncomeModal", new AddEditIncomeModal(){
-    Returnurl = "/Annual",
+    ReturnUrl = "~/Annual",
     IsEdit = false,
     CategoryList = new SelectList(Model.IncomeCategoryList, "Id", "Category"),
     Date= DateTime.Today,
@@ -492,7 +492,7 @@
 @*Add Merchant Modal*@
 <div class="modal fade" id="addMerchantModal">
     @await Html.PartialAsync("AddEditMerchantModal", new AddEditMerchantModal() {
-    Returnurl = "/Annual",
+    ReturnUrl = "~/Annual",
     SuggestOnLookup = true,
     IsEdit = false
     })
@@ -502,7 +502,7 @@
 <div class="modal fade" id="addSourceModal">
     @await Html.PartialAsync("AddEditIncomeSourceModal", new AddEditIncomeSourceModal()
     {
-    ReturnUrl = "/Annual",
+    ReturnUrl = "~/Annual",
     IsEdit = false,
     SuggestOnLookup = true
     })
@@ -511,7 +511,7 @@
 @*Add Sub Category Modal*@
 <div class="modal fade" id="addSubCategoryModal">
     @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal()
-    { Returnurl="/Annual",
+    { ReturnUrl="~/Annual",
     InUse=true,
     IsEdit=false,
     MainCategoryList=new SelectList(Model.MainCategoryList, "Id", "Category"),
@@ -522,7 +522,7 @@
 @*Add Main Category Modal*@
 <div class="modal fade" id="addMainCategoryModal">
     @await Html.PartialAsync("AddEditMainCategoryModal", new AddEditMainCategoryModal() {
-    ReturnUrl = "/Annual",
+    ReturnUrl = "~/Annual",
     IsEdit = false});
 </div>
 @*EndAdd Main Category Modal*@
@@ -530,7 +530,7 @@
 <div class="modal fade" id="addIncomeCategoryModal">
     @await Html.PartialAsync("AddEditIncomeCategoryModal",
     new AddEditIncomeCategoryModal() {
-    Returnurl = "/Annual",
+    ReturnUrl = "~/Annual",
     InUse = true,
     IsEdit = false,
     })
@@ -538,7 +538,7 @@
 @*End Add Income Category Modal*@
 @*Import Transactions Modal*@
 <div class="modal fade" id="importCsvModal">
-    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Annual" })
+    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Annual" })
 </div>
 @*End Import Transactions Modal*@
 @section Scripts {

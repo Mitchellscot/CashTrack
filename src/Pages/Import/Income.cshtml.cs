@@ -50,7 +50,7 @@ namespace CashTrack.Pages.Import
                 await PrepareData();
                 return Page();
             }
-            if (!string.IsNullOrEmpty(SelectedIncome.Source) && 
+            if (!string.IsNullOrEmpty(SelectedIncome.Source) &&
                 !(await _incomeSourceService.GetAllIncomeSourceNames()).Any(x => x == SelectedIncome.Source))
             {
                 ModelState.AddModelError("", "That income Source does not exist.");
@@ -73,7 +73,7 @@ namespace CashTrack.Pages.Import
                 return RedirectToPage("../Income/Refund", new { id = incomeId });
 
             TempData["SuccessMessage"] = "Sucessfully Added New Income!";
-            return RedirectToPage($"../Import/Income", new { pageNumber = PageNumber });
+            return RedirectToPage("../Import/Income", new { pageNumber = PageNumber });
         }
         public async Task<IActionResult> OnPostRemoveIncome(int pageNumber)
         {
@@ -87,7 +87,7 @@ namespace CashTrack.Pages.Import
                 return Page();
             }
             TempData["SuccessMessage"] = "Successfully Removed the Income!";
-            return RedirectToPage($"../Import/Income", new { pageNumber = pageNumber });
+            return RedirectToPage("../Import/Income", new { pageNumber = pageNumber });
         }
         private async Task PrepareData()
         {

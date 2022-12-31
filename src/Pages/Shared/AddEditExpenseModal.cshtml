@@ -30,7 +30,7 @@
                         <input asp-for="@Model.Id" type="hidden" />
                     }
                     <input asp-for="@Model.IsEdit" type="hidden" />
-                    <input asp-for="@Model.Returnurl" type="hidden" />
+                    <input asp-for="@Model.ReturnUrl" type="hidden" />
                     <input asp-for="@Model.RefundNotes" type="hidden" />
                     <div class="row mb-3">
                         <div class="col-4">
@@ -166,7 +166,7 @@
     {
         @* Add SubCategory Modal *@
         <div class="modal fade" id="addEditSubCategoryModal">
-            @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal() { Returnurl=$"{Model.Returnurl}", InUse=true, IsEdit=false, MainCategoryList=Model.MainCategoryList })
+            @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal() { ReturnUrl=$"{Model.ReturnUrl}", InUse=true, IsEdit=false, MainCategoryList=Model.MainCategoryList })
         </div>
         @* End SubCategory Modal *@
     }

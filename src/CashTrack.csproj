@@ -68,6 +68,7 @@
 		<None Remove="Scripts\Utility\source-autocomplete.ts" />
 		<None Remove="Scripts\Utility\split-calculations.ts" />
 		<None Remove="Scripts\Utility\subcategory-autocomplete.ts" />
+		<None Remove="Scripts\_tests\format-amount.test.ts" />
 	</ItemGroup>
 	<ItemGroup>
 		<TypeScriptCompile Include="Scripts\Budget\budget.ts" />
@@ -107,6 +108,7 @@
 		<TypeScriptCompile Include="Scripts\Utility\source-autocomplete.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\split-calculations.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\subcategory-autocomplete.ts" />
+		<TypeScriptCompile Include="Scripts\_tests\format-amount.test.ts" />
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="wwwroot\css\" />

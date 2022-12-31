@@ -16,7 +16,6 @@ import {
 	loadMainCategoryOnSubCategorySelect,
 	loadMainCategoryOnSubCategorySelectEdit,
 } from '../Utility/loadBudgetStatistics';
-console.log('Budget Page');
 
 hideCategoryWhenSavingsIsSelectedEditModal();
 hideCategoryWhenSavingsIsSelectedAddModal();

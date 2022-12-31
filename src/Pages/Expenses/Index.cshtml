@@ -62,7 +62,7 @@
         @await Html.PartialAsync("AddEditExpenseModal",
         new AddEditExpenseModal() {
             IsEdit = false, 
-            Returnurl = "/Expenses/Index", 
+            ReturnUrl = "/Expenses/Index", 
             SubCategoryList = new SelectList(Model.CategoryList, "Id", "Category"), 
             Date= DateTime.Today, 
             MainCategoryList = new SelectList(Model.MainCategoryList, "Id", "Category"),
@@ -194,7 +194,7 @@
                                         @await Html.PartialAsync("AddEditExpenseModal",
                                 new AddEditExpenseModal() {
                                 IsEdit = true,
-                                Returnurl = "/Expenses/Index",
+                                ReturnUrl = "/Expenses/Index",
                                 SubCategoryId = expense.SubCategoryId,
                                 SubCategoryList = new SelectList(Model.CategoryList, "Id", "Category",
                                 expense.SubCategoryId),

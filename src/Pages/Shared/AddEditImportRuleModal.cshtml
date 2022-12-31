@@ -40,6 +40,7 @@
                                 <div class="form-check">
                                     <label class="form-check-label" asp-for="RuleType">@rule.ToString()</label>
                                     <input type="radio"
+                                   id=@($"RuleType-{(int)rule}")
                                        class="form-check-input filter-rule-radio-js"
                                        asp-for="RuleType"
                                        value=@((int)rule)
@@ -59,6 +60,7 @@
                                         @transactionType.ToString()
                                         </label>
                                     <input type="radio"
+                                        id=@($"TransactionType-{(int)transactionType}")
                                         data-id=@dataId
                                         data-is-edit=@Model.IsEdit
                                         class="form-check-input transaction-type-radio-js"
@@ -78,6 +80,7 @@
                                 <div class="form-check col mx-3">
                                     <label class="form-check-label" asp-for="FileType">@fileType.ToString()</label>
                                     <input type="radio"
+                                       id=@($"FileType-ImportRule-{(int)fileType}")
                                        class="form-check-input"
                                        asp-for="FileType"
                                        value=@((int)fileType)
