@@ -75,8 +75,10 @@ namespace CashTrack
             app.AddAutoMapper(typeof(Program));
             app.AddDbContext<AppDbContext>(o =>
             {
-                o.UseSqlServer(connectionString);
-                //o.EnableSensitiveDataLogging(true);
+                o.UseSqlServer(connectionString, builder =>
+                {
+                    builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5), null);
+                });
             });
             app.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
             app.ConfigureApplicationCookie(o => o.LoginPath = "/login");
