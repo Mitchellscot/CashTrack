@@ -97,12 +97,14 @@
                                 <input type="hidden" asp-for="ExpenseSplits[i].Tax" value="@Model.Tax" id="taxAmount-@i">
                                 <input type="hidden" asp-for="ExpenseSplits[i].Date" value="@Model.Date" id="date-@i">
                                 <input type="hidden" asp-for="ExpenseSplits[i].Merchant" value="@Model.Merchant" id="merchant-@i">
-                                <td>
+                                @*The value of the below input is submitted, the other input for totalAmountForDisplay-@i is just for display*@
+                                @*That's just because you can't submit a disabled input, and it shouldn't be enabled to edit.*@
+                                <input type="hidden" asp-for="ExpenseSplits[i].Amount" id="totalAmount-@i" data-index="@i" class="total-amount-js" />
+                                <td class="d-flex justify-content-center">
                                     <input placeholder="0.00"
-                                       class="form-control split-amount-js amount-100-wide"
+                                       class="form-control split-amount-js amount-100-wide text-center "
                                        id="amount-@i" type="number" min="0.00" step="0.01"
-                                       
-                                       data-tax-amount="@Model.Tax" data-index="@i" />
+                                       data-index="@i" />
                                     <span class="validation-text"
                                       asp-validation-for="ExpenseSplits[i].Amount"></span>
                                 </td>
@@ -110,12 +112,12 @@
                                     <div class="form-check d-flex justify-content-center">
                                         <input asp-for="ExpenseSplits[i].Taxed"
                                            class="form-check-input split-tax-js"
-                                           data-index="@i" data-tax-amount="@Model.Tax"
+                                           data-index="@i"
                                            type="checkbox" id="isTaxed-@i">
                                     </div>
                                 </td>
-                                <td class="text-center total-amount-js" id="totalAmount-@i">
-                                    0.00
+                                <td class="d-flex justify-content-center">
+                                    <input id="totalAmountForDisplay-@i" type="number" disabled  placeholder="0.00" step="0.01" class="form-control amount-100-wide text-center white-on-disabled" />
                                 </td>
                                 <td>
                                     <select id="subCategory-@i"
