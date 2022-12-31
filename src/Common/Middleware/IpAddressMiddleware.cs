@@ -14,7 +14,7 @@ namespace CashTrack.Common.Middleware
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             var validIp = _appSettings.Value.IpAddress;
-            var incomingIp = context.Connection.RemoteIpAddress.ToString();
+            var incomingIp = context?.Connection?.RemoteIpAddress?.ToString() ?? string.Empty;
             if (incomingIp != validIp)
                 _logger.LogWarning($"Incoming request for {context.Request.Path} from {incomingIp}");
             else

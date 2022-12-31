@@ -68,6 +68,7 @@ module.exports = (env, argv) => {
 	if (argv.mode === 'production') {
 		//I don't know... uglify or something?
 	}
+	config.cache = argv.env.WEBPACK_WATCH ? {type: 'memory'} : {type: 'filesystem'};
 
 	return config;
 };
