@@ -14,7 +14,7 @@
 @using System.Text.Json;
 @model IndexModel
 @{
-    ViewData["Title"] = " | Dashboard";
+    ViewData["Title"] = "- Dashboard";
     Layout = "_Layout";
     var currentMonth = Model.Month == DateTime.Now.Month && Model.Year == DateTime.Now.Year;
     var realizedIncomePercentage = $"{@Model.SummaryResponse.MonthlyProgress.RealizedIncome}%";
