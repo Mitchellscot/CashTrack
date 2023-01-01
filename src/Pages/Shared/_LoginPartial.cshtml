@@ -1,9 +1,4 @@
-﻿@using CashTrack.Data.Entities
-@using Microsoft.AspNetCore.Identity
-@inject SignInManager<UserEntity> SignInManager
-@inject UserManager<UserEntity> UserManager
-
-<li class="text-nowrap list-unstyled">
+﻿<li class="text-nowrap list-unstyled">
     <form method="post" asp-page="/Account/Logout" asp-route-ReturnUrl="~/" id="logoutForm">
         <button type="submit" class="icon-button">
             <i class="bi bi-box-arrow-right text-white logout-button"></i>
