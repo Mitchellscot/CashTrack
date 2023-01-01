@@ -1,5 +1,5 @@
 # CashTrack
-![CashTrack](src/wwwroot/images/cash-track.png)
+![CashTrack](src/wwwroot/images/cash-track-login.webp)
 
 This is a budgeting app.
 
