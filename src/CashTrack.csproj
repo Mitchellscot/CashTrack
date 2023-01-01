@@ -39,6 +39,13 @@
 		<None Remove="Migrations\**" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Content Remove=".prettierrc.json" />
+	  <Content Remove="tsconfig.json" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Remove=".eslintrc.js" />
+		<None Remove=".prettierIgnore" />
+		<None Remove="jest.config.js" />
 		<None Remove="Scripts\Budget\budget.ts" />
 		<None Remove="Scripts\Home\annual.ts" />
 		<None Remove="Scripts\Home\summary.ts" />
