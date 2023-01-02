@@ -5,9 +5,9 @@
     },
     "mssql1": {
       "secretStore": "LocalSecretsFile",
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/cashtrack-db-server/databases/CashTrack_db",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/cash-track/databases/dev",
       "type": "mssql.azure",
-      "connectionId": "ConnectionStrings",
+      "connectionId": "ConnectionStrings:Development",
       "dynamicId": null
     }
   }
