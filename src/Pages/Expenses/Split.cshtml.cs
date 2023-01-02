@@ -115,7 +115,8 @@ namespace CashTrack.Pages.Expenses
                 ExpenseSplits.Add(new ExpenseSplit()
                 {
                     SubCategoryId = SubCategoryId,
-                    Amount = 0.00M
+                    Amount = 0.00M,
+                    Merchant = originalExpense.Merchant
                 });
             };
             SplitOptions = new SelectList(Enumerable.Range(2, 7));

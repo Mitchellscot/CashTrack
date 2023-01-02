@@ -35,7 +35,7 @@
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
     @if (Model.ReviewAmount > 0)
     {
-        <div class="alert alert-danger">You have @Model.ReviewAmount transactions to review. <a asp-page="./Import/Expenses">Review them here</a></div>
+        <div class="alert alert-info">You have @Model.ReviewAmount transactions to review. <a asp-page="./Import/Expenses">Review them here</a></div>
     }
 
     <div class="row mt-2 border-bottom d-flex justify-content-between">
@@ -146,7 +146,7 @@
         @if (!dataIsNotEmptyForTheMonth)
         {
             <div class="d-flex justify-content-center col mt-4">
-                <div class="alert alert-dismissible alert-danger col-auto text-center">
+                <div class="alert alert-dismissible alert-warning col-auto text-center">
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     <h3 class="mb-4"><strong>You have no data available to display.</strong></h3>
                     <p>
@@ -578,7 +578,7 @@
 @*End Add Income Category Modal*@
 @*Import Transactions Modal*@
 <div class="modal fade" id="importCsvModal">
-    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Index" })
+    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Import/Expenses" })
 </div>
 @*End Import Transactions Modal*@
 @await Html.PartialAsync("TransactionBreakdownModal", new TransactionBreakdownModalModel()
