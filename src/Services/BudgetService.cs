@@ -162,7 +162,11 @@ namespace CashTrack.Services.BudgetService
         }
         public async Task<int[]> GetAnnualBudgetYearsAsync()
         {
-            return (await _budgetRepo.Find(x => true)).GroupBy(x => x.Year).Select(x => x.Key).ToArray();
+            var years = (await _budgetRepo.Find(x => true)).GroupBy(x => x.Year).Select(x => x.Key).ToList();
+            var currentYear = DateTime.Now.Year;
+            if (!years.Contains(currentYear))
+                years.Add(currentYear);
+            return years.ToArray();
         }
 
         public async Task<int> CreateBudgetItemAsync(AddEditBudgetAllocation request)
