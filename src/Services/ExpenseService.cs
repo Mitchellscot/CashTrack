@@ -244,7 +244,11 @@ public class ExpenseService : IExpenseService
 
     public async Task<int[]> GetAnnualSummaryYearsAsync()
     {
-        return (await _expenseRepo.Find(x => true)).GroupBy(x => x.Date.Year).Select(x => x.Key).ToArray();
+        var years = (await _expenseRepo.Find(x => true)).GroupBy(x => x.Date.Year).Select(x => x.Key).ToList();
+        var currentYear = DateTime.Now.Year;
+        if (!years.Contains(currentYear))
+            years.Add(currentYear);
+        return years.ToArray();
     }
 }
 public class ExpenseMapperProfile : Profile

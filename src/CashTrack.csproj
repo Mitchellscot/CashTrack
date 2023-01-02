@@ -78,9 +78,6 @@
 		<None Remove="Scripts\_tests\format-amount.test.ts" />
 	</ItemGroup>
 	<ItemGroup>
-		<_WebToolingArtifacts Remove="Properties\PublishProfiles\cash-track-dev - Zip Deploy.pubxml" />
-	</ItemGroup>
-	<ItemGroup>
 		<TypeScriptCompile Include="Scripts\Budget\budget.ts" />
 		<TypeScriptCompile Include="Scripts\Expenses\expenses.ts" />
 		<TypeScriptCompile Include="Scripts\Expenses\split.ts" />

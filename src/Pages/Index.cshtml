@@ -24,6 +24,7 @@
     var annualSavingsPercentage = $"{@Model.SummaryResponse.AnnualSavingsProgress.AnnualSavingsPercentDone}%";
     var annualSavingsAmount = $"{@Model.SummaryResponse.AnnualSavingsProgress.AnnualSavingsAmount}";
     var monthQuery = Model.Year + "-" + Model.Month;
+    var dataIsNotEmptyForTheMonth = Model.SummaryResponse.MonthlySummary.BudgetedExpenses > 0 || Model.SummaryResponse.MonthlySummary.BudgetedIncome > 0 || Model.SummaryResponse.MonthlySummary.RealizedIncome > 0 || Model.SummaryResponse.MonthlySummary.RealizedExpenses > 0;
 }
 <div class="container-fluid">
     @await Html.PartialAsync("_MessagePartial",
@@ -142,7 +143,24 @@
         </div>
     </div>
     <div class="row mb-3">
-        @if (Model.SummaryResponse.MonthlySummary != null)
+        @if (!dataIsNotEmptyForTheMonth)
+        {
+            <div class="d-flex justify-content-center col mt-4">
+                <div class="alert alert-dismissible alert-danger col-auto text-center">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <h3 class="mb-4"><strong>You have no data available to display.</strong></h3>
+                    <p>
+                        Get started by
+                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#importCsvModal">Importing Data</button>,
+                        adding
+                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Expenses</button>,
+                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addIncomeModal">Income</button>, or a
+                        <a class="white-link" asp-page="/Budget/List">Budget</a>
+                </p>
+                </div>
+            </div>
+        }
+        @if (dataIsNotEmptyForTheMonth)
         {
             <div class="col-6 col-lg-3 mt-1 d-flex flex-column align-content-center">
                 <ul class="list-group text-center mt-2 shadow flex-fill d-flex justify-content-between">
@@ -234,14 +252,16 @@
                 </ul>
             </div>
         }
-        @if (Model.SummaryResponse.OverallSummaryChart != null)
+        @if (dataIsNotEmptyForTheMonth)
         {
             <div class="col-6 col-lg-3 chart-height pt-2">
                 <canvas id="overallSummaryChart" class="shadow"></canvas>
             </div>
         }
-        <div class="col-12 col-lg-6 rounded-2 mt-2 shadow">
-            <div class="d-flex">
+        @if (dataIsNotEmptyForTheMonth)
+        {
+            <div class="col-12 col-lg-6 rounded-2 mt-2 shadow">
+                <div class="d-flex">
                 <h4 class="mt-1 me-2">Budgeted Income</h4>
                 <button class="icon-button" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="This bar represents realized income versus budgeted income."><i class="bi bi-question-circle text-primary action-icon align-self-center"></i></button>
             </div>
@@ -286,6 +306,7 @@
             </div>
             <p class="text-muted text-center">@Model.SummaryResponse.AnnualSavingsProgress.AnnualSavingsMessage</p>
         </div>
+        }
     </div>
     <div class="row mb-2">
         @if (Model.SummaryResponse.DailyExpenseChart.Any())
@@ -472,7 +493,7 @@
         }
     </div>
     <div class="row mb-3">
-        @if (Model.SummaryResponse.MonthlySummary != null)
+        @if (dataIsNotEmptyForTheMonth)
         {
             <div class="col d-flex">
                 <canvas id="monthlySummaryChart" class="chart-height shadow align-self-center"></canvas>
