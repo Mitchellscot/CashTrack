@@ -39,8 +39,8 @@
 		<None Remove="Migrations\**" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Content Remove=".prettierrc.json" />
-	  <Content Remove="tsconfig.json" />
+		<Content Remove=".prettierrc.json" />
+		<Content Remove="tsconfig.json" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Remove=".eslintrc.js" />
@@ -76,6 +76,9 @@
 		<None Remove="Scripts\Utility\split-calculations.ts" />
 		<None Remove="Scripts\Utility\subcategory-autocomplete.ts" />
 		<None Remove="Scripts\_tests\format-amount.test.ts" />
+	</ItemGroup>
+	<ItemGroup>
+		<_WebToolingArtifacts Remove="Properties\PublishProfiles\cash-track-dev - Zip Deploy.pubxml" />
 	</ItemGroup>
 	<ItemGroup>
 		<TypeScriptCompile Include="Scripts\Budget\budget.ts" />
