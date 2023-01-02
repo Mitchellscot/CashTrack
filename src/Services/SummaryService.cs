@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -264,14 +265,35 @@ namespace CashTrack.Services.SummaryService
         public async Task<AnnualSummaryResponse> GetAnnualSummaryAsync(AnnualSummaryRequest request)
         {
             var isCurrentYear = request.Year == DateTime.Now.Year;
+            var user = await _userRepository.FindById(request.UserId);
             var expensesYTD = await _expenseRepo.Find(x => x.Date.Year == request.Year && !x.ExcludeFromStatistics);
             var incomeYTD = await _incomeRepo.Find(x => x.Date.Year == request.Year && !x.IsRefund);
             var annualBudgets = await _budgetRepo.FindWithMainCategories(x => x.Year == request.Year);
+            if (!expensesYTD.Any() && !incomeYTD.Any() && !annualBudgets.Any())
+                return new AnnualSummaryResponse()
+                {
+                    LastImport = user.LastImport,
+                    TransactionBreakdown = new List<TransactionBreakdown>(),
+                    OverallSummaryChart = new OverallSummaryChart(),
+                    TopCategories = new List<SubCategoryQuickView>(),
+                    TopMerchants = new List<MerchantQuickView>(),
+                    TopExpenses = new List<ExpenseQuickView>(),
+                    SavingsChart = new AnnualSavingsChart(),
+                    IncomeExpenseChart = new AnnualIncomeExpenseChart(),
+                    AnnualSummary = new AnnualSummaryTotals(),
+                    SubCategoryPercentages = new Dictionary<string, int>(),
+                    MainCategoryPercentages = new Dictionary<string, decimal>(),
+                    MerchantPercentages = new Dictionary<string, int>(),
+                    IncomeSourcePercentages = new Dictionary<string, decimal>(),
+                    MonthlyExpenseStatistics = new List<MonthlyStatistics>(),
+                    AnnualMonthlySummaryChart = new AnnualMonthlySummaryChart(),
+                };
+
             var budgetsYTD = annualBudgets.Where(x => x.Month <= DateTime.Now.Month).ToArray();
             var budgetsForCharts = isCurrentYear ? budgetsYTD : annualBudgets;
             var incomeForPercentageCharts = Convert.ToInt32(incomeYTD.Sum(x => x.Amount));
 
-            var user = await _userRepository.FindById(request.UserId);
+            
             return new AnnualSummaryResponse()
             {
                 LastImport = user.LastImport,

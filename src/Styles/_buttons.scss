@@ -7,6 +7,14 @@
     border: none;
 }
 
+.white-text-button {
+    background: none;
+    padding: 0px;
+    border: none;
+    color: $WHITE_COLOR;
+    font-weight: bold;
+}
+
 .btn-height {
     max-height: $BTN_HEIGHT;
 }
