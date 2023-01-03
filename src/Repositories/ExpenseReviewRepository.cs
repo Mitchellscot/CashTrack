@@ -30,7 +30,7 @@ public class ExpenseReviewRepository : IExpenseReviewRepository
             .Where(predicate)
             .Include(x => x.SuggestedCategory)
             .Include(x => x.SuggestedMerchant)
-            .OrderByDescending(x => x.Date)
+            .OrderBy(x => x.Date)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToArrayAsync();

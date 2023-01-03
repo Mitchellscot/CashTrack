@@ -85,12 +85,12 @@ namespace CashTrack.Pages.Expenses
             if (expenseId > 0 && deleteSuccess)
             {
                 TempData["SuccessMessage"] = "Sucessfully Split the Expense!";
-                return LocalRedirect(ReturnUrl ?? "~/Expenses/Index");
+                return LocalRedirect(Url.Content(ReturnUrl) ?? "~/Expenses/Index");
             }
             else
             {
                 TempData["Message"] = "There was an error splitting the expense";
-                return LocalRedirect(ReturnUrl ?? "~/Expenses/Index");
+                return LocalRedirect(Url.Content(ReturnUrl) ?? "~/Expenses/Index");
             }
         }
         private async Task<IActionResult> PrepareAndRenderPage(int id, int? Split, decimal? Tax, string ReturnUrl)
