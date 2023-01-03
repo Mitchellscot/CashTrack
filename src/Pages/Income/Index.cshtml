@@ -165,7 +165,7 @@
                                     <div class="modal fade" id="editIncomeModal-@income.Id">
                                         @await Html.PartialAsync("AddEditIncomeModal", new AddEditIncomeModal(){
                                 IsEdit = true,
-                                ReturnUrl = "./Index",
+                                ReturnUrl = "~/Income/Index",
                                 CategoryId = @income.CategoryId,
                                 CategoryList = new SelectList(Model.CategoryList, "Id", "Category", income.CategoryId),
                                 Date=income.Date,

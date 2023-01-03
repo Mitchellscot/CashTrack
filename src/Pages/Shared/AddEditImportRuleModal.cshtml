@@ -115,15 +115,15 @@
                                 var categorySelectListId = Model.IsEdit ? 
                                 $"categorySelectList-{Model.Id}" : "categorySelectList";
                             }
-                                <select class="form-select text-center"
+                            <select class="form-select text-center"
                                         asp-for=@Model.CategoryId
                                         asp-items=categoryList
                                     id=@categorySelectListId>
-                                    @if (!Model.IsEdit)
-                                    {
-                                        <option value="" selected disabled hidden>Select</option>
-                                    }
-                                </select>
+                                @if (!Model.IsEdit)
+                                {
+                                    <option value="" selected disabled hidden>Select</option>
+                                }
+                            </select>
                             </div>
                         </div>
                     </div>
@@ -144,7 +144,7 @@
                                     id="@merchantSourceSelectListId">
                                     @if (!Model.IsEdit)
                                     {
-                                        <option value="" selected disabled hidden>Select</option>
+                                        <option value="0" selected disabled hidden>Select</option>
                                     }
                                 </select>
                             </div>

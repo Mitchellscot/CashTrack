@@ -10,6 +10,7 @@ using CashTrack.Services.IncomeService;
 using CashTrack.Services.IncomeSourceService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -20,12 +21,14 @@ namespace CashTrack.Pages.Incomes
         private readonly IIncomeSourceService _sourceService;
         private readonly IIncomeService _incomeService;
         private readonly IIncomeCategoryService _categoryService;
+        private readonly ILogger<IndexModel> _logger;
 
-        public IndexModel(IIncomeService incomeService, IIncomeSourceService sourceService, IIncomeCategoryService categoryService)
+        public IndexModel(IIncomeService incomeService, IIncomeSourceService sourceService, IIncomeCategoryService categoryService, ILogger<IndexModel> logger)
         {
             _sourceService = sourceService;
             _incomeService = incomeService;
             _categoryService = categoryService;
+            _logger = logger;
         }
         [BindProperty(SupportsGet = true)]
         public string Q { get; set; }
@@ -155,15 +158,14 @@ namespace CashTrack.Pages.Incomes
             }
             catch (CategoryNotFoundException)
             {
-                ModelState.AddModelError("", "Please select a category and try again");
-                await PrepareForm(Query);
-                return Page();
+                TempData["ErrorMessage"] = "Please select a category and try again";
+                return LocalRedirect("~/Income/Index");
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
-                await PrepareForm(Query);
-                return Page();
+                _logger.LogError(ex, ex.Message);
+                TempData["ErrorMessage"] = "There was an error saving the income.";
+                return LocalRedirect("~/Income/Index");
             }
 
             TempData["SuccessMessage"] = Income.IsEdit ? "Sucessfully updated the Income!" : "Sucessfully added new Income!";

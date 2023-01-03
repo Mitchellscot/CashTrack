@@ -308,7 +308,7 @@ public class SubCategoryService : ISubCategoryService
 
     public async Task<SubCategoryDropdownSelection[]> GetSubCategoryDropdownListAsync()
     {
-        return (await _subCategoryRepo.Find(x => x.InUse == true)).Where(x => x.Name != "Uncategorized").Select(x => new SubCategoryDropdownSelection()
+        return (await _subCategoryRepo.Find(x => x.InUse == true)).Where(x => x.Name != "Uncategorized").OrderBy(x => x.Name).Select(x => new SubCategoryDropdownSelection()
         {
             Id = x.Id,
             Category = x.Name

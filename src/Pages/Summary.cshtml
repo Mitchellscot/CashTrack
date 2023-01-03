@@ -15,6 +15,10 @@
 @{
     ViewData["Title"] = "- Dashboard";
     Layout = "_Layout";
+    var incomeDataIsPresent = Model.SummaryResponse.SummaryTotals.Earned > 0;
+    var expenseDataIsPresent = Model.SummaryResponse.SummaryTotals.Spent > 0;
+    var incomeANDExpenseDataIsPresent = incomeDataIsPresent && expenseDataIsPresent;
+    var incomeORExpenseDataIsPresent = incomeDataIsPresent || expenseDataIsPresent;
 }
 
 <div class="container-fluid">
@@ -115,7 +119,24 @@
         </div>
     </div>
     <div class="row mb-3">
-        @if (Model.SummaryResponse.SummaryTotals != null)
+        @if (!incomeORExpenseDataIsPresent)
+        {
+            <div class="d-flex justify-content-center col mt-4">
+                <div class="alert alert-dismissible alert-warning col-auto text-center">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <h3 class="mb-4"><strong>You have no data available to display.</strong></h3>
+                    <p>
+                        Get started by
+                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#importCsvModal">Importing Data</button>,
+                        adding
+                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Expenses</button>,
+                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addIncomeModal">Income</button>, or a
+                        <a class="white-link" asp-page="/Budget/List" asp-fragment="addBudgetModal">Budget</a>
+                </p>
+                </div>
+            </div>
+        }
+        @if (incomeORExpenseDataIsPresent)
             {
             <div class="col-6 col-lg-3 mt-1 d-flex flex-column align-content-center">
                 <ul class="list-group text-center mt-2 shadow flex-fill d-flex justify-content-between">
@@ -178,13 +199,14 @@
                     </ul>
                 </div>
             }
-        @if (Model.SummaryResponse.OverallSummaryChart != null)
+        @if (incomeORExpenseDataIsPresent)
         {
             <div class="col-6 col-lg-3 d-flex">
                 <canvas id="overallSummaryChart" class="shadow align-self-center chart-height pt-2"></canvas>
             </div>
         }
-        @if(Model.SummaryResponse.PercentChangesChart.Labels != null)
+        @*TODO: Account for empty data, or a boring graph. Perhaps just move it out.*@
+        @if(incomeANDExpenseDataIsPresent)
         {
             <div class="col-12 col-lg-6 d-flex">
                 <canvas id="percentChangesChart" class="chart-height shadow align-self-center"></canvas>
@@ -192,13 +214,13 @@
         }
     </div>
         <div class="row mb-2">
-        @if (Model.SummaryResponse.SavingsChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
+        @if (incomeANDExpenseDataIsPresent)
         {
             <div class="col-12 col-lg-6 d-flex">
                 <canvas id="savingsChart" class="chart-height shadow align-self-center"></canvas>
             </div>
         }
-        @if (Model.SummaryResponse.IncomeExpenseChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
+        @if (incomeORExpenseDataIsPresent)
         {
             <div class="col-12 col-lg-6 d-flex">
                 <canvas id="incomeExpenseChart" class="chart-height shadow align-self-center"></canvas>
@@ -206,13 +228,13 @@
         }
     </div>
     <div class="row mb-2">
-        @if (Model.SummaryResponse.IncomeStatistics != null && Model.SummaryResponse.TopExpenses.Count > 1)
+        @if (incomeDataIsPresent)
         {
             <div class="col-12 col-lg-6 d-flex">
                 <canvas id="incomeStatisticsChart" class="chart-height shadow align-self-center"></canvas>
             </div>
         }
-        @if (Model.SummaryResponse.ExpenseStatistics != null && Model.SummaryResponse.TopExpenses.Count > 1)
+        @if (expenseDataIsPresent)
         {
             <div class="col-12 col-lg-6 d-flex">
                 <canvas id="expenseStatisticsChart" class="chart-height shadow align-self-center"></canvas>
@@ -220,7 +242,7 @@
         }
     </div>
     <div class="row gx-5">
-        @if (Model.SummaryResponse.TopExpenses.Count > 1)
+        @if (expenseDataIsPresent)
         {
             <div class="col-12 col-lg-6 my-3">
                 <div class="row shadow">
@@ -264,7 +286,7 @@
                     </table>
                 </div>
                 </div>
-                @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.SubCategoryPercentages.Values.Sum() > 0)
+                @if (Model.SummaryResponse.SubCategoryPercentages != null && expenseDataIsPresent)
                 {
                     <div class="col-6 d-flex">
                             <canvas id="subCategoryPie" class="chart-height align-self-center"></canvas>
@@ -273,7 +295,7 @@
                 </div>
             </div>
         }
-        @if (Model.SummaryResponse.TopCategories.Count > 1)
+        @if (expenseDataIsPresent)
         {
             <div class="col-12 col-lg-6 my-3">
                 <div class="row shadow">
@@ -317,7 +339,7 @@
                             </table>
                         </div>
                     </div>
-                    @if (Model.SummaryResponse.MainCategoryPercentages != null && Model.SummaryResponse.MainCategoryPercentages.Values.Sum() > 0)
+                    @if (Model.SummaryResponse.MainCategoryPercentages != null && expenseDataIsPresent)
                     {
                         <div class="col-6 d-flex">
                             <canvas id="mainCategoryPie" class="chart-height align-self-center"></canvas>
@@ -328,7 +350,7 @@
         }
     </div>
     <div class="row gx-5">
-        @if(Model.SummaryResponse.TopMerchants != null)
+        @if(Model.SummaryResponse.TopMerchants != null && expenseDataIsPresent)
         {
         <div class="col-12 col-lg-6 my-3">
             <div class="row shadow">
@@ -372,7 +394,7 @@
                         </table>
                     </div>
                 </div>
-                @if (Model.SummaryResponse.MerchantPercentages != null && Model.SummaryResponse.MerchantPercentages.Values.Sum() > 0)
+                @if (Model.SummaryResponse.MerchantPercentages != null && expenseDataIsPresent)
                 {
                     <div class="col-6 d-flex">
                             <canvas id="merchantPie" class="chart-height align-self-center"></canvas>
@@ -381,7 +403,7 @@
             </div>
         </div>
         }
-        @if (Model.SummaryResponse.TopSources != null)
+        @if (Model.SummaryResponse.TopSources != null && incomeDataIsPresent)
         {
             <div class="col-12 col-lg-6 my-3">
                 <div class="row shadow">
@@ -425,7 +447,7 @@
                             </table>
                         </div>
                     </div>
-                    @if (Model.SummaryResponse.IncomeSourcePercentages != null && Model.SummaryResponse.IncomeSourcePercentages.Values.Sum() > 0)
+                    @if (Model.SummaryResponse.IncomeSourcePercentages != null && incomeDataIsPresent)
                     {
                         <div class="col-6 d-flex">
                             <canvas id="incomeSourcePie" class="chart-height align-self-center"></canvas>
@@ -437,7 +459,7 @@
 
     </div>
     <div class="row mb-3">
-        @if (Model.SummaryResponse.AnnualSummaryChart != null)
+        @if (incomeORExpenseDataIsPresent)
         {
             <div class="col d-flex">
                 <canvas id="annualSummaryChart" class="chart-height align-self-center shadow"></canvas>
@@ -535,7 +557,9 @@
 @section Scripts {
     <script src="~/js/summary.js"></script>
     <script asp-append-version="true" src="https://cdn.jsdelivr.net/npm/chart.js@4.1.1/dist/chart.umd.js"></script>
-    @await Html.PartialAsync("OverallSummaryChart", new OverallSummaryChart()
+    @if (incomeORExpenseDataIsPresent)
+    {
+        @await Html.PartialAsync("OverallSummaryChart", new OverallSummaryChart()
     {
         ElementId = "overallSummaryChart",
         Title = "",
@@ -547,7 +571,8 @@
         BudgetedSavings = Model.SummaryResponse.OverallSummaryChart.BudgetedSavings,
         RealizedSavings = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedSavings)
     })
-    @if(Model.SummaryResponse.IncomeStatistics.Any())
+    }
+    @if(incomeDataIsPresent)
     {
         @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
     {
@@ -563,7 +588,7 @@
         Responsive = true
     })
     }
-    @if(Model.SummaryResponse.ExpenseStatistics.Any())
+    @if(expenseDataIsPresent)
     {
     @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
     {
@@ -579,7 +604,7 @@
         Responsive = true
     })
     }
-        @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.SubCategoryPercentages.Values.Sum() > 0)
+    @if (Model.SummaryResponse.SubCategoryPercentages != null && expenseDataIsPresent)
     {
         @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.SubCategoryPercentages.Select(x => x.Key).ToArray()))
     {
@@ -589,7 +614,7 @@
         IsSummaryChart = true
     })
     }
-    @if (Model.SummaryResponse.MainCategoryPercentages != null && Model.SummaryResponse.MainCategoryPercentages.Values.Sum() > 0)
+    @if (Model.SummaryResponse.MainCategoryPercentages != null && expenseDataIsPresent)
     {
         @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.MainCategoryPercentages.Select(x => x.Key).ToArray()))
         {
@@ -599,7 +624,7 @@
             IsSummaryChart = true
         })
     }
-    @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.MerchantPercentages.Values.Sum() > 0)
+    @if (Model.SummaryResponse.SubCategoryPercentages != null && expenseDataIsPresent)
     {
         @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.MerchantPercentages.Select(x => x.Key).ToArray()))
         {
@@ -609,7 +634,7 @@
             IsSummaryChart = true
         })
     }
-    @if (Model.SummaryResponse.IncomeSourcePercentages != null && Model.SummaryResponse.IncomeSourcePercentages.Values.Sum() > 0)
+    @if (Model.SummaryResponse.IncomeSourcePercentages != null && incomeDataIsPresent)
     {
         @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SummaryResponse.IncomeSourcePercentages.Select(x => x.Key).ToArray()))
         {
@@ -619,7 +644,7 @@
             IsSummaryChart = true
         })
     }
-    @if (Model.SummaryResponse.AnnualSummaryChart != null)
+    @if (incomeORExpenseDataIsPresent)
     {
         @await Html.PartialAsync("AnnualMonthlySummaryChart", new AnnualMonthlySummaryChart()
         {
@@ -631,7 +656,7 @@
             Labels = Model.SummaryResponse.AnnualSummaryChart.Labels,
         })
     }
-    @if (Model.SummaryResponse.SavingsChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
+    @if (Model.SummaryResponse.SavingsChart != null && expenseDataIsPresent)
     {
         @await Html.PartialAsync("AllTimeSavingsChart", new AllTimeSavingsChart()
         {
@@ -641,7 +666,7 @@
             Labels = Model.SummaryResponse.SavingsChart.Labels,
         })
     }
-    @if (Model.SummaryResponse.IncomeExpenseChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
+    @if (incomeORExpenseDataIsPresent)
     {
         @await Html.PartialAsync("AllTimeIncomeExpenseChart", new AllTimeIncomeExpenseChart()
         {
@@ -652,7 +677,7 @@
             Labels = Model.SummaryResponse.IncomeExpenseChart.Labels,
         })
     }
-    @if (Model.SummaryResponse.PercentChangesChart != null && Model.SummaryResponse.TopExpenses.Count > 1)
+    @if (incomeANDExpenseDataIsPresent)
     {
         @await Html.PartialAsync("AllTimePercentChangeChart", new AllTimePercentChangeChart()
         {

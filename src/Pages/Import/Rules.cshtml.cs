@@ -52,11 +52,6 @@ namespace CashTrack.Pages.Import
         }
         public async Task<IActionResult> OnPostAddEditImportRuleModal()
         {
-            if (!ModelState.IsValid)
-            {
-                ModelState.AddModelError("", "Error adding import rule. Please try again");
-                return await PrepareAndRenderPage();
-            }
             if (ImportRule.RuleType == RuleType.Assignment &&
                 ImportRule.MerchantSourceId == null &&
                 ImportRule.CategoryId == null)

@@ -84,6 +84,18 @@
         Type = BudgetType.Need
         })
     </div>
+    @if (Model.BudgetListResponse.ListItems == null || Model.BudgetListResponse.TotalCount == 0)
+        {
+            <div class="d-flex justify-content-center col mt-4">
+                <div class="alert alert-dismissible alert-warning col-auto text-center">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <h3 class="mb-4"><strong>You have no budget to display for this month.</strong></h3>
+                    <p>
+                        Get started by adding a <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addBudgetModal">Budget</button>
+                    </p>
+                </div>
+            </div>
+        }
     @if (Model.BudgetListResponse.ListItems != null && Model.BudgetListResponse.TotalCount > 0)
     {
         <div class="row mt-2">
