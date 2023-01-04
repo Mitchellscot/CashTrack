@@ -40,7 +40,7 @@ namespace CashTrack.Services.MainCategoriesService
         {
             var categories = await _mainCategoryRepo.Find(x => true);
             if (categories.Any(x => x.Name == request.Name))
-                throw new DuplicateNameException(nameof(MainCategoryEntity), request.Name);
+                throw new DuplicateNameException(request.Name);
 
             var categoryEntity = new MainCategoryEntity()
             {
@@ -115,7 +115,7 @@ namespace CashTrack.Services.MainCategoriesService
         {
             var categories = await _mainCategoryRepo.Find(x => x.Name == request.Name);
             if (categories.Any(x => x.Id != request.Id))
-                throw new DuplicateNameException(request.Name, nameof(MainCategoryEntity));
+                throw new DuplicateNameException(request.Name);
 
             var category = await _mainCategoryRepo.FindById(request.Id.Value);
             if (category == null)

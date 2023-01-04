@@ -8,7 +8,7 @@
                 var addOrEdit = Model.IsEdit ? "Edit" : "Add";
             }
             <h5 class="modal-title w-100">@addOrEdit an Expense Category</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal">
+            <button type="button" class="btn-close close-modal" data-bs-dismiss="modal">
             </button>
         </div>
         <div class="modal-body">
@@ -64,7 +64,7 @@
             </div>
         </div>
         <div class="modal-footer d-flex justify-content-evenly">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary close-modal" data-bs-dismiss="modal">Close</button>
             <form>
                 <button type="submit" class="btn btn-primary spin-it" form="addEditSubCategoryForm">Save</button>
             </form>

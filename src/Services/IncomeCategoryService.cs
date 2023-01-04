@@ -41,7 +41,7 @@ public class IncomeCategoryService : IIncomeCategoryService
 
         var categories = await _repo.Find(x => true);
         if (categories.Any(x => x.Name == request.Name))
-            throw new DuplicateNameException(nameof(IncomeCategoryEntity), request.Name);
+            throw new DuplicateNameException(request.Name);
         var incomeCategoryEntity = new IncomeCategoryEntity()
         {
             Name = request.Name,
@@ -130,7 +130,7 @@ public class IncomeCategoryService : IIncomeCategoryService
     {
         var categories = await _repo.Find(x => x.Name == request.Name);
         if (categories.Any(x => x.Id != request.Id))
-            throw new DuplicateNameException(request.Name, nameof(IncomeCategoryEntity));
+            throw new DuplicateNameException(request.Name);
 
         var category = (await _repo.Find(x => x.Id == request.Id.Value)).FirstOrDefault();
         if (category == null)
