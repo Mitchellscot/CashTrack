@@ -153,7 +153,6 @@ namespace CashTrack.Services.ImportRulesService
             if (rule == null)
                 throw new ImportRuleNotFoundException($"No Import Rule found with an Id of {request.Id.Value}");
 
-
             rule.Id = request.Id.Value;
             rule.FileType = (CsvFileType)request.FileType;
             rule.TransactionType = (TransactionType)request.TransactionType;

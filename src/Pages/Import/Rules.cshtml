@@ -218,8 +218,8 @@
                                         MerchantSourceId = rule.MerchantSourceId?? null,
                                         IncomeCategoryList = new SelectList(Model.IncomeCategoryList, "Id", "Category", rule.CategoryId?? null),
                                         SubCategoryList = new SelectList(Model.SubCategoryList, "Id", "Category", rule.CategoryId?? null),
-                                        MerchantList = new SelectList(Model.MerchantList, "Id", "Category", rule.MerchantSourceId?? null),
-                                        SourceList = new SelectList(Model.SourceList, "Id", "Category", rule.MerchantSourceId?? null),
+                                        MerchantList = new SelectList(Model.MerchantList, "Id", "Name", rule.MerchantSourceId?? null),
+                        SourceList = new SelectList(Model.SourceList, "Id", "Name", rule.MerchantSourceId?? null),
                                         Returnurl = "~/Import/Rules", 
                                         IsEdit = true })
                                 </div>
