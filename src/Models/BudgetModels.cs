@@ -14,6 +14,11 @@ namespace CashTrack.Models.BudgetModels
     {
         public BudgetListResponse(int pageNumber, int pageSize, int totalCount, List<BudgetListItem> listItems) : base(pageNumber, pageSize, totalCount, listItems) { }
     }
+    public record PrintBudgetRequest
+    {
+        public int Year { get; set; }
+        public int Month { get; set; }
+    }
     public record BudgetListItem
     {
         public int Id { get; set; }

@@ -3,7 +3,6 @@ using CashTrack.Common.Extensions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
 using CashTrack.Models.ExpenseModels;
-using CashTrack.Models.IncomeModels;
 using CashTrack.Models.IncomeSourceModels;
 using CashTrack.Models.MerchantModels;
 using CashTrack.Models.SubCategoryModels;
@@ -18,7 +17,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
-using System.Security.Cryptography.Xml;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -30,7 +28,6 @@ namespace CashTrack.Services.SummaryService
         Task<MonthlySummaryResponse> GetMonthlySummaryAsync(MonthlySummaryRequest request);
         Task<AnnualSummaryResponse> GetAnnualSummaryAsync(AnnualSummaryRequest request);
         Task<AllTimeSummaryResponse> GetAllTimeSummaryAsync();
-
     }
     public class SummaryService : ISummaryService
     {
@@ -293,7 +290,7 @@ namespace CashTrack.Services.SummaryService
             var budgetsForCharts = isCurrentYear ? budgetsYTD : annualBudgets;
             var incomeForPercentageCharts = Convert.ToInt32(incomeYTD.Sum(x => x.Amount));
 
-            
+
             return new AnnualSummaryResponse()
             {
                 LastImport = user.LastImport,
@@ -980,7 +977,7 @@ namespace CashTrack.Services.SummaryService
                 return new List<TransactionBreakdown>();
 
             var validatedMonth = request.Month > 0 && request.Month <= 12 ? request.Month : 0;
-            var isCurrentMonth = validatedMonth == DateTime.Now.Month;
+            var isCurrentMonth = validatedMonth == DateTime.Now.Month && DateTime.Now.Year == request.Year;
 
             var expenses = validatedMonth > 0 ? await _expenseRepo.Find(x => x.Date.Year == request.Year && x.Date.Month == request.Month && !x.ExcludeFromStatistics) : await _expenseRepo.Find(x => x.Date.Year == request.Year && !x.ExcludeFromStatistics);
 
