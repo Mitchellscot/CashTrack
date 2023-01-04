@@ -314,10 +314,10 @@ namespace CashTrack.Tests.Services
         {
             var budgets = await _repo.FindWithMainCategories(x => x.Year == 2012);
             var income = budgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount);
-            var response = _service.GetBudgetBreakdown(budgets, income);
-            response.Count.ShouldBe(18);
+            var response = _service.GetBudgetBreakdown(budgets);
+            response.Count.ShouldBe(20);
             var x = response.Sum(x => x.Amount);
-            response.Select(x => x.Amount).Sum().ShouldBe(90476);
+            response.Select(x => x.Amount).Sum().ShouldBe(180952);
         }
 
         [Fact]
