@@ -70,7 +70,7 @@ public class ExportService : IExportService
     {
         if (asReadable)
         {
-            var readableBudgets = await _exportRepo.ReadableBudgetExport();
+            var readableBudgets = await _exportRepo.GetReadableBudgetExport();
 
             if (readableBudgets.Length == 0)
                 return;

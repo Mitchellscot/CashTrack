@@ -3,12 +3,10 @@ using CashTrack.Data.Entities;
 using CashTrack.Models.ExportModels;
 using CashTrack.Models.ImportRuleModels;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace CashTrack.Repositories.ExportRepository;
@@ -23,7 +21,7 @@ public interface IExportRepository
     Task<MainCategoryExport[]> GetMainCategories();
     Task<MerchantExport[]> GetMerchants();
     Task<SubCategoryExport[]> GetSubCategories();
-    Task<ReadableBudgetExport[]> ReadableBudgetExport();
+    Task<ReadableBudgetExport[]> GetReadableBudgetExport();
     Task<ReadableExpenseExport[]> GetReadableExpenses();
     Task<ReadableImportRuleExport[]> GetReadableImportRules();
     Task<ReadableIncomeExport[]> GetReadableIncome();
@@ -50,7 +48,7 @@ public class ExportRepository : IExportRepository
             }
             return budgetEntities.Select(x => new BudgetExport(
                 Id: x.Id.ToString(),
-                Month: @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(x.Month),
+                Month: x.Month.ToString(),
                 Year: x.Year.ToString(),
                 Amount: x.Amount.ToString(),
                 SubCategoryId: x.SubCategoryId?.ToString(),
@@ -259,7 +257,7 @@ public class ExportRepository : IExportRepository
             throw;
         }
     }
-    public async Task<ReadableBudgetExport[]> ReadableBudgetExport()
+    public async Task<ReadableBudgetExport[]> GetReadableBudgetExport()
     {
         try
         {
