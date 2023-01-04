@@ -89,3 +89,7 @@
     position: absolute;
     width: 1px;
 }
+
+ul.ui-autocomplete {
+    z-index: 1056; //bootstrap modal is set to 1055
+}

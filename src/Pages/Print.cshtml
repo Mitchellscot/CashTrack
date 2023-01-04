@@ -2,8 +2,8 @@
 @using System.Globalization;
 @model CashTrack.Pages.PrintModel
 @{
-    var month = Model.Month > 0 ? @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month) : "";
-    var title = Model.Month > 0 && Model.Month <= 12 ? @month + " " + Model.Year.ToString() : Model.Month > 0 ? Model.Year.ToString() : "All Time";
+    var month = Model.Month > 0 ? @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month) : string.Empty;
+    var title = Model.Year > 0 && !string.IsNullOrEmpty(month) ? @month + " " + Model.Year.ToString() : string.IsNullOrEmpty(month) && Model.Year > 0 ? Model.Year.ToString() : "All Time";
     Layout = "_Layout-Printable";
     ViewData["Title"] = title;
 }
@@ -12,16 +12,13 @@
     {
 
         <div class="row d-flex justify-content-between">
-            <div class="d-print-none m-3 col-auto">
-            <button type="button" onclick="history.back()" class="btn-lg btn-secondary">GO BACK</button>
-
+            <div class="m-3 col-auto d-print-none">
+            <button type="button" onclick="history.back()" class="btn btn-lg btn-secondary">GO BACK</button>
             </div>
-            <div class="d-print-none m-3 col-auto">
-
-            <button type="button" onclick="window.print()" class="btn-lg btn-primary">PRINT ME</button>
+            <div class="m-3 col-auto d-print-none">
+            <button type="button" onclick="window.print()" class="btn btn-lg btn-primary">PRINT ME</button>
             </div>
-            
-        <table class="table-sm table-borderless border border-3 rounded-4 text-center" id="print-area">
+        <table class="table-sm table-borderless border border-3 rounded-4 text-center">
             <tbody class="col">
             <tr>
                     <td colspan="4"><h4 class="text-center">@title Expense Breakdown</h4></td>
@@ -97,8 +94,3 @@
         <H4 class="text-center">No expenses for this month recorded yet.</H4>
     }
 
-    @section Scripts{
-        <script>
-            window.onload = window.print();
-        </script>
-    }

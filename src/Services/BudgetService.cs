@@ -391,9 +391,9 @@ namespace CashTrack.Services.BudgetService
                 {
                     MainCategoryId = x.Select(x => x.SubCategory.MainCategoryId).FirstOrDefault(),
                     SubCategoryId = x.Key.Value,
-                    Name = x.Select(x => x.SubCategory.Name).FirstOrDefault(),
+                    Category = x.Select(x => x.SubCategory.Name).FirstOrDefault(),
                     Amount = x.Sum(x => x.Amount),
-                    Percentage = x.Sum(x => x.Amount).ToPercentage(totalIncome)
+                    Percentage = x.Sum(x => x.Amount).ToDecimalPercentage(totalIncome)
                 };
             }).ToList();
             monthlyBudgets.AddRange(subCategories);
@@ -403,9 +403,9 @@ namespace CashTrack.Services.BudgetService
                 {
                     MainCategoryId = x.Key,
                     SubCategoryId = 0,
-                    Name = x.Select(x => x.SubCategory.MainCategory.Name).FirstOrDefault(),
+                    Category = x.Select(x => x.SubCategory.MainCategory.Name).FirstOrDefault(),
                     Amount = x.Sum(x => x.Amount),
-                    Percentage = x.Sum(x => x.Amount).ToPercentage(totalIncome)
+                    Percentage = x.Sum(x => x.Amount).ToDecimalPercentage(totalIncome)
                 };
             }).ToList();
             monthlyBudgets.AddRange(mainCategories);
@@ -414,26 +414,54 @@ namespace CashTrack.Services.BudgetService
             var adjustedSavings = (savingsAmount + mainCategories.Sum(x => x.Amount)) > totalIncome ?
                  (totalIncome - mainCategories.Sum(x => x.Amount)) : savingsAmount;
 
+            var incomes = budgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount);
+
+            var income = new BudgetBreakdown()
+            {
+                MainCategoryId = int.MaxValue - 1,
+                SubCategoryId = 0,
+                Category = "Income",
+                Amount = incomes,
+                Percentage = 100
+            };
+
+            if (income.Amount != 0)
+                monthlyBudgets.Add(income);
+
+            var expenseTotal = budgets.Where(x => x.BudgetType == BudgetType.Need || x.BudgetType == BudgetType.Want).Sum(x => x.Amount);
+
+            var expenseSummary = new BudgetBreakdown()
+            {
+                MainCategoryId = int.MaxValue - 1,
+                SubCategoryId = 0,
+                Category = "Expenses",
+                Amount = expenseTotal,
+                Percentage = income.Amount > 0 ? expenseTotal.ToDecimalPercentage(income.Amount) : 100
+            };
+
+            if (expenseSummary.Amount != 0)
+                monthlyBudgets.Add(expenseSummary);
+
             var savings = new BudgetBreakdown()
             {
                 MainCategoryId = int.MaxValue - 1,
                 SubCategoryId = 0,
-                Name = "Savings",
+                Category = "Savings",
                 Amount = adjustedSavings,
-                Percentage = adjustedSavings > 0 ? savingsAmount.ToPercentage(totalIncome) : 0
+                Percentage = adjustedSavings > 0 ? savingsAmount.ToDecimalPercentage(income.Amount) : 0
             };
 
             if (savings.Amount != 0)
                 monthlyBudgets.Add(savings);
 
-            var unallocatedAmount = subCategories.Sum(x => x.Amount) + savings.Amount >= totalIncome ? 0 : totalIncome - (subCategories.Sum(x => x.Amount) + savings.Amount);
+            var unallocatedAmount = subCategories.Sum(x => x.Amount) + savings.Amount >= income.Amount ? 0 : totalIncome - (subCategories.Sum(x => x.Amount) + savings.Amount);
             var unAllocated = new BudgetBreakdown()
             {
-                Name = "Unallocated",
+                Category = "Unallocated",
                 MainCategoryId = int.MaxValue,
                 SubCategoryId = 0,
                 Amount = unallocatedAmount,
-                Percentage = unallocatedAmount > 0 ? unallocatedAmount.ToPercentage(totalIncome) : 0
+                Percentage = unallocatedAmount > 0 ? unallocatedAmount.ToDecimalPercentage(income.Amount) : 0
             };
             if (unAllocated.Amount > 0)
                 monthlyBudgets.Add(unAllocated);

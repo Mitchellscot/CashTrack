@@ -58,10 +58,11 @@ namespace CashTrack.Models.BudgetModels
     {
         public int MainCategoryId { get; set; }
         public int SubCategoryId { get; set; }
-        public string Name { get; set; }
+        public string Category { get; set; }
         public int Amount { get; set; }
-        public int Percentage { get; set; }
+        public decimal Percentage { get; set; }
         public bool IsMainCategory => SubCategoryId == 0 && MainCategoryId != 0;
+        public bool IsIncome => Category == "Income";
     }
     public record BudgetSummary
     {

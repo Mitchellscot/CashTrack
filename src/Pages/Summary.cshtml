@@ -547,7 +547,7 @@
     @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Summary" })
 </div>
 @*End Import Transactions Modal*@
-@await Html.PartialAsync("TransactionBreakdownModal", new TransactionBreakdownModalModel()
+@await Html.PartialAsync("TransactionBreakdownModal", new TransactionBreakdownModal()
 {
     Year = 0,
     Month= 0,

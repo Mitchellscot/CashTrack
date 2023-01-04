@@ -85,75 +85,6 @@
         Type = BudgetType.Need
         })
     </div>
-    <div class="modal fade" id="budgetStats">
-        @if (Model.BudgetPageResponse.BudgetBreakdown != null)
-        {
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header text-center">
-                        <h5 class="modal-title w-100">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month) Breakdown</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal">
-                        </button>
-                    </div>
-
-                    <div class="modal-body">
-                        <table class="table table-borderless border border-3 rounded-4 text-center">
-                            @foreach (var budget in Model.BudgetPageResponse.BudgetBreakdown)
-                            {
-                                @if (budget.IsMainCategory || budget.MainCategoryId >= int.MaxValue - 1)
-                                {
-                                    <tr class="border-top border-bottom border-3 rounded-4">
-                                        <td>
-                                            @budget.Name
-                                        </td>
-                                        <td class="border-end">
-                                            &nbsp;
-                                        </td>
-                                        <td class="border-end">
-                                            @budget.Amount
-                                        </td>
-                                        <td>
-                                            @{
-                                                if (budget.Percentage != 0)
-                                                {
-                                                    <span>@budget.Percentage &#37;</span>
-                                                }
-                                            }
-                                        </td>
-                                    </tr>
-                                }
-                                else
-                                {
-                                    <tr class="border-end border-start">
-                                        <td>
-                                            &nbsp;
-                                        </td>
-                                        <td class="border-end">
-                                            @budget.Name
-                                        </td>
-                                        <td class="border-end">
-                                            @budget.Amount
-                                        </td>
-                                        <td>
-                                            @{
-                                                if (budget.Percentage != 0)
-                                                {
-                                                    <span>@budget.Percentage &#37;</span>
-                                                }                                                
-                                            }
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                        </table>
-                    </div>
-                    <div class="modal-footer d-flex justify-content-center">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
     <div class="row d-flex justify-content-between">
 
         <form method="get" class="m-2 col-12 col-md-8 col-xl-4">
@@ -270,6 +201,12 @@
         }
     </div>
 </div>
+@await Html.PartialAsync("BudgetBreakdownModal", new BudgetBreakdownModal()
+    {
+        Year = Model.Year,
+        Month= Model.Month,
+        Budgets = Model.BudgetPageResponse.BudgetBreakdown
+    })
 @section Scripts {
     <script src="~/js/budget.js" asp-append-version="true"></script>
     <script asp-append-version="true" src="https://cdn.jsdelivr.net/npm/chart.js@4.1.1/dist/chart.umd.js"></script>

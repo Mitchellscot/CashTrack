@@ -636,7 +636,7 @@ namespace CashTrack.Services.SummaryService
                 SubCategoryId = 0,
                 Category = "Income",
                 Amount = incomeToCompareBy,
-                Percentage = 0
+                Percentage = 100
             };
             stats.Add(incomeTransactions);
             var incomeCategories = income.Where(x => x.Amount > 0 && !x.IsRefund && x.CategoryId != null).GroupBy(x => x.Category.Id).Select(x =>
@@ -657,7 +657,7 @@ namespace CashTrack.Services.SummaryService
                 SubCategoryId = 0,
                 Category = "Expenses",
                 Amount = expenses.Sum(x => x.Amount),
-                Percentage = 0
+                Percentage = expenses.Sum(x => x.Amount) < incomeCategories.Sum(x => x.Amount) ? expenses.Sum(x => x.Amount).ToDecimalPercentage(incomeCategories.Sum(x => x.Amount)) : 100
             };
             stats.Add(expenseTransactions);
             var savingsAmount = incomeToCompareBy - expenses.Sum(x => x.Amount);

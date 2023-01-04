@@ -43,7 +43,7 @@ public class AuthenticationValidator : AbstractValidator<AuthenticationModels.Re
 //        {
 //            RuleFor(x => x.SubCategory).MustAsync(async (model, value, _) =>
 //                {
-//                    return (await _categoryRepo.Find(x => x.Name == value)).Any();
+//                    return (await _categoryRepo.Find(x => x.Category == value)).Any();
 //                }).WithMessage("Invalid Category");
 //        });
 //        When(x => !string.IsNullOrEmpty(x.Merchant) && !x.CreateNewMerchant,
@@ -51,7 +51,7 @@ public class AuthenticationValidator : AbstractValidator<AuthenticationModels.Re
 //            {
 //                RuleFor(x => x.Merchant).MustAsync(async (model, value, _) =>
 //                {
-//                    return (await _merchantRepo.Find(x => true)).Any(x => x.Name == value);
+//                    return (await _merchantRepo.Find(x => true)).Any(x => x.Category == value);
 //                }).WithMessage("Please Select a merchant from the list or create a new Merchant.");
 //            });
 //        When(x => !string.IsNullOrEmpty(x.Merchant) && x.CreateNewMerchant,
@@ -59,7 +59,7 @@ public class AuthenticationValidator : AbstractValidator<AuthenticationModels.Re
 //            {
 //                RuleFor(x => x.Merchant).MustAsync(async (model, value, _) =>
 //                {
-//                    return !(await _merchantRepo.Find(x => true)).Any(x => x.Name == value);
+//                    return !(await _merchantRepo.Find(x => true)).Any(x => x.Category == value);
 //                }).WithMessage("A merchant already exists with that name");
 //            });
 //    }
@@ -104,7 +104,7 @@ public class AuthenticationValidator : AbstractValidator<AuthenticationModels.Re
 //{
 //    public AddEditMerchantValidator()
 //    {
-//        RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
+//        RuleFor(x => x.Category).NotEmpty().MaximumLength(100);
 //    }
 //}
 ///* SUB CATEGORIES */
@@ -121,7 +121,7 @@ public class AuthenticationValidator : AbstractValidator<AuthenticationModels.Re
 //{
 //    public AddEditSubCategoryValidator()
 //    {
-//        RuleFor(x => x.Name).NotEmpty().MaximumLength(37); //the size of a GUID
+//        RuleFor(x => x.Category).NotEmpty().MaximumLength(37); //the size of a GUID
 //    }
 //}
 ///* MAIN CATEGORY */
@@ -129,7 +129,7 @@ public class AuthenticationValidator : AbstractValidator<AuthenticationModels.Re
 //{
 //    public AddEditMainCategoryValidator()
 //    {
-//        RuleFor(x => x.Name).NotEmpty().MaximumLength(37);
+//        RuleFor(x => x.Category).NotEmpty().MaximumLength(37);
 //    }
 //}
 ///* INCOME CATEGORY */
@@ -137,7 +137,7 @@ public class AuthenticationValidator : AbstractValidator<AuthenticationModels.Re
 //{
 //    public AddEditIncomeCategoryValidator()
 //    {
-//        RuleFor(x => x.Name).NotEmpty().MaximumLength(37);
+//        RuleFor(x => x.Category).NotEmpty().MaximumLength(37);
 //    }
 //}
 //public class IncomeCategoryValidator : AbstractValidator<IncomeCategoryRequest>
@@ -179,7 +179,7 @@ public class AuthenticationValidator : AbstractValidator<AuthenticationModels.Re
 //            {
 //                RuleFor(x => x.Category).MustAsync(async (model, value, _) =>
 //                {
-//                    return (await _categoryRepo.Find(x => true)).Any(x => x.Name == value);
+//                    return (await _categoryRepo.Find(x => true)).Any(x => x.Category == value);
 //                }).WithMessage("Invalid Category");
 //            });
 //        When(x => !string.IsNullOrEmpty(x.Source) && !x.CreateNewSource,
@@ -187,7 +187,7 @@ public class AuthenticationValidator : AbstractValidator<AuthenticationModels.Re
 //            {
 //                RuleFor(x => x.Source).MustAsync(async (model, value, _) =>
 //                        {
-//                            return (await _sourceRepo.Find(x => true)).Any(x => x.Name == value);
+//                            return (await _sourceRepo.Find(x => true)).Any(x => x.Category == value);
 //                        }).WithMessage("Please Select an income source from the list or check \"Create New Source\"");
 //            });
 //        When(x => !string.IsNullOrEmpty(x.Source) && x.CreateNewSource,
@@ -195,7 +195,7 @@ public class AuthenticationValidator : AbstractValidator<AuthenticationModels.Re
 //            {
 //                RuleFor(x => x.Source).MustAsync(async (model, value, _) =>
 //                        {
-//                            return !(await _sourceRepo.Find(x => true)).Any(x => x.Name == value);
+//                            return !(await _sourceRepo.Find(x => true)).Any(x => x.Category == value);
 //                        }).WithMessage("An Income Source already exists with that name");
 
 //            });
