@@ -35,7 +35,7 @@
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
     @if (Model.ReviewAmount > 0)
     {
-        <div class="alert alert-danger">You have @Model.ReviewAmount transactions to review. <a asp-page="./Import/Expenses">Review them here</a></div>
+        <div class="alert alert-info spin-it text-center">You have @Model.ReviewAmount transactions to review. <a asp-page="./Import/Expenses">Review them here</a></div>
     }
 
     <div class="row mt-2 border-bottom d-flex justify-content-between">
@@ -64,9 +64,9 @@
                 <div class="dropdown-center">
                     <a class="btn btn-primary dropdown-toggle me-2 btn-text-overflow btn-height" href="#" role="button" data-bs-toggle="dropdown">Summary</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item text-center" asp-page="./Index">Month</a></li>
-                        <li><a class="dropdown-item text-center" asp-page="./Annual">Annual</a></li>
-                        <li><a class="dropdown-item text-center" asp-page="./Summary">All Time</a></li>
+                        <li><a class="dropdown-item text-center spin-it" asp-page="./Index">Month</a></li>
+                        <li><a class="dropdown-item text-center spin-it" asp-page="./Annual">Annual</a></li>
+                        <li><a class="dropdown-item text-center spin-it" asp-page="./Summary">All Time</a></li>
                     </ul>
                 </div>
                 <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
@@ -146,7 +146,7 @@
         @if (!dataIsNotEmptyForTheMonth)
         {
             <div class="d-flex justify-content-center col mt-4">
-                <div class="alert alert-dismissible alert-danger col-auto text-center">
+                <div class="alert alert-dismissible alert-warning col-auto text-center">
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     <h3 class="mb-4"><strong>You have no data available to display.</strong></h3>
                     <p>
@@ -155,7 +155,7 @@
                         adding
                         <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Expenses</button>,
                         <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addIncomeModal">Income</button>, or a
-                        <a class="white-link" asp-page="/Budget/List">Budget</a>
+                        <a class="white-link spin-it" asp-page="/Budget/List" asp-fragment="addBudgetModal">Budget</a>
                 </p>
                 </div>
             </div>
@@ -578,10 +578,10 @@
 @*End Add Income Category Modal*@
 @*Import Transactions Modal*@
 <div class="modal fade" id="importCsvModal">
-    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Index" })
+    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Import/Expenses" })
 </div>
 @*End Import Transactions Modal*@
-@await Html.PartialAsync("TransactionBreakdownModal", new TransactionBreakdownModalModel()
+@await Html.PartialAsync("TransactionBreakdownModal", new TransactionBreakdownModal()
 {
     Year = Model.Year,
     Month= Model.Month,

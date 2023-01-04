@@ -144,9 +144,9 @@ public class SubCategoryRepository : ISubCategoryRepository
         {
             var categories = await _context.SubCategories
                 .Where(predicate)
+                .OrderBy(x => x.Name)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .OrderBy(x => x.Name)
                 .Include(x => x.MainCategory)
                 .Include(x => x.Expenses)
                 .ToArrayAsync();

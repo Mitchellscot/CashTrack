@@ -50,9 +50,9 @@
                 <div class="dropdown-center">
                     <a class="btn btn-primary dropdown-toggle me-2 btn-text-overflow btn-height" href="#" role="button" data-bs-toggle="dropdown">Summary</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item text-center" asp-page="./Index">Month</a></li>
-                        <li><a class="dropdown-item text-center" asp-page="./Annual">Annual</a></li>
-                        <li><a class="dropdown-item text-center" asp-page="./Summary">All Time</a></li>
+                        <li><a class="dropdown-item text-center spin-it" asp-page="./Index">Month</a></li>
+                        <li><a class="dropdown-item text-center spin-it" asp-page="./Annual">Annual</a></li>
+                        <li><a class="dropdown-item text-center spin-it" asp-page="./Summary">All Time</a></li>
                     </ul>
                 </div>
                 <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
@@ -132,7 +132,7 @@
         @if (!incomeORExpenseDataIsPresent)
         {
             <div class="d-flex justify-content-center col mt-4">
-                <div class="alert alert-dismissible alert-danger col-auto text-center">
+                <div class="alert alert-dismissible alert-warning col-auto text-center">
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     <h3 class="mb-4"><strong>You have no data available to display.</strong></h3>
                     <p>
@@ -141,7 +141,7 @@
                         adding
                         <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Expenses</button>,
                         <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addIncomeModal">Income</button>, or a
-                        <a class="white-link" asp-page="/Budget/List">Budget</a>
+                        <a class="white-link" asp-page="/Budget/List" asp-fragment="addBudgetModal">Budget</a>
                 </p>
                 </div>
             </div>
@@ -476,7 +476,7 @@
         }
     </div>
 </div>
-@await Html.PartialAsync("TransactionBreakdownModal", new TransactionBreakdownModalModel()
+@await Html.PartialAsync("TransactionBreakdownModal", new TransactionBreakdownModal()
 {
     Year = Model.Year,
     Month= 0,

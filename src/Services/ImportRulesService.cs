@@ -9,7 +9,6 @@ using CashTrack.Repositories.SubCategoriesRepository;
 using CashTrack.Repositories.IncomeCategoryRepository;
 using System.Data;
 using CashTrack.Common.Exceptions;
-using CashTrack.Models.MerchantModels;
 using System.Collections.Generic;
 using CashTrack.Models.Common;
 using System;

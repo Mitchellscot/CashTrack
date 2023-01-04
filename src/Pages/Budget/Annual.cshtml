@@ -7,6 +7,7 @@
 @{
     ViewData["Title"] = "- Budgets";
     Layout = "_Layout";
+    var dataIsEmptyForTheYear = Model.BudgetPageResponse.AnnualSummary.IncomeAmount == 0 && Model.BudgetPageResponse.AnnualSummary.ExpensesAmount == 0;
 }
 
 <div class="container-fluid mb-0">
@@ -22,19 +23,19 @@
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a asp-page="./Annual"
-               class="nav-link active">
+               class="nav-link active spin-it">
                 Annual
             </a>
         </li>
         <li class="nav-item">
             <a asp-page="./Monthly"
-               class="nav-link">
+               class="nav-link spin-it">
                 Monthly
             </a>
         </li>
         <li class="nav-item">
             <a asp-page="./List"
-               class="nav-link">
+               class="nav-link spin-it">
                 List
             </a>
         </li>
@@ -85,70 +86,6 @@
         Type = BudgetType.Need
         })
     </div>
-    <div class="modal fade" id="budgetStats">
-        @if (Model.BudgetPageResponse.BudgetBreakdown != null)
-        {
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header text-center">
-                        <h5 class="modal-title w-100">@Model.Year Breakdown</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal">
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <table class="table table-borderless border border-3 rounded-4 text-center">
-                            @foreach (var budget in Model.BudgetPageResponse.BudgetBreakdown)
-                            {
-                                @if (budget.IsMainCategory || budget.MainCategoryId >= int.MaxValue - 1)
-                                {
-                                    <tr class="border-top border-bottom border-3 rounded-4">
-                                        <td>
-                                            @budget.Name
-                                        </td>
-                                        <td class="border-end">
-                                            &nbsp;
-                                        </td>
-                                        <td class="border-end">
-                                            @budget.Amount
-                                        </td>
-                                        <td>
-                                            @if (budget.Percentage != 0)
-                                            {
-                                                <span>@budget.Percentage &#37;</span>
-                                            }
-                                        </td>
-                                    </tr>
-                                }
-                                else
-                                {
-                                    <tr class="border-end border-start">
-                                        <td>
-                                            &nbsp;
-                                        </td>
-                                        <td class="border-end">
-                                            @budget.Name
-                                        </td>
-                                        <td class="border-end">
-                                            @budget.Amount
-                                        </td>
-                                        <td>
-                                            @if (budget.Percentage != 0)
-                                            {
-                                                <span>@budget.Percentage &#37;</span>
-                                            }
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                        </table>
-                    </div>
-                    <div class="modal-footer d-flex justify-content-center">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
     <div class="row d-flex justify-content-between">
         <form method="get" class="mt-2 col-2">
             <div class="input-group">
@@ -162,8 +99,21 @@
             <button class="btn btn-secondary text-wrap import-link btn-height" data-bs-toggle="modal" data-bs-target="#budgetStats">View Details</button>
         </div>
     </div>
+    @if (dataIsEmptyForTheYear)
+        {
+            <div class="d-flex justify-content-center col mt-4">
+                <div class="alert alert-dismissible alert-warning col-auto text-center">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <h3 class="mb-4"><strong>You have no annual budget to display.</strong></h3>
+                    <p>
+                        Get started by adding a
+                        <a class="white-link spin-it" asp-page="/Budget/List" asp-fragment="addBudgetModal">Budget</a>
+                </p>
+                </div>
+            </div>
+        }
     <div class="row mb-1">
-        @if (Model.BudgetPageResponse.AnnualBudgetChartData != null)
+        @if (Model.BudgetPageResponse.AnnualBudgetChartData != null && !dataIsEmptyForTheYear)
         {
             <div class="col d-flex">
                 <canvas id="annualBudgetChart" class="chart-height shadow align-content-center px-1"></canvas>
@@ -172,7 +122,7 @@
     </div>
 
     <div class="row mb-1 g-3">
-        @if (Model.BudgetPageResponse.AnnualSummary != null)
+        @if (Model.BudgetPageResponse.AnnualSummary != null && !dataIsEmptyForTheYear)
         {
             <div class="col-6 col-lg-3">
                 <ul class="list-group text-center mt-3 shadow">
@@ -227,19 +177,19 @@
                 </ul>
             </div>
         }
-        @if (Model.BudgetPageResponse.TypePercentages != null && Model.BudgetPageResponse.TypePercentages.Values.Sum() > 0)
+        @if (Model.BudgetPageResponse.TypePercentages != null && !dataIsEmptyForTheYear)
         {
             <div class="col-6 col-lg-3 mt-3 d-flex">
                 <canvas id="typePercentagesDonut" class="chart-height align-self-center"></canvas>
             </div>
         }
-        @if (Model.BudgetPageResponse.SubCategoryPercentages != null && Model.BudgetPageResponse.SubCategoryPercentages.Values.Sum() > 0)
+        @if (Model.BudgetPageResponse.SubCategoryPercentages != null && !dataIsEmptyForTheYear)
         {
             <div class="col-6 col-lg-3 mt-3 d-flex">
                 <canvas id="subCategoryPie" class="chart-height align-self-center"></canvas>
             </div>
         }
-        @if (Model.BudgetPageResponse.MainCategoryPercentages != null && Model.BudgetPageResponse.MainCategoryPercentages.Values.Sum() > 0)
+        @if (Model.BudgetPageResponse.MainCategoryPercentages != null && !dataIsEmptyForTheYear)
         {
             <div class="col-6 col-lg-3 mt-3 d-flex">
                 <canvas id="mainCategoryPie" class="chart-height align-self-center"></canvas>
@@ -248,9 +198,17 @@
     </div>
 
 </div>
+@await Html.PartialAsync("BudgetBreakdownModal", new BudgetBreakdownModal()
+    {
+        Year = Model.Year,
+        Month= 0,
+        Budgets = Model.BudgetPageResponse.BudgetBreakdown
+    })
 @section Scripts {
     <script src="~/js/budget.js" asp-append-version="true"></script>
     <script asp-append-version="true" src="https://cdn.jsdelivr.net/npm/chart.js@4.1.1/dist/chart.umd.js"></script>
+    @if(!dataIsEmptyForTheYear)
+    {
     @await Html.PartialAsync("AnnualBudgetChart", new AnnualBudgetChart()
     {
         ElementId = "annualBudgetChart",
@@ -261,6 +219,9 @@
         UnallocatedDataset = JsonSerializer.Serialize(Model.BudgetPageResponse.AnnualBudgetChartData.Unallocated),
         Title = DateTime.Now.Year.ToString()
     })
+    }
+    @if(Model.BudgetPageResponse.TypePercentages != null && !dataIsEmptyForTheYear)
+    {
     @await Html.PartialAsync("TypePercentagesDonut", new TypePercentagesDonut()
     {
         ElementId = "typePercentagesDonut",
@@ -268,16 +229,23 @@
         Dataset = JsonSerializer.Serialize(Model.BudgetPageResponse.TypePercentages.Select(x => x.Value).ToArray()),
         Title = "Type Percentages"
     })
-    @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.BudgetPageResponse.SubCategoryPercentages.Select(x => x.Key).ToArray()))
+    }
+    @if (Model.BudgetPageResponse.SubCategoryPercentages != null && !dataIsEmptyForTheYear)
+    {
+        @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.BudgetPageResponse.SubCategoryPercentages.Select(x => x.Key).ToArray()))
     {
         ElementId = "subCategoryPie",
         Dataset = JsonSerializer.Serialize(Model.BudgetPageResponse.SubCategoryPercentages.Select(x => x.Value).ToArray()),
         Title = "Sub Category Percentages"
     })
-    @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.BudgetPageResponse.MainCategoryPercentages.Select(x => x.Key).ToArray()))
+    }
+    @if (Model.BudgetPageResponse.MainCategoryPercentages != null && !dataIsEmptyForTheYear)
+    {
+        @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.BudgetPageResponse.MainCategoryPercentages.Select(x => x.Key).ToArray()))
     {
         ElementId = "mainCategoryPie",
         Dataset = JsonSerializer.Serialize(Model.BudgetPageResponse.MainCategoryPercentages.Select(x => x.Value).ToArray()),
         Title = "Main Category Percentages"
     })
+    }
 }

@@ -16,6 +16,7 @@ import {
 	loadMainCategoryOnSubCategorySelect,
 	loadMainCategoryOnSubCategorySelectEdit,
 } from '../Utility/loadBudgetStatistics';
+import showModalFromUrlHash from '../Utility/show-modal';
 
 hideCategoryWhenSavingsIsSelectedEditModal();
 hideCategoryWhenSavingsIsSelectedAddModal();
@@ -27,3 +28,4 @@ loadAveragesOnSelectListChange();
 loadMainCategoryOnSubCategorySelect();
 loadMainCategoryOnSubCategorySelectEdit();
 loadAveragesOnSelectListChangeEdit();
+showModalFromUrlHash('#addBudgetModal');

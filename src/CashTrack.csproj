@@ -72,6 +72,7 @@
 		<None Remove="Scripts\Utility\online-source.ts" />
 		<None Remove="Scripts\Utility\query-params.ts" />
 		<None Remove="Scripts\Utility\refund-calculations.ts" />
+		<None Remove="Scripts\Utility\show-modal.ts" />
 		<None Remove="Scripts\Utility\source-autocomplete.ts" />
 		<None Remove="Scripts\Utility\split-calculations.ts" />
 		<None Remove="Scripts\Utility\subcategory-autocomplete.ts" />
@@ -99,6 +100,7 @@
 		<TypeScriptCompile Include="Scripts\Utility\budget-income-switch.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\budget-timespan-select.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\budget-type-switch.ts" />
+		<TypeScriptCompile Include="Scripts\Utility\show-modal.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\force-refund.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\format-amount.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\handle-expense-dropdown.ts" />

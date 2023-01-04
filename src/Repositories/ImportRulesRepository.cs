@@ -110,7 +110,8 @@ namespace CashTrack.Repositories.ImportRuleRepository
         {
             try
             {
-                return await _ctx.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("unable to save the import rule");
+                var saveSuccess = await _ctx.SaveChangesAsync();
+                return saveSuccess > 0 ? entity.Id : throw new Exception("unable to save the import rule");
             }
             catch (Exception)
             {

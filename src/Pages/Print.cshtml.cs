@@ -1,5 +1,7 @@
+using CashTrack.Models.BudgetModels;
 using CashTrack.Models.SummaryModels;
 using CashTrack.Pages.Shared;
+using CashTrack.Services.BudgetService;
 using CashTrack.Services.SummaryService;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -9,19 +11,28 @@ namespace CashTrack.Pages
 {
     public class PrintModel : PageModelBase
     {
-        private readonly ISummaryService _service;
+        private readonly IBudgetService _budgetService;
+        private readonly ISummaryService _summaryService;
+        [BindProperty(SupportsGet = true)]
+        public string Type { get; set; }
         [BindProperty(SupportsGet = true)]
         public int Year { get; set; }
         [BindProperty(SupportsGet = true)]
         public int Month { get; set; }
         public List<TransactionBreakdown> Transactions { get; set; }
-        public PrintModel(ISummaryService service)
+        public List<BudgetBreakdown> Budgets { get; set; }
+        public PrintModel(ISummaryService service, IBudgetService budgetService)
         {
-            _service = service;
+            _budgetService = budgetService;
+            _summaryService = service;
         }
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(string type)
         {
-            Transactions = await _service.GetTransactionsToPrint(new PrintTransactionsRequest() { Year = this.Year, Month = this.Month });
+            if (type.ToLower() == "transaction")
+                Transactions = await _summaryService.GetTransactionsToPrint(new PrintTransactionsRequest() { Year = this.Year, Month = this.Month });
+            else if (type.ToLower() == "budget")
+                Budgets = await _budgetService.GetBudgetsToPrint(new PrintBudgetRequest() { Year = this.Year, Month = this.Month });
+
             return Page();
         }
     }

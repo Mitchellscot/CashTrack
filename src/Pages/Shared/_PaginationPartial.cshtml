@@ -11,7 +11,7 @@
             @if (Model.PageNumber >= 3)
             {
                 <li class="page-item">
-                    <a class="page-link"
+                    <a class="page-link spin-it"
                asp-page="@Model.PathLink"
                asp-route-query="@Model.Query"
                asp-route-q="@Model.q"
@@ -25,7 +25,7 @@
             @for (int i = start; i <= end; i++)
             {
                 var active = (i == Model.PageNumber) ? "active" : "";
-                <li class="page-item @active">
+                <li class="spin-it page-item @active">
                     <a class="page-link"
                asp-page="@Model.PathLink"
                asp-route-query="@Model.Query"
@@ -38,11 +38,11 @@
             {
                 @if (Model.PageNumber != (Model.TotalPages - 4))
                 {
-                    <li class="page-item"><a class="page-link disabled">...</a></li>
+                    <li class="page-item spin-it"><a class="page-link disabled">...</a></li>
                 }
 
                 <li class="page-item @disabled">
-                    <a class="page-link"
+                    <a class="page-link spin-it"
                asp-page="@Model.PathLink"
                asp-route-query="@Model.Query"
                asp-route-q="@Model.q"

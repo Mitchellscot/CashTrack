@@ -1,24 +1,24 @@
 ﻿@using System.Globalization;
-@model CashTrack.Pages.Shared.TransactionBreakdownModal
+@model CashTrack.Pages.Shared.BudgetBreakdownModal
 @{
     var month = Model.Month > 0 ? @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month) : "";
-    var title = Model.Month > 0 && Model.Month <= 12 ? @month + " " + Model.Year.ToString() : Model.Month > 0 ? Model.Year.ToString() : "All Time";
+    var title = Model.Month > 0 && Model.Month <= 12 ? @month + " " + Model.Year.ToString() : Model.Year.ToString();
 }
-<div class="modal fade" id="expenseStats">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-body">
-                    @if (Model.Transactions.Any())
-                    {
-                        <div class="d-flex justify-content-between">
-                        <a asp-page="./print" asp-route-type="transaction" asp-route-year="@Model.Year" asp-route-month="@Model.Month" class="btn btn-primary mb-3">PRINT <i class="bi bi-printer align-self-center icon-button"></i></a>
-                        <h5 class="modal-title">@title Expense Breakdown</h5>
+<div class="modal fade" id="budgetStats">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+            @if (Model.Budgets.Any())
+                {
+                    <div class="d-flex justify-content-between">
+                        <a asp-page="../print" asp-route-year="@Model.Year" asp-route-month="@Model.Month" asp-route-type="budget" class="btn btn-primary mb-3">PRINT <i class="bi bi-printer align-self-center icon-button"></i></a>
+                        <h5 class="modal-title">@title Budget Breakdown</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal">
                         </button>
                     </div>
 
-                    <table class="table table-borderless border border-3 rounded-4 text-center" >
-                        @foreach (var budget in Model.Transactions)
+                    <table class="table table-borderless border border-3 rounded-4 text-center">
+                        @foreach (var budget in Model.Budgets)
                         {
                             @if (budget.IsMainCategory || budget.MainCategoryId >= int.MaxValue - 1)
                             {
@@ -39,7 +39,7 @@
                                         @String.Format("{0:n}", budget.Amount)
                                     </td>
                                     <td class="border-top">
-                                        @if (budget.Percentage != 0)
+                                        @if (budget.Percentage > 0)
                                         {
                                             <span>@budget.Percentage &#37;</span>
                                         }
@@ -59,7 +59,7 @@
                                         @String.Format("{0:n}", budget.Amount)
                                     </td>
                                     <td class="border-top">
-                                        @if (budget.Percentage != 0)
+                                        @if (budget.Percentage > 0)
                                         {
                                             <span>@budget.Percentage &#37;</span>
                                         }
@@ -68,26 +68,26 @@
                             }
                         }
                     </table>
-                }
-                else
-                {
-                    <H4 class="text-center">No expenses data available.</H4>
-                }
+                    }
+                    else
+                    {
+                        <H4 class="text-center">No Budget data available.</H4>
+                    }
                 </div>
-                @if (Model.Transactions.Any())
-                {
-                    <div class="modal-footer d-flex justify-content-between">
-                    <a asp-route-type="transaction" asp-page="./print" asp-route-year="@Model.Year" asp-route-month="@Model.Month" class="btn btn-primary mb-3">PRINT <i class="bi bi-printer align-self-center icon-button"></i></a>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                }
-                else
-                {
-                    <div class="modal-footer d-flex justify-content-center">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                }
-            </div>
+            @if (Model.Budgets.Any())
+            {
+                <div class="modal-footer d-flex justify-content-between">
+                    <a asp-page="../print" asp-route-type="budget" asp-route-year="@Model.Year" asp-route-month="@Model.Month" class="btn btn-primary mb-3">PRINT <i class="bi bi-printer align-self-center icon-button"></i></a>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            }
+            else
+            {
+                <div class="modal-footer d-flex justify-content-center">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            }
         </div>
-    
+    </div>
+
 </div>
