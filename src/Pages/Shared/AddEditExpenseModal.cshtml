@@ -8,7 +8,7 @@
     <div class="modal-content">
         <div class="modal-header text-center">
             <h5 class="modal-title w-100">@addOrEdit an Expense</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal">
+            <button type="button" class="btn-close close-modal" data-bs-dismiss="modal">
             </button>
         </div>
         <div class="modal-body">
@@ -93,7 +93,7 @@
                             </div>
                             <div class="col-4 d-flex justify-content-center">
 
-                                <a class="btn btn-secondary" data-bs-target="#addEditSubCategoryModal" data-bs-toggle="modal">Add New Category</a>
+                                <button type="button" class="btn btn-secondary" data-bs-target="#addEditSubCategoryModal" data-bs-toggle="modal">Add New Category</button>
 
                             </div>
                             <span class="validation-text" asp-validation-for="@Model.SubCategoryId"></span>
@@ -152,7 +152,7 @@
             </div>
         </div>
         <div class="modal-footer d-flex justify-content-evenly">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary close-modal" data-bs-dismiss="modal">Close</button>
             @if (Model.IsEdit)
             {
                 <a asp-page="./Split" asp-route-id="@Model.Id" class="btn btn-info">Split Expense</a>
@@ -162,13 +162,4 @@
             </form>
         </div>
     </div>
-    @if (Model.ShowAddCategoryButton)
-    {
-        @* Add SubCategory Modal *@
-        <div class="modal fade" id="addEditSubCategoryModal">
-            @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal() { ReturnUrl=$"{Model.ReturnUrl}", InUse=true, IsEdit=false, MainCategoryList=Model.MainCategoryList })
-        </div>
-        @* End SubCategory Modal *@
-    }
-
 </div>

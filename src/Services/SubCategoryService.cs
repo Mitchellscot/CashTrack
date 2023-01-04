@@ -168,7 +168,7 @@ public class SubCategoryService : ISubCategoryService
 
         var categories = await _subCategoryRepo.Find(x => true);
         if (categories.Any(x => x.Name == request.Name))
-            throw new DuplicateNameException(nameof(SubCategoryEntity), request.Name);
+            throw new DuplicateNameException(request.Name);
 
         if (request.MainCategoryId < 1)
             throw new CategoryNotFoundException("You must assign a main category to a sub category.", new Exception());
@@ -187,7 +187,7 @@ public class SubCategoryService : ISubCategoryService
     {
         var categories = await _subCategoryRepo.Find(x => x.Name == request.Name);
         if (categories.Any(x => x.Id != request.Id))
-            throw new DuplicateNameException(request.Name, nameof(SubCategoryEntity));
+            throw new DuplicateNameException(request.Name);
 
         var category = await _subCategoryRepo.FindById(request.Id.Value);
         if (category == null)

@@ -213,7 +213,7 @@ public class MerchantService : IMerchantService
 
         var merchants = await _merchantRepo.Find(x => x.Name == request.Name);
         if (merchants.Any())
-            throw new DuplicateNameException(nameof(MerchantEntity), request.Name);
+            throw new DuplicateNameException(request.Name);
 
         var merchantEntity = new MerchantEntity()
         {
@@ -231,7 +231,7 @@ public class MerchantService : IMerchantService
     {
         var merchants = await _merchantRepo.Find(x => x.Name == request.Name);
         if (merchants.Any(x => x.Id != request.Id))
-            throw new DuplicateNameException(request.Name, nameof(MerchantEntity));
+            throw new DuplicateNameException(request.Name);
 
         var merchant = await _merchantRepo.FindById(request.Id.Value);
 

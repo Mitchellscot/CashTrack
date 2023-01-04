@@ -19,4 +19,3 @@ loadMainCategoryOnSubCategorySelect();
 loadMainCategoryOnEditModalLoad();
 formatAmountOnChange();
 showModalFromUrlHash('#addExpenseModal');
-
