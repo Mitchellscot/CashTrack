@@ -3,7 +3,7 @@
 @{
     var addOrEdit = Model.IsEdit ? "Edit" : "Add";
     var dataId = Model.Id.HasValue ? Model.Id.Value : 0;
-    var formId = Model.IsEdit ? $"addEditImportRuleModalForm-{Model.Id}" : "addEditImportRuleModalForm";
+    var formId = Model.IsEdit ? $"addEditImportRuleModalForm-{dataId}" : "addEditImportRuleModalForm";
     }
 
 <div class="modal-dialog modal-lg">
@@ -113,13 +113,17 @@
                                 var categoryList = Model.TransactionType == TransactionType.Expense ?
                                     Model.SubCategoryList : Model.IncomeCategoryList;
                                 var categorySelectListId = Model.IsEdit ? 
-                                $"categorySelectList-{Model.Id}" : "categorySelectList";
+                                $"categorySelectList-{Model.Id.Value}" : "categorySelectList";
                             }
                             <select class="form-select text-center"
                                         asp-for=@Model.CategoryId
                                         asp-items=categoryList
                                     id=@categorySelectListId>
                                 @if (!Model.IsEdit)
+                                {
+                                    <option value="" selected disabled hidden>Select</option>
+                                }
+                                @if (Model.IsEdit && Model.CategoryId == null)
                                 {
                                     <option value="" selected disabled hidden>Select</option>
                                 }
@@ -136,7 +140,7 @@
                                     var merchantSourceList = Model.TransactionType == TransactionType.Expense ?
                                     Model.MerchantList : Model.SourceList;
                                     var merchantSourceSelectListId = Model.IsEdit ?
-                                $"merchantSourceSelectList-{Model.Id}" : "merchantSourceSelectList";
+                                $"merchantSourceSelectList-{Model.Id.Value}" : "merchantSourceSelectList";
                                 }
                                 <select asp-for=@Model.MerchantSourceId
                                         asp-items=merchantSourceList
@@ -144,9 +148,17 @@
                                     id="@merchantSourceSelectListId">
                                     @if (!Model.IsEdit)
                                     {
-                                        <option value="0" selected disabled hidden>Select</option>
+                                        <option value="" selected disabled hidden>Select</option>
                                     }
-                                </select>
+                                    @if (Model.IsEdit && Model.TransactionType == TransactionType.Expense && Model.MerchantSourceId == null)
+                                {
+                                    <option value="" selected disabled hidden>Select</option>
+                                }
+                                else if (Model.IsEdit && Model.TransactionType == TransactionType.Income && Model.MerchantSourceId == null)
+                                {
+                                    <option value="" selected disabled hidden>Select</option>
+                                }
+                            </select>
                             </div>
                         </div>
                     </div>
