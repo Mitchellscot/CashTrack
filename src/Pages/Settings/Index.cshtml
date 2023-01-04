@@ -31,7 +31,7 @@
             <input asp-for="ChangePassword.ConfirmPassword" type="password" class="form-control" id="confirmPasswordInput" placeholder="* * * * * *">
         </div>
         <div class="col-6 col-md-3 d-flex align-content-center">
-            <button class="btn btn-primary btn-height align-self-end" type="submit">Change Password</button>
+            <button class="btn btn-primary btn-height align-self-end spin-it" type="submit">Change Password</button>
         </div>
     </form>
 
@@ -68,10 +68,9 @@
 
     <div class="row my-3 border rounded border-2 p-5 d-flex justify-content-around shadow">
         <div class="col-md-3 col-6 py-md-0 py-2">
-            <a asp-page="/Import/Rules" class="btn btn-secondary btn-height">Import Rules</a>
-        </div>
-        <div class="col-md-3 col-6 py-md-0 py-2">
-            <button class="btn btn-primary btn-height" id="addImportRuleButton" data-bs-toggle="modal" data-bs-target="#addImportRuleModal">Add Import Rule</button>
+            <button class="btn btn-primary btn-height" type="button" id="importCSVButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">
+                Import From CSV
+            </button>
         </div>
         <div class="col-md-3 col-6 py-md-0 py-2">
             <button class="btn btn-primary btn-height" type="button" id="imporCustomCSVtButton" data-bs-toggle="modal" data-bs-target="#customCsvHeaderModal">
@@ -79,9 +78,10 @@
             </button>
         </div>
         <div class="col-md-3 col-6 py-md-0 py-2">
-            <button class="btn btn-primary btn-height" type="button" id="importCSVButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">
-                Import From CSV
-            </button>
+            <button class="btn btn-primary btn-height" id="addImportRuleButton" data-bs-toggle="modal" data-bs-target="#addImportRuleModal">Add Import Rule</button>
+        </div>
+        <div class="col-md-3 col-6 py-md-0 py-2">
+            <a asp-page="/Import/Rules" class="btn btn-secondary btn-height spin-it">Import Rules</a>
         </div>
     </div>
 </div>

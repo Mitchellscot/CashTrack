@@ -158,13 +158,13 @@ namespace CashTrack.Tests.Services
                 var request = new AddEditIncomeCategoryModal()
                 {
                     Id = 1,
-                    Name = "Updated Name",
+                    Name = "Updated Category",
                     InUse = true,
                     Notes = "Updated!"
                 };
                 var result = await service.UpdateIncomeCategoryAsync(request);
                 result.ShouldBe(1);
-                var updatedCategory = (await service.GetIncomeCategoryNames()).FirstOrDefault(x => x == "Updated Name");
+                var updatedCategory = (await service.GetIncomeCategoryNames()).FirstOrDefault(x => x == "Updated Category");
                 updatedCategory.ShouldNotBeNull();
             }
         }

@@ -124,8 +124,9 @@ public class ExpenseService : IExpenseService
             var merchant = (await _merchantRepo.Find(x => x.Name == request.Merchant)).FirstOrDefault();
             if (merchant == null)
                 throw new MerchantNotFoundException(nameof(request.Merchant));
+            merchantId = merchant.Id;
         }
-        merchantId = request.MerchantId;
+        
 
         var expenseEntity = new ExpenseEntity()
         {
@@ -272,6 +273,7 @@ public class ExpenseMapperProfile : Profile
             .ForMember(e => e.Amount, o => o.MapFrom(src => src.Amount))
             .ForMember(e => e.Notes, o => o.MapFrom(src => src.Notes))
             .ForMember(e => e.Merchant, o => o.MapFrom(src => src.Merchant.Name))
+            .ForMember(e => e.MerchantId, o => o.MapFrom(src => src.MerchantId))
             .ForMember(e => e.MerchantId, o => o.NullSubstitute(null))
             .ForMember(e => e.SubCategory, o => o.MapFrom(src => src.Category.Name))
             .ForMember(e => e.SubCategoryId, o => o.MapFrom(src => src.Category.Id))

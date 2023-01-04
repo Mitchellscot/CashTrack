@@ -1,11 +1,11 @@
-using CashTrack.Models.SummaryModels;
+using CashTrack.Models.BudgetModels;
 using System.Collections.Generic;
 
 namespace CashTrack.Pages.Shared
 {
-    public class TransactionBreakdownModal
+    public class BudgetBreakdownModal
     {
-        public List<TransactionBreakdown> Transactions { get; set; }
+        public List<BudgetBreakdown> Budgets { get; set; }
         public int Month { get; set; }
         public int Year { get; set; }
     }

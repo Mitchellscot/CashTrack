@@ -14,6 +14,11 @@ namespace CashTrack.Models.BudgetModels
     {
         public BudgetListResponse(int pageNumber, int pageSize, int totalCount, List<BudgetListItem> listItems) : base(pageNumber, pageSize, totalCount, listItems) { }
     }
+    public record PrintBudgetRequest
+    {
+        public int Year { get; set; }
+        public int Month { get; set; }
+    }
     public record BudgetListItem
     {
         public int Id { get; set; }
@@ -58,10 +63,11 @@ namespace CashTrack.Models.BudgetModels
     {
         public int MainCategoryId { get; set; }
         public int SubCategoryId { get; set; }
-        public string Name { get; set; }
+        public string Category { get; set; }
         public int Amount { get; set; }
-        public int Percentage { get; set; }
+        public decimal Percentage { get; set; }
         public bool IsMainCategory => SubCategoryId == 0 && MainCategoryId != 0;
+        public bool IsIncome => Category == "Income";
     }
     public record BudgetSummary
     {

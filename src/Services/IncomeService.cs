@@ -110,7 +110,7 @@ public class IncomeService : IIncomeService
         int? sourceId = 0;
         if (request.Source != null)
         {
-            var source = (await _sourceRepository.Find(x => x.Name == request.Source)).FirstOrDefault(); ;
+            var source = (await _sourceRepository.Find(x => x.Name == request.Source)).FirstOrDefault();
             if (source == null)
             {
                 throw new IncomeSourceNotFoundException(nameof(request.Source));

@@ -19,12 +19,12 @@
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a asp-page="./Expenses" 
-            class="nav-link">
+            class="nav-link spin-it">
             Expenses</a>
         </li>
         <li class="nav-item">
             <a asp-page="./Income" 
-            class="nav-link active">
+            class="nav-link active spin-it">
             Income</a>
         </li>
         <li class="nav-item dropdown">
@@ -77,6 +77,15 @@
                           IsEdit = false 
                       })
                       </div>
+                      @if (Model.IncomeReviewResponse.ListItems.Count() == 0)
+                      {
+                          <div class="d-flex justify-content-center col mt-4">
+                              <div class="alert alert-dismissible alert-info col-auto text-center">
+                                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                  <h5 class="m-2"><strong>You have no Income to review.</strong></h5>
+                              </div>
+                          </div>
+                      }
     @if (Model.IncomeReviewResponse != null && Model.IncomeReviewResponse.ListItems.Count() > 0)
     {
         <div class="row mb-0">
