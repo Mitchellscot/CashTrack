@@ -6,6 +6,7 @@ using CashTrack.Pages.Shared;
 using CashTrack.Services.MainCategoriesService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -13,11 +14,13 @@ namespace CashTrack.Pages.Expenses.Categories
 {
     public class IndexModel : PageModelBase
     {
+        private readonly ILogger<IndexModel> _logger;
         private readonly ISubCategoryService _subCategoryService;
         private readonly IMainCategoriesService _mainCategoryService;
 
-        public IndexModel(ISubCategoryService subcategoryService, IMainCategoriesService mainCategoryService)
+        public IndexModel(ISubCategoryService subcategoryService, IMainCategoriesService mainCategoryService, ILogger<IndexModel> logger)
         {
+            _logger = logger;
             _subCategoryService = subcategoryService;
             _mainCategoryService = mainCategoryService;
         }
@@ -78,7 +81,8 @@ namespace CashTrack.Pages.Expenses.Categories
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                _logger.LogError(ex, "Error occured while saving a sub category.");
+                ModelState.AddModelError("", "An error occured while saving the category. Is that name already taken?");
                 return await PrepareAndRenderPage();
             }
 

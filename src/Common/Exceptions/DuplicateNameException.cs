@@ -8,7 +8,7 @@ namespace CashTrack.Common.Exceptions
         {
 
         }
-        public DuplicateNameException(string name, string type) : base(String.Format($"{type} already has a the name {name} - please use another name."))
+        public DuplicateNameException(string name) : base(String.Format($"The name {name} is already in use - please use another name."))
         {
 
         }

@@ -58,7 +58,7 @@
         </div>
     </div>
     @* Add Expense Modal *@
-    <div class="modal fade" id="addExpenseModal">
+    <div class="modal fade" id="addExpenseModal" data-bs-backdrop="false">
         @await Html.PartialAsync("AddEditExpenseModal",
         new AddEditExpenseModal() {
             IsEdit = false, 
@@ -74,7 +74,15 @@
         });
     </div>
     @*End Add Expense Modal*@
-
+    <div class="modal fade" id="addEditSubCategoryModal" data-bs-backdrop="false">
+        @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal() 
+        { 
+            ReturnUrl="/Expenses/Index#addExpenseModal", 
+            InUse=true, 
+            IsEdit=false, 
+            MainCategoryList= new SelectList(Model.MainCategoryList, "Id", "Category")
+        })
+        </div>
     @if (Model.ExpenseResponse != null && Model.ExpenseResponse.TotalCount > 0)
     {
         <div class="row">
@@ -210,6 +218,15 @@
                                 ShowAddCategoryButton = true,
                                 Q2 = Model.Q2
                                 });
+                                    </div>
+                                    <div class="modal fade" id="addEditSubCategoryModal-@expense.Id">
+                                        @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal() 
+                                        { 
+                                            ReturnUrl="/Expenses/Index#addExpenseModal", 
+                                            InUse=true, 
+                                            IsEdit=false, 
+                                            MainCategoryList= new SelectList(Model.MainCategoryList, "Id", "Category") 
+                                        })
                                     </div>
 
                                     @*End Edit Expense Modal*@

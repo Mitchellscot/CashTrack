@@ -41,7 +41,7 @@ public class IncomeSourceService : IIncomeSourceService
 
         var categories = await _sourceRepo.Find(x => true);
         if (categories.Any(x => x.Name == request.Name))
-            throw new DuplicateNameException(nameof(IncomeSourceEntity), request.Name);
+            throw new DuplicateNameException(request.Name);
 
         var sourceEntity = new IncomeSourceEntity()
         {
@@ -121,7 +121,7 @@ public class IncomeSourceService : IIncomeSourceService
     {
         var sources = await _sourceRepo.Find(x => x.Name == request.Name);
         if (sources.Any(x => x.Id != request.Id))
-            throw new DuplicateNameException(request.Name, nameof(IncomeSourceEntity));
+            throw new DuplicateNameException(request.Name);
         var source = await _sourceRepo.FindById(request.Id.Value);
 
         source.Name = request.Name;
