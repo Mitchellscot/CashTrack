@@ -41,6 +41,8 @@ using CashTrack.Services.BudgetService;
 using CashTrack.Services.SummaryService;
 using CashTrack.Common.Middleware;
 using Microsoft.Extensions.Options;
+using System.Linq;
+using System.IO;
 
 namespace CashTrack
 {
@@ -51,9 +53,8 @@ namespace CashTrack
             var builder = WebApplication.CreateBuilder(args);
 
             var connectionString = ConfigureConfiguration(builder, builder.Environment);
-            ConfigureThirdPartyServices(builder.Services, connectionString);
+            ConfigureThirdPartyServices(builder.Services, builder.Environment, connectionString);
             ConfigureServices(builder.Services);
-
             var app = builder.Build();
             app.Logger.LogInformation($"Using environment {builder.Environment.EnvironmentName}");
 
@@ -64,23 +65,34 @@ namespace CashTrack
         }
         private static string ConfigureConfiguration(WebApplicationBuilder app, IWebHostEnvironment env)
         {
-            //binds appsettings so I can use with IOptions in other parts of the application
             app.Services.Configure<AppSettingsOptions>(app.Configuration.GetSection(AppSettingsOptions.AppSettings));
+
+            if (env.IsDevelopment())
+            {
+                return $"Data Source={Path.Join(Directory.GetCurrentDirectory(), app.Configuration[$"AppSettings:ConnectionStrings:{env.EnvironmentName}"])}";
+            }
             return app.Configuration[$"AppSettings:ConnectionStrings:{env.EnvironmentName}"];
         }
 
-        private static void ConfigureThirdPartyServices(IServiceCollection app, string connectionString)
+        private static void ConfigureThirdPartyServices(IServiceCollection app, IWebHostEnvironment env, string connectionString)
         {
             app.AddRazorPages();
             app.AddValidatorsFromAssemblyContaining<Program>();
             app.AddAutoMapper(typeof(Program));
             app.AddDbContext<AppDbContext>(o =>
             {
-                o.UseSqlServer(connectionString, builder =>
-                {
-                    builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5), null);
-                });
+                o.UseSqlite(connectionString);
             });
+
+            //app.AddDbContext<AppDbContext>(o =>
+            //{
+            //    o.UseSqlServer(connectionString, builder =>
+            //    {
+            //        builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5), null);
+            //    });
+            //});
+
+
             app.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
             app.ConfigureApplicationCookie(o => o.LoginPath = "/login");
             app.AddIdentityCore<UserEntity>(o =>

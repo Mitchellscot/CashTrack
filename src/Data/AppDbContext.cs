@@ -26,19 +26,20 @@ namespace CashTrack.Data
         public DbSet<ExpenseReviewEntity> ExpensesToReview { get; set; }
         public DbSet<IncomeReviewEntity> IncomeToReview { get; set; }
         public DbSet<ImportRuleEntity> ImportRules { get; set; }
-
+        private readonly bool _seedData;
         private readonly IWebHostEnvironment _env;
 
-        public AppDbContext(DbContextOptions options, IWebHostEnvironment env) : base(options)
+        public AppDbContext(DbContextOptions options, IWebHostEnvironment env, bool seedData = false) : base(options)
         {
+            _seedData = seedData;
             _env = env;
         }
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
             base.OnModelCreating(mb);
-            //to seed a new dev or prod database, set this to true
-            mb.Initialize(_env.EnvironmentName, false);
+
+            mb.Initialize(_env.EnvironmentName, _seedData);
             //used to convert decimals and DateTime for the sqllite in memory database.
             if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
                 ConfigureForSqlLite(mb);
