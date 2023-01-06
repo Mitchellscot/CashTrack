@@ -40,7 +40,7 @@ namespace CashTrack.Data
             base.OnModelCreating(mb);
 
             mb.Initialize(_env.EnvironmentName, _seedData);
-            //used to convert decimals and DateTime for the sqllite in memory database.
+            //used to convert decimals and DateTime for the sqlite in memory database.
             if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
                 ConfigureForSqlLite(mb);
         }
@@ -96,7 +96,6 @@ namespace CashTrack.Data
             if (createNewDatabase || env == "Test")
             {
                 var users = CsvParser.ProcessUserFile(Path.Combine(csvFileDirectory, "Users.csv"));
-
                 foreach (var user in users)
                 {
                     var password = new PasswordHasher<UserEntity>();

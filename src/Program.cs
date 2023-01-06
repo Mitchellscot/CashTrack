@@ -43,6 +43,8 @@ using CashTrack.Common.Middleware;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using System.IO;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 
 namespace CashTrack
 {
@@ -56,11 +58,18 @@ namespace CashTrack
             ConfigureThirdPartyServices(builder.Services, builder.Environment, connectionString);
             ConfigureServices(builder.Services);
             var app = builder.Build();
-            app.Logger.LogInformation($"Using environment {builder.Environment.EnvironmentName}");
 
             ConfigureMiddleware(app, app.Services, app.Environment);
             ConfigureEndpoints(app, app.Services);
-            app.Run();
+            app.Start();
+
+            IServerAddressesFeature addressFeature = null;
+            var server = app.Services.GetService<IServer>();
+            addressFeature = server.Features.Get<IServerAddressesFeature>();
+            app.Logger.LogInformation($"Using connection string \n{connectionString}");
+            app.Logger.LogInformation($"Listening on\n{string.Join("\n", addressFeature.Addresses.ToArray())}");
+
+            app.WaitForShutdown();
 
         }
         private static string ConfigureConfiguration(WebApplicationBuilder app, IWebHostEnvironment env)
@@ -69,7 +78,7 @@ namespace CashTrack
 
             if (env.IsDevelopment())
             {
-                return $"Data Source={Path.Join(Directory.GetCurrentDirectory(), app.Configuration[$"AppSettings:ConnectionStrings:{env.EnvironmentName}"])}";
+                return $"Data Source={app.Configuration[$"AppSettings:ConnectionStrings:{env.EnvironmentName}"]}";
             }
             return app.Configuration[$"AppSettings:ConnectionStrings:{env.EnvironmentName}"];
         }
@@ -79,19 +88,23 @@ namespace CashTrack
             app.AddRazorPages();
             app.AddValidatorsFromAssemblyContaining<Program>();
             app.AddAutoMapper(typeof(Program));
-            app.AddDbContext<AppDbContext>(o =>
+            if (env.EnvironmentName == CashTrackEnv.Development)
             {
-                o.UseSqlite(connectionString);
-            });
-
-            //app.AddDbContext<AppDbContext>(o =>
-            //{
-            //    o.UseSqlServer(connectionString, builder =>
-            //    {
-            //        builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5), null);
-            //    });
-            //});
-
+                app.AddDbContext<AppDbContext>(o =>
+                {
+                    o.UseSqlite(connectionString);
+                });
+            }
+            else
+            {
+                app.AddDbContext<AppDbContext>(o =>
+                {
+                    o.UseSqlServer(connectionString, builder =>
+                    {
+                        builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5), null);
+                    });
+                });
+            }
 
             app.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
             app.ConfigureApplicationCookie(o => o.LoginPath = "/login");
@@ -155,9 +168,9 @@ namespace CashTrack
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
                 app.UseHttpsRedirection();
+                app.UseMiddleware<IpAddressMiddleware>();
             }
             app.UseStaticFiles();
-            app.UseMiddleware<IpAddressMiddleware>();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

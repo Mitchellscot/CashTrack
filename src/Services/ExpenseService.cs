@@ -68,7 +68,7 @@ public class ExpenseService : IExpenseService
     {
         var predicate = DateOption<ExpenseEntity, ExpenseRequest>.Parse(request);
         //sqllite DB treats dates differently...
-        if (_env.EnvironmentName == "Test" && request.DateOptions == DateOptions.SpecificDate)
+        if (_env.EnvironmentName == "Test" || _env.EnvironmentName == "Development" && request.DateOptions == DateOptions.SpecificDate)
         {
             predicate = x => x.Date == request.BeginDate;
         }
@@ -126,7 +126,7 @@ public class ExpenseService : IExpenseService
                 throw new MerchantNotFoundException(nameof(request.Merchant));
             merchantId = merchant.Id;
         }
-        
+
 
         var expenseEntity = new ExpenseEntity()
         {
