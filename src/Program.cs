@@ -26,12 +26,9 @@ using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
 using CashTrack.Services.UserService;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
 using Microsoft.AspNetCore.Routing;
 using CashTrack.Common;
@@ -40,71 +37,56 @@ using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Services.BudgetService;
 using CashTrack.Services.SummaryService;
 using CashTrack.Common.Middleware;
-using Microsoft.Extensions.Options;
-using System.Linq;
-using System.IO;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Hosting.Server.Features;
 
 namespace CashTrack
 {
     public class Program
     {
+        private static string _env { get; set; }
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            var connectionString = ConfigureConfiguration(builder, builder.Environment);
-            ConfigureThirdPartyServices(builder.Services, builder.Environment, connectionString);
-            ConfigureServices(builder.Services);
+            _env = builder.Environment.EnvironmentName;
+            var connectionString = ConfigureConfiguration(builder);
+            ConfigureServices(builder.Services, connectionString);
+            ConfigureAppServices(builder.Services);
             var app = builder.Build();
 
-            ConfigureMiddleware(app, app.Services, app.Environment);
-            ConfigureEndpoints(app, app.Services);
-            app.Start();
+            ConfigureMiddleware(app);
+            ConfigureEndpoints(app);
 
-            IServerAddressesFeature addressFeature = null;
-            var server = app.Services.GetService<IServer>();
-            addressFeature = server.Features.Get<IServerAddressesFeature>();
-            app.Logger.LogInformation($"Using connection string \n{connectionString}");
-            app.Logger.LogInformation($"Listening on\n{string.Join("\n", addressFeature.Addresses.ToArray())}");
-
-            app.WaitForShutdown();
-
+            app.Run();
         }
-        private static string ConfigureConfiguration(WebApplicationBuilder app, IWebHostEnvironment env)
+        private static string ConfigureConfiguration(WebApplicationBuilder app)
         {
             app.Services.Configure<AppSettingsOptions>(app.Configuration.GetSection(AppSettingsOptions.AppSettings));
 
-            if (env.IsDevelopment())
-            {
-                return $"Data Source={app.Configuration[$"AppSettings:ConnectionStrings:{env.EnvironmentName}"]}";
-            }
-            return app.Configuration[$"AppSettings:ConnectionStrings:{env.EnvironmentName}"];
+            return UseSQLite() ?
+                $"Data Source={app.Configuration[$"AppSettings:ConnectionStrings:{_env}"]}" :
+                app.Configuration[$"AppSettings:ConnectionStrings:{_env}"];
         }
 
-        private static void ConfigureThirdPartyServices(IServiceCollection app, IWebHostEnvironment env, string connectionString)
+        private static void ConfigureServices(IServiceCollection app, string connectionString)
         {
             app.AddRazorPages();
             app.AddValidatorsFromAssemblyContaining<Program>();
             app.AddAutoMapper(typeof(Program));
-            if (env.EnvironmentName == CashTrackEnv.Development)
+
+            app.AddDbContext<AppDbContext>(o =>
             {
-                app.AddDbContext<AppDbContext>(o =>
+                if (UseSQLite())
                 {
                     o.UseSqlite(connectionString);
-                });
-            }
-            else
-            {
-                app.AddDbContext<AppDbContext>(o =>
+                }
+                else
                 {
                     o.UseSqlServer(connectionString, builder =>
                     {
                         builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5), null);
                     });
-                });
-            }
+                }
+            });
+
 
             app.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
             app.ConfigureApplicationCookie(o => o.LoginPath = "/login");
@@ -126,7 +108,7 @@ namespace CashTrack
             .AddSignInManager<SignInManager<UserEntity>>();
         }
 
-        private static void ConfigureServices(IServiceCollection services)
+        private static void ConfigureAppServices(IServiceCollection services)
         {
             services.AddScoped<IExpenseRepository, ExpenseRepository>();
             services.AddScoped<IMerchantRepository, MerchantRepository>();
@@ -161,9 +143,9 @@ namespace CashTrack
             services.AddScoped<IpAddressMiddleware>();
 
         }
-        private static void ConfigureMiddleware(IApplicationBuilder app, IServiceProvider services, IWebHostEnvironment env)
+        private static void ConfigureMiddleware(IApplicationBuilder app)
         {
-            if (env.IsProduction())
+            if (IsProduction())
             {
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
@@ -175,10 +157,19 @@ namespace CashTrack
             app.UseAuthentication();
             app.UseAuthorization();
         }
-        private static void ConfigureEndpoints(IEndpointRouteBuilder app, IServiceProvider services)
+        private static void ConfigureEndpoints(IEndpointRouteBuilder app)
         {
             app.MapRazorPages().RequireAuthorization();
             app.MapControllers().RequireAuthorization();
         }
+
+        private static bool IsDevelopment()
+            => _env.Equals(CashTrackEnv.Development, StringComparison.CurrentCultureIgnoreCase);
+        private static bool IsProduction()
+            => _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase);
+        private static bool UseSQLite()
+            => _env.Equals(CashTrackEnv.Development, StringComparison.CurrentCultureIgnoreCase) ||
+            _env.Equals(CashTrackEnv.Docker, StringComparison.CurrentCultureIgnoreCase) ||
+            _env.Equals(CashTrackEnv.Test, StringComparison.CurrentCultureIgnoreCase);
     }
 }

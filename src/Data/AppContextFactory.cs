@@ -10,7 +10,7 @@ using CashTrack.Common;
 namespace CashTrack.Data
 {
     /// <summary>
-    /// This purpose of this clas is to generate a db context from the EF CLI and accept arguments from the command line. See New-SQLite.ps1 for an example.
+    /// This purpose of this clas is to generate a db context from the EF CLI and accept arguments from the command line. See New-Lite.ps1 for an example.
     /// </summary>
     public class AppContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {

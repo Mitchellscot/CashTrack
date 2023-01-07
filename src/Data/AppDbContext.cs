@@ -9,6 +9,7 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Linq;
+using CashTrack.Common;
 
 namespace CashTrack.Data
 {
@@ -27,40 +28,45 @@ namespace CashTrack.Data
         public DbSet<IncomeReviewEntity> IncomeToReview { get; set; }
         public DbSet<ImportRuleEntity> ImportRules { get; set; }
         private readonly bool _seedData;
-        private readonly IWebHostEnvironment _env;
+        private readonly string _env;
 
         public AppDbContext(DbContextOptions options, IWebHostEnvironment env, bool seedData = false) : base(options)
         {
             _seedData = seedData;
-            _env = env;
+            _env = env.EnvironmentName;
         }
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
             base.OnModelCreating(mb);
 
-            mb.Initialize(_env.EnvironmentName, _seedData);
-            //used to convert decimals and DateTime for the sqlite in memory database.
-            if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
-                ConfigureForSqlLite(mb);
+            mb.Initialize(_env, _seedData);
+
+            if (Database.ProviderName.Equals("Microsoft.EntityFrameworkCore.Sqlite", StringComparison.CurrentCultureIgnoreCase))
+                ConfigureForSqlLite(mb, _env);
         }
-        private void ConfigureForSqlLite(ModelBuilder modelBuilder)
+        private void ConfigureForSqlLite(ModelBuilder modelBuilder, string env)
         {
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 var properties = entityType.ClrType.GetProperties().Where(p => p.PropertyType == typeof(decimal));
-                var dateTimeProperties = entityType.ClrType.GetProperties()
-                    .Where(p => p.PropertyType == typeof(DateTime));
-
                 foreach (var property in properties)
                 {
                     modelBuilder.Entity(entityType.Name).Property(property.Name).HasConversion<double>();
                 }
-
-                foreach (var property in dateTimeProperties)
+            }
+            if (env == CashTrackEnv.Test)
+            {
+                foreach (var entityType in modelBuilder.Model.GetEntityTypes())
                 {
-                    modelBuilder.Entity(entityType.Name).Property(property.Name)
-                        .HasConversion(new DateTimeToBinaryConverter());
+                    var dateTimeProperties = entityType.ClrType.GetProperties()
+                        .Where(p => p.PropertyType == typeof(DateTime));
+
+                    foreach (var property in dateTimeProperties)
+                    {
+                        modelBuilder.Entity(entityType.Name).Property(property.Name)
+                            .HasConversion(new DateTimeToBinaryConverter());
+                    }
                 }
             }
         }
@@ -70,7 +76,7 @@ namespace CashTrack.Data
     {
         public static void Initialize(this ModelBuilder mb, string env, bool createNewDatabase)
         {
-            string csvFileDirectory = env == "Test" ?
+            string csvFileDirectory = env == CashTrackEnv.Test ?
                 csvFileDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.FullName, "ct-data", "TestData") :
                 csvFileDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "ct-data");
 
@@ -93,7 +99,7 @@ namespace CashTrack.Data
             mb.Ignore<IdentityRoleClaim<int>>();
             mb.Ignore<IdentityUserRole<int>>();
 
-            if (createNewDatabase || env == "Test")
+            if (createNewDatabase || env == CashTrackEnv.Test)
             {
                 var users = CsvParser.ProcessUserFile(Path.Combine(csvFileDirectory, "Users.csv"));
                 foreach (var user in users)
