@@ -453,5 +453,4 @@ appsettings*
 /src/wwwroot/css/*.map
 /src/wwwroot/js/*.txt
 *.db
-*.db-shm
-*.db-wal
+*.db*
