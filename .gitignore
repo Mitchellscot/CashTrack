@@ -452,3 +452,5 @@ appsettings*
 /src/wwwroot/css/*.css
 /src/wwwroot/css/*.map
 /src/wwwroot/js/*.txt
+*.db
+*.db*
