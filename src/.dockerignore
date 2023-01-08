@@ -1,0 +1,13 @@
+﻿# directories
+**/bin/
+**/obj/
+**/out/
+**/tests/
+
+# files
+Dockerfile*
+**/*.md
+**/*.sln
+jest.config.js
+.prettierignore
+.eslintrcjs
