@@ -68,11 +68,7 @@ public class ExpenseService : IExpenseService
     public async Task<ExpenseResponse> GetExpensesAsync(ExpenseRequest request)
     {
         var predicate = DateOption<ExpenseEntity, ExpenseRequest>.Parse(request);
-        //sqllite DB treats dates differently...
-        if (_env.EnvironmentName == CashTrackEnv.Test && request.DateOptions == DateOptions.SpecificDate)
-        {
-            predicate = x => x.Date == request.BeginDate;
-        }
+
         var expenses = await _expenseRepo.FindWithPagination(predicate, request.PageNumber, request.PageSize);
         var count = await _expenseRepo.GetCount(predicate);
         var amount = await _expenseRepo.GetAmountOfExpenses(predicate);

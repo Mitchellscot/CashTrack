@@ -173,7 +173,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Get_Expenses_Current_Month()
         {
-            var testDate = DateTime.Today;
+            var testDate = DateTime.Today.AddDays(-1);
             var expense = new Expense()
             {
                 Amount = 4.24M,
@@ -201,7 +201,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Get_Expenses_Current_Quarter()
         {
-            var testDate = DateTime.Today;
+            var testDate = DateTime.Today.AddDays(-1);
             var expense = new Expense()
             {
                 Amount = 4.24M,
@@ -231,11 +231,11 @@ namespace CashTrack.Tests.Services
         {
             var rando = new Random();
             var currentYear = DateTime.Today.Year;
-            var testDate = new DateTime(currentYear, rando.Next(1, 12), rando.Next(1, 27));
+            var testDate = new DateTime(currentYear, rando.Next(1, DateTime.Now.Month), rando.Next(1, DateTime.Now.Day));
             var expense = new Expense()
             {
                 Amount = 4.24M,
-                Date = testDate,
+                Date = testDate.AddDays(-1),
                 Notes = "",
                 MerchantId = 5,
                 SubCategoryId = 1,
@@ -253,7 +253,7 @@ namespace CashTrack.Tests.Services
 
                 var result = await service.GetExpensesAsync(request);
 
-                result.ListItems.FirstOrDefault()!.Date.Date.ShouldBe(testDate.Date);
+                result.ListItems.FirstOrDefault()!.Date.Date.ShouldBe(testDate.AddDays(-1).Date);
             }
         }
         [Fact]

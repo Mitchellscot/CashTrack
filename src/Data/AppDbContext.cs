@@ -55,20 +55,6 @@ namespace CashTrack.Data
                     modelBuilder.Entity(entityType.Name).Property(property.Name).HasConversion<double>();
                 }
             }
-            if (env == CashTrackEnv.Test)
-            {
-                foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-                {
-                    var dateTimeProperties = entityType.ClrType.GetProperties()
-                        .Where(p => p.PropertyType == typeof(DateTime));
-
-                    foreach (var property in dateTimeProperties)
-                    {
-                        modelBuilder.Entity(entityType.Name).Property(property.Name)
-                            .HasConversion(new DateTimeToBinaryConverter());
-                    }
-                }
-            }
         }
     }
     //model builder extension to seed DB data
