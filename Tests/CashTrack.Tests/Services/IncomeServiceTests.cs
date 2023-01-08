@@ -146,7 +146,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Get_Income_Current_Month()
         {
-            var testDate = DateTime.Today;
+            var testDate = DateTime.Today.AddDays(-1);
             var income = new Income()
             {
                 Amount = 4.24M,
@@ -174,7 +174,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Get_Income_Current_Quarter()
         {
-            var testDate = DateTime.Today;
+            var testDate = DateTime.Today.AddDays(-1);
             var income = new Income()
             {
                 Amount = 4.24M,
@@ -202,7 +202,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Get_Income_Current_Year()
         {
-            var testDate = DateTime.Today;
+            var testDate = DateTime.Today.AddDays(-1);
             var income = new Income()
             {
                 Amount = 4.24M,
