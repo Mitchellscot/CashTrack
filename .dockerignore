@@ -8,6 +8,4 @@
 Dockerfile*
 **/*.md
 **/*.sln
-jest.config.js
-.prettierignore
-.eslintrcjs
+**/node_modules/.install-stamp

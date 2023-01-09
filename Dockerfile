@@ -17,6 +17,8 @@ RUN npm install npm@8.6.0 -g && \
 
 # copy everything else and build app
 COPY src/. .
+# remove the install stamp so 'npm install' can be rerun in container, if it exists
+RUN rm -f /source/src/node_modules/.install-stamp
 RUN dotnet publish -c Release -o /app --use-current-runtime --self-contained false --no-restore
 
 # final stage/image
