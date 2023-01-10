@@ -1,8 +1,9 @@
 ﻿# directories
 **/bin/
 **/obj/
-**/out/
+**/dist/
 **/tests/
+**/node_modules/
 
 # files
 Dockerfile*
