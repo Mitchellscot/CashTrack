@@ -51,7 +51,7 @@ namespace CashTrack
             ConfigureServices(builder.Services, connectionString);
             ConfigureAppServices(builder.Services);
             var app = builder.Build();
-
+            app.Urls.Add("http://+:5000");
             ConfigureMiddleware(app);
             ConfigureEndpoints(app);
             app.Urls.Add("http+:80");
