@@ -2,7 +2,7 @@
 # https://hub.docker.com/_/microsoft-dotnet
 FROM mcr.microsoft.com/dotnet/sdk:7.0-jammy AS build
 WORKDIR /dist
-
+EXPOSE 80
 # copy csproj and restore as distinct layers
 COPY src/*.csproj .
 RUN dotnet restore --use-current-runtime  
@@ -10,8 +10,8 @@ RUN dotnet restore --use-current-runtime
 # install node
 RUN apt-get update && apt-get install -y \
     software-properties-common \
-    npm \
-    apt-utils
+    apt-utils \
+    npm
 RUN npm install npm@8.6.0 -g && \
     npm install n -g && \
     n v18.13.0

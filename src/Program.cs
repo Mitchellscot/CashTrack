@@ -54,7 +54,7 @@ namespace CashTrack
 
             ConfigureMiddleware(app);
             ConfigureEndpoints(app);
-
+            app.Urls.Add("http+:80");
             app.Run();
         }
         private static string ConfigureConfiguration(WebApplicationBuilder app)
