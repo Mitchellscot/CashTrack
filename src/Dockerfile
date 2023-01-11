@@ -3,14 +3,15 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0-jammy AS build
 WORKDIR /dist
 EXPOSE 5000
+
 # copy csproj and restore as distinct layers
 COPY src/*.csproj .
-RUN dotnet restore --use-current-runtime  
+RUN dotnet restore --use-current-runtime
 
+#install node
 ENV NODE_VERSION 18.13.0
 ENV NODE_DOWNLOAD_SHA dc68e229425b941eeae0b1d59c66c680b56fd536d0ad2311e3fb009bd83661e4
 ENV NODE_DOWNLOAD_URL https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-arm64.tar.gz
-
 RUN wget "$NODE_DOWNLOAD_URL" -O nodejs.tar.gz \
 	&& echo "$NODE_DOWNLOAD_SHA  nodejs.tar.gz" | sha256sum -c - \
 	&& tar -xzf "nodejs.tar.gz" -C /usr/local --strip-components=1 \
