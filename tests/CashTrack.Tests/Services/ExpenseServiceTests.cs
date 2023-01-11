@@ -15,6 +15,8 @@ using System.Linq;
 using CashTrack.Common.Exceptions;
 using CashTrack.Data;
 using System.Collections.Generic;
+using Xunit.Abstractions;
+using Microsoft.VisualStudio.TestPlatform.Utilities;
 
 namespace CashTrack.Tests.Services
 {
@@ -23,9 +25,11 @@ namespace CashTrack.Tests.Services
     {
         private readonly ExpenseService _service;
         private readonly IMapper _mapper;
+        private readonly ITestOutputHelper _output;
 
-        public ExpenseServiceTests()
+        public ExpenseServiceTests(ITestOutputHelper output)
         {
+            _output = output;
             var expenseMapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(new ExpenseMapperProfile());
@@ -230,12 +234,12 @@ namespace CashTrack.Tests.Services
         public async Task Get_Expenses_Current_Year()
         {
             var rando = new Random();
-            var currentYear = DateTime.Today.Year;
-            var testDate = new DateTime(currentYear, rando.Next(1, DateTime.Now.Month), rando.Next(1, DateTime.Now.Day));
+            var currentYear = DateTime.UtcNow.Year;
+            var testDate = new DateTime(currentYear, rando.Next(1, DateTime.UtcNow.Month), rando.Next(2, DateTime.UtcNow.Day)).AddDays(-1);
             var expense = new Expense()
             {
                 Amount = 4.24M,
-                Date = testDate.AddDays(-1),
+                Date = testDate,
                 Notes = "",
                 MerchantId = 5,
                 SubCategoryId = 1,
@@ -252,8 +256,9 @@ namespace CashTrack.Tests.Services
                 };
 
                 var result = await service.GetExpensesAsync(request);
-
-                result.ListItems.FirstOrDefault()!.Date.Date.ShouldBe(testDate.AddDays(-1).Date);
+                _output.WriteLine(expense.Date.ToLongDateString());
+                _output.WriteLine(result.ListItems.FirstOrDefault()?.Date.ToLongDateString());
+                result.ListItems.FirstOrDefault()!.Date.Date.ShouldBe(testDate.Date);
             }
         }
         [Fact]
