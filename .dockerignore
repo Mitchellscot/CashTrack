@@ -1,0 +1,11 @@
+﻿# directories
+**/bin/
+**/obj/
+**/dist/
+**/tests/
+**/node_modules/
+
+# files
+Dockerfile*
+**/*.md
+**/*.sln

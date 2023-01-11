@@ -51,9 +51,11 @@ namespace CashTrack
             ConfigureServices(builder.Services, connectionString);
             ConfigureAppServices(builder.Services);
             var app = builder.Build();
-
             ConfigureMiddleware(app);
             ConfigureEndpoints(app);
+
+            if(UseHttp())
+                app.Urls.Add("http://+:5000");
 
             app.Run();
         }
@@ -61,9 +63,7 @@ namespace CashTrack
         {
             app.Services.Configure<AppSettingsOptions>(app.Configuration.GetSection(AppSettingsOptions.AppSettings));
 
-            return UseSQLite() ?
-                $"Data Source={app.Configuration[$"AppSettings:ConnectionStrings:{_env}"]}" :
-                app.Configuration[$"AppSettings:ConnectionStrings:{_env}"];
+            return $"Data Source={app.Configuration[$"AppSettings:ConnectionStrings:{_env}"]}";
         }
 
         private static void ConfigureServices(IServiceCollection app, string connectionString)
@@ -74,17 +74,7 @@ namespace CashTrack
 
             app.AddDbContext<AppDbContext>(o =>
             {
-                if (UseSQLite())
-                {
-                    o.UseSqlite(connectionString);
-                }
-                else
-                {
-                    o.UseSqlServer(connectionString, builder =>
-                    {
-                        builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5), null);
-                    });
-                }
+                o.UseSqlite(connectionString);
             });
 
 
@@ -163,13 +153,9 @@ namespace CashTrack
             app.MapControllers().RequireAuthorization();
         }
 
-        private static bool IsDevelopment()
-            => _env.Equals(CashTrackEnv.Development, StringComparison.CurrentCultureIgnoreCase);
+        private static bool UseHttp()
+            => _env.Equals(CashTrackEnv.Development, StringComparison.CurrentCultureIgnoreCase) || _env.Equals(CashTrackEnv.Docker, StringComparison.CurrentCultureIgnoreCase);
         private static bool IsProduction()
             => _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase);
-        private static bool UseSQLite()
-            => _env.Equals(CashTrackEnv.Development, StringComparison.CurrentCultureIgnoreCase) ||
-            _env.Equals(CashTrackEnv.Docker, StringComparison.CurrentCultureIgnoreCase) ||
-            _env.Equals(CashTrackEnv.Test, StringComparison.CurrentCultureIgnoreCase);
     }
 }
