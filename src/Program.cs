@@ -40,6 +40,9 @@ using CashTrack.Common.Middleware;
 using Microsoft.AspNetCore.HttpOverrides;
 using System.Net;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using System.Linq;
+using System.IO;
 
 namespace CashTrack
 {
@@ -63,12 +66,16 @@ namespace CashTrack
                 app.Urls.Add("http://+:5000");
 
             app.Run();
+            app.Logger.LogInformation($"Using environment: {_env}");
+            app.Logger.LogInformation($"Listening on {string.Join(", ", app.Urls)}");
+            if (!IsProduction())
+                app.Logger.LogInformation($"Using Connection string {connectionString}");
         }
         private static string ConfigureConfiguration(WebApplicationBuilder app)
         {
             app.Services.Configure<AppSettingsOptions>(app.Configuration.GetSection(AppSettingsOptions.AppSettings));
 
-            return $"Data Source={app.Configuration[$"AppSettings:ConnectionStrings:{_env}"]}";
+            return $"Data Source={Path.Join(Directory.GetCurrentDirectory(), "Data", app.Configuration[$"AppSettings:ConnectionStrings:{_env}"])})";
         }
 
         private static void ConfigureServices(WebApplicationBuilder app, string connectionString)

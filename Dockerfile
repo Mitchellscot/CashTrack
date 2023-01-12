@@ -22,7 +22,7 @@ RUN wget "$NODE_DOWNLOAD_URL" -O nodejs.tar.gz \
 # copy everything else and build app
 ADD src/. .
 RUN dotnet publish -c Release -o /app --use-current-runtime --self-contained false --no-restore
-COPY src/cashtrack.db /app
+COPY src/Data/cashtrack.db /app
 
 # final stage/image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
