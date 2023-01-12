@@ -28,4 +28,4 @@ COPY src/Data/cashtrack.db /app
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 COPY --from=build /app .
-ENTRYPOINT ["dotnet", "CashTrack.dll", "--environment=Docker"]
+ENTRYPOINT ["dotnet", "CashTrack.dll", "--environment Docker"]
