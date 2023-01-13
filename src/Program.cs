@@ -110,15 +110,6 @@ namespace CashTrack
             }).AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders()
             .AddSignInManager<SignInManager<UserEntity>>();
-
-            if (IsDocker())
-            {
-                app.Services.Configure<ForwardedHeadersOptions>(options =>
-                {
-                    options.KnownProxies.Add(IPAddress.Parse(app.Configuration["DockerIP"]));
-                });
-            }
-
         }
 
         private static void ConfigureAppServices(IServiceCollection services)
@@ -158,7 +149,7 @@ namespace CashTrack
         }
         private static void ConfigureMiddleware(IApplicationBuilder app)
         {
-            //
+            //Forwards request headers from nginx proxy to the app
             if (IsDocker())
             {
                 app.UseForwardedHeaders(new ForwardedHeadersOptions

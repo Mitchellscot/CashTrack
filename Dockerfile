@@ -22,10 +22,10 @@ RUN wget "$NODE_DOWNLOAD_URL" -O nodejs.tar.gz \
 # copy everything else and build app
 ADD src/. .
 RUN dotnet publish -c Release -o /app --use-current-runtime --self-contained false --no-restore
-COPY src/Data/cashtrack.db /app
+COPY src/Data/cashtrack.db /app/Data
 
 # final stage/image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 COPY --from=build /app .
-ENTRYPOINT ["dotnet", "CashTrack.dll", "--environment Docker"]
+ENTRYPOINT ["dotnet", "CashTrack.dll", "--environment=Docker"]
