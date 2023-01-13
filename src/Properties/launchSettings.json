@@ -10,14 +10,20 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_PRINT_TELEMETRY_MESSAGE": "false"
       },
       "hotReloadEnabled": true,
       "applicationUrl": "http://localhost:5000"
     },
     "Docker": {
       "commandName": "Docker",
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "launchBrowser": true,
+      "launchUrl": "http://+:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Docker",
+        "DOTNET_PRINT_TELEMETRY_MESSAGE": "false"
+      },
       "publishAllPorts": true
     }
   },

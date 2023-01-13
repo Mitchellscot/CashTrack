@@ -28,7 +28,10 @@ namespace CashTrack.Data
 
             if (env == CashTrackEnv.Development)
             {
-                var connectionString = $"Data Source={settings.ConnectionStrings[env]}";
+                var connectionString = $"Data Source={Path.Join(Directory.GetCurrentDirectory(),
+                    "Data",
+                    settings.ConnectionStrings[env]
+                    )}";
                 optionsBuilder.UseSqlite(connectionString);
             }
             else

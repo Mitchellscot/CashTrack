@@ -37,6 +37,12 @@ using CashTrack.Repositories.BudgetRepository;
 using CashTrack.Services.BudgetService;
 using CashTrack.Services.SummaryService;
 using CashTrack.Common.Middleware;
+using Microsoft.AspNetCore.HttpOverrides;
+using System.Net;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using System.Linq;
+using System.IO;
 
 namespace CashTrack
 {
@@ -47,40 +53,48 @@ namespace CashTrack
         {
             var builder = WebApplication.CreateBuilder(args);
             _env = builder.Environment.EnvironmentName;
+
             var connectionString = ConfigureConfiguration(builder);
-            ConfigureServices(builder.Services, connectionString);
+            ConfigureServices(builder, connectionString);
             ConfigureAppServices(builder.Services);
+
             var app = builder.Build();
             ConfigureMiddleware(app);
             ConfigureEndpoints(app);
 
-            if(UseHttp())
-                app.Urls.Add("http://+:5000");
+            if (UseHttp())
+                app.Urls.Add("http://*:5000");
+
+            app.Logger.LogInformation($"Using environment: {_env}");
+            app.Logger.LogInformation($"Listening on {string.Join(", ", app.Urls)}");
+            if (!IsProduction())
+                app.Logger.LogInformation($"Using Connection string {connectionString}");
 
             app.Run();
+
         }
         private static string ConfigureConfiguration(WebApplicationBuilder app)
         {
             app.Services.Configure<AppSettingsOptions>(app.Configuration.GetSection(AppSettingsOptions.AppSettings));
 
-            return $"Data Source={app.Configuration[$"AppSettings:ConnectionStrings:{_env}"]}";
+            return $"Data Source={Path.Join(Directory.GetCurrentDirectory(), "Data", app.Configuration[$"AppSettings:ConnectionStrings:{_env}"])}";
         }
 
-        private static void ConfigureServices(IServiceCollection app, string connectionString)
+        private static void ConfigureServices(WebApplicationBuilder app, string connectionString)
         {
-            app.AddRazorPages();
-            app.AddValidatorsFromAssemblyContaining<Program>();
-            app.AddAutoMapper(typeof(Program));
+            app.Services.AddRazorPages();
+            app.Services.AddValidatorsFromAssemblyContaining<Program>();
+            app.Services.AddAutoMapper(typeof(Program));
 
-            app.AddDbContext<AppDbContext>(o =>
+            app.Services.AddDbContext<AppDbContext>(o =>
             {
                 o.UseSqlite(connectionString);
             });
 
 
-            app.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
-            app.ConfigureApplicationCookie(o => o.LoginPath = "/login");
-            app.AddIdentityCore<UserEntity>(o =>
+            app.Services.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
+            app.Services.ConfigureApplicationCookie(o => o.LoginPath = "/login");
+            app.Services.AddIdentityCore<UserEntity>(o =>
             {
                 o.Stores.MaxLengthForKeys = 36;
                 o.SignIn.RequireConfirmedAccount = false;
@@ -135,6 +149,15 @@ namespace CashTrack
         }
         private static void ConfigureMiddleware(IApplicationBuilder app)
         {
+            //Forwards request headers from nginx proxy to the app
+            if (IsDocker())
+            {
+                app.UseForwardedHeaders(new ForwardedHeadersOptions
+                {
+                    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+
+                });
+            }
             if (IsProduction())
             {
                 app.UseExceptionHandler("/Error");
@@ -157,5 +180,7 @@ namespace CashTrack
             => _env.Equals(CashTrackEnv.Development, StringComparison.CurrentCultureIgnoreCase) || _env.Equals(CashTrackEnv.Docker, StringComparison.CurrentCultureIgnoreCase);
         private static bool IsProduction()
             => _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase);
+        private static bool IsDocker()
+            => _env.Equals(CashTrackEnv.Docker, StringComparison.CurrentCultureIgnoreCase);
     }
 }
