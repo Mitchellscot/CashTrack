@@ -21,6 +21,8 @@ RUN wget "$NODE_DOWNLOAD_URL" -O nodejs.tar.gz \
 
 # copy everything else and build app
 ADD src/. .
+RUN dotnet ef migrations add Init --project src/CashTrack.csproj -o src/Data/Migrations -- seed
+RUN dotnet ef database update --project ./src/CashTrack.csproj
 RUN dotnet publish -c Release -o /app --use-current-runtime --self-contained false --no-restore
 COPY src/cashtrack.db /app
 
