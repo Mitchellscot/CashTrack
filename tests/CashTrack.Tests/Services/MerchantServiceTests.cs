@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CashTrack.Common.Exceptions;
+using CashTrack.Common.Extensions;
 using CashTrack.Data;
 using CashTrack.Models.Common;
 using CashTrack.Models.MerchantModels;
@@ -161,7 +162,7 @@ namespace CashTrack.Tests.Services
                 var expenses = await expenseRepo.Find(x => true);
                 var result = merchantService.GetExpenseCategoryTotals(subCategories, expenses);
                 result.Count.ShouldBe(37);
-                var rentTotal = result.Where(x => x.Key == "Rent").Select(x => x.Value).FirstOrDefault();
+                var rentTotal = result.Where(x => x.Key.IsEqualTo("Rent")).Select(x => x.Value).FirstOrDefault();
                 rentTotal.ShouldBe(10200);
             }
         }
@@ -178,7 +179,7 @@ namespace CashTrack.Tests.Services
                 var expenses = await expenseRepo.Find(x => true);
                 var result = merchantService.GetExpenseCategoryOccurances(subCategories, expenses);
                 result.Count.ShouldBe(38);
-                var timesWeAteOut = result.Where(x => x.Key == "Dining Out").Select(x => x.Value).FirstOrDefault();
+                var timesWeAteOut = result.Where(x => x.Key.IsEqualTo("Dining Out")).Select(x => x.Value).FirstOrDefault();
                 timesWeAteOut.ShouldBe(161);
             }
         }

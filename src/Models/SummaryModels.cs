@@ -1,4 +1,5 @@
-﻿using CashTrack.Models.BudgetModels;
+﻿using CashTrack.Common.Extensions;
+using CashTrack.Models.BudgetModels;
 using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.IncomeSourceModels;
 using CashTrack.Models.MerchantModels;
@@ -164,7 +165,7 @@ namespace CashTrack.Models.SummaryModels
         public decimal Amount { get; set; }
         public decimal Percentage { get; set; }
         public bool IsMainCategory => SubCategoryId == 0 && MainCategoryId != 0;
-        public bool IsIncome => Category == "Income";
+        public bool IsIncome => Category.IsEqualTo("Income");
     }
     public class MonthlyYearToDate
     {

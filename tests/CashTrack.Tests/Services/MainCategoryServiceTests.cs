@@ -1,4 +1,5 @@
 ﻿using CashTrack.Common.Exceptions;
+using CashTrack.Common.Extensions;
 using CashTrack.Data;
 using CashTrack.Models.MainCategoryModels;
 using CashTrack.Repositories.IncomeCategoryRepository;
@@ -125,7 +126,7 @@ namespace CashTrack.Tests.Services
                 var result = await service.UpdateMainCategoryAsync(category);
                 result.ShouldBe(1);
                 //I don't really have a wait to just get ONE so this will do for now...
-                var updatedCategory = (await service.GetMainCategoriesForDropdownListAsync()).FirstOrDefault(x => x.Category == "Blah blah blah");
+                var updatedCategory = (await service.GetMainCategoriesForDropdownListAsync()).FirstOrDefault(x => x.Category.IsEqualTo("Blah blah blah"));
                 updatedCategory.ShouldNotBeNull();
             }
         }

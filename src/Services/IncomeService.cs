@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CashTrack.Common.Exceptions;
+using CashTrack.Common.Extensions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
@@ -87,7 +88,7 @@ public class IncomeService : IIncomeService
     {
         var predicate = DateOption<IncomeEntity, IncomeRequest>.Parse(request);
         //sqllite DB treats dates differently...
-        if (_env.EnvironmentName == "Test" && request.DateOptions == DateOptions.SpecificDate)
+        if (_env.EnvironmentName.IsEqualTo("Test") && request.DateOptions == DateOptions.SpecificDate)
         {
             predicate = x => x.Date == request.BeginDate;
         }

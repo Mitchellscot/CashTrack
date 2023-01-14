@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Services.Common;
 using CashTrack.Common;
+using CashTrack.Common.Extensions;
 
 namespace CashTrack.Services.MainCategoriesService
 {
@@ -56,7 +57,7 @@ namespace CashTrack.Services.MainCategoriesService
             if (category == null)
                 throw new CategoryNotFoundException(id.ToString());
 
-            if (category.Name == "Other")
+            if (category.Name.IsEqualTo("Other"))
                 throw new Exception("You cannot delete this category. It's kind of important.");
             var otherCategory = (await _mainCategoryRepo.Find(x => x.Name == "Other")).FirstOrDefault();
             if (otherCategory == null)

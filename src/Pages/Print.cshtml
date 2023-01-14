@@ -1,5 +1,6 @@
 ﻿@page
 @using System.Globalization;
+@using CashTrack.Common.Extensions;
 @model CashTrack.Pages.PrintModel
 @{
     var month = Model.Month > 0 ? @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month) : string.Empty;
@@ -26,7 +27,7 @@
             {
                 @if (budget.IsMainCategory || budget.MainCategoryId >= int.MaxValue - 1)
                 {
-                    @if (budget.Category == "Income")
+                    @if (budget.Category.IsEqualTo("Income"))
                     {
                         <tr class="border-top border-bottom border-3 rounded-4 mt-5 border border-end-0 border border-start-0">
                             <td colspan="4" class="text-center"><h4>Summary</h4></td>
@@ -98,7 +99,7 @@ else if (Model.Budgets != null && Model.Budgets.Any())
                 {
                     @if (budget.IsMainCategory || budget.MainCategoryId >= int.MaxValue - 1)
                     {
-                        @if (budget.Category == "Income")
+                        @if (budget.Category.IsEqualTo("Income"))
                         {
                             <tr class="border-top border-bottom border-3 rounded-4 mt-5 border border-end-0 border border-start-0">
                                 <td colspan="4" class="text-center"><h4>Summary</h4></td>

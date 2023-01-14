@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CashTrack.Common;
 using CashTrack.Common.Exceptions;
+using CashTrack.Common.Extensions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
@@ -208,7 +209,7 @@ public class ExpenseService : IExpenseService
     public async Task<Expense[]> GetExpensesByDateWithoutPaginationAsync(DateTime request)
     {
         Expression<Func<ExpenseEntity, bool>> predicate = x => x.Date.Date.CompareTo(request.Date) == 0;
-        if (_env.EnvironmentName == "Test")
+        if (_env.EnvironmentName.IsEqualTo("Test"))
         {
             //sqllite DB treats dates differently...
             predicate = x => x.Date == request.Date;
