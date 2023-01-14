@@ -10,6 +10,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Linq;
 using CashTrack.Common;
+using CashTrack.Models.UserModels;
+using System.Collections.Generic;
+using CashTrack.Common.Extensions;
+using System.Runtime.CompilerServices;
 
 namespace CashTrack.Data
 {
@@ -27,12 +31,12 @@ namespace CashTrack.Data
         public DbSet<ExpenseReviewEntity> ExpensesToReview { get; set; }
         public DbSet<IncomeReviewEntity> IncomeToReview { get; set; }
         public DbSet<ImportRuleEntity> ImportRules { get; set; }
-        private readonly bool _seedData;
+        private string _args { get; set; }
         private readonly string _env;
-
-        public AppDbContext(DbContextOptions options, IWebHostEnvironment env, bool seedData = false) : base(options)
+        private const string SQLite = "Microsoft.EntityFrameworkCore.Sqlite";
+        public AppDbContext(DbContextOptions options, IWebHostEnvironment env, string args = "") : base(options)
         {
-            _seedData = seedData;
+            _args = args;
             _env = env.EnvironmentName;
         }
 
@@ -40,10 +44,11 @@ namespace CashTrack.Data
         {
             base.OnModelCreating(mb);
 
-            mb.Initialize(_env, _seedData);
+            mb.Initialize(_env, _args);
 
-            if (Database.ProviderName.Equals("Microsoft.EntityFrameworkCore.Sqlite", StringComparison.CurrentCultureIgnoreCase))
+            if (Database.ProviderName.IsEqualTo(SQLite))
                 ConfigureForSqlLite(mb, _env);
+
         }
         private void ConfigureForSqlLite(ModelBuilder modelBuilder, string env)
         {
@@ -60,12 +65,8 @@ namespace CashTrack.Data
     //model builder extension to seed DB data
     public static class SeedData
     {
-        public static void Initialize(this ModelBuilder mb, string env, bool createNewDatabase)
+        public static void Initialize(this ModelBuilder mb, string env, string args)
         {
-            string csvFileDirectory = env == CashTrackEnv.Test ?
-                csvFileDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.FullName, "ct-data", "TestData") :
-                csvFileDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "ct-data");
-
             mb.Entity<ExpenseTags>().HasKey(et => new { et.ExpenseId, et.TagId });
 
             mb.Entity<ExpenseTags>()
@@ -85,12 +86,75 @@ namespace CashTrack.Data
             mb.Ignore<IdentityRoleClaim<int>>();
             mb.Ignore<IdentityUserRole<int>>();
 
-            if (createNewDatabase || env == CashTrackEnv.Test)
+            if (args.IsEqualTo("new"))
+            {
+                //seed basic data
+                var rando = new Random();
+                var userId = rando.Next(1, int.MaxValue);
+                var passwordHasher = new PasswordHasher<UserEntity>();
+                var seededUser = new UserEntity()
+                {
+                    Id = userId,
+                    UserName = "cash",
+                    FirstName = "Cash",
+                    LastName = "Track",
+                    Email = "test@example.com",
+                    NormalizedEmail = "TEST@EXAMPLE.COM",
+                    NormalizedUserName = "CASH",
+                    SecurityStamp = Guid.NewGuid().ToString("D"),
+                    EmailConfirmed = true
+                };
+                var hashed = passwordHasher.HashPassword(seededUser, "track");
+                seededUser.PasswordHash = hashed;
+                mb.Entity<UserEntity>().HasData(seededUser);
+                var claim = new IdentityUserClaim<int>()
+                {
+                    Id = 1,
+                    UserId = userId,
+                    ClaimType = ClaimTypes.NameIdentifier,
+                    ClaimValue = "cash",
+                };
+                mb.Entity<IdentityUserClaim<int>>().HasData(claim);
+                var uncategorizedExpenses = new SubCategoryEntity()
+                {
+                    Id = 1,
+                    Name = "Uncategorized",
+                    Notes = "Default category for any expense that does not have a category associated with it.",
+                    MainCategoryId = 1
+                };
+                mb.Entity<SubCategoryEntity>().HasData(uncategorizedExpenses);
+                var otherMainCategory = new MainCategoryEntity()
+                {
+                    Id = 1,
+                    Name = "Other"
+                };
+                mb.Entity<MainCategoryEntity>().HasData(otherMainCategory);
+                var uncategorizedIncome = new IncomeCategoryEntity()
+                {
+                    Id = 1,
+                    Name = "Uncategorized",
+                    Notes = "Default category for any income that does not have a category associated with it."
+                };
+                mb.Entity<IncomeCategoryEntity>().HasData(uncategorizedIncome);
+                return;
+            }
+
+            string csvFileDirectory = env == CashTrackEnv.Test ?
+                csvFileDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.FullName, "ct-data", "TestData") :
+                csvFileDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "ct-data");
+
+            if (!Directory.Exists(csvFileDirectory) && env == CashTrackEnv.Test)
+            {
+                //test data is empty, so new test data is generated here
+                throw new Exception("You need to add ct-data to the project or write some code that generates test data");
+            }
+
+            if (args.IsEqualTo("seed") || env == CashTrackEnv.Test)
             {
                 var users = CsvParser.ProcessUserFile(Path.Combine(csvFileDirectory, "Users.csv"));
                 foreach (var user in users)
                 {
-                    var password = new PasswordHasher<UserEntity>();
+                    var passwordHasher = new PasswordHasher<UserEntity>();
                     var seededUser = new UserEntity()
                     {
                         Id = user.Id,
@@ -103,7 +167,7 @@ namespace CashTrack.Data
                         SecurityStamp = Guid.NewGuid().ToString("D"),
                         EmailConfirmed = true
                     };
-                    var hashed = password.HashPassword(seededUser, user.PasswordHash);
+                    var hashed = passwordHasher.HashPassword(seededUser, user.PasswordHash);
                     seededUser.PasswordHash = hashed;
                     mb.Entity<UserEntity>().HasData(seededUser);
                     var claim = new IdentityUserClaim<int>()

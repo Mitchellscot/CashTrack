@@ -7,7 +7,7 @@ if(Test-Path $dbPath){
 }
 #Create new EF Migration files
 Write-Host "Creating new Migration Files" 
-dotnet ef migrations add Init --project ./src/CashTrack.csproj -o ./Data/Migrations -- new
+dotnet ef migrations add SeededInit --project ./src/CashTrack.csproj -o ./Data/Migrations -- seed
 #Create a new database
 Write-Host "Creating new SQLite Database"
 dotnet ef database update --project ./src/CashTrack.csproj

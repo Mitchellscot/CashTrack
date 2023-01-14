@@ -62,7 +62,7 @@ namespace CashTrack.Services.MainCategoriesService
             var otherCategory = (await _mainCategoryRepo.Find(x => x.Name == "Other")).FirstOrDefault();
             if (otherCategory == null)
             {
-                throw new CategoryNotFoundException("You need to create a new category called 'Other' before you can delete a main category. This will assigned all exepenses associated with this main category to the 'Other' category.");
+                throw new CategoryNotFoundException("You need to have a new category called 'Other' before you can delete a main category. This will assigned all exepenses associated with this main category to the 'Other' category.");
             }
             var subCategories = await _subCategoryRepository.Find(x => x.MainCategoryId == id);
             foreach (var subCategory in subCategories)

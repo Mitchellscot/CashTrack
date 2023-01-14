@@ -445,7 +445,7 @@ $RECYCLE.BIN/
 .DS_Store
 /ct-data
 /src/Data/Migrations
-appsettings*
+appsettings.*.json
 /src/ref
 /src/runtimes
 /src/wwwroot/js/*.js
