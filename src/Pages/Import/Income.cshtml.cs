@@ -1,3 +1,4 @@
+using CashTrack.Common.Extensions;
 using CashTrack.Models.IncomeCategoryModels;
 using CashTrack.Models.IncomeReviewModels;
 using CashTrack.Pages.Shared;
@@ -69,7 +70,7 @@ namespace CashTrack.Pages.Import
                 await PrepareData();
                 return Page();
             }
-            if (IsRefund || SelectedIncome.Category == "Refund")
+            if (IsRefund || SelectedIncome.Category.IsEqualTo("Refund"))
                 return RedirectToPage("../Income/Refund", new { id = incomeId });
 
             TempData["SuccessMessage"] = "Sucessfully Added New Income!";

@@ -1,4 +1,5 @@
-﻿using CashTrack.Data.Entities;
+﻿using CashTrack.Common.Extensions;
+using CashTrack.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +43,7 @@ namespace CashTrack.Services.Common
             Merchant = _merchants.Where(x => x.Id == MerchantId).FirstOrDefault();
             Location = Merchant != null ?
                 Merchant.IsOnline ? "Online" :
-                Merchant.City == "Various" ? "Various" :
+                Merchant.City.IsEqualTo("Various") ? "Various" :
                 !string.IsNullOrEmpty(Merchant.City) && !string.IsNullOrEmpty(Merchant.State) ? $"{Merchant.City}, {Merchant.State}"
             : null : null;
             return this;

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CashTrack.Common;
 using CashTrack.Common.Exceptions;
+using CashTrack.Common.Extensions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
 using CashTrack.Models.SummaryModels;

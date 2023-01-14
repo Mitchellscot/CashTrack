@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using CashTrack.Common;
+using CashTrack.Common.Extensions;
 
 namespace CashTrack.Data
 {
@@ -43,7 +44,7 @@ namespace CashTrack.Data
 
             }
             bool seed = false;
-            if (args.Length > 0 && args[0] == "seed")
+            if (args.Length > 0 && args[0].IsEqualTo("seed"))
                 seed = true;
 
             return new AppDbContext(optionsBuilder.Options, new FakeWebHostEnvironment(env), seed);

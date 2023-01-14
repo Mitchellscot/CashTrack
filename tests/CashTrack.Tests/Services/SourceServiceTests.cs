@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CashTrack.Common.Exceptions;
+using CashTrack.Common.Extensions;
 using CashTrack.Data;
 using CashTrack.Models.IncomeSourceModels;
 using CashTrack.Repositories.IncomeCategoryRepository;
@@ -195,7 +196,7 @@ namespace CashTrack.Tests.Services
                 var income = await incomeRepo.Find(x => true);
                 var result = sourceService.GetIncomeCategoryTotals(categories, income);
                 result.Count.ShouldBe(8);
-                var giftTotal = result.Where(x => x.Key == "Gift").Select(x => x.Value).FirstOrDefault();
+                var giftTotal = result.Where(x => x.Key.IsEqualTo("Gift")).Select(x => x.Value).FirstOrDefault();
                 giftTotal.ShouldBe(390);
             }
         }
@@ -212,7 +213,7 @@ namespace CashTrack.Tests.Services
                 var income = await incomeRepo.Find(x => true);
                 var result = sourceService.GetIncomeCategoryOccurances(categories, income);
                 result.Count.ShouldBe(11);
-                var tipTotal = result.Where(x => x.Key == "Tip").Select(x => x.Value).FirstOrDefault();
+                var tipTotal = result.Where(x => x.Key.IsEqualTo("Tip")).Select(x => x.Value).FirstOrDefault();
                 tipTotal.ShouldBe(172);
             }
         }
