@@ -1,4 +1,5 @@
-﻿using CashTrack.Models.Common;
+﻿using CashTrack.Common.Extensions;
+using CashTrack.Models.Common;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -67,7 +68,7 @@ namespace CashTrack.Models.BudgetModels
         public int Amount { get; set; }
         public decimal Percentage { get; set; }
         public bool IsMainCategory => SubCategoryId == 0 && MainCategoryId != 0;
-        public bool IsIncome => Category == "Income";
+        public bool IsIncome => Category.IsEqualTo("Income");
     }
     public record BudgetSummary
     {

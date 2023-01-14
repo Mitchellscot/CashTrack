@@ -1,4 +1,5 @@
 ﻿using CashTrack.Common;
+using CashTrack.Common.Extensions;
 using CashTrack.Data;
 using CashTrack.Data.Entities;
 using CashTrack.Models.ImportCsvModels;
@@ -52,12 +53,12 @@ namespace CashTrack.Tests.Services
 
                 var verifyExpenses = await expenseReviewRepo.Find(x => true);
                 verifyExpenses.Count().ShouldBe(6);
-                var categorizedExpense = verifyExpenses.FirstOrDefault(x => x.Notes == "rent");
+                var categorizedExpense = verifyExpenses.FirstOrDefault(x => x.Notes.IsEqualTo("rent"));
                 categorizedExpense!.SuggestedCategoryId!.Value.ShouldBe(32);
                 categorizedExpense!.SuggestedMerchantId!.Value.ShouldBe(3);
                 var verifyIncomes = await incomeReviewRepo.Find(x => true);
                 verifyIncomes.Count().ShouldBe(1);
-                var categorizedIncome = verifyIncomes.FirstOrDefault(x => x.Notes == "tip for guiding");
+                var categorizedIncome = verifyIncomes.FirstOrDefault(x => x.Notes.IsEqualTo("tip for guiding"));
                 categorizedIncome!.SuggestedCategoryId!.Value.ShouldBe(7);
                 categorizedIncome!.SuggestedSourceId!.Value.ShouldBe(3);
 
@@ -87,12 +88,12 @@ namespace CashTrack.Tests.Services
 
                 var verifyExpenses = await expenseReviewRepo.Find(x => true);
                 verifyExpenses.Count().ShouldBe(6);
-                var categorizedExpense = verifyExpenses.FirstOrDefault(x => x.Notes == "kaiser");
+                var categorizedExpense = verifyExpenses.FirstOrDefault(x => x.Notes.IsEqualTo("kaiser"));
                 categorizedExpense!.SuggestedCategoryId!.Value.ShouldBe(11);
                 categorizedExpense!.SuggestedMerchantId!.Value.ShouldBe(13);
                 var verifyIncomes = await incomeReviewRepo.Find(x => true);
                 verifyIncomes.Count().ShouldBe(1);
-                var categorizedIncome = verifyIncomes.FirstOrDefault(x => x.Notes == "amazon");
+                var categorizedIncome = verifyIncomes.FirstOrDefault(x => x.Notes.IsEqualTo("amazon"));
                 categorizedIncome!.SuggestedCategoryId!.Value.ShouldBe(9);
                 categorizedIncome!.SuggestedSourceId!.Value.ShouldBe(11);
 

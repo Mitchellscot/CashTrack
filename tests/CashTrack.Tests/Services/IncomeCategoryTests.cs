@@ -1,4 +1,5 @@
 ﻿using CashTrack.Common.Exceptions;
+using CashTrack.Common.Extensions;
 using CashTrack.Data;
 using CashTrack.Models.IncomeCategoryModels;
 using CashTrack.Repositories.IncomeCategoryRepository;
@@ -164,7 +165,7 @@ namespace CashTrack.Tests.Services
                 };
                 var result = await service.UpdateIncomeCategoryAsync(request);
                 result.ShouldBe(1);
-                var updatedCategory = (await service.GetIncomeCategoryNames()).FirstOrDefault(x => x == "Updated Category");
+                var updatedCategory = (await service.GetIncomeCategoryNames()).FirstOrDefault(x => x.IsEqualTo("Updated Category"));
                 updatedCategory.ShouldNotBeNull();
             }
         }

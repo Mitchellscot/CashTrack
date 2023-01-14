@@ -1,3 +1,4 @@
+using CashTrack.Common.Extensions;
 using CashTrack.Models.BudgetModels;
 using CashTrack.Models.SummaryModels;
 using CashTrack.Pages.Shared;
@@ -28,9 +29,9 @@ namespace CashTrack.Pages
         }
         public async Task<IActionResult> OnGetAsync(string type)
         {
-            if (type.ToLower() == "transaction")
+            if (type.IsEqualTo("transaction"))
                 Transactions = await _summaryService.GetTransactionsToPrint(new PrintTransactionsRequest() { Year = this.Year, Month = this.Month });
-            else if (type.ToLower() == "budget")
+            else if (type.IsEqualTo("budget"))
                 Budgets = await _budgetService.GetBudgetsToPrint(new PrintBudgetRequest() { Year = this.Year, Month = this.Month });
 
             return Page();

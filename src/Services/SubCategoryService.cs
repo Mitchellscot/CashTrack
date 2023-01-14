@@ -11,6 +11,7 @@ using CashTrack.Services.Common;
 using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
 using System.Collections.Generic;
+using CashTrack.Common.Extensions;
 
 namespace CashTrack.Services.SubCategoryService;
 
@@ -205,7 +206,7 @@ public class SubCategoryService : ISubCategoryService
         var category = await _subCategoryRepo.FindById(id);
         if (category == null)
             throw new CategoryNotFoundException(id.ToString());
-        if (category.Name == "Uncategorized")
+        if (category.Name.IsEqualTo("Uncategorized"))
             throw new Exception("You cannot delete this category. It's kind of important.");
 
         var expenses = await _expenseRepo.Find(x => x.CategoryId == id);
