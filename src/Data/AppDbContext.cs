@@ -7,13 +7,8 @@ using System;
 using System.Security.Claims;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Linq;
 using CashTrack.Common;
-using CashTrack.Models.UserModels;
-using System.Collections.Generic;
-using CashTrack.Common.Extensions;
-using System.Runtime.CompilerServices;
 
 namespace CashTrack.Data
 {

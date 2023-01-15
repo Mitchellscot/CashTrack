@@ -56,7 +56,7 @@ namespace CashTrack.Pages.Budget
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                return LocalRedirect($"{Url.Content(BudgetModal.ReturnUrl)}?pageNumber={BudgetModal.PageNumber}&query={BudgetModal.Query}&q2={BudgetModal.Q2}");
+                return await PrepareAndRenderPage();
             }
         }
         public async Task<IActionResult> OnPostEditBudgetModal()

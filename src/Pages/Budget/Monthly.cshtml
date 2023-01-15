@@ -80,6 +80,7 @@
         SubCategoryList = new SelectList(Model.CategoryList, "Id", "Category"),
         Month = DateTime.Now.Month,
         Year = DateTime.Now.Year,
+        ReturnUrl="~/Budget/Monthly",
         Amount = 0,
         TimeSpan = AllocationTimeSpan.Month,
         Type = BudgetType.Need

@@ -16,13 +16,14 @@
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
 
     <h1>Settings</h1>
-        <form asp-page-handler="ChangeUsername" class="row my-3 border rounded border-2 px-5 pt-2 pb-5 d-flex justify-content-around align-content-center shadow" method="post">
+    <div class="my-3 border rounded border-2 px-5 pt-2 pb-5 shadow">
+        <form asp-page-handler="ChangeUsername" method="post" class="row d-flex justify-content-around align-content-center">
         <div class="form-group col-md-3 col-6">
             <label asp-for="ChangeUsername.NewUsername" class="form-label mt-4">New Username</label>
             <input asp-for="ChangeUsername.NewUsername" type="text" class="form-control" id="newUsernameInput">
         </div>
         <div class="form-group col-md-3 col-6">
-            <label asp-for="ChangeUsername.ConfirmUsername" class="form-label mt-4">Confirm New Username</label>
+            <label asp-for="ChangeUsername.ConfirmUsername" class="form-label mt-4">Confirm Username</label>
             <input asp-for="ChangeUsername.ConfirmUsername" type="text" class="form-control" id="confirmUsernameInput">
         </div>
         <div class="form-group col-md-3 col-6">
@@ -33,24 +34,24 @@
             <button class="btn btn-primary btn-height align-self-end spin-it" type="submit">Change Username</button>
         </div>
     </form>
-    <form asp-page-handler="ChangePassword" class="row my-3 border rounded border-2 px-5 pt-2 pb-5 d-flex justify-content-around align-content-center shadow" method="post">
+        <form asp-page-handler="ChangePassword" method="post" class="row d-flex justify-content-around align-content-center">
         <div class="form-group col-md-3 col-6">
-            <label asp-for="ChangePassword.OldPassword" class="form-label mt-4">Old Password</label>
+            <label asp-for="ChangePassword.OldPassword" class="form-label mt-2">Old Password</label>
             <input asp-for="ChangePassword.OldPassword" type="password" class="form-control" id="oldPasswordInput" placeholder="* * * * * *">
         </div>
         <div class="form-group col-md-3 col-6">
-            <label asp-for="ChangePassword.NewPassword" class="form-label mt-4">New Password</label>
+            <label asp-for="ChangePassword.NewPassword" class="form-label mt-2">New Password</label>
             <input asp-for="ChangePassword.NewPassword" type="password" class="form-control" id="newPasswordInput" placeholder="* * * * * *">
         </div>
         <div class="form-group col-md-3 col-6">
-            <label asp-for="ChangePassword.ConfirmPassword" class="form-label mt-4">ConfirmNew Password</label>
+            <label asp-for="ChangePassword.ConfirmPassword" class="form-label mt-2">Confirm Password</label>
             <input asp-for="ChangePassword.ConfirmPassword" type="password" class="form-control" id="confirmPasswordInput" placeholder="* * * * * *">
         </div>
         <div class="col-6 col-md-3 d-flex align-content-center">
             <button class="btn btn-primary btn-height align-self-end spin-it" type="submit">Change Password</button>
         </div>
     </form>
-
+    </div>
     <h2>Export</h2>
     <form class="row my-3 border rounded border-2 shadow" method="post">
         <div class="col-5 p-5 d-flex justify-content-start">

@@ -18,6 +18,7 @@
                       id="addBudgetForm"
                       asp-page="./List"
                       asp-page-handler="AddBudgetModal">
+                      <input asp-for="@Model.ReturnUrl" type="hidden" />
                     <div class="row mb-2">
                         <div class="col">
                             <div class="input-group">
@@ -53,7 +54,7 @@
                                    asp-for="@Model.TimeSpan"
                                    autocomplete="off"
                                    value="@time.Value"
-                                   checked=@(time.Value.IsEqualTo("0"))>
+                                   checked=@(time.Value == "0")>
                                 <label class="btn btn-outline-secondary" for=@($"TimeSpan{time.Value}")>@time.Text</label>
                             }
                         </div>
