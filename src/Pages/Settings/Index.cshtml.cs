@@ -32,6 +32,8 @@ namespace CashTrack.Pages.Settings
         [BindProperty]
         public ChangePassword ChangePassword { get; set; }
         [BindProperty]
+        public ChangeUsername ChangeUsername { get; set; }
+        [BindProperty]
         public decimal Tax { get; set; }
         public IActionResult OnGet()
         {
@@ -59,6 +61,29 @@ namespace CashTrack.Pages.Settings
                 return Page();
             }
             TempData["SuccessMessage"] = "Successfully changed your password!";
+            return LocalRedirect("/Settings");
+        }
+        public async Task<IActionResult> OnPostChangeUsername()
+        {
+            if (string.IsNullOrEmpty(ChangeUsername.NewUsername) || string.IsNullOrEmpty(ChangeUsername.ConfirmUsername))
+            {
+                ModelState.AddModelError("", "Please fill out both the old and new Passwords");
+                return Page();
+            }
+            if (ChangeUsername.NewUsername != ChangeUsername.ConfirmUsername)
+            {
+                ModelState.AddModelError("", "Confirm your new username matches and try again.");
+                return Page();
+            }
+            ChangeUsername.Username = User.Identity.Name;
+            var result = await _userService.UpdateUsernameAsync(ChangeUsername);
+
+            if (!result)
+            {
+                ModelState.AddModelError("", "There was an error changing your username. Try again.");
+                return Page();
+            }
+            TempData["SuccessMessage"] = "Successfully changed your username!";
             return LocalRedirect("/Settings");
         }
         public async Task<ActionResult> OnPostExport(int ExportOption, bool ExportAsReadable)

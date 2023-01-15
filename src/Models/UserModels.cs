@@ -23,3 +23,10 @@ public record ChangePassword()
     public string NewPassword { get; set; }
     public string ConfirmPassword { get; set; }
 }
+public record ChangeUsername()
+{
+    public string Username { get; set; }
+    public string Password { get; set; }
+    public string NewUsername { get; set; }
+    public string ConfirmUsername { get; set; }
+}

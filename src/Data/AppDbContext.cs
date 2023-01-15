@@ -96,10 +96,10 @@ namespace CashTrack.Data
                 {
                     Id = userId,
                     UserName = "cash",
-                    FirstName = "Cash",
-                    LastName = "Track",
-                    Email = "test@example.com",
-                    NormalizedEmail = "TEST@EXAMPLE.COM",
+                    FirstName = "New User",
+                    LastName = "",
+                    Email = "",
+                    NormalizedEmail = "",
                     NormalizedUserName = "CASH",
                     SecurityStamp = Guid.NewGuid().ToString("D"),
                     EmailConfirmed = true

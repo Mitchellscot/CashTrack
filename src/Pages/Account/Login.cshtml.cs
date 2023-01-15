@@ -1,17 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
 using CashTrack.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using CashTrack.Pages.Shared;
 using CashTrack.Models.AuthenticationModels;
-using FluentValidation;
 using System;
-using FluentValidation.AspNetCore;
-using CashTrack.Common.Extensions;
 using Microsoft.Extensions.Logging;
-using System.Runtime.CompilerServices;
 
 namespace CashTrack.Pages
 {

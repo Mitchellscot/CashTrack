@@ -1,6 +1,7 @@
 ﻿@page
 @using System.Globalization;
 @using CashTrack.Common;
+@using CashTrack.Common.Extensions;
 @using CashTrack.Models.ExpenseModels;
 @using CashTrack.Models.ImportCsvModels;
 @using CashTrack.Models.IncomeCategoryModels;
@@ -37,7 +38,6 @@
     {
         <div class="alert alert-info spin-it text-center">You have @Model.ReviewAmount transactions to review. <a asp-page="./Import/Expenses">Review them here</a></div>
     }
-
     <div class="row mt-2 border-bottom d-flex justify-content-between">
         <div class="d-flex col-auto align-self-center">
             <h3 class="me-2">
@@ -143,6 +143,14 @@
         </div>
     </div>
     <div class="row mb-3">
+        @if (User.Identity.Name.IsEqualTo("cash"))
+        {
+            <div class="row d-flex justify-content-center mt-4">
+                <div class="alert alert-danger spin-it text-center col-auto">
+            You are using the default sign in credentials. Please <a asp-page="/Settings/Index">change them here</a>
+                </div>
+            </div>
+        }
         @if (!dataIsNotEmptyForTheMonth)
         {
             <div class="d-flex justify-content-center col mt-4">
