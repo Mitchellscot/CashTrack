@@ -3,7 +3,6 @@ using CashTrack.Models.MainCategoryModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Models.SummaryModels;
 using CashTrack.Pages.Shared;
-using CashTrack.Services.BudgetService;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.IncomeCategoryService;
 using CashTrack.Services.MainCategoriesService;
@@ -39,7 +38,7 @@ namespace CashTrack.Pages
             _expenseService = expenseService;
             _subCategoryService = subCategoryService;
             _mainCategoryService = mainCategoriesService;
-            _incomeCategoryService= incomeCategoryService;
+            _incomeCategoryService = incomeCategoryService;
         }
         public async Task<IActionResult> OnGet()
         {

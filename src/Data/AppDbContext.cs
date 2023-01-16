@@ -9,6 +9,7 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using System.Linq;
 using CashTrack.Common;
+using CashTrack.Common.Extensions;
 
 namespace CashTrack.Data
 {
@@ -42,10 +43,10 @@ namespace CashTrack.Data
             mb.Initialize(_env, _args);
 
             if (Database.ProviderName.IsEqualTo(SQLite))
-                ConfigureForSqlLite(mb, _env);
+                ConfigureForSqlLite(mb);
 
         }
-        private void ConfigureForSqlLite(ModelBuilder modelBuilder, string env)
+        private void ConfigureForSqlLite(ModelBuilder modelBuilder)
         {
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
@@ -117,20 +118,77 @@ namespace CashTrack.Data
                     Notes = "Default category for any expense that does not have a category associated with it.",
                     MainCategoryId = 1
                 };
+                var groceries = new SubCategoryEntity()
+                {
+                    Id = 2,
+                    Name = "Groceries",
+                    Notes = "Food purchased to be eaten at home.",
+                    MainCategoryId = 2
+                };
+                var diningOut = new SubCategoryEntity()
+                {
+                    Id = 3,
+                    Name = "Dining Out",
+                    Notes = "Any food purchased at a restaurant.",
+                    MainCategoryId = 2
+                };
+                var rent = new SubCategoryEntity()
+                {
+                    Id = 4,
+                    Name = "Rent",
+                    Notes = "Monthly rent payment",
+                    MainCategoryId = 3
+                };
+                var gas = new SubCategoryEntity()
+                {
+                    Id = 5,
+                    Name = "Gas",
+                    Notes = "Gas purchased for a vehicle",
+                    MainCategoryId = 4
+                };
+
                 mb.Entity<SubCategoryEntity>().HasData(uncategorizedExpenses);
+                mb.Entity<SubCategoryEntity>().HasData(groceries);
+                mb.Entity<SubCategoryEntity>().HasData(diningOut);
+                mb.Entity<SubCategoryEntity>().HasData(rent);
+                mb.Entity<SubCategoryEntity>().HasData(gas);
                 var otherMainCategory = new MainCategoryEntity()
                 {
                     Id = 1,
                     Name = "Other"
                 };
+                var food = new MainCategoryEntity()
+                {
+                    Id = 2,
+                    Name = "Food"
+                };
+                var housing = new MainCategoryEntity()
+                {
+                    Id = 3,
+                    Name = "Housing"
+                };
+                var transportation = new MainCategoryEntity()
+                {
+                    Id = 4,
+                    Name = "Transportation"
+                };
                 mb.Entity<MainCategoryEntity>().HasData(otherMainCategory);
+                mb.Entity<MainCategoryEntity>().HasData(food);
+                mb.Entity<MainCategoryEntity>().HasData(housing);
+                mb.Entity<MainCategoryEntity>().HasData(transportation);
                 var uncategorizedIncome = new IncomeCategoryEntity()
                 {
                     Id = 1,
                     Name = "Uncategorized",
                     Notes = "Default category for any income that does not have a category associated with it."
                 };
+                var paycheck = new IncomeCategoryEntity()
+                {
+                    Id = 2,
+                    Name = "Paycheck"
+                };
                 mb.Entity<IncomeCategoryEntity>().HasData(uncategorizedIncome);
+                mb.Entity<IncomeCategoryEntity>().HasData(paycheck);
                 return;
             }
 

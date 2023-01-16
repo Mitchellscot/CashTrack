@@ -266,7 +266,7 @@
                 <canvas id="overallSummaryChart" class="shadow"></canvas>
             </div>
         }
-        @if (dataIsNotEmptyForTheMonth)
+        @if (dataIsNotEmptyForTheMonth && Model.SummaryResponse.MonthlyProgress.RealizedIncome > 0)
         {
             <div class="col-12 col-lg-6 rounded-2 mt-2 shadow">
                 <div class="d-flex">
@@ -313,7 +313,20 @@
                 <div class="progress-bar" style="width: @annualSavingsPercentage">@annualSavingsAmount</div>
             </div>
             <p class="text-muted text-center">@Model.SummaryResponse.AnnualSavingsProgress.AnnualSavingsMessage</p>
-        </div>
+            </div>
+        }
+        else
+        {
+        //TODO: Style this up
+            <div class="d-flex flex-column col mt-4 justify-content-center">
+                <div class="alert alert-dismissible alert-info col-auto text-center align-self-center">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <h4 class="mb-2">
+                        Add <a class="white-link spin-it" asp-page="/Budget/List" asp-fragment="addBudgetModal"><strong>Budgeted Income</strong></a> to start seeing Savings Data
+
+            </h4>
+                </div>
+            </div>
         }
     </div>
     <div class="row mb-2">
