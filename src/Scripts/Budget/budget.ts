@@ -10,6 +10,7 @@ import {
 	hideCategoryWhenSavingsIsSelectedAddModal,
 	hideCategoryWhenSavingsIsSelectedEditModal,
 } from '../Utility/budget-type-switch';
+import {formatAmountOnChange} from '../Utility/format-amount';
 import {
 	loadAveragesOnSelectListChange,
 	loadAveragesOnSelectListChangeEdit,
@@ -29,3 +30,4 @@ loadMainCategoryOnSubCategorySelect();
 loadMainCategoryOnSubCategorySelectEdit();
 loadAveragesOnSelectListChangeEdit();
 showModalFromUrlHash('#addBudgetModal');
+formatAmountOnChange();

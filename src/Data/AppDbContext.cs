@@ -193,8 +193,8 @@ namespace CashTrack.Data
             }
 
             string csvFileDirectory = env == CashTrackEnv.Test ?
-                csvFileDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.FullName, "ct-data", "TestData") :
-                csvFileDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "ct-data");
+                Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.FullName, "ct-data", "TestData") :
+                Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "ct-data");
 
             if (!Directory.Exists(csvFileDirectory) && env == CashTrackEnv.Test)
             {

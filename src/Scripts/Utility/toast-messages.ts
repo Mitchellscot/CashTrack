@@ -4,10 +4,10 @@ const shorOrHideToast = (messages: HTMLElement) => {
 		messages.style.display = 'block';
 		setTimeout(() => {
 			messages.classList.add('hide');
-		}, 2500);
+		}, 3500);
 		setTimeout(() => {
 			messages.style.display = 'none';
-		}, 3000);
+		}, 4000);
 	} else {
 		messages.style.display = 'none';
 	}

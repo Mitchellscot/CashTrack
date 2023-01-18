@@ -9,6 +9,7 @@
     ViewData["Title"] = "- Budgets";
     Layout = "_Layout";
     var dataIsEmptyForTheMonth = Model.BudgetPageResponse.MonthlySummary.IncomeAmount == 0 && Model.BudgetPageResponse.MonthlySummary.ExpensesAmount == 0;
+    var incomeButNoExpenses = Model.BudgetPageResponse.MonthlySummary.IncomeAmount > 0 && Model.BudgetPageResponse.MonthlySummary.ExpensesAmount == 0;
 }
 <div class="container-fluid mb-0">
 
@@ -118,6 +119,26 @@
                 </div>
             </div>
         }
+        else if (incomeButNoExpenses)
+        {
+            <div class="d-flex justify-content-center col mt-4">
+                <div class="alert alert-dismissible alert-info col-auto text-center">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <h3>
+                        You have budgeted @Model.BudgetPageResponse.MonthlySummary.IncomeAmount in income
+                        </h3>
+                        <h4>
+                            <strong>but have not added any expenses yet</strong>
+                        </h4>
+                    <h5>
+                        To start seeing your budget data, get started by adding some
+                        <a class="white-link spin-it" asp-page="/Budget/List" asp-fragment="addBudgetModal">Budgeted Expenses</a>
+                </h5>
+                </div>
+        </div>
+    }
+    else
+    {
     <div class="row mb-1">
         @if (!dataIsEmptyForTheMonth && Model.BudgetPageResponse.MonthlyBudgetChartData != null)
         {
@@ -201,6 +222,7 @@
             </div>
         }
     </div>
+    }
 </div>
 @await Html.PartialAsync("BudgetBreakdownModal", new BudgetBreakdownModal()
     {
