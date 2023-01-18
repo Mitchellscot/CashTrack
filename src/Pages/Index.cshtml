@@ -315,14 +315,25 @@
             <p class="text-muted text-center">@Model.SummaryResponse.AnnualSavingsProgress.AnnualSavingsMessage</p>
             </div>
         }
-        else
+        else if(Model.SummaryResponse.MonthlySummary.BudgetedIncome == 0 && Model.SummaryResponse.MonthlySummary.RealizedExpenses > 0)
         {
-        //TODO: Style this up
             <div class="d-flex flex-column col mt-4 justify-content-center">
                 <div class="alert alert-dismissible alert-info col-auto text-center align-self-center">
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     <h4 class="mb-2">
                         Add <a class="white-link spin-it" asp-page="/Budget/List" asp-fragment="addBudgetModal"><strong>Budgeted Income</strong></a> to start seeing Savings Data
+
+            </h4>
+                </div>
+            </div>
+        }
+        else if(Model.SummaryResponse.MonthlySummary.BudgetedIncome > 0 && Model.SummaryResponse.MonthlySummary.RealizedExpenses == 0)
+        {
+            <div class="d-flex flex-column col mt-4 justify-content-center">
+                <div class="alert alert-dismissible alert-info col-auto text-center align-self-center">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <h4 class="mb-2">
+                        Add some <a class="white-link spin-it" asp-page="/Expenses/Index" asp-fragment="addBudgetModal"><strong>Expenses</strong></a> to start seeing Savings Data
 
             </h4>
                 </div>
@@ -514,7 +525,7 @@
         }
     </div>
     <div class="row mb-3">
-        @if (dataIsNotEmptyForTheMonth)
+        @if (dataIsNotEmptyForTheMonth && Model.SummaryResponse.MonthlySummary.RealizedExpenses > 0)
         {
             <div class="col d-flex">
                 <canvas id="monthlySummaryChart" class="chart-height shadow align-self-center"></canvas>

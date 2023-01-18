@@ -116,7 +116,8 @@ namespace CashTrack.Data
                     Id = 1,
                     Name = "Uncategorized",
                     Notes = "Default category for any expense that does not have a category associated with it.",
-                    MainCategoryId = 1
+                    MainCategoryId = 1,
+                    InUse = false
                 };
                 var groceries = new SubCategoryEntity()
                 {
@@ -180,13 +181,21 @@ namespace CashTrack.Data
                 {
                     Id = 1,
                     Name = "Uncategorized",
-                    Notes = "Default category for any income that does not have a category associated with it."
+                    Notes = "Default category for any income that does not have a category associated with it.",
+                    InUse = false
+                };
+                var refundCategory = new IncomeCategoryEntity()
+                {
+                    Id = 2,
+                    Name = "Refund",
+                    Notes = "Any Expenses that can be categorized as a refund."
                 };
                 var paycheck = new IncomeCategoryEntity()
                 {
                     Id = 2,
                     Name = "Paycheck"
                 };
+                mb.Entity<IncomeCategoryEntity>().HasData(refundCategory);
                 mb.Entity<IncomeCategoryEntity>().HasData(uncategorizedIncome);
                 mb.Entity<IncomeCategoryEntity>().HasData(paycheck);
                 return;

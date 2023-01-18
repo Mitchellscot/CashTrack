@@ -60,15 +60,23 @@ public class IncomeCategoryService : IIncomeCategoryService
         if (category.Name.IsEqualTo("Uncategorized"))
             throw new Exception("You cannot delete this category. It's kind of important.");
 
+        if (category.Name.IsEqualTo("Refund"))
+            throw new Exception("You cannot delete this category. It's kind of important.");
+
         var uncategorizedCategory = (await _repo.Find(x => x.Name == "Uncategorized")).FirstOrDefault();
+        var uncategorizedId = 0;
         if (uncategorizedCategory == null)
         {
-            throw new Exception("You need to create a new category called 'Uncategorized' before you can delete a category. This will assigned all income associated with this category to the 'Uncategorized' category.");
+            uncategorizedId = await CreateIncomeCategoryAsync(new AddEditIncomeCategoryModal() { Name = "Uncategorized", Notes = "Default category for any income that does not have a category associated with it.", InUse = false });
+        }
+        else
+        {
+            uncategorizedId = uncategorizedCategory.Id;
         }
         var incomes = await _incomeRepo.Find(x => x.CategoryId == id);
         foreach (var income in incomes)
         {
-            income.CategoryId = uncategorizedCategory.Id;
+            income.CategoryId = uncategorizedId;
         }
 
         return await _repo.Delete(category);
@@ -94,7 +102,7 @@ public class IncomeCategoryService : IIncomeCategoryService
         }).ToList();
         //adds in all the categories with no assigned income
         categoryListItems.AddRange(categories
-            .Where(x => x.Income.Count == 0 && x.Name != "Uncategorized")
+            .Where(x => x.Income.Count == 0 && !x.Name.IsEqualTo("Uncategorized"))
             .Select(x => new IncomeCategoryListItem()
             {
                 Id = x.Id,
@@ -146,7 +154,17 @@ public class IncomeCategoryService : IIncomeCategoryService
 
     public async Task<bool> CheckIfIncomeCategoryIsRefund(int categoryId)
     {
-        var refundCategoryId = (await _repo.Find(x => x.Name == "Refund")).FirstOrDefault().Id;
+        var refundCategory = (await _repo.Find(x => x.Name == "Refund")).FirstOrDefault();
+        var refundCategoryId = 0;
+        if (refundCategory == null)
+        {
+            refundCategoryId = await CreateIncomeCategoryAsync(new AddEditIncomeCategoryModal() { Name = "Refund", InUse = true });
+        }
+        else
+        {
+            refundCategoryId = refundCategory.Id;
+        }
+
         return refundCategoryId == categoryId;
     }
 
@@ -160,7 +178,7 @@ public class IncomeCategoryService : IIncomeCategoryService
 
     public async Task<string[]> GetMatchingIncomeCategoryNamesAsync(string match)
     {
-        return (await _repo.Find(x => x.Name.StartsWith(match))).Select(x => x.Name).Take(10).ToArray();
+        return (await _repo.Find(x => x.InUse && x.Name.StartsWith(match))).Select(x => x.Name).Take(10).ToArray();
     }
 
     public async Task<IncomeCategoryDetail> GetCategoryDetailAsync(int id)
