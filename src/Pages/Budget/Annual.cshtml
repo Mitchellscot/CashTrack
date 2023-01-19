@@ -120,7 +120,7 @@
                 <div class="alert alert-dismissible alert-info col-auto text-center">
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     <h3>
-                        You have budgeted @Model.BudgetPageResponse.AnnualSummary.IncomeAmount in income
+                        You have budgeted $@String.Format("{0:N0}", Model.BudgetPageResponse.AnnualSummary.IncomeAmount) in income
                         </h3>
                         <h4>
                             <strong>but have not added any expenses yet</strong>

@@ -139,9 +139,8 @@
                         Get started by
                         <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#importCsvModal">Importing Data</button>,
                         adding
-                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Expenses</button>,
-                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addIncomeModal">Income</button>, or a
-                        <a class="white-link" asp-page="/Budget/List" asp-fragment="addBudgetModal">Budget</a>
+                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Expenses</button>, or
+                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addIncomeModal">Income</button>.
                 </p>
                 </div>
             </div>
@@ -190,7 +189,6 @@
                                     @String.Format("{0:n}", Model.SummaryResponse.AnnualSummary.SavingsGoalProgress) &#37;
                                 </span>
                             }
-
                         </li>
                         <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                         @if (Model.Year == DateTime.Now.Year)
@@ -468,7 +466,7 @@
 
     </div>
     <div class="row mb-3">
-        @if (incomeORExpenseDataIsPresent)
+        @if (incomeORExpenseDataIsPresent && DateTime.Now.Month > 1)
         {
             <div class="col d-flex">
                 <canvas id="annualMonthlySummaryChart" class="chart-height align-self-center shadow"></canvas>
@@ -658,7 +656,7 @@
             IsSummaryChart = true
         })
     }
-    @if (incomeORExpenseDataIsPresent)
+    @if (incomeORExpenseDataIsPresent && DateTime.Now.Month > 1)
     {
         @await Html.PartialAsync("AnnualMonthlySummaryChart", new AnnualMonthlySummaryChart()
         {

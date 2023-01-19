@@ -49,9 +49,17 @@ namespace CashTrack.Services.SummaryService
             var expenses = await _expenseRepo.Find(x => !x.ExcludeFromStatistics);
             var income = await _incomeRepo.Find(x => !x.IsRefund);
             var incomeForPercentageCharts = Convert.ToInt32(income.Sum(x => x.Amount));
+            if (expenses.Length == 0)
+                return EmptyAllTimeSummaryResponse();
+
+            if (income.Length == 0)
+                return EmptyAllTimeSummaryResponse();
+
+            var spansMultipleYears = expenses.GroupBy(x => x.Date.Year).Select(x => x.Key).Count() > 1 || income.GroupBy(x => x.Date.Year).Select(x => x.Key).Count() > 1;
 
             return new AllTimeSummaryResponse()
             {
+                DataSpansMultipleYears = spansMultipleYears,
                 TopExpenses = GetTopExpenses(expenses),
                 TopCategories = GetTopSubCategories(expenses),
                 TopMerchants = GetTopMerchants(expenses),
@@ -83,14 +91,18 @@ namespace CashTrack.Services.SummaryService
             if (!expensesYTD.Any() && !incomeYTD.Any() && !annualBudgets.Any())
                 return EmptyAnnualSummaryResponse();
             else if (!expensesYTD.Any() && incomeYTD.Any() && !annualBudgets.Any())
+                //income but no expenses, can still show data!
                 return EmptyAnnualSummaryResponse();
             else if (expensesYTD.Any() && !incomeYTD.Any() && !annualBudgets.Any())
+                //expenses and no income, can still show data!
+                return EmptyAnnualSummaryResponse();
+            else if (!expensesYTD.Any() || !incomeYTD.Any() && annualBudgets.Any())
+                //budget but no income or expenses
                 return EmptyAnnualSummaryResponse();
 
             var budgetsYTD = annualBudgets.Where(x => x.Month <= DateTime.Now.Month).ToArray();
             var budgetsForCharts = isCurrentYear ? budgetsYTD : annualBudgets;
             var incomeForPercentageCharts = Convert.ToInt32(incomeYTD.Sum(x => x.Amount));
-
 
             return new AnnualSummaryResponse()
             {
@@ -137,7 +149,7 @@ namespace CashTrack.Services.SummaryService
                 LastImport = user.LastImport,
                 MonthlySummary = monthlySummary,
                 ExpenseSummaryChart = GetExpenseSummaryChartData(monthlyExpenses, monthlyBudgets),
-                OverallSummaryChart = GetOverallSummaryChart(monthlyExpenses, monthlyIncome, monthlyBudgets),
+                OverallSummaryChart = GetOverallSummaryChart(monthlyExpenses, monthlyIncome, monthlyBudgets, isCurrentMonth),
                 SubCategoryPercentages = GetSubCategoryPercentages(monthlyExpenses, incomeToCompare),
                 MainCategoryPercentages = GetMainCategoryPercentages(monthlyExpenses, decimal.Round(incomeToCompare, 0)),
                 MerchantPercentages = GetMerchantPercentages(monthlyExpenses, incomeToCompare),
@@ -750,11 +762,11 @@ namespace CashTrack.Services.SummaryService
                 {
                     var extraMonthlySavings = (savingsGoalForTheCurrentMonth - currentSavings) / (13 - month);
                     var extraOneTimeSavings = (savingsGoalForTheCurrentMonth - currentSavings) - savingsGoalThisMonth;
-                    if (DateTime.Now.Month == month)
+                    if (DateTime.Now.Month == month && extraOneTimeSavings > 0)
                     {
                         message = $"Save an extra ${extraOneTimeSavings} this month to meet your goal";
                     }
-                    else
+                    else if (extraOneTimeSavings > 0)
                         message = $"Save an extra ${extraOneTimeSavings} this month or an extra {extraMonthlySavings} each month in order to meet your goal";
                 }
                 else
@@ -787,17 +799,19 @@ namespace CashTrack.Services.SummaryService
             };
         }
 
-        private OverallSummaryChart GetOverallSummaryChart(ExpenseEntity[] expenses, IncomeEntity[] income, BudgetEntity[] budgets)
+        private OverallSummaryChart GetOverallSummaryChart(ExpenseEntity[] expenses, IncomeEntity[] income, BudgetEntity[] budgets, bool isCurrentMonth = false)
         {
             var realizedIncome = income.Sum(x => x.Amount);
             var realizedExpenses = expenses.Sum(x => x.Amount);
-            var realizedSavings = realizedIncome - realizedExpenses;
             var budgetedIncome = budgets.Where(x => x.BudgetType == BudgetType.Income).Sum(x => x.Amount);
+            var incomeToCompareBy = isCurrentMonth ? budgetedIncome : realizedIncome;
+            var realizedSavings = incomeToCompareBy - realizedExpenses;
             var budgetedExpenses = budgets.Where(x => x.BudgetType == BudgetType.Need || x.BudgetType == BudgetType.Want).Sum(x => x.Amount);
             var budgetedSavings = budgets.Where(x => x.BudgetType == BudgetType.Savings).Sum(x => x.Amount);
             var budgetedIncomeDataset = budgetedIncome > 0 ? JsonSerializer.Serialize(new[] { budgetedIncome, 0, 0 }) : string.Empty;
             var budgetedExpensesDataset = budgetedExpenses > 0 ? JsonSerializer.Serialize(new[] { 0, budgetedExpenses, 0 }) : string.Empty;
             var budgetedSavingsDataset = budgetedSavings > 0 ? JsonSerializer.Serialize(new[] { 0, 0, budgetedSavings }) : string.Empty;
+
             return new OverallSummaryChart()
             {
                 BudgetedIncome = budgetedIncomeDataset,
@@ -859,7 +873,8 @@ namespace CashTrack.Services.SummaryService
                 unspent = budgetedIncome - (realizedExpenses + budgetedSavings);
             }
             var estimatedSavings = budgetedIncome > 0 && dippingIntoRealSavings ?
-                (incomeToCompareBy - realizedExpenses) : budgetedIncome > 0 && dippingIntoBudgetedSavings ?
+                (incomeToCompareBy - realizedExpenses) :
+                budgetedIncome > 0 && dippingIntoBudgetedSavings ?
                 realizedSavings :
                 budgetedIncome > 0 ?
                 budgetedSavings + unspent : 0;
@@ -966,6 +981,7 @@ namespace CashTrack.Services.SummaryService
             TopCategories = new List<SubCategoryQuickView>(),
             TopMerchants = new List<MerchantQuickView>(),
             TopExpenses = new List<ExpenseQuickView>(),
+            TopSources = new List<IncomeSourceQuickView>(),
             SavingsChart = new AnnualSavingsChart(),
             IncomeExpenseChart = new AnnualIncomeExpenseChart(),
             AnnualSummary = new AnnualSummaryTotals(),
@@ -975,6 +991,27 @@ namespace CashTrack.Services.SummaryService
             IncomeSourcePercentages = new Dictionary<string, decimal>(),
             MonthlyExpenseStatistics = new List<MonthlyStatistics>(),
             AnnualMonthlySummaryChart = new AnnualMonthlySummaryChart(),
+        };
+        private AllTimeSummaryResponse EmptyAllTimeSummaryResponse() => new AllTimeSummaryResponse()
+        {
+            DataSpansMultipleYears = false,
+            SummaryTotals = new AllTimeSummaryTotals(),
+            TransactionBreakdown = new List<TransactionBreakdown>(),
+            OverallSummaryChart = new OverallSummaryChart(),
+            TopCategories = new List<SubCategoryQuickView>(),
+            TopMerchants = new List<MerchantQuickView>(),
+            TopExpenses = new List<ExpenseQuickView>(),
+            SavingsChart = new AllTimeSavingsChart(),
+            IncomeExpenseChart = new AllTimeIncomeExpenseChart(),
+            SubCategoryPercentages = new Dictionary<string, int>(),
+            MainCategoryPercentages = new Dictionary<string, decimal>(),
+            MerchantPercentages = new Dictionary<string, int>(),
+            IncomeSourcePercentages = new Dictionary<string, decimal>(),
+            PercentChangesChart = new AllTimeAnnualPercentChanges(),
+            AnnualSummaryChart = new AllTimeAnnualSummaryChart(),
+            ExpenseStatistics = new List<AnnualStatistics>(),
+            IncomeStatistics = new List<AnnualStatistics>(),
+            TopSources = new List<IncomeSourceQuickView>()
         };
     }
 }

@@ -128,10 +128,9 @@
                     <p>
                         Get started by
                         <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#importCsvModal">Importing Data</button>,
-                        adding
-                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Expenses</button>,
-                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addIncomeModal">Income</button>, or a
-                        <a class="white-link" asp-page="/Budget/List" asp-fragment="addBudgetModal">Budget</a>
+                        or adding
+                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Expenses</button> or
+                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addIncomeModal">Income</button>.
                 </p>
                 </div>
             </div>
@@ -205,15 +204,28 @@
                 <canvas id="overallSummaryChart" class="shadow align-self-center chart-height pt-2"></canvas>
             </div>
         }
-        @*TODO: Account for empty data, or a boring graph. Perhaps just move it out.*@
-        @if(incomeANDExpenseDataIsPresent)
+        @if(incomeANDExpenseDataIsPresent && Model.SummaryResponse.DataSpansMultipleYears)
         {
             <div class="col-12 col-lg-6 d-flex">
                 <canvas id="percentChangesChart" class="chart-height shadow align-self-center"></canvas>
             </div>
         }
+        else
+        {
+            <div class="d-flex flex-column col mt-4">
+                <div class="alert alert-dismissible alert-info col-auto text-center align-self-center">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <h4 class="mb-2">
+                        <p>More charts will show here</p> 
+                        <p>once you have data that spans multiple years.</p>
+                    </h4>
+                </div>
+            </div>
+        }
     </div>
-        <div class="row mb-2">
+    @if (Model.SummaryResponse.DataSpansMultipleYears)
+    {
+    <div class="row mb-2">
         @if (incomeANDExpenseDataIsPresent)
         {
             <div class="col-12 col-lg-6 d-flex">
@@ -227,6 +239,9 @@
             </div>
         }
     </div>
+    }
+    @if (Model.SummaryResponse.DataSpansMultipleYears)
+    {
     <div class="row mb-2">
         @if (incomeDataIsPresent)
         {
@@ -241,6 +256,8 @@
             </div>
         }
     </div>
+    }
+
     <div class="row gx-5">
         @if (expenseDataIsPresent)
         {
@@ -459,7 +476,7 @@
 
     </div>
     <div class="row mb-3">
-        @if (incomeORExpenseDataIsPresent)
+        @if (incomeORExpenseDataIsPresent && Model.SummaryResponse.DataSpansMultipleYears)
         {
             <div class="col d-flex">
                 <canvas id="annualSummaryChart" class="chart-height align-self-center shadow"></canvas>

@@ -12,6 +12,7 @@ namespace CashTrack.Models.SummaryModels
 {
     public record AllTimeSummaryResponse
     {
+        public bool DataSpansMultipleYears { get; set; }
         public AllTimeSummaryTotals SummaryTotals { get; set; }
         public OverallSummaryChart OverallSummaryChart { get; set; }
         public List<ExpenseQuickView> TopExpenses { get; set; }

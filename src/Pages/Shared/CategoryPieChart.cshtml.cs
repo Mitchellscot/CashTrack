@@ -15,7 +15,7 @@ namespace CashTrack.Pages.Budget
         }
         public new string Colors => GetColors();
         public bool IsSummaryChart { get; set; } = false;
-        //i definitely overengineered this one...
+
         public new string GetColors()
         {
             const string Unallocated = "Unallocated";
@@ -54,7 +54,7 @@ namespace CashTrack.Pages.Budget
             }
             else if (labelsArray.Any(x => x == Unallocated) && labelsArray.Any(x => x != Savings))
             {
-                for (int i = 0; i < labelsArray.Length - 1; i++)
+                for (int i = 0; i <= labelsArray.Length - 1; i++)
                 {
                     if (i == labelsArray.Length - 1)
                         colorStack.Push(CategoryPieChart.UnallocatedColor);

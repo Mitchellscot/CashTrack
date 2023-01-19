@@ -192,7 +192,7 @@ namespace CashTrack.Data
                 };
                 var paycheck = new IncomeCategoryEntity()
                 {
-                    Id = 2,
+                    Id = 3,
                     Name = "Paycheck"
                 };
                 mb.Entity<IncomeCategoryEntity>().HasData(refundCategory);

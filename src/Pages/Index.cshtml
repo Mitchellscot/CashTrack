@@ -38,6 +38,14 @@
     {
         <div class="alert alert-info spin-it text-center">You have @Model.ReviewAmount transactions to review. <a asp-page="./Import/Expenses">Review them here</a></div>
     }
+    @if (User.Identity.Name.IsEqualTo("cash"))
+    {
+        <div class="row d-flex justify-content-center">
+            <div class="alert alert-danger spin-it text-center col-auto">
+                You are using the default sign in credentials. Please <a asp-page="/Settings/Index">change your user name and password</a>
+            </div>
+        </div>
+    }
     <div class="row mt-2 border-bottom d-flex justify-content-between">
         <div class="d-flex col-auto align-self-center">
             <h3 class="me-2">
@@ -143,14 +151,6 @@
         </div>
     </div>
     <div class="row mb-3">
-        @if (User.Identity.Name.IsEqualTo("cash"))
-        {
-            <div class="row d-flex justify-content-center mt-4">
-                <div class="alert alert-danger spin-it text-center col-auto">
-            You are using the default sign in credentials. Please <a asp-page="/Settings/Index">change them here</a>
-                </div>
-            </div>
-        }
         @if (!dataIsNotEmptyForTheMonth)
         {
             <div class="d-flex justify-content-center col mt-4">
@@ -296,7 +296,7 @@
             </div>
             <div class="d-flex">
                 <h4 class="me-2">Discretionary Spending</h4>
-                <button class="icon-button" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="This bar represents money you can spend at your discretion after you have met the budgeted expenses amount and before you start decreasingyourbudgetedsavingsamount. If  there is still money set aside after the month is done, it will be added towards your savings (see Estimated Savings).">
+                <button class="icon-button" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="This bar represents money you can spend at your discretion after you have met the budgeted expenses amount and before you start decreasing your budgeted savings amount. If  there is still money set aside after the month is done, it will be added towards your savings (see Estimated Savings).">
                     <i class="bi bi-question-circle text-primary action-icon align-self-center"></i>
                 </button>
             </div>
