@@ -32,6 +32,10 @@ public class AddEditIncomeModal : Income
     public bool IsEdit { get; set; }
     public string ReturnUrl { get; set; }
     public SelectList CategoryList { get; set; }
+    public int? PageNumber { get; set; }
+    public int? Query { get; set; }
+    public string Q { get; set; }
+    public string Q2 { get; set; }
     public bool ShowAddCategoryButton { get; set; }
 }
 

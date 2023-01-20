@@ -11,8 +11,6 @@ export const formatAmountOnChange = (): void => {
 export const formatAmountForEvent = (e: Event): void => {
 	const input = e.target as HTMLInputElement;
 	const isInteger = Boolean((e.target as HTMLElement).dataset.isInteger);
-	console.log(input);
-	console.log(isInteger);
 	const formattedAmount = formatAmount(input.value, isInteger);
 	input.value = formattedAmount.toString();
 };

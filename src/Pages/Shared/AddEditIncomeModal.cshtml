@@ -29,6 +29,9 @@
                 <form method="post"
                       asp-page="/Income/Index"
                       asp-page-handler="AddEditIncomeModal"
+                      asp-route-pageNumber=@Model.PageNumber
+                      asp-route-query=@Model.Query.Value
+                      asp-route-q=@Model.Q
                       id="@formId">
                     @if (Model.IsEdit)
                     {
@@ -36,7 +39,7 @@
                     }
                     <input asp-for="@Model.IsEdit" type="hidden" />
                     <input asp-for="@Model.ReturnUrl" type="hidden" />
-                    @*                    TODO: you can put page number, Q and Query here later and that way when you are done editing you will return to the same page and continue on... that would be nice.*@
+                    <input asp-for="@Model.RefundNotes" type="hidden" />
                     <div class="row mb-3">
                         <div class="col-4">
                             <label class="visually-hidden" asp-for="@Model.Date">Date</label>
@@ -149,16 +152,4 @@
             </form>
         </div>
     </div>
-    @if (Model.ShowAddCategoryButton)
-    {
-        @* Add Income Category Modal *@
-        <div class="modal fade" id="addIncomeCategoryModal">
-            @await Html.PartialAsync("AddEditIncomeCategoryModal", new AddEditIncomeCategoryModal() { ReturnUrl=$"{Model.ReturnUrl}",
-            InUse=true, 
-            IsEdit=false
-            })
-        </div>
-        @* End Income Category Modal *@
-    }
-
 </div>

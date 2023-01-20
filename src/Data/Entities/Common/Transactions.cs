@@ -17,7 +17,7 @@ namespace CashTrack.Data.Entities.Common
         [Required]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
-        [StringLength(255)]
+        [StringLength(1000)]
         public string? Notes { get; set; }
 
         public int Id { get; set; }
