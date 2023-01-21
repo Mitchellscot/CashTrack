@@ -39,8 +39,10 @@ const config = {
 			$: 'jquery',
 		}),
 		new ESLintPlugin({
-			extensions: ['.ts', '.js'],
+			extensions: ['.ts'],
 			exclude: 'node_modules',
+			context: './Scripts',
+
 		}),
 	],
 	module: {
