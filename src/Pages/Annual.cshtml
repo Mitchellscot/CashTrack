@@ -504,7 +504,10 @@
     IsEdit = false,
     CategoryList = new SelectList(Model.IncomeCategoryList, "Id", "Category"),
     Date= DateTime.Today,
-    ShowAddCategoryButton = false
+    ShowAddCategoryButton = false,
+    PageNumber = 1,
+    Q = string.Empty,
+    Query= 0
     });
 </div>
 @*End Add Income Modal*@
