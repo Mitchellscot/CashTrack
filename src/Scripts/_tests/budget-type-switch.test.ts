@@ -1,4 +1,4 @@
-﻿import {hideCategoryWhenSavingsIsSelectedAddModal} from '../Utility/budget-type-switch';
+﻿import {hideCategoryWhenSavingsIsSelectedAddModal, hideCategoryWhenSavingsIsSelectedEditModal} from '../Utility/budget-type-switch';
 
 describe('Hide Category When Savings Is Selected Add Modal', () => {
 	beforeEach(() => {
@@ -64,36 +64,77 @@ describe('Hide Category When Savings Is Selected Add Modal', () => {
 		radioButton.checked = false;
 		radioButton.value = '1';
 		radioButton.dispatchEvent(new Event('change'));
-		const table2 = document.getElementById('averagesTable') as HTMLTableElement;
 		const categoryInputs2 = document.getElementById('categoryInputs') as HTMLInputElement;
 		expect(categoryInputs2.classList.contains('visually-hidden')).toBe(false);
 	});
 });
 
+describe('Hide Category When Savings Is Selected Edit Modal', () => {
+	beforeEach(() => {
+		const radioButton = document.createElement('input');
+		const table = document.createElement('table');
+		const categoryInputs = document.createElement('input');
+		radioButton.classList.add('handle-category-select-edit-js');
+		radioButton.setAttribute('data-id', '1');
+		categoryInputs.setAttribute('id', 'categoryInputs-1')
+		table.setAttribute('id', 'averagesTable-1');
+		document.body.appendChild(radioButton);
+		document.body.appendChild(categoryInputs);
+		document.body.appendChild(table);
+	});
+	afterEach(() => {
+		document.querySelectorAll('.handle-category-select-edit-js').forEach(x => {
+			x.remove();
+		});
+		document.querySelectorAll('#categoryInputs-1').forEach(x => {
+			x.remove();
+		});
+		document.querySelectorAll('#averagesTable-1').forEach(x => {
+			x.remove();
+		});
+	})
+
+	it('hides inputs when edit modal checked', () => {
+		hideCategoryWhenSavingsIsSelectedEditModal();
+		const radioButton = document.querySelector('.handle-category-select-edit-js') as HTMLInputElement;
+		radioButton.checked = true;
+		radioButton.value = '2';
+		radioButton.dispatchEvent(new Event('change'));
+
+		const table = document.getElementById('averagesTable-1') as HTMLTableElement;
+		const categoryInputs = document.getElementById('categoryInputs-1') as HTMLInputElement;
+		expect(table.classList.contains('visually-hidden')).toBe(true);
+		expect(categoryInputs.classList.contains('visually-hidden')).toBe(true);
+	});
+	it('doesnt hide when inputs when edit modal checked with wrong value', () => {
+		hideCategoryWhenSavingsIsSelectedEditModal();
+		const radioButton = document.querySelector('.handle-category-select-edit-js') as HTMLInputElement;
+		radioButton.checked = true;
+		radioButton.value = '1';
+		radioButton.dispatchEvent(new Event('change'));
+
+		const table = document.getElementById('averagesTable-1') as HTMLTableElement;
+		const categoryInputs = document.getElementById('categoryInputs-1') as HTMLInputElement;
+		expect(table.classList.contains('visually-hidden')).toBe(false);
+		expect(categoryInputs.classList.contains('visually-hidden')).toBe(false);
+	});
+	it('unhides inputs when edit modal checked again', () => {
+		hideCategoryWhenSavingsIsSelectedEditModal();
+		const radioButton = document.querySelector('.handle-category-select-edit-js') as HTMLInputElement;
+		radioButton.checked = true;
+		radioButton.value = '2';
+		radioButton.dispatchEvent(new Event('change'));
+
+		const table = document.getElementById('averagesTable-1') as HTMLTableElement;
+		const categoryInputs = document.getElementById('categoryInputs-1') as HTMLInputElement;
+		expect(table.classList.contains('visually-hidden')).toBe(true);
+		expect(categoryInputs.classList.contains('visually-hidden')).toBe(true);
+		radioButton.checked = false;
+		radioButton.value = '1';
+		radioButton.dispatchEvent(new Event('change'));
+		const categoryInputs2 = document.getElementById('categoryInputs-1') as HTMLInputElement;
+		expect(categoryInputs2.classList.contains('visually-hidden')).toBe(false);
+	});
+});
 
 
-
-
-//export function hideCategoryWhenSavingsIsSelectedAddModal() {
-//	const radioButtons = document.querySelectorAll('.handle-category-select-js');
-//	radioButtons.forEach(x => {
-//		x.addEventListener('change', handleSavingsIsSelectedForAddModal, false);
-//	},
-//	);
-//}
-
-//export const handleSavingsIsSelectedForAddModal = (e: Event): void => {
-//	const isChecked
-//		= (e.target as HTMLInputElement).checked
-//		&& (e.target as HTMLInputElement).value === '2';
-//	const averagesTable = (
-//		document.getElementById('averagesTable') as HTMLTableElement);
-//	if (isChecked) {
-//		document.getElementById('categoryInputs')?.classList.add('visually-hidden');
-//		averagesTable.classList.add('visually-hidden');
-//	} else {
-//		document
-//			.getElementById('categoryInputs')
-//			?.classList.remove('visually-hidden');
-//	}
-//};
