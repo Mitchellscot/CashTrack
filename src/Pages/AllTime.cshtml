@@ -11,7 +11,7 @@
 @using CashTrack.Pages.Shared;
 @using System.Globalization;
 @using System.Text.Json;
-@model CashTrack.Pages.SummaryModel
+@model CashTrack.Pages.AllTimeModel
 @{
     ViewData["Title"] = "- Dashboard";
     Layout = "_Layout";
@@ -40,9 +40,9 @@
                 <div class="dropdown-center">
                     <a class="btn btn-primary dropdown-toggle me-2 btn-text-overflow btn-height" href="#" role="button" data-bs-toggle="dropdown">Summary</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item text-center spin-it" asp-page="./Index">Month</a></li>
+                        <li><a class="dropdown-item text-center spin-it" asp-page="./Monthly">Month</a></li>
                         <li><a class="dropdown-item text-center spin-it" asp-page="./Annual">Annual</a></li>
-                        <li><a class="dropdown-item text-center spin-it" asp-page="./Summary">All Time</a></li>
+                        <li><a class="dropdown-item text-center spin-it" asp-page="./AllTime">All Time</a></li>
                     </ul>
                 </div>
                 <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
@@ -489,7 +489,7 @@
     @await Html.PartialAsync("AddEditExpenseModal",
     new AddEditExpenseModal() {
     IsEdit = false,
-    ReturnUrl = "/Summary",
+    ReturnUrl = "/AllTime",
     SubCategoryList = new SelectList(Model.SubCategoryList, "Id", "Category"),
     Date= DateTime.Today,
     MainCategoryList = new SelectList(Model.MainCategoryList, "Id", "Category"),
@@ -504,7 +504,7 @@
 @* Add Income Modal *@
 <div class="modal fade" id="addIncomeModal">
     @await Html.PartialAsync("AddEditIncomeModal", new AddEditIncomeModal(){
-    ReturnUrl = "/Summary",
+    ReturnUrl = "/AllTime",
     IsEdit = false,
     CategoryList = new SelectList(Model.IncomeCategoryList, "Id", "Category"),
     Date= DateTime.Today,
@@ -518,7 +518,7 @@
 @*Add Merchant Modal*@
 <div class="modal fade" id="addMerchantModal">
     @await Html.PartialAsync("AddEditMerchantModal", new AddEditMerchantModal() {
-    ReturnUrl = "/Summary",
+    ReturnUrl = "/AllTime",
     SuggestOnLookup = true,
     IsEdit = false
     })
@@ -528,7 +528,7 @@
 <div class="modal fade" id="addSourceModal">
     @await Html.PartialAsync("AddEditIncomeSourceModal", new AddEditIncomeSourceModal()
     {
-    ReturnUrl = "/Summary",
+    ReturnUrl = "/AllTime",
     IsEdit = false,
     SuggestOnLookup = true
     })
@@ -537,7 +537,7 @@
 @*Add Sub Category Modal*@
 <div class="modal fade" id="addSubCategoryModal">
     @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal()
-    { ReturnUrl="~/Summary",
+    { ReturnUrl="~/AllTime",
     InUse=true,
     IsEdit=false,
     MainCategoryList=new SelectList(Model.MainCategoryList, "Id", "Category"),
@@ -548,7 +548,7 @@
 @*Add Main Category Modal*@
 <div class="modal fade" id="addMainCategoryModal">
     @await Html.PartialAsync("AddEditMainCategoryModal", new AddEditMainCategoryModal() {
-    ReturnUrl = "/Summary",
+    ReturnUrl = "/AllTime",
     IsEdit = false});
 </div>
 @*EndAdd Main Category Modal*@
@@ -556,7 +556,7 @@
 <div class="modal fade" id="addIncomeCategoryModal">
     @await Html.PartialAsync("AddEditIncomeCategoryModal",
     new AddEditIncomeCategoryModal() {
-    ReturnUrl = "/Summary",
+    ReturnUrl = "/AllTime",
     InUse = true,
     IsEdit = false,
     })
@@ -564,7 +564,7 @@
 @*End Add Income Category Modal*@
 @*Import Transactions Modal*@
 <div class="modal fade" id="importCsvModal">
-    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Summary" })
+    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/AllTime" })
 </div>
 @*End Import Transactions Modal*@
 @await Html.PartialAsync("TransactionBreakdownModal", new TransactionBreakdownModal()
@@ -575,7 +575,6 @@
 })
 
 @section Scripts {
-    <script src="~/js/summary.js"></script>
     <script asp-append-version="true" src="https://cdn.jsdelivr.net/npm/chart.js@4.1.1/dist/chart.umd.js"></script>
     @if (incomeORExpenseDataIsPresent)
     {

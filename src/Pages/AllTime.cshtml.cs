@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace CashTrack.Pages
 {
-    public class SummaryModel : PageModelBase
+    public class AllTimeModel : PageModelBase
     {
         private ISummaryService _summaryService;
         private readonly ISubCategoryService _subCategoryService;
@@ -24,7 +24,7 @@ namespace CashTrack.Pages
         public MainCategoryDropdownSelection[] MainCategoryList { get; set; }
         public IncomeCategoryDropdownSelection[] IncomeCategoryList { get; set; }
 
-        public SummaryModel(ISummaryService summaryService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoryService, IIncomeCategoryService incomeCategoryService)
+        public AllTimeModel(ISummaryService summaryService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoryService, IIncomeCategoryService incomeCategoryService)
         {
             _summaryService = summaryService;
             _subCategoryService = subCategoryService;

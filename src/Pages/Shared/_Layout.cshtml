@@ -18,10 +18,8 @@
         </div>
     </header>
     <div class="row d-flex">
-
         @await Html.PartialAsync("_Sidebar")
         <div class="sidebar-background-color col-md-2 col-lg-2 d-md-block bg-light collapse mx-1"></div>
-
         <main class="col col-md-10 col-lg-10 d-flex flex-wrap flex-md-nowrap pt-2 border border-bottom-0 rounded-top">
             @await Html.PartialAsync("_LoadingSpinner")
             @RenderBody()

@@ -201,6 +201,11 @@ namespace CashTrack.Data
                 return;
             }
 
+            if (env == CashTrackEnv.Production)
+            {
+                //seed demo data
+            }
+
             string csvFileDirectory = env == CashTrackEnv.Test ?
                 Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.FullName, "ct-data", "TestData") :
                 Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "ct-data");
