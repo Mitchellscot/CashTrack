@@ -168,10 +168,10 @@ namespace CashTrack
             }
             if (IsProduction())
             {
-                //app.UseExceptionHandler("/Error");
-                //app.UseHsts();
-                //app.UseHttpsRedirection();
-                //app.UseMiddleware<IpAddressMiddleware>();
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
+                app.UseHttpsRedirection();
+                app.UseMiddleware<IpAddressMiddleware>();
             }
             app.UseStaticFiles();
             app.UseRouting();

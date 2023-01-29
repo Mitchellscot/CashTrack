@@ -204,7 +204,7 @@ namespace CashTrack.Data
 
             string csvFileDirectory = env == CashTrackEnv.Test ?
                 Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.FullName, "ct-data", "TestData") :
-                env == CashTrackEnv.Development ? //CHANGE TO PRODUCTION
+                env == CashTrackEnv.Development ? //TODO: CHANGE TO PRODUCTION
                 Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "ct-data", "DemoData")
                 : Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "ct-data");
 
@@ -214,11 +214,8 @@ namespace CashTrack.Data
                 throw new Exception("You need to add ct-data to the project or write some code that generates test data");
             }
 
-            if (args.IsEqualTo("seed")) //ADD PRODUCTION
+            if (args.IsEqualTo("seed")) //TODO: ADD PRODUCTION
             {
-                var lastYear = DateTime.Now.AddYears(-1).Year;
-                var currentMonth = DateTime.Now.Month;
-                var currentDay = DateTime.Now.Day;
                 var users = CsvParser.ProcessUserFile(Path.Combine(csvFileDirectory, "Users.csv"));
                 foreach (var user in users)
                 {
@@ -253,110 +250,270 @@ namespace CashTrack.Data
                 mb.Entity<ImportRuleEntity>().HasData(CsvParser.ProcessImportRuleFile(Path.Combine(csvFileDirectory, "ImportRules.csv")));
                 var incomeCategories = CsvParser.ProcessIncomeCategoryFile(Path.Combine(csvFileDirectory, "IncomeCategories.csv"));
                 mb.Entity<IncomeCategoryEntity>().HasData(incomeCategories);
-                var income = new List<IncomeEntity>();
-                foreach (var category in incomeCategories)
+
+                var incomes = GenerateData.Income(incomeCategories);
+
+                mb.Entity<IncomeEntity>().HasData(incomes);
+            }
+        }
+
+        //if (args.IsEqualTo("seed") || env == CashTrackEnv.Test)
+        //{
+        //    var users = CsvParser.ProcessUserFile(Path.Combine(csvFileDirectory, "Users.csv"));
+        //    foreach (var user in users)
+        //    {
+        //        var passwordHasher = new PasswordHasher<UserEntity>();
+        //        var seededUser = new UserEntity()
+        //        {
+        //            Id = user.Id,
+        //            UserName = user.UserName,
+        //            FirstName = user.FirstName,
+        //            LastName = user.LastName,
+        //            Email = user.Email,
+        //            NormalizedEmail = user.NormalizedEmail,
+        //            NormalizedUserName = user.NormalizedUserName,
+        //            SecurityStamp = Guid.NewGuid().ToString("D"),
+        //            EmailConfirmed = true
+        //        };
+        //        var hashed = passwordHasher.HashPassword(seededUser, user.PasswordHash);
+        //        seededUser.PasswordHash = hashed;
+        //        mb.Entity<UserEntity>().HasData(seededUser);
+        //        var claim = new IdentityUserClaim<int>()
+        //        {
+        //            Id = user.Id,
+        //            UserId = user.Id,
+        //            ClaimType = ClaimTypes.NameIdentifier,
+        //            ClaimValue = user.UserName,
+        //        };
+        //        mb.Entity<IdentityUserClaim<int>>().HasData(claim);
+        //    }
+        //    mb.Entity<MainCategoryEntity>().HasData(CsvParser.ProcessMainCategoryFile(Path.Combine(csvFileDirectory, "MainCategories.csv")));
+        //    mb.Entity<SubCategoryEntity>().HasData(CsvParser.ProcessSubCategoryFile(Path.Combine(csvFileDirectory, "SubCategories.csv")));
+        //    mb.Entity<MerchantEntity>().HasData(CsvParser.ProcessMerchantFile(Path.Combine(csvFileDirectory, "Merchants.csv")));
+        //    mb.Entity<ExpenseEntity>().HasData(CsvParser.ProcessExpenseFile(Path.Combine(csvFileDirectory, "Expenses.csv")));
+        //    mb.Entity<IncomeCategoryEntity>().HasData(CsvParser.ProcessIncomeCategoryFile(Path.Combine(csvFileDirectory, "IncomeCategories.csv")));
+        //    mb.Entity<IncomeSourceEntity>().HasData(CsvParser.ProcessIncomeSourceFile(Path.Combine(csvFileDirectory, "IncomeSources.csv")));
+        //    mb.Entity<IncomeEntity>().HasData(CsvParser.ProcessIncomeFile(Path.Combine(csvFileDirectory, "Income.csv")));
+        //    mb.Entity<ImportRuleEntity>().HasData(CsvParser.ProcessImportRuleFile(Path.Combine(csvFileDirectory, "ImportRules.csv")));
+        //    mb.Entity<BudgetEntity>().HasData(CsvParser.ProcessBudgetFile(Path.Combine(csvFileDirectory, "Budgets.csv")));
+        //}
+    }
+    public static class GenerateData
+    {
+        public static List<IncomeEntity> Income(List<CsvModels.CsvIncomeCategory> incomeCategories)
+        {
+            var startYear = DateTime.Now.AddYears(-2).Year;
+            var lastYear = DateTime.Now.AddYears(-1).Year;
+            var currentYear = DateTime.Now.Year;
+            var currentMonth = DateTime.Now.Month;
+            var currentDay = DateTime.Now.Day;
+
+            var incomes = new List<IncomeEntity>();
+            int currentIncomeId = 0;
+            foreach (var category in incomeCategories)
+            {
+                switch (category.Name)
                 {
-                    if (category.Name.IsEqualTo("Paycheck"))
-                    {
-                        int currentId = 1;
-                        for (int i = 1; i < 13; i++)
+                    case "Paycheck":
                         {
-                            currentId++;
-                            var payment = new IncomeEntity()
+                            var basePay = 1529M;
+                            for (int i = 1; i < 13; i++)
                             {
-                                Id = currentId,
-                                Amount = 1529M,
-                                Date = new DateTime(lastYear, i, 1),
-                                CategoryId = 3,
-                                SourceId = 1,
-                                IsRefund = false
-                            };
-                            income.Add(payment);
-                            currentId++;
-                            var secondPayment = new IncomeEntity()
-                            {
-                                Id = currentId,
-                                Amount = 1529M,
-                                Date = new DateTime(lastYear, i, 15),
-                                CategoryId = 3,
-                                SourceId = 1,
-                                IsRefund = false
-                            };
-                            income.Add(secondPayment);
-                        }
-                        for (int i = 1; i <= currentMonth; i++)
-                        {
-                            currentId++;
-                            var payment = new IncomeEntity()
-                            {
-                                Id = currentId,
-                                Amount = 1529M,
-                                Date = new DateTime(lastYear + 1, i, 1),
-                                CategoryId = 3,
-                                SourceId = 1,
-                                IsRefund = false
-                            };
-                            income.Add(payment);
-                            if (currentDay > 15)
-                            {
-                                currentId++;
-                                var secondPayment = new IncomeEntity()
+                                currentIncomeId++;
+                                var payment = new IncomeEntity()
                                 {
-                                    Id = currentId,
-                                    Amount = 1529M,
-                                    Date = new DateTime(lastYear + 1, i, 15),
+                                    Id = currentIncomeId,
+                                    Amount = basePay,
+                                    Date = new DateTime(startYear, i, 1),
                                     CategoryId = 3,
                                     SourceId = 1,
                                     IsRefund = false
                                 };
-                                income.Add(secondPayment);
+                                incomes.Add(payment);
+                                currentIncomeId++;
+                                var secondPayment = new IncomeEntity()
+                                {
+                                    Id = currentIncomeId,
+                                    Amount = basePay,
+                                    Date = new DateTime(startYear, i, 15),
+                                    CategoryId = 3,
+                                    SourceId = 1,
+                                    IsRefund = false
+                                };
+                                incomes.Add(secondPayment);
+                            }
+
+                            for (int i = 1; i < 13; i++)
+                            {
+                                currentIncomeId++;
+                                var payment = new IncomeEntity()
+                                {
+                                    Id = currentIncomeId,
+                                    Amount = basePay + 100m,
+                                    Date = new DateTime(lastYear, i, 1),
+                                    CategoryId = 3,
+                                    SourceId = 1,
+                                    IsRefund = false
+                                };
+                                incomes.Add(payment);
+                                currentIncomeId++;
+                                var secondPayment = new IncomeEntity()
+                                {
+                                    Id = currentIncomeId,
+                                    Amount = basePay + 100m,
+                                    Date = new DateTime(lastYear, i, 15),
+                                    CategoryId = 3,
+                                    SourceId = 1,
+                                    IsRefund = false
+                                };
+                                incomes.Add(secondPayment);
+                            }
+
+                            for (int i = 1; i <= currentMonth; i++)
+                            {
+                                currentIncomeId++;
+                                var payment = new IncomeEntity()
+                                {
+                                    Id = currentIncomeId,
+                                    Amount = basePay + 150m,
+                                    Date = new DateTime(currentYear, i, 1),
+                                    CategoryId = 3,
+                                    SourceId = 1,
+                                    IsRefund = false
+                                };
+                                incomes.Add(payment);
+                                currentIncomeId++;
+                                if (currentDay > 15)
+                                {
+                                    var secondPayment = new IncomeEntity()
+                                    {
+                                        Id = currentIncomeId,
+                                        Amount = basePay + 150m,
+                                        Date = new DateTime(currentYear, i, 15),
+                                        CategoryId = 3,
+                                        SourceId = 1,
+                                        IsRefund = false
+                                    };
+                                    incomes.Add(secondPayment);
+                                }
                             }
                         }
-                    }
-                }
-                mb.Entity<IncomeEntity>().HasData(income);
-            }
+                        break;
+                    case "Gift":
+                        {
+                            currentIncomeId++;
+                            var firstpayment = new IncomeEntity()
+                            {
+                                Id = currentIncomeId,
+                                Amount = 100M,
+                                Date = new DateTime(startYear, 1, 11),
+                                CategoryId = 4,
+                                SourceId = 3,
+                                IsRefund = false,
+                                Notes = "Birthday Money from Parents"
+                            };
+                            incomes.Add(firstpayment);
+                            currentIncomeId++;
+                            var secondPayment = new IncomeEntity()
+                            {
+                                Id = currentIncomeId,
+                                Amount = 200M,
+                                Date = new DateTime(startYear, 12, 25),
+                                CategoryId = 4,
+                                SourceId = 3,
+                                IsRefund = false,
+                                Notes = "Christmas money from Parents"
+                            };
+                            incomes.Add(secondPayment);
+                            currentIncomeId++;
+                            var thirdPayment = new IncomeEntity()
+                            {
+                                Id = currentIncomeId,
+                                Amount = 100M,
+                                Date = new DateTime(lastYear, 1, 11),
+                                CategoryId = 4,
+                                SourceId = 3,
+                                IsRefund = false,
+                                Notes = "Birthday Money from Parents"
+                            };
+                            incomes.Add(thirdPayment);
+                            currentIncomeId++;
+                            var fourthPayment = new IncomeEntity()
+                            {
+                                Id = currentIncomeId,
+                                Amount = 200M,
+                                Date = new DateTime(lastYear, 12, 25),
+                                CategoryId = 4,
+                                SourceId = 3,
+                                IsRefund = false,
+                                Notes = "Christmas money from Parents"
+                            };
+                            incomes.Add(fourthPayment);
+                            if (currentDay > 11)
+                            {
+                                currentIncomeId++;
+                                var fifthpayment = new IncomeEntity()
+                                {
+                                    Id = currentIncomeId,
+                                    Amount = 100M,
+                                    Date = new DateTime(currentYear, 1, 11),
+                                    CategoryId = 4,
+                                    SourceId = 3,
+                                    IsRefund = false,
+                                    Notes = "Birthday Money from Parents, again"
+                                };
+                                incomes.Add(fifthpayment);
+                            }
+                        }
+                        break;
+                    case "Tax Refund":
+                        {
+                            currentIncomeId++;
+                            var payment = new IncomeEntity()
+                            {
+                                Id = currentIncomeId,
+                                Amount = 2123M,
+                                Date = new DateTime(startYear, 4, 14),
+                                CategoryId = 5,
+                                SourceId = 2,
+                                IsRefund = false,
+                                Notes = "Federal Tax Refund"
+                            };
+                            incomes.Add(payment);
 
-            //if (args.IsEqualTo("seed") || env == CashTrackEnv.Test)
-            //{
-            //    var users = CsvParser.ProcessUserFile(Path.Combine(csvFileDirectory, "Users.csv"));
-            //    foreach (var user in users)
-            //    {
-            //        var passwordHasher = new PasswordHasher<UserEntity>();
-            //        var seededUser = new UserEntity()
-            //        {
-            //            Id = user.Id,
-            //            UserName = user.UserName,
-            //            FirstName = user.FirstName,
-            //            LastName = user.LastName,
-            //            Email = user.Email,
-            //            NormalizedEmail = user.NormalizedEmail,
-            //            NormalizedUserName = user.NormalizedUserName,
-            //            SecurityStamp = Guid.NewGuid().ToString("D"),
-            //            EmailConfirmed = true
-            //        };
-            //        var hashed = passwordHasher.HashPassword(seededUser, user.PasswordHash);
-            //        seededUser.PasswordHash = hashed;
-            //        mb.Entity<UserEntity>().HasData(seededUser);
-            //        var claim = new IdentityUserClaim<int>()
-            //        {
-            //            Id = user.Id,
-            //            UserId = user.Id,
-            //            ClaimType = ClaimTypes.NameIdentifier,
-            //            ClaimValue = user.UserName,
-            //        };
-            //        mb.Entity<IdentityUserClaim<int>>().HasData(claim);
-            //    }
-            //    mb.Entity<MainCategoryEntity>().HasData(CsvParser.ProcessMainCategoryFile(Path.Combine(csvFileDirectory, "MainCategories.csv")));
-            //    mb.Entity<SubCategoryEntity>().HasData(CsvParser.ProcessSubCategoryFile(Path.Combine(csvFileDirectory, "SubCategories.csv")));
-            //    mb.Entity<MerchantEntity>().HasData(CsvParser.ProcessMerchantFile(Path.Combine(csvFileDirectory, "Merchants.csv")));
-            //    mb.Entity<ExpenseEntity>().HasData(CsvParser.ProcessExpenseFile(Path.Combine(csvFileDirectory, "Expenses.csv")));
-            //    mb.Entity<IncomeCategoryEntity>().HasData(CsvParser.ProcessIncomeCategoryFile(Path.Combine(csvFileDirectory, "IncomeCategories.csv")));
-            //    mb.Entity<IncomeSourceEntity>().HasData(CsvParser.ProcessIncomeSourceFile(Path.Combine(csvFileDirectory, "IncomeSources.csv")));
-            //    mb.Entity<IncomeEntity>().HasData(CsvParser.ProcessIncomeFile(Path.Combine(csvFileDirectory, "Income.csv")));
-            //    mb.Entity<ImportRuleEntity>().HasData(CsvParser.ProcessImportRuleFile(Path.Combine(csvFileDirectory, "ImportRules.csv")));
-            //    mb.Entity<BudgetEntity>().HasData(CsvParser.ProcessBudgetFile(Path.Combine(csvFileDirectory, "Budgets.csv")));
-            //}
+                            currentIncomeId++;
+                            var secondpayment = new IncomeEntity()
+                            {
+                                Id = currentIncomeId,
+                                Amount = 2243M,
+                                Date = new DateTime(lastYear, 4, 9),
+                                CategoryId = 5,
+                                SourceId = 2,
+                                IsRefund = false,
+                                Notes = "Federal Tax Refund"
+                            };
+                            incomes.Add(secondpayment);
+
+                            if (currentMonth >= 4)
+                            {
+                                currentIncomeId++;
+                                var thirdpayment = new IncomeEntity()
+                                {
+                                    Id = currentIncomeId,
+                                    Amount = 2156M,
+                                    Date = new DateTime(currentYear, 4, 1),
+                                    CategoryId = 5,
+                                    SourceId = 2,
+                                    IsRefund = false,
+                                    Notes = "Federal Tax Refund"
+                                };
+                                incomes.Add(thirdpayment);
+                            }
+                        }
+                        break;
+                }
+            }
+            return incomes;
         }
     }
 }

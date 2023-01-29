@@ -416,7 +416,7 @@ namespace CashTrack.Services.SummaryService
             {
                 var lastMonthOfIncome = incomes.OrderBy(x => x.Date.Month).Select(x => x.Date.Month).LastOrDefault() + 1;
                 var iterations = 13 - lastMonthOfIncome;
-                suggestedMonthlyAmount = iterations > 0 ? (savingsGoal - totalSavedAsInt) / iterations : (savingsGoal - totalSavedAsInt);
+                suggestedMonthlyAmount = iterations > 0 && savingsGoal > 0 ? (savingsGoal - totalSavedAsInt) / iterations : (savingsGoal - totalSavedAsInt);
             }
             else
             {
@@ -428,7 +428,7 @@ namespace CashTrack.Services.SummaryService
                 Spent = totalSpent,
                 Saved = totalSaved,
                 SavingsGoalProgress = percentTowardsSavingsGoal,
-                SuggestedMonthlySavingsToMeetGoal = suggestedMonthlyAmount,
+                SuggestedMonthlySavingsToMeetGoal = savingsGoal > 0 ? suggestedMonthlyAmount : 0,
                 AveragedSavedPerMonth = averageAmountSaved,
                 BudgetVariance = budgetedExpenses > 0 ? ((int)decimal.Round(totalSpent, 0) - budgetedExpenses) / budgetedExpenses : 0
             };
