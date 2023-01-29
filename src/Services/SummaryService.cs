@@ -86,11 +86,33 @@ namespace CashTrack.Services.SummaryService
             var expensesYTD = await _expenseRepo.Find(x => x.Date.Year == request.Year && !x.ExcludeFromStatistics);
             var incomeYTD = await _incomeRepo.Find(x => x.Date.Year == request.Year && !x.IsRefund);
             var annualBudgets = await _budgetRepo.FindWithMainCategories(x => x.Year == request.Year);
+            var budgetsYTD = annualBudgets.Where(x => x.Month <= DateTime.Now.Month).ToArray();
+            var budgetsForCharts = isCurrentYear ? budgetsYTD : annualBudgets;
+            int incomeForPercentageCharts = incomeYTD.Any() ? Convert.ToInt32(incomeYTD.Sum(x => x.Amount)) : 0;
+
             if (!expensesYTD.Any() && !incomeYTD.Any() && !annualBudgets.Any())
                 return EmptyAnnualSummaryResponse();
             else if (!expensesYTD.Any() && incomeYTD.Any() && !annualBudgets.Any())
-                //income but no expenses, can still show data!
-                return EmptyAnnualSummaryResponse();
+                //income but no expenses
+                return new AnnualSummaryResponse()
+                {
+                    LastImport = user.LastImport,
+                    OverallSummaryChart = GetOverallSummaryChart(expensesYTD, incomeYTD, budgetsForCharts),
+                    TopExpenses = GetTopExpenses(expensesYTD),
+                    TopCategories = GetTopSubCategories(expensesYTD),
+                    TopMerchants = GetTopMerchants(expensesYTD),
+                    TopSources = GetTopSources(incomeYTD),
+                    SavingsChart = GetAnnualSavingsChart(incomeYTD, expensesYTD, annualBudgets),
+                    SubCategoryPercentages = GetSubCategoryPercentages(expensesYTD, incomeForPercentageCharts),
+                    IncomeExpenseChart = GetAnnualIncomeExpenseChart(expensesYTD, incomeYTD, annualBudgets),
+                    MainCategoryPercentages = GetMainCategoryPercentages(expensesYTD, incomeForPercentageCharts),
+                    MerchantPercentages = GetMerchantPercentages(expensesYTD, incomeForPercentageCharts),
+                    IncomeSourcePercentages = GetIncomeSourcePercentages(incomeYTD),
+                    MonthlyExpenseStatistics = AggregateUtilities<ExpenseEntity>.GetAnnualStatisticsByMonth(expensesYTD, request.Year, true),
+                    AnnualSummary = GetAnnualSummary(expensesYTD, incomeYTD, annualBudgets, isCurrentYear),
+                    AnnualMonthlySummaryChart = GetAnnualMonthlySummaryChart(expensesYTD, incomeYTD, annualBudgets),
+                    TransactionBreakdown = GetTransactionBreakdown(expensesYTD, incomeYTD, budgetsYTD, false)
+                };
             else if (expensesYTD.Any() && !incomeYTD.Any() && !annualBudgets.Any())
                 //expenses and no income, can still show data!
                 return EmptyAnnualSummaryResponse();
@@ -98,9 +120,7 @@ namespace CashTrack.Services.SummaryService
                 //budget but no income or expenses
                 return EmptyAnnualSummaryResponse();
 
-            var budgetsYTD = annualBudgets.Where(x => x.Month <= DateTime.Now.Month).ToArray();
-            var budgetsForCharts = isCurrentYear ? budgetsYTD : annualBudgets;
-            var incomeForPercentageCharts = Convert.ToInt32(incomeYTD.Sum(x => x.Amount));
+
 
             return new AnnualSummaryResponse()
             {

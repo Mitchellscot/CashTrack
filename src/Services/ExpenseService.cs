@@ -243,7 +243,10 @@ public class ExpenseService : IExpenseService
 
     public async Task<int[]> GetAnnualSummaryYearsAsync()
     {
-        var years = (await _expenseRepo.Find(x => true)).GroupBy(x => x.Date.Year).Select(x => x.Key).ToList();
+        var expenseYears = (await _expenseRepo.Find(x => true)).GroupBy(x => x.Date.Year).Select(x => x.Key).ToList();
+        var incomeYears = (await _incomeRepo.Find(x => true)).GroupBy(x => x.Date.Year).Select(x => x.Key).ToList();
+        incomeYears.AddRange(expenseYears);
+        var years = incomeYears.Distinct().ToList();
         var currentYear = DateTime.Now.Year;
         if (!years.Contains(currentYear))
             years.Add(currentYear);
