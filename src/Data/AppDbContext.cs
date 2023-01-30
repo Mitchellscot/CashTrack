@@ -11,6 +11,11 @@ using System.Linq;
 using CashTrack.Common;
 using CashTrack.Common.Extensions;
 using System.Collections.Generic;
+using CashTrack.Models.IncomeModels;
+using CashTrack.Models.Common;
+using CashTrack.Models.MerchantModels;
+using static Azure.Core.HttpHeader;
+using System.Drawing;
 
 namespace CashTrack.Data
 {
@@ -251,9 +256,9 @@ namespace CashTrack.Data
                 var incomeCategories = CsvParser.ProcessIncomeCategoryFile(Path.Combine(csvFileDirectory, "IncomeCategories.csv"));
                 mb.Entity<IncomeCategoryEntity>().HasData(incomeCategories);
 
-                var incomes = GenerateData.Income(incomeCategories);
+                //var incomes = GenerateData.Income(incomeCategories);
 
-                mb.Entity<IncomeEntity>().HasData(incomes);
+                //mb.Entity<IncomeEntity>().HasData(incomes);
             }
         }
 
@@ -298,222 +303,360 @@ namespace CashTrack.Data
         //    mb.Entity<BudgetEntity>().HasData(CsvParser.ProcessBudgetFile(Path.Combine(csvFileDirectory, "Budgets.csv")));
         //}
     }
-    public static class GenerateData
-    {
-        public static List<IncomeEntity> Income(List<CsvModels.CsvIncomeCategory> incomeCategories)
-        {
-            var startYear = DateTime.Now.AddYears(-2).Year;
-            var lastYear = DateTime.Now.AddYears(-1).Year;
-            var currentYear = DateTime.Now.Year;
-            var currentMonth = DateTime.Now.Month;
-            var currentDay = DateTime.Now.Day;
-
-            var incomes = new List<IncomeEntity>();
-            int currentIncomeId = 0;
-            foreach (var category in incomeCategories)
-            {
-                switch (category.Name)
-                {
-                    case "Paycheck":
-                        {
-                            var basePay = 1529M;
-                            for (int i = 1; i < 13; i++)
-                            {
-                                currentIncomeId++;
-                                var payment = new IncomeEntity()
-                                {
-                                    Id = currentIncomeId,
-                                    Amount = basePay,
-                                    Date = new DateTime(startYear, i, 1),
-                                    CategoryId = 3,
-                                    SourceId = 1,
-                                    IsRefund = false
-                                };
-                                incomes.Add(payment);
-                                currentIncomeId++;
-                                var secondPayment = new IncomeEntity()
-                                {
-                                    Id = currentIncomeId,
-                                    Amount = basePay,
-                                    Date = new DateTime(startYear, i, 15),
-                                    CategoryId = 3,
-                                    SourceId = 1,
-                                    IsRefund = false
-                                };
-                                incomes.Add(secondPayment);
-                            }
-
-                            for (int i = 1; i < 13; i++)
-                            {
-                                currentIncomeId++;
-                                var payment = new IncomeEntity()
-                                {
-                                    Id = currentIncomeId,
-                                    Amount = basePay + 100m,
-                                    Date = new DateTime(lastYear, i, 1),
-                                    CategoryId = 3,
-                                    SourceId = 1,
-                                    IsRefund = false
-                                };
-                                incomes.Add(payment);
-                                currentIncomeId++;
-                                var secondPayment = new IncomeEntity()
-                                {
-                                    Id = currentIncomeId,
-                                    Amount = basePay + 100m,
-                                    Date = new DateTime(lastYear, i, 15),
-                                    CategoryId = 3,
-                                    SourceId = 1,
-                                    IsRefund = false
-                                };
-                                incomes.Add(secondPayment);
-                            }
-
-                            for (int i = 1; i <= currentMonth; i++)
-                            {
-                                currentIncomeId++;
-                                var payment = new IncomeEntity()
-                                {
-                                    Id = currentIncomeId,
-                                    Amount = basePay + 150m,
-                                    Date = new DateTime(currentYear, i, 1),
-                                    CategoryId = 3,
-                                    SourceId = 1,
-                                    IsRefund = false
-                                };
-                                incomes.Add(payment);
-                                currentIncomeId++;
-                                if (currentDay > 15)
-                                {
-                                    var secondPayment = new IncomeEntity()
-                                    {
-                                        Id = currentIncomeId,
-                                        Amount = basePay + 150m,
-                                        Date = new DateTime(currentYear, i, 15),
-                                        CategoryId = 3,
-                                        SourceId = 1,
-                                        IsRefund = false
-                                    };
-                                    incomes.Add(secondPayment);
-                                }
-                            }
-                        }
-                        break;
-                    case "Gift":
-                        {
-                            currentIncomeId++;
-                            var firstpayment = new IncomeEntity()
-                            {
-                                Id = currentIncomeId,
-                                Amount = 100M,
-                                Date = new DateTime(startYear, 1, 11),
-                                CategoryId = 4,
-                                SourceId = 3,
-                                IsRefund = false,
-                                Notes = "Birthday Money from Parents"
-                            };
-                            incomes.Add(firstpayment);
-                            currentIncomeId++;
-                            var secondPayment = new IncomeEntity()
-                            {
-                                Id = currentIncomeId,
-                                Amount = 200M,
-                                Date = new DateTime(startYear, 12, 25),
-                                CategoryId = 4,
-                                SourceId = 3,
-                                IsRefund = false,
-                                Notes = "Christmas money from Parents"
-                            };
-                            incomes.Add(secondPayment);
-                            currentIncomeId++;
-                            var thirdPayment = new IncomeEntity()
-                            {
-                                Id = currentIncomeId,
-                                Amount = 100M,
-                                Date = new DateTime(lastYear, 1, 11),
-                                CategoryId = 4,
-                                SourceId = 3,
-                                IsRefund = false,
-                                Notes = "Birthday Money from Parents"
-                            };
-                            incomes.Add(thirdPayment);
-                            currentIncomeId++;
-                            var fourthPayment = new IncomeEntity()
-                            {
-                                Id = currentIncomeId,
-                                Amount = 200M,
-                                Date = new DateTime(lastYear, 12, 25),
-                                CategoryId = 4,
-                                SourceId = 3,
-                                IsRefund = false,
-                                Notes = "Christmas money from Parents"
-                            };
-                            incomes.Add(fourthPayment);
-                            if (currentDay > 11)
-                            {
-                                currentIncomeId++;
-                                var fifthpayment = new IncomeEntity()
-                                {
-                                    Id = currentIncomeId,
-                                    Amount = 100M,
-                                    Date = new DateTime(currentYear, 1, 11),
-                                    CategoryId = 4,
-                                    SourceId = 3,
-                                    IsRefund = false,
-                                    Notes = "Birthday Money from Parents, again"
-                                };
-                                incomes.Add(fifthpayment);
-                            }
-                        }
-                        break;
-                    case "Tax Refund":
-                        {
-                            currentIncomeId++;
-                            var payment = new IncomeEntity()
-                            {
-                                Id = currentIncomeId,
-                                Amount = 2123M,
-                                Date = new DateTime(startYear, 4, 14),
-                                CategoryId = 5,
-                                SourceId = 2,
-                                IsRefund = false,
-                                Notes = "Federal Tax Refund"
-                            };
-                            incomes.Add(payment);
-
-                            currentIncomeId++;
-                            var secondpayment = new IncomeEntity()
-                            {
-                                Id = currentIncomeId,
-                                Amount = 2243M,
-                                Date = new DateTime(lastYear, 4, 9),
-                                CategoryId = 5,
-                                SourceId = 2,
-                                IsRefund = false,
-                                Notes = "Federal Tax Refund"
-                            };
-                            incomes.Add(secondpayment);
-
-                            if (currentMonth >= 4)
-                            {
-                                currentIncomeId++;
-                                var thirdpayment = new IncomeEntity()
-                                {
-                                    Id = currentIncomeId,
-                                    Amount = 2156M,
-                                    Date = new DateTime(currentYear, 4, 1),
-                                    CategoryId = 5,
-                                    SourceId = 2,
-                                    IsRefund = false,
-                                    Notes = "Federal Tax Refund"
-                                };
-                                incomes.Add(thirdpayment);
-                            }
-                        }
-                        break;
-                }
-            }
-            return incomes;
-        }
-    }
 }
+//public static class GenerateData
+//{
+//    private static int StartYear => DateTime.Now.AddYears(-2).Year;
+//    private static int LastYear => DateTime.Now.AddYears(-1).Year;
+//    private static int CurrentYear => DateTime.Now.Year;
+//    private static int CurrentMonth => DateTime.Now.Month;
+//    private static int CurrentDay => DateTime.Now.Day;
+//    public static List<IncomeEntity> Income(List<CsvModels.CsvIncomeCategory> incomeCategories)
+//    {
+//        var incomes = new List<IncomeEntity>();
+//        int currentIncomeId = 0;
+//        foreach (var category in incomeCategories)
+//        {
+//            switch (category.Name)
+//            {
+//                case "Paycheck":
+//                    {
+//                        var basePay = 1529M;
+//                        for (int i = 1; i < 13; i++)
+//                        {
+//                            currentIncomeId++;
+//                            var payment = new IncomeEntity()
+//                            {
+//                                Id = currentIncomeId,
+//                                Amount = basePay,
+//                                Date = new DateTime(StartYear, i, 1),
+//                                CategoryId = 3,
+//                                SourceId = 1,
+//                                IsRefund = false
+//                            };
+//                            incomes.Add(payment);
+//                            currentIncomeId++;
+//                            var secondPayment = new IncomeEntity()
+//                            {
+//                                Id = currentIncomeId,
+//                                Amount = basePay,
+//                                Date = new DateTime(StartYear, i, 15),
+//                                CategoryId = 3,
+//                                SourceId = 1,
+//                                IsRefund = false
+//                            };
+//                            incomes.Add(secondPayment);
+//                        }
+
+//                        for (int i = 1; i < 13; i++)
+//                        {
+//                            currentIncomeId++;
+//                            var payment = new IncomeEntity()
+//                            {
+//                                Id = currentIncomeId,
+//                                Amount = basePay + 100m,
+//                                Date = new DateTime(LastYear, i, 1),
+//                                CategoryId = 3,
+//                                SourceId = 1,
+//                                IsRefund = false
+//                            };
+//                            incomes.Add(payment);
+//                            currentIncomeId++;
+//                            var secondPayment = new IncomeEntity()
+//                            {
+//                                Id = currentIncomeId,
+//                                Amount = basePay + 100m,
+//                                Date = new DateTime(LastYear, i, 15),
+//                                CategoryId = 3,
+//                                SourceId = 1,
+//                                IsRefund = false
+//                            };
+//                            incomes.Add(secondPayment);
+//                        }
+
+//                        for (int i = 1; i <= CurrentMonth; i++)
+//                        {
+//                            currentIncomeId++;
+//                            var payment = new IncomeEntity()
+//                            {
+//                                Id = currentIncomeId,
+//                                Amount = basePay + 150m,
+//                                Date = new DateTime(CurrentYear, i, 1),
+//                                CategoryId = 3,
+//                                SourceId = 1,
+//                                IsRefund = false
+//                            };
+//                            incomes.Add(payment);
+//                            currentIncomeId++;
+//                            if (CurrentDay > 15)
+//                            {
+//                                var secondPayment = new IncomeEntity()
+//                                {
+//                                    Id = currentIncomeId,
+//                                    Amount = basePay + 150m,
+//                                    Date = new DateTime(CurrentYear, i, 15),
+//                                    CategoryId = 3,
+//                                    SourceId = 1,
+//                                    IsRefund = false
+//                                };
+//                                incomes.Add(secondPayment);
+//                            }
+//                        }
+//                    }
+//                    break;
+//                case "Gift":
+//                    {
+//                        currentIncomeId++;
+//                        var firstpayment = new IncomeEntity()
+//                        {
+//                            Id = currentIncomeId,
+//                            Amount = 100M,
+//                            Date = new DateTime(StartYear, 1, 11),
+//                            CategoryId = 4,
+//                            SourceId = 3,
+//                            IsRefund = false,
+//                            Notes = "Birthday Money from Parents"
+//                        };
+//                        incomes.Add(firstpayment);
+//                        currentIncomeId++;
+//                        var secondPayment = new IncomeEntity()
+//                        {
+//                            Id = currentIncomeId,
+//                            Amount = 200M,
+//                            Date = new DateTime(StartYear, 12, 25),
+//                            CategoryId = 4,
+//                            SourceId = 3,
+//                            IsRefund = false,
+//                            Notes = "Christmas money from Parents"
+//                        };
+//                        incomes.Add(secondPayment);
+//                        currentIncomeId++;
+//                        var thirdPayment = new IncomeEntity()
+//                        {
+//                            Id = currentIncomeId,
+//                            Amount = 100M,
+//                            Date = new DateTime(LastYear, 1, 11),
+//                            CategoryId = 4,
+//                            SourceId = 3,
+//                            IsRefund = false,
+//                            Notes = "Birthday Money from Parents"
+//                        };
+//                        incomes.Add(thirdPayment);
+//                        currentIncomeId++;
+//                        var fourthPayment = new IncomeEntity()
+//                        {
+//                            Id = currentIncomeId,
+//                            Amount = 200M,
+//                            Date = new DateTime(LastYear, 12, 25),
+//                            CategoryId = 4,
+//                            SourceId = 3,
+//                            IsRefund = false,
+//                            Notes = "Christmas money from Parents"
+//                        };
+//                        incomes.Add(fourthPayment);
+//                        if (CurrentDay > 11)
+//                        {
+//                            currentIncomeId++;
+//                            var fifthpayment = new IncomeEntity()
+//                            {
+//                                Id = currentIncomeId,
+//                                Amount = 100M,
+//                                Date = new DateTime(CurrentYear, 1, 11),
+//                                CategoryId = 4,
+//                                SourceId = 3,
+//                                IsRefund = false,
+//                                Notes = "Birthday Money from Parents, again"
+//                            };
+//                            incomes.Add(fifthpayment);
+//                        }
+//                    }
+//                    break;
+//                case "Tax Refund":
+//                    {
+//                        currentIncomeId++;
+//                        var payment = new IncomeEntity()
+//                        {
+//                            Id = currentIncomeId,
+//                            Amount = 2123M,
+//                            Date = new DateTime(StartYear, 4, 14),
+//                            CategoryId = 5,
+//                            SourceId = 2,
+//                            IsRefund = false,
+//                            Notes = "Federal Tax Refund"
+//                        };
+//                        incomes.Add(payment);
+
+//                        currentIncomeId++;
+//                        var secondpayment = new IncomeEntity()
+//                        {
+//                            Id = currentIncomeId,
+//                            Amount = 2243M,
+//                            Date = new DateTime(LastYear, 4, 9),
+//                            CategoryId = 5,
+//                            SourceId = 2,
+//                            IsRefund = false,
+//                            Notes = "Federal Tax Refund"
+//                        };
+//                        incomes.Add(secondpayment);
+
+//                        if (CurrentMonth >= 4)
+//                        {
+//                            currentIncomeId++;
+//                            var thirdpayment = new IncomeEntity()
+//                            {
+//                                Id = currentIncomeId,
+//                                Amount = 2156M,
+//                                Date = new DateTime(CurrentYear, 4, 1),
+//                                CategoryId = 5,
+//                                SourceId = 2,
+//                                IsRefund = false,
+//                                Notes = "Federal Tax Refund"
+//                            };
+//                            incomes.Add(thirdpayment);
+//                        }
+//                    }
+//                    break;
+//            }
+//        }
+//        return incomes;
+//    }
+//        public static List<ExpenseEntity> Expenses(List<CsvModels.CsvExpenseSubCategory> categories)
+//        {
+//            var expenses = new List<ExpenseEntity>();
+//            int currentId = 0;
+//            var rando = new Random();
+//            foreach (var category in categories)
+//            {
+//                switch (category.Name)
+//                {
+//                    case "Groceries":
+//                        {
+//                            var categoryId = category.Id;
+//                            //3 times a month, 90-200
+//                            for (int i = 1; i < 13; i++)
+//                            {
+//                                currentId++;
+//                                var min = 90;
+//                                var max = 210;
+//                                var payment = new ExpenseEntity()
+//                                {
+//                                    Id = currentId,
+//                                    Amount =
+//                                    Date = new DateTime(StartYear, i, 1),
+//                                    CategoryId = 3,
+//                                };
+//                                expenses.Add(GenerateExpense(rando,
+//                                    currentId,
+//                                    min, max,
+//                                    StartYear, i, rando.Next.Next(1, 10),
+//                                    categoryId,
+
+//                                    ));
+//                                currentId++;
+//                                var secondPayment = new ExpenseEntity()
+//                                {
+//                                    Id = currentId,
+//                                    Amount = basePay,
+//                                    Date = new DateTime(StartYear, i, 15),
+//                                    CategoryId = 3
+//                                };
+//                                expenses.Add(secondPayment);
+//                            }
+
+//                            for (int i = 1; i < 13; i++)
+//                            {
+//                                currentId++;
+//                                var payment = new ExpenseEntity()
+//                                {
+//                                    Id = currentId,
+//                                    Amount = basePay + 100m,
+//                                    Date = new DateTime(LastYear, i, 1),
+//                                    CategoryId = 3
+//                                };
+//                                expenses.Add(payment);
+//                                currentId++;
+//                                var secondPayment = new ExpenseEntity()
+//                                {
+//                                    Id = currentId,
+//                                    Amount = basePay + 100m,
+//                                    Date = new DateTime(LastYear, i, 15),
+//                                    CategoryId = 3
+//                                };
+//                                expenses.Add(secondPayment);
+//                            }
+
+//                            for (int i = 1; i <= CurrentMonth; i++)
+//                            {
+//                                currentId++;
+//                                var payment = new ExpenseEntity()
+//                                {
+//                                    Id = currentId,
+//                                    Amount = basePay + 150m,
+//                                    Date = new DateTime(CurrentYear, i, 1),
+//                                    CategoryId = 3
+//                                };
+//                                expenses.Add(payment);
+//                                currentId++;
+//                                if (CurrentDay > 15)
+//                                {
+//                                    var secondPayment = new ExpenseEntity()
+//                                    {
+//                                        Id = currentId,
+//                                        Amount = basePay + 150m,
+//                                        Date = new DateTime(CurrentYear, i, 15),
+//                                        CategoryId = 3
+//                                    };
+//                                    expenses.Add(secondPayment);
+//                                }
+//                            }
+//                        }
+//                        break;
+//                }
+//            }
+//            return expenses;
+
+//            static List<ExpenseEntity> GenerateExpenses(Random rando, int category, int merchant, int id, int min, int max, int year, int month, int day, int numberToGenerateInAMonth = 1, string notes = "")
+//            {
+//                var listOfExpenses = new List<ExpenseEntity>();
+//                switch (numberToGenerateInAMonth)
+//                {
+//                    case 1:
+//                        {
+//                            for (int i = 1; i < 13; i++)
+//                            {
+//                                id++;
+//                                // first Year
+//                                var ex = new ExpenseEntity()
+//                                { 
+//                                    Id = id,
+//                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) * rando.NextDouble()), 2),
+//                                    Date = new DateTime(year, month, day),
+//                                    CategoryId = category,
+//                                    MerchantId = merchant,
+//                                    Notes = notes
+//                                };
+//                                listOfExpenses.Add(ex);
+//                            }
+//                        }
+//                        break;
+//                    case 2:
+//                        break;
+//                    case 3:
+//                        break;
+//                    case 4:
+//                        break;
+//                }
+//                return listOfExpenses;
+//            }
+//        }
+//    }
+//}
+//new ExpenseEntity()
+//{
+//    Id = id,
+//    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) * rando.NextDouble()), 2),
+//    Date = new DateTime(year, month, day),
+//    CategoryId = category,
+//    MerchantId = merchant,
+//    Notes = notes
+//};
