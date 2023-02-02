@@ -233,38 +233,38 @@ namespace CashTrack.Data
                     case "Groceries":
                         {
                             var categoryId = category.Id;
-                                
+
                             //3 times a month, 90-200
                             var min = 90;
-                            var max = 210;
+                            var max = 200;
                             expenses.AddRange(GenerateExpenses(
-                                rando, 
-                                categoryId, 
-                                new[] {1,2,3 }, 
-                                currentId, 
-                                min, 
-                                max, 
-                                0, 
+                                rando,
+                                categoryId,
+                                new[] { 1, 2, 3 },
+                                currentId,
+                                min,
+                                max,
+                                0,
                                 3));
                         }
-                    break;
+                        break;
                 }
             }
             return expenses;
 
             static List<ExpenseEntity> GenerateExpenses(
-                Random rando, 
-                int category, 
-                int[] merchantIds, 
-                int id, 
-                int min, 
-                int max, 
-                int day = 0, 
-                int numberToGenerateInAMonth = 1, 
+                Random rando,
+                int category,
+                int[] merchantIds,
+                int id,
+                int min,
+                int max,
+                int day = 0,
+                int numberToGenerateInAMonth = 1,
                 string notes = "")
             {
                 var listOfExpenses = new List<ExpenseEntity>();
-                
+
                 switch (numberToGenerateInAMonth)
                 {
                     case 1:
@@ -789,5 +789,5 @@ namespace CashTrack.Data
             return numbers[index];
         }
     }
-    
+
 }

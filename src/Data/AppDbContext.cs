@@ -257,10 +257,7 @@ namespace CashTrack.Data
                 var incomes = GenerateData.Income(incomeCategories);
                 mb.Entity<IncomeEntity>().HasData(incomes);
                 //need merchants before you can do expenses
-                mb.Entity<MerchantEntity>().HasData(
-                    new MerchantEntity() { Id = 1, Name = "Costco" },
-                    new MerchantEntity() { Id = 2, Name = "Walmart" },
-                    new MerchantEntity() { Id = 3, Name = "Cub" });
+                mb.Entity<MerchantEntity>().HasData(CsvParser.ProcessMerchantFile(Path.Combine(csvFileDirectory, "Merchants.csv")));
                 var subCategories = CsvParser.ProcessSubCategoryFile(Path.Combine(csvFileDirectory, "SubCategories.csv"));
                 mb.Entity<SubCategoryEntity>().HasData(subCategories);
 
