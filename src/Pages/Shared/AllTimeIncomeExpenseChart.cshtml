@@ -73,6 +73,8 @@
             const amount = (((currentTotal - previousValue).toFixed(0)) / previousValue * 100).toFixed(1);
             if (isNaN(amount))
                 return `Percent Change: 0%`;
+            else if(!isFinite(amount))
+                return `Percent Change: A lot`;
             else if (!isNaN(amount))
                 return `Percent Change: ${amount}%`;
         }
@@ -83,8 +85,11 @@
             const amount = (((currentTotal - previousValue).toFixed(0)) / previousValue * 100).toFixed(1);
             if (isNaN(amount))
                 return `Percent Change: 0%`;
+            else if(!isFinite(amount))
+                return `Percent Change: A lot`;
             else if (!isNaN(amount))
                 return `Percent Change: ${amount}%`;
+
         }
     };
 </script>

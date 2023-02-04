@@ -56,6 +56,13 @@
                 return @Html.Raw(Model.NegativeSavingsColor)
             else if (v > 0)
                 return @Html.Raw(Model.SavingsColor)
+            else if(!isFinite(v))
+            {
+                if(v == Number.POSITIVE_INFINITY)
+                    return @Html.Raw(Model.SavingsColor)
+                else(v == Number.NEGATIVE_INFINITY)
+                    return @Html.Raw(Model.NegativeSavingsColor)
+            }
         }
     };
     function colorize() {
@@ -65,6 +72,13 @@
                 return @Html.Raw(Model.NegativeSavingsColor)
             else if (v > 0)
                 return @Html.Raw(Model.SavingsColor)
+            else if(!isFinite(v))
+            {
+                if(v == Number.POSITIVE_INFINITY)
+                    return @Html.Raw(Model.NegativeSavingsColor)
+                else(v == Number.NEGATIVE_INFINITY)
+                    return @Html.Raw(Model.SavingsColor)
+            }
         }
     };
     function footer(tooltipItems) {
@@ -75,6 +89,8 @@
         const saved = (((currentTotal - previousValue).toFixed(0)) / previousValue * 100).toFixed(1);
         if (isNaN(saved))
             return `Percent Change: 0%`;
+        else if(!isFinite(saved))
+            return `Percent Change: A lot.`;
         else if (!isNaN(saved))
             return `Percent Change: ${saved}%`;
     };

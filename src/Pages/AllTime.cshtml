@@ -701,9 +701,9 @@
         @await Html.PartialAsync("AllTimePercentChangeChart", new AllTimePercentChangeChart()
         {
             ElementId = "percentChangesChart",
-            IncomeDataset = Model.SummaryResponse.PercentChangesChart.IncomeDataset,
-            ExpenseDataset = Model.SummaryResponse.PercentChangesChart.ExpenseDataset,
-            SavingsDataset = Model.SummaryResponse.PercentChangesChart.SavingsDataset,
+            IncomeDataset = Model.SummaryResponse.PercentChangesChart.IncomeDataset.Replace(decimal.MaxValue.ToString(), "NaN"),
+            ExpenseDataset = Model.SummaryResponse.PercentChangesChart.ExpenseDataset.Replace(decimal.MaxValue.ToString(), "NaN"),
+            SavingsDataset = Model.SummaryResponse.PercentChangesChart.SavingsDataset.Replace(decimal.MaxValue.ToString(), "NaN"),
             Title = "Percent Changes By Year",
             Labels = Model.SummaryResponse.PercentChangesChart.Labels,
         })
