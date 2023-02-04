@@ -7,7 +7,10 @@ namespace CashTrack.Data
 {
     public static class GenerateData
     {
-        private static int StartYear => DateTime.Now.AddYears(-2).Year;
+        private static int FiveYearsAgo => DateTime.Now.AddYears(-5).Year;
+        private static int FourYearsAgo => DateTime.Now.AddYears(-4).Year;
+        private static int ThreeYearsAgo => DateTime.Now.AddYears(-3).Year;
+        private static int TwoYearsAgo => DateTime.Now.AddYears(-2).Year;
         private static int LastYear => DateTime.Now.AddYears(-1).Year;
         private static int CurrentYear => DateTime.Now.Year;
         private static int CurrentMonth => DateTime.Now.Month;
@@ -31,7 +34,7 @@ namespace CashTrack.Data
                                 {
                                     Id = currentIncomeId,
                                     Amount = basePay,
-                                    Date = new DateTime(StartYear, i, 1),
+                                    Date = new DateTime(FiveYearsAgo, i, 1),
                                     CategoryId = 3,
                                     SourceId = 1,
                                     IsRefund = false
@@ -42,7 +45,7 @@ namespace CashTrack.Data
                                 {
                                     Id = currentIncomeId,
                                     Amount = basePay,
-                                    Date = new DateTime(StartYear, i, 15),
+                                    Date = new DateTime(FourYearsAgo, i, 15),
                                     CategoryId = 3,
                                     SourceId = 1,
                                     IsRefund = false
@@ -113,7 +116,7 @@ namespace CashTrack.Data
                             {
                                 Id = currentIncomeId,
                                 Amount = 100M,
-                                Date = new DateTime(StartYear, 1, 11),
+                                Date = new DateTime(FiveYearsAgo, 1, 11),
                                 CategoryId = 4,
                                 SourceId = 3,
                                 IsRefund = false,
@@ -125,7 +128,7 @@ namespace CashTrack.Data
                             {
                                 Id = currentIncomeId,
                                 Amount = 200M,
-                                Date = new DateTime(StartYear, 12, 25),
+                                Date = new DateTime(FourYearsAgo, 12, 25),
                                 CategoryId = 4,
                                 SourceId = 3,
                                 IsRefund = false,
@@ -180,7 +183,7 @@ namespace CashTrack.Data
                             {
                                 Id = currentIncomeId,
                                 Amount = 2123M,
-                                Date = new DateTime(StartYear, 4, 14),
+                                Date = new DateTime(FiveYearsAgo, 4, 14),
                                 CategoryId = 5,
                                 SourceId = 2,
                                 IsRefund = false,
@@ -238,26 +241,24 @@ namespace CashTrack.Data
                             //3 times a month, 90-200
                             var min = 90;
                             var max = 200;
-                            expenses.AddRange(GenerateExpenses(
+                            expenses.AddRange(GenerateExpensesAcrossFiveYears(
                                 rando,
                                 categoryId,
-                                new[] { 1, 2, 3 },
-                                CurrentExpenseId,
+                                new[] { 1, 2, 3, 1, 1, 2 },
                                 min,
                                 max,
-                                0,
-                                3));
+                                15,
+                                1));
                         }
                         break;
                 }
             }
             return expenses;
 
-            static List<ExpenseEntity> GenerateExpenses(
+            static List<ExpenseEntity> GenerateExpensesAcrossFiveYears(
                 Random rando,
                 int category,
                 int[] merchantIds,
-                int id,
                 int min,
                 int max,
                 int day = 0,
@@ -272,520 +273,513 @@ namespace CashTrack.Data
                         {
                             for (int i = 1; i < 13; i++)
                             {
-                                // start Year
-                                CurrentExpenseId++;
+
                                 day = day > 0 ? day : rando.Next(1, 28);
-                                var ex1 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(StartYear, i, day),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex1);
+                                listOfExpenses.Add(GetExpense(min, max, new DateTime(FiveYearsAgo, i, day), category, merchantIds, notes, 0, rando));
 
-                                //last year
-                                CurrentExpenseId++;
-                                var ex2 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(LastYear, i, day),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex2);
-                            }
-                            for (int i = 1; i <= CurrentMonth; i++)
-                            {
-                                CurrentExpenseId++;
-                                var ex3 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(CurrentYear, i, rando.Next(1, 28)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex3);
-                            }
-                        }
-                        break;
-                    case 2:
-                        {
-                            for (int i = 1; i < 13; i++)
-                            {
-                                // start Year
-                                CurrentExpenseId++;
-                                var ex1 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(StartYear, i, rando.Next(1, 14)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex1);
-                                CurrentExpenseId++;
-                                var ex2 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(StartYear, i, rando.Next(15, 28)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex2);
-                                //last year
-                                CurrentExpenseId++;
-                                var ex3 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(LastYear, i, rando.Next(1, 14)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex3);
-                                CurrentExpenseId++;
-                                var ex4 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(LastYear, i, rando.Next(15, 28)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex4);
-                            }
-                            for (int i = 1; i <= CurrentMonth; i++)
-                            {
-                                if (i < CurrentMonth)
-                                {
-                                    CurrentExpenseId++;
-                                    var ex5 = new ExpenseEntity()
-                                    {
-                                        Id = CurrentExpenseId,
-                                        Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                        Date = new DateTime(CurrentYear, i, rando.Next(1, 14)),
-                                        CategoryId = category,
-                                        MerchantId = RandomMerchantId(merchantIds, rando),
-                                        Notes = notes
-                                    };
-                                    listOfExpenses.Add(ex5);
-                                    CurrentExpenseId++;
-                                    var ex6 = new ExpenseEntity()
-                                    {
-                                        Id = CurrentExpenseId,
-                                        Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                        Date = new DateTime(CurrentYear, i, rando.Next(15, 28)),
-                                        CategoryId = category,
-                                        MerchantId = RandomMerchantId(merchantIds, rando),
-                                        Notes = notes
-                                    };
-                                    listOfExpenses.Add(ex6);
-                                }
-                                if (i == CurrentMonth && CurrentDay > 15)
-                                {
-                                    CurrentExpenseId++;
-                                    var ex7 = new ExpenseEntity()
-                                    {
-                                        Id = CurrentExpenseId,
-                                        Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                        Date = new DateTime(CurrentYear, i, rando.Next(1, 14)),
-                                        CategoryId = category,
-                                        MerchantId = RandomMerchantId(merchantIds, rando),
-                                        Notes = notes
-                                    };
-                                    listOfExpenses.Add(ex7);
-                                }
-                                if (i == CurrentMonth && CurrentDay > 28)
-                                {
-                                    CurrentExpenseId++;
-                                    var ex8 = new ExpenseEntity()
-                                    {
-                                        Id = CurrentExpenseId,
-                                        Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                        Date = new DateTime(CurrentYear, i, rando.Next(16, 28)),
-                                        CategoryId = category,
-                                        MerchantId = RandomMerchantId(merchantIds, rando),
-                                        Notes = notes
-                                    };
-                                    listOfExpenses.Add(ex8);
-                                }
-                            }
-                        }
-                        break;
-                    case 3:
-                        {
-                            for (int i = 1; i < 13; i++)
-                            {
-                                // start Year
-                                CurrentExpenseId++;
-                                var ex1 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(StartYear, i, rando.Next(1, 9)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex1);
-                                CurrentExpenseId++;
-                                var ex2 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(StartYear, i, rando.Next(10, 19)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex2);
-                                CurrentExpenseId++;
-                                var ex3 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(StartYear, i, rando.Next(20, 28)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex3);
-                                //last year
-                                CurrentExpenseId++;
-                                var ex4 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(LastYear, i, rando.Next(1, 9)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex4);
-                                CurrentExpenseId++;
-                                var ex5 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(LastYear, i, rando.Next(10, 19)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex5);
-                                CurrentExpenseId++;
-                                var ex6 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(LastYear, i, rando.Next(20, 28)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex6);
-                            }
-                            for (int i = 1; i <= CurrentMonth; i++)
-                            {
-                                if (i < CurrentMonth)
-                                {
-                                    CurrentExpenseId++;
-                                    var ex7 = new ExpenseEntity()
-                                    {
-                                        Id = CurrentExpenseId,
-                                        Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                        Date = new DateTime(CurrentYear, i, rando.Next(1, 9)),
-                                        CategoryId = category,
-                                        MerchantId = RandomMerchantId(merchantIds, rando),
-                                        Notes = notes
-                                    };
-                                    listOfExpenses.Add(ex7);
-                                    CurrentExpenseId++;
-                                    var ex8 = new ExpenseEntity()
-                                    {
-                                        Id = CurrentExpenseId,
-                                        Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                        Date = new DateTime(CurrentYear, i, rando.Next(10, 19)),
-                                        CategoryId = category,
-                                        MerchantId = RandomMerchantId(merchantIds, rando),
-                                        Notes = notes
-                                    };
-                                    listOfExpenses.Add(ex8);
-                                    CurrentExpenseId++;
-                                    var ex9 = new ExpenseEntity()
-                                    {
-                                        Id = CurrentExpenseId,
-                                        Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                        Date = new DateTime(CurrentYear, i, rando.Next(20, 28)),
-                                        CategoryId = category,
-                                        MerchantId = RandomMerchantId(merchantIds, rando),
-                                        Notes = notes
-                                    };
-                                    listOfExpenses.Add(ex9);
-                                }
-                                if (i == CurrentMonth && CurrentDay > 10)
-                                {
-                                    CurrentExpenseId++;
-                                    var ex10 = new ExpenseEntity()
-                                    {
-                                        Id = CurrentExpenseId,
-                                        Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                        Date = new DateTime(CurrentYear, i, rando.Next(1, 9)),
-                                        CategoryId = category,
-                                        MerchantId = RandomMerchantId(merchantIds, rando),
-                                        Notes = notes
-                                    };
-                                    listOfExpenses.Add(ex10);
-                                }
-                                if (i == CurrentMonth && CurrentDay > 20)
-                                {
-                                    CurrentExpenseId++;
-                                    var ex11 = new ExpenseEntity()
-                                    {
-                                        Id = CurrentExpenseId,
-                                        Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                        Date = new DateTime(CurrentYear, i, rando.Next(10, 19)),
-                                        CategoryId = category,
-                                        MerchantId = RandomMerchantId(merchantIds, rando),
-                                        Notes = notes
-                                    };
-                                    listOfExpenses.Add(ex11);
-                                }
-                                if (i == CurrentMonth && CurrentDay > 28)
-                                {
-                                    CurrentExpenseId++;
-                                    var ex12 = new ExpenseEntity()
-                                    {
-                                        Id = CurrentExpenseId,
-                                        Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                        Date = new DateTime(CurrentYear, i, rando.Next(20, 28)),
-                                        CategoryId = category,
-                                        MerchantId = RandomMerchantId(merchantIds, rando),
-                                        Notes = notes
-                                    };
-                                    listOfExpenses.Add(ex12);
-                                }
+                                listOfExpenses.Add(GetExpense(min, max, new DateTime(FourYearsAgo, i, day), category, merchantIds, notes, 0, rando));
 
+                                listOfExpenses.Add(GetExpense(min, max, new DateTime(ThreeYearsAgo, i, day), category, merchantIds, notes, 0, rando));
+
+                                //listOfExpenses.Add(GetExpense(min, max, new DateTime(TwoYearsAgo, i, day), category, merchantIds, notes, 0, rando));
+
+                                listOfExpenses.Add(GetExpense(min, max, new DateTime(LastYear, i, day), category, merchantIds, notes, 0.2M, rando));
+                            }
+                            for (int i = 1; i <= CurrentMonth; i++)
+                            {
+                                listOfExpenses.Add(GetExpense(min, max, new DateTime(CurrentYear, i, day), category, merchantIds, notes, 0.02M, rando));
                             }
                         }
                         break;
-                    case 4:
-                        for (int i = 1; i < 13; i++)
-                        {
-                            // start Year
-                            CurrentExpenseId++;
-                            var ex1 = new ExpenseEntity()
-                            {
-                                Id = CurrentExpenseId,
-                                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                Date = new DateTime(StartYear, i, rando.Next(1, 7)),
-                                CategoryId = category,
-                                MerchantId = RandomMerchantId(merchantIds, rando),
-                                Notes = notes
-                            };
-                            listOfExpenses.Add(ex1);
-                            CurrentExpenseId++;
-                            var ex2 = new ExpenseEntity()
-                            {
-                                Id = CurrentExpenseId,
-                                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                Date = new DateTime(StartYear, i, rando.Next(8, 15)),
-                                CategoryId = category,
-                                MerchantId = RandomMerchantId(merchantIds, rando),
-                                Notes = notes
-                            };
-                            listOfExpenses.Add(ex2);
-                            CurrentExpenseId++;
-                            var ex3 = new ExpenseEntity()
-                            {
-                                Id = CurrentExpenseId,
-                                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                Date = new DateTime(StartYear, i, rando.Next(16, 23)),
-                                CategoryId = category,
-                                MerchantId = RandomMerchantId(merchantIds, rando),
-                                Notes = notes
-                            };
-                            listOfExpenses.Add(ex3);
-                            CurrentExpenseId++;
-                            var ex4 = new ExpenseEntity()
-                            {
-                                Id = CurrentExpenseId,
-                                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                Date = new DateTime(StartYear, i, rando.Next(24, 28)),
-                                CategoryId = category,
-                                MerchantId = RandomMerchantId(merchantIds, rando),
-                                Notes = notes
-                            };
-                            listOfExpenses.Add(ex4);
-                            //last year
-                            CurrentExpenseId++;
-                            var ex5 = new ExpenseEntity()
-                            {
-                                Id = CurrentExpenseId,
-                                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                Date = new DateTime(LastYear, i, rando.Next(1, 7)),
-                                CategoryId = category,
-                                MerchantId = RandomMerchantId(merchantIds, rando),
-                                Notes = notes
-                            };
-                            listOfExpenses.Add(ex5);
-                            CurrentExpenseId++;
-                            var ex6 = new ExpenseEntity()
-                            {
-                                Id = CurrentExpenseId,
-                                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                Date = new DateTime(LastYear, i, rando.Next(8, 15)),
-                                CategoryId = category,
-                                MerchantId = RandomMerchantId(merchantIds, rando),
-                                Notes = notes
-                            };
-                            listOfExpenses.Add(ex6);
-                            CurrentExpenseId++;
-                            var ex7 = new ExpenseEntity()
-                            {
-                                Id = CurrentExpenseId,
-                                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                Date = new DateTime(LastYear, i, rando.Next(16, 23)),
-                                CategoryId = category,
-                                MerchantId = RandomMerchantId(merchantIds, rando),
-                                Notes = notes
-                            };
-                            listOfExpenses.Add(ex7);
-                            CurrentExpenseId++;
-                            var ex8 = new ExpenseEntity()
-                            {
-                                Id = CurrentExpenseId,
-                                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                Date = new DateTime(LastYear, i, rando.Next(17, 28)),
-                                CategoryId = category,
-                                MerchantId = RandomMerchantId(merchantIds, rando),
-                                Notes = notes
-                            };
-                            listOfExpenses.Add(ex8);
-                        }
-                        for (int i = 1; i <= CurrentMonth; i++)
-                        {
-                            if (i < CurrentMonth)
-                            {
-                                CurrentExpenseId++;
-                                var ex9 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(CurrentYear, i, rando.Next(1, 7)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex9);
-                                CurrentExpenseId++;
-                                var ex10 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(CurrentYear, i, rando.Next(8, 15)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex10);
-                                CurrentExpenseId++;
-                                var ex11 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(CurrentYear, i, rando.Next(16, 23)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex11);
-                                CurrentExpenseId++;
-                                var ex12 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(CurrentYear, i, rando.Next(24, 28)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex12);
-                            }
-                            if (i == CurrentMonth && CurrentDay > 7)
-                            {
-                                CurrentExpenseId++;
-                                var ex13 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(CurrentYear, i, rando.Next(1, 7)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex13);
-                            }
-                            if (i == CurrentMonth && CurrentDay > 15)
-                            {
-                                CurrentExpenseId++;
-                                var ex14 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(CurrentYear, i, rando.Next(8, 15)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex14);
-                            }
-                            if (i == CurrentMonth && CurrentDay > 23)
-                            {
-                                CurrentExpenseId++;
-                                var ex15 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(CurrentYear, i, rando.Next(16, 23)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex15);
-                            }
-                            if (i == CurrentMonth && CurrentDay > 28)
-                            {
-                                CurrentExpenseId++;
-                                var ex16 = new ExpenseEntity()
-                                {
-                                    Id = CurrentExpenseId,
-                                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(CurrentYear, i, rando.Next(24, 28)),
-                                    CategoryId = category,
-                                    MerchantId = RandomMerchantId(merchantIds, rando),
-                                    Notes = notes
-                                };
-                                listOfExpenses.Add(ex16);
-                            }
-                        }
-                        break;
+                        //case 2:
+                        //    {
+                        //        for (int i = 1; i < 13; i++)
+                        //        {
+                        //            // start Year
+                        //            CurrentExpenseId++;
+                        //            var ex1 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(StartYear, i, rando.Next(1, 14)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex1);
+                        //            CurrentExpenseId++;
+                        //            var ex2 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(StartYear, i, rando.Next(15, 28)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex2);
+                        //            //last year
+                        //            CurrentExpenseId++;
+                        //            var ex3 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(LastYear, i, rando.Next(1, 14)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex3);
+                        //            CurrentExpenseId++;
+                        //            var ex4 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(LastYear, i, rando.Next(15, 28)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex4);
+                        //        }
+                        //        for (int i = 1; i <= CurrentMonth; i++)
+                        //        {
+                        //            if (i < CurrentMonth)
+                        //            {
+                        //                CurrentExpenseId++;
+                        //                var ex5 = new ExpenseEntity()
+                        //                {
+                        //                    Id = CurrentExpenseId,
+                        //                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                    Date = new DateTime(CurrentYear, i, rando.Next(1, 14)),
+                        //                    CategoryId = category,
+                        //                    MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                    Notes = notes
+                        //                };
+                        //                listOfExpenses.Add(ex5);
+                        //                CurrentExpenseId++;
+                        //                var ex6 = new ExpenseEntity()
+                        //                {
+                        //                    Id = CurrentExpenseId,
+                        //                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                    Date = new DateTime(CurrentYear, i, rando.Next(15, 28)),
+                        //                    CategoryId = category,
+                        //                    MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                    Notes = notes
+                        //                };
+                        //                listOfExpenses.Add(ex6);
+                        //            }
+                        //            if (i == CurrentMonth && CurrentDay > 15)
+                        //            {
+                        //                CurrentExpenseId++;
+                        //                var ex7 = new ExpenseEntity()
+                        //                {
+                        //                    Id = CurrentExpenseId,
+                        //                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                    Date = new DateTime(CurrentYear, i, rando.Next(1, 14)),
+                        //                    CategoryId = category,
+                        //                    MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                    Notes = notes
+                        //                };
+                        //                listOfExpenses.Add(ex7);
+                        //            }
+                        //            if (i == CurrentMonth && CurrentDay > 28)
+                        //            {
+                        //                CurrentExpenseId++;
+                        //                var ex8 = new ExpenseEntity()
+                        //                {
+                        //                    Id = CurrentExpenseId,
+                        //                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                    Date = new DateTime(CurrentYear, i, rando.Next(16, 28)),
+                        //                    CategoryId = category,
+                        //                    MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                    Notes = notes
+                        //                };
+                        //                listOfExpenses.Add(ex8);
+                        //            }
+                        //        }
+                        //    }
+                        //    break;
+                        //case 3:
+                        //    {
+                        //        for (int i = 1; i < 13; i++)
+                        //        {
+                        //            // start Year
+                        //            CurrentExpenseId++;
+                        //            var ex1 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(StartYear, i, rando.Next(1, 9)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex1);
+                        //            CurrentExpenseId++;
+                        //            var ex2 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(StartYear, i, rando.Next(10, 19)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex2);
+                        //            CurrentExpenseId++;
+                        //            var ex3 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(StartYear, i, rando.Next(20, 28)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex3);
+                        //            //last year
+                        //            CurrentExpenseId++;
+                        //            var ex4 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(LastYear, i, rando.Next(1, 9)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex4);
+                        //            CurrentExpenseId++;
+                        //            var ex5 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(LastYear, i, rando.Next(10, 19)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex5);
+                        //            CurrentExpenseId++;
+                        //            var ex6 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(LastYear, i, rando.Next(20, 28)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex6);
+                        //        }
+                        //        for (int i = 1; i <= CurrentMonth; i++)
+                        //        {
+                        //            if (i < CurrentMonth)
+                        //            {
+                        //                CurrentExpenseId++;
+                        //                var ex7 = new ExpenseEntity()
+                        //                {
+                        //                    Id = CurrentExpenseId,
+                        //                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                    Date = new DateTime(CurrentYear, i, rando.Next(1, 9)),
+                        //                    CategoryId = category,
+                        //                    MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                    Notes = notes
+                        //                };
+                        //                listOfExpenses.Add(ex7);
+                        //                CurrentExpenseId++;
+                        //                var ex8 = new ExpenseEntity()
+                        //                {
+                        //                    Id = CurrentExpenseId,
+                        //                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                    Date = new DateTime(CurrentYear, i, rando.Next(10, 19)),
+                        //                    CategoryId = category,
+                        //                    MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                    Notes = notes
+                        //                };
+                        //                listOfExpenses.Add(ex8);
+                        //                CurrentExpenseId++;
+                        //                var ex9 = new ExpenseEntity()
+                        //                {
+                        //                    Id = CurrentExpenseId,
+                        //                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                    Date = new DateTime(CurrentYear, i, rando.Next(20, 28)),
+                        //                    CategoryId = category,
+                        //                    MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                    Notes = notes
+                        //                };
+                        //                listOfExpenses.Add(ex9);
+                        //            }
+                        //            if (i == CurrentMonth && CurrentDay > 10)
+                        //            {
+                        //                CurrentExpenseId++;
+                        //                var ex10 = new ExpenseEntity()
+                        //                {
+                        //                    Id = CurrentExpenseId,
+                        //                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                    Date = new DateTime(CurrentYear, i, rando.Next(1, 9)),
+                        //                    CategoryId = category,
+                        //                    MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                    Notes = notes
+                        //                };
+                        //                listOfExpenses.Add(ex10);
+                        //            }
+                        //            if (i == CurrentMonth && CurrentDay > 20)
+                        //            {
+                        //                CurrentExpenseId++;
+                        //                var ex11 = new ExpenseEntity()
+                        //                {
+                        //                    Id = CurrentExpenseId,
+                        //                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                    Date = new DateTime(CurrentYear, i, rando.Next(10, 19)),
+                        //                    CategoryId = category,
+                        //                    MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                    Notes = notes
+                        //                };
+                        //                listOfExpenses.Add(ex11);
+                        //            }
+                        //            if (i == CurrentMonth && CurrentDay > 28)
+                        //            {
+                        //                CurrentExpenseId++;
+                        //                var ex12 = new ExpenseEntity()
+                        //                {
+                        //                    Id = CurrentExpenseId,
+                        //                    Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                    Date = new DateTime(CurrentYear, i, rando.Next(20, 28)),
+                        //                    CategoryId = category,
+                        //                    MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                    Notes = notes
+                        //                };
+                        //                listOfExpenses.Add(ex12);
+                        //            }
+
+                        //        }
+                        //    }
+                        //    break;
+                        //case 4:
+                        //    for (int i = 1; i < 13; i++)
+                        //    {
+                        //        // start Year
+                        //        CurrentExpenseId++;
+                        //        var ex1 = new ExpenseEntity()
+                        //        {
+                        //            Id = CurrentExpenseId,
+                        //            Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //            Date = new DateTime(StartYear, i, rando.Next(1, 7)),
+                        //            CategoryId = category,
+                        //            MerchantId = RandomMerchantId(merchantIds, rando),
+                        //            Notes = notes
+                        //        };
+                        //        listOfExpenses.Add(ex1);
+                        //        CurrentExpenseId++;
+                        //        var ex2 = new ExpenseEntity()
+                        //        {
+                        //            Id = CurrentExpenseId,
+                        //            Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //            Date = new DateTime(StartYear, i, rando.Next(8, 15)),
+                        //            CategoryId = category,
+                        //            MerchantId = RandomMerchantId(merchantIds, rando),
+                        //            Notes = notes
+                        //        };
+                        //        listOfExpenses.Add(ex2);
+                        //        CurrentExpenseId++;
+                        //        var ex3 = new ExpenseEntity()
+                        //        {
+                        //            Id = CurrentExpenseId,
+                        //            Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //            Date = new DateTime(StartYear, i, rando.Next(16, 23)),
+                        //            CategoryId = category,
+                        //            MerchantId = RandomMerchantId(merchantIds, rando),
+                        //            Notes = notes
+                        //        };
+                        //        listOfExpenses.Add(ex3);
+                        //        CurrentExpenseId++;
+                        //        var ex4 = new ExpenseEntity()
+                        //        {
+                        //            Id = CurrentExpenseId,
+                        //            Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //            Date = new DateTime(StartYear, i, rando.Next(24, 28)),
+                        //            CategoryId = category,
+                        //            MerchantId = RandomMerchantId(merchantIds, rando),
+                        //            Notes = notes
+                        //        };
+                        //        listOfExpenses.Add(ex4);
+                        //        //last year
+                        //        CurrentExpenseId++;
+                        //        var ex5 = new ExpenseEntity()
+                        //        {
+                        //            Id = CurrentExpenseId,
+                        //            Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //            Date = new DateTime(LastYear, i, rando.Next(1, 7)),
+                        //            CategoryId = category,
+                        //            MerchantId = RandomMerchantId(merchantIds, rando),
+                        //            Notes = notes
+                        //        };
+                        //        listOfExpenses.Add(ex5);
+                        //        CurrentExpenseId++;
+                        //        var ex6 = new ExpenseEntity()
+                        //        {
+                        //            Id = CurrentExpenseId,
+                        //            Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //            Date = new DateTime(LastYear, i, rando.Next(8, 15)),
+                        //            CategoryId = category,
+                        //            MerchantId = RandomMerchantId(merchantIds, rando),
+                        //            Notes = notes
+                        //        };
+                        //        listOfExpenses.Add(ex6);
+                        //        CurrentExpenseId++;
+                        //        var ex7 = new ExpenseEntity()
+                        //        {
+                        //            Id = CurrentExpenseId,
+                        //            Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //            Date = new DateTime(LastYear, i, rando.Next(16, 23)),
+                        //            CategoryId = category,
+                        //            MerchantId = RandomMerchantId(merchantIds, rando),
+                        //            Notes = notes
+                        //        };
+                        //        listOfExpenses.Add(ex7);
+                        //        CurrentExpenseId++;
+                        //        var ex8 = new ExpenseEntity()
+                        //        {
+                        //            Id = CurrentExpenseId,
+                        //            Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //            Date = new DateTime(LastYear, i, rando.Next(17, 28)),
+                        //            CategoryId = category,
+                        //            MerchantId = RandomMerchantId(merchantIds, rando),
+                        //            Notes = notes
+                        //        };
+                        //        listOfExpenses.Add(ex8);
+                        //    }
+                        //    for (int i = 1; i <= CurrentMonth; i++)
+                        //    {
+                        //        if (i < CurrentMonth)
+                        //        {
+                        //            CurrentExpenseId++;
+                        //            var ex9 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(CurrentYear, i, rando.Next(1, 7)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex9);
+                        //            CurrentExpenseId++;
+                        //            var ex10 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(CurrentYear, i, rando.Next(8, 15)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex10);
+                        //            CurrentExpenseId++;
+                        //            var ex11 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(CurrentYear, i, rando.Next(16, 23)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex11);
+                        //            CurrentExpenseId++;
+                        //            var ex12 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(CurrentYear, i, rando.Next(24, 28)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex12);
+                        //        }
+                        //        if (i == CurrentMonth && CurrentDay > 7)
+                        //        {
+                        //            CurrentExpenseId++;
+                        //            var ex13 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(CurrentYear, i, rando.Next(1, 7)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex13);
+                        //        }
+                        //        if (i == CurrentMonth && CurrentDay > 15)
+                        //        {
+                        //            CurrentExpenseId++;
+                        //            var ex14 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(CurrentYear, i, rando.Next(8, 15)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex14);
+                        //        }
+                        //        if (i == CurrentMonth && CurrentDay > 23)
+                        //        {
+                        //            CurrentExpenseId++;
+                        //            var ex15 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(CurrentYear, i, rando.Next(16, 23)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex15);
+                        //        }
+                        //        if (i == CurrentMonth && CurrentDay > 28)
+                        //        {
+                        //            CurrentExpenseId++;
+                        //            var ex16 = new ExpenseEntity()
+                        //            {
+                        //                Id = CurrentExpenseId,
+                        //                Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
+                        //                Date = new DateTime(CurrentYear, i, rando.Next(24, 28)),
+                        //                CategoryId = category,
+                        //                MerchantId = RandomMerchantId(merchantIds, rando),
+                        //                Notes = notes
+                        //            };
+                        //            listOfExpenses.Add(ex16);
+                        //        }
+                        //    }
+                        //    break;
                 }
                 return listOfExpenses;
             }
         }
+
+        private static ExpenseEntity GetExpense(int min, int max, DateTime dateTime, int category, int[] merchantIds, string notes, decimal percentChange, Random rando)
+        {
+            var amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2);
+            amount = percentChange > 0 ? Math.Round((amount * percentChange) + amount, 2) : amount;
+            CurrentExpenseId++;
+            var expense = new ExpenseEntity()
+            {
+                Id = CurrentExpenseId,
+                Amount = amount,
+                Date = dateTime,
+                CategoryId = category,
+                MerchantId = RandomMerchantId(merchantIds, rando),
+                Notes = notes
+            };
+            return expense;
+        }
+
         private static int RandomMerchantId(int[] numbers, Random rando)
         {
             var index = rando.Next(0, numbers.Length);

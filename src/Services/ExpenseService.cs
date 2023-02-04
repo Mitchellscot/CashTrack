@@ -250,7 +250,7 @@ public class ExpenseService : IExpenseService
         var currentYear = DateTime.Now.Year;
         if (!years.Contains(currentYear))
             years.Add(currentYear);
-        return years.ToArray();
+        return years.OrderBy(x => x).ToArray();
     }
 }
 public class ExpenseMapperProfile : Profile

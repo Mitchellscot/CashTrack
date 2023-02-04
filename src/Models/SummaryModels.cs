@@ -61,8 +61,8 @@ namespace CashTrack.Models.SummaryModels
         public decimal Earned { get; set; }
         public decimal Spent { get; set; }
         public decimal Saved { get; set; }
-        public decimal AveragedSavedPerMonth { get; set; }
-        public decimal AveragedSavedPerYear { get; set; }
+        public decimal AverageSavedPerMonth { get; set; }
+        public decimal AverageSavedPerYear { get; set; }
         public decimal ExpenseGrowthPerYear { get; set; }
         public decimal IncomeGrowthPerYear { get; set; }
 
