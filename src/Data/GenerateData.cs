@@ -12,6 +12,7 @@ namespace CashTrack.Data
         private static int CurrentYear => DateTime.Now.Year;
         private static int CurrentMonth => DateTime.Now.Month;
         private static int CurrentDay => DateTime.Now.Day;
+        private static int CurrentExpenseId { get; set; }
         public static List<IncomeEntity> Income(List<CsvModels.CsvIncomeCategory> incomeCategories)
         {
             var incomes = new List<IncomeEntity>();
@@ -224,7 +225,7 @@ namespace CashTrack.Data
         public static List<ExpenseEntity> Expenses(List<CsvModels.CsvExpenseSubCategory> categories)
         {
             var expenses = new List<ExpenseEntity>();
-            int currentId = 1;
+            CurrentExpenseId = 1;
             var rando = new Random();
             foreach (var category in categories)
             {
@@ -241,7 +242,7 @@ namespace CashTrack.Data
                                 rando,
                                 categoryId,
                                 new[] { 1, 2, 3 },
-                                currentId,
+                                CurrentExpenseId,
                                 min,
                                 max,
                                 0,
@@ -272,24 +273,26 @@ namespace CashTrack.Data
                             for (int i = 1; i < 13; i++)
                             {
                                 // start Year
-                                id++;
+                                CurrentExpenseId++;
+                                day = day > 0 ? day : rando.Next(1, 28);
                                 var ex1 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(StartYear, i, rando.Next(1, 28)),
+                                    Date = new DateTime(StartYear, i, day),
                                     CategoryId = category,
                                     MerchantId = RandomMerchantId(merchantIds, rando),
                                     Notes = notes
                                 };
                                 listOfExpenses.Add(ex1);
+
                                 //last year
-                                id++;
+                                CurrentExpenseId++;
                                 var ex2 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
-                                    Date = new DateTime(LastYear, i, rando.Next(1, 28)),
+                                    Date = new DateTime(LastYear, i, day),
                                     CategoryId = category,
                                     MerchantId = RandomMerchantId(merchantIds, rando),
                                     Notes = notes
@@ -298,10 +301,10 @@ namespace CashTrack.Data
                             }
                             for (int i = 1; i <= CurrentMonth; i++)
                             {
-                                id++;
+                                CurrentExpenseId++;
                                 var ex3 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(CurrentYear, i, rando.Next(1, 28)),
                                     CategoryId = category,
@@ -317,10 +320,10 @@ namespace CashTrack.Data
                             for (int i = 1; i < 13; i++)
                             {
                                 // start Year
-                                id++;
+                                CurrentExpenseId++;
                                 var ex1 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(StartYear, i, rando.Next(1, 14)),
                                     CategoryId = category,
@@ -328,10 +331,10 @@ namespace CashTrack.Data
                                     Notes = notes
                                 };
                                 listOfExpenses.Add(ex1);
-                                id++;
+                                CurrentExpenseId++;
                                 var ex2 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(StartYear, i, rando.Next(15, 28)),
                                     CategoryId = category,
@@ -340,10 +343,10 @@ namespace CashTrack.Data
                                 };
                                 listOfExpenses.Add(ex2);
                                 //last year
-                                id++;
+                                CurrentExpenseId++;
                                 var ex3 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(LastYear, i, rando.Next(1, 14)),
                                     CategoryId = category,
@@ -351,10 +354,10 @@ namespace CashTrack.Data
                                     Notes = notes
                                 };
                                 listOfExpenses.Add(ex3);
-                                id++;
+                                CurrentExpenseId++;
                                 var ex4 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(LastYear, i, rando.Next(15, 28)),
                                     CategoryId = category,
@@ -367,10 +370,10 @@ namespace CashTrack.Data
                             {
                                 if (i < CurrentMonth)
                                 {
-                                    id++;
+                                    CurrentExpenseId++;
                                     var ex5 = new ExpenseEntity()
                                     {
-                                        Id = id,
+                                        Id = CurrentExpenseId,
                                         Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                         Date = new DateTime(CurrentYear, i, rando.Next(1, 14)),
                                         CategoryId = category,
@@ -378,10 +381,10 @@ namespace CashTrack.Data
                                         Notes = notes
                                     };
                                     listOfExpenses.Add(ex5);
-                                    id++;
+                                    CurrentExpenseId++;
                                     var ex6 = new ExpenseEntity()
                                     {
-                                        Id = id,
+                                        Id = CurrentExpenseId,
                                         Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                         Date = new DateTime(CurrentYear, i, rando.Next(15, 28)),
                                         CategoryId = category,
@@ -392,10 +395,10 @@ namespace CashTrack.Data
                                 }
                                 if (i == CurrentMonth && CurrentDay > 15)
                                 {
-                                    id++;
+                                    CurrentExpenseId++;
                                     var ex7 = new ExpenseEntity()
                                     {
-                                        Id = id,
+                                        Id = CurrentExpenseId,
                                         Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                         Date = new DateTime(CurrentYear, i, rando.Next(1, 14)),
                                         CategoryId = category,
@@ -406,10 +409,10 @@ namespace CashTrack.Data
                                 }
                                 if (i == CurrentMonth && CurrentDay > 28)
                                 {
-                                    id++;
+                                    CurrentExpenseId++;
                                     var ex8 = new ExpenseEntity()
                                     {
-                                        Id = id,
+                                        Id = CurrentExpenseId,
                                         Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                         Date = new DateTime(CurrentYear, i, rando.Next(16, 28)),
                                         CategoryId = category,
@@ -426,10 +429,10 @@ namespace CashTrack.Data
                             for (int i = 1; i < 13; i++)
                             {
                                 // start Year
-                                id++;
+                                CurrentExpenseId++;
                                 var ex1 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(StartYear, i, rando.Next(1, 9)),
                                     CategoryId = category,
@@ -437,10 +440,10 @@ namespace CashTrack.Data
                                     Notes = notes
                                 };
                                 listOfExpenses.Add(ex1);
-                                id++;
+                                CurrentExpenseId++;
                                 var ex2 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(StartYear, i, rando.Next(10, 19)),
                                     CategoryId = category,
@@ -448,10 +451,10 @@ namespace CashTrack.Data
                                     Notes = notes
                                 };
                                 listOfExpenses.Add(ex2);
-                                id++;
+                                CurrentExpenseId++;
                                 var ex3 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(StartYear, i, rando.Next(20, 28)),
                                     CategoryId = category,
@@ -460,10 +463,10 @@ namespace CashTrack.Data
                                 };
                                 listOfExpenses.Add(ex3);
                                 //last year
-                                id++;
+                                CurrentExpenseId++;
                                 var ex4 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(LastYear, i, rando.Next(1, 9)),
                                     CategoryId = category,
@@ -471,10 +474,10 @@ namespace CashTrack.Data
                                     Notes = notes
                                 };
                                 listOfExpenses.Add(ex4);
-                                id++;
+                                CurrentExpenseId++;
                                 var ex5 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(LastYear, i, rando.Next(10, 19)),
                                     CategoryId = category,
@@ -482,10 +485,10 @@ namespace CashTrack.Data
                                     Notes = notes
                                 };
                                 listOfExpenses.Add(ex5);
-                                id++;
+                                CurrentExpenseId++;
                                 var ex6 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(LastYear, i, rando.Next(20, 28)),
                                     CategoryId = category,
@@ -498,10 +501,10 @@ namespace CashTrack.Data
                             {
                                 if (i < CurrentMonth)
                                 {
-                                    id++;
+                                    CurrentExpenseId++;
                                     var ex7 = new ExpenseEntity()
                                     {
-                                        Id = id,
+                                        Id = CurrentExpenseId,
                                         Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                         Date = new DateTime(CurrentYear, i, rando.Next(1, 9)),
                                         CategoryId = category,
@@ -509,10 +512,10 @@ namespace CashTrack.Data
                                         Notes = notes
                                     };
                                     listOfExpenses.Add(ex7);
-                                    id++;
+                                    CurrentExpenseId++;
                                     var ex8 = new ExpenseEntity()
                                     {
-                                        Id = id,
+                                        Id = CurrentExpenseId,
                                         Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                         Date = new DateTime(CurrentYear, i, rando.Next(10, 19)),
                                         CategoryId = category,
@@ -520,10 +523,10 @@ namespace CashTrack.Data
                                         Notes = notes
                                     };
                                     listOfExpenses.Add(ex8);
-                                    id++;
+                                    CurrentExpenseId++;
                                     var ex9 = new ExpenseEntity()
                                     {
-                                        Id = id,
+                                        Id = CurrentExpenseId,
                                         Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                         Date = new DateTime(CurrentYear, i, rando.Next(20, 28)),
                                         CategoryId = category,
@@ -534,10 +537,10 @@ namespace CashTrack.Data
                                 }
                                 if (i == CurrentMonth && CurrentDay > 10)
                                 {
-                                    id++;
+                                    CurrentExpenseId++;
                                     var ex10 = new ExpenseEntity()
                                     {
-                                        Id = id,
+                                        Id = CurrentExpenseId,
                                         Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                         Date = new DateTime(CurrentYear, i, rando.Next(1, 9)),
                                         CategoryId = category,
@@ -548,10 +551,10 @@ namespace CashTrack.Data
                                 }
                                 if (i == CurrentMonth && CurrentDay > 20)
                                 {
-                                    id++;
+                                    CurrentExpenseId++;
                                     var ex11 = new ExpenseEntity()
                                     {
-                                        Id = id,
+                                        Id = CurrentExpenseId,
                                         Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                         Date = new DateTime(CurrentYear, i, rando.Next(10, 19)),
                                         CategoryId = category,
@@ -562,10 +565,10 @@ namespace CashTrack.Data
                                 }
                                 if (i == CurrentMonth && CurrentDay > 28)
                                 {
-                                    id++;
+                                    CurrentExpenseId++;
                                     var ex12 = new ExpenseEntity()
                                     {
-                                        Id = id,
+                                        Id = CurrentExpenseId,
                                         Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                         Date = new DateTime(CurrentYear, i, rando.Next(20, 28)),
                                         CategoryId = category,
@@ -582,10 +585,10 @@ namespace CashTrack.Data
                         for (int i = 1; i < 13; i++)
                         {
                             // start Year
-                            id++;
+                            CurrentExpenseId++;
                             var ex1 = new ExpenseEntity()
                             {
-                                Id = id,
+                                Id = CurrentExpenseId,
                                 Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                 Date = new DateTime(StartYear, i, rando.Next(1, 7)),
                                 CategoryId = category,
@@ -593,10 +596,10 @@ namespace CashTrack.Data
                                 Notes = notes
                             };
                             listOfExpenses.Add(ex1);
-                            id++;
+                            CurrentExpenseId++;
                             var ex2 = new ExpenseEntity()
                             {
-                                Id = id,
+                                Id = CurrentExpenseId,
                                 Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                 Date = new DateTime(StartYear, i, rando.Next(8, 15)),
                                 CategoryId = category,
@@ -604,10 +607,10 @@ namespace CashTrack.Data
                                 Notes = notes
                             };
                             listOfExpenses.Add(ex2);
-                            id++;
+                            CurrentExpenseId++;
                             var ex3 = new ExpenseEntity()
                             {
-                                Id = id,
+                                Id = CurrentExpenseId,
                                 Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                 Date = new DateTime(StartYear, i, rando.Next(16, 23)),
                                 CategoryId = category,
@@ -615,10 +618,10 @@ namespace CashTrack.Data
                                 Notes = notes
                             };
                             listOfExpenses.Add(ex3);
-                            id++;
+                            CurrentExpenseId++;
                             var ex4 = new ExpenseEntity()
                             {
-                                Id = id,
+                                Id = CurrentExpenseId,
                                 Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                 Date = new DateTime(StartYear, i, rando.Next(24, 28)),
                                 CategoryId = category,
@@ -627,10 +630,10 @@ namespace CashTrack.Data
                             };
                             listOfExpenses.Add(ex4);
                             //last year
-                            id++;
+                            CurrentExpenseId++;
                             var ex5 = new ExpenseEntity()
                             {
-                                Id = id,
+                                Id = CurrentExpenseId,
                                 Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                 Date = new DateTime(LastYear, i, rando.Next(1, 7)),
                                 CategoryId = category,
@@ -638,10 +641,10 @@ namespace CashTrack.Data
                                 Notes = notes
                             };
                             listOfExpenses.Add(ex5);
-                            id++;
+                            CurrentExpenseId++;
                             var ex6 = new ExpenseEntity()
                             {
-                                Id = id,
+                                Id = CurrentExpenseId,
                                 Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                 Date = new DateTime(LastYear, i, rando.Next(8, 15)),
                                 CategoryId = category,
@@ -649,10 +652,10 @@ namespace CashTrack.Data
                                 Notes = notes
                             };
                             listOfExpenses.Add(ex6);
-                            id++;
+                            CurrentExpenseId++;
                             var ex7 = new ExpenseEntity()
                             {
-                                Id = id,
+                                Id = CurrentExpenseId,
                                 Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                 Date = new DateTime(LastYear, i, rando.Next(16, 23)),
                                 CategoryId = category,
@@ -660,10 +663,10 @@ namespace CashTrack.Data
                                 Notes = notes
                             };
                             listOfExpenses.Add(ex7);
-                            id++;
+                            CurrentExpenseId++;
                             var ex8 = new ExpenseEntity()
                             {
-                                Id = id,
+                                Id = CurrentExpenseId,
                                 Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                 Date = new DateTime(LastYear, i, rando.Next(17, 28)),
                                 CategoryId = category,
@@ -676,10 +679,10 @@ namespace CashTrack.Data
                         {
                             if (i < CurrentMonth)
                             {
-                                id++;
+                                CurrentExpenseId++;
                                 var ex9 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(CurrentYear, i, rando.Next(1, 7)),
                                     CategoryId = category,
@@ -687,10 +690,10 @@ namespace CashTrack.Data
                                     Notes = notes
                                 };
                                 listOfExpenses.Add(ex9);
-                                id++;
+                                CurrentExpenseId++;
                                 var ex10 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(CurrentYear, i, rando.Next(8, 15)),
                                     CategoryId = category,
@@ -698,10 +701,10 @@ namespace CashTrack.Data
                                     Notes = notes
                                 };
                                 listOfExpenses.Add(ex10);
-                                id++;
+                                CurrentExpenseId++;
                                 var ex11 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(CurrentYear, i, rando.Next(16, 23)),
                                     CategoryId = category,
@@ -709,10 +712,10 @@ namespace CashTrack.Data
                                     Notes = notes
                                 };
                                 listOfExpenses.Add(ex11);
-                                id++;
+                                CurrentExpenseId++;
                                 var ex12 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(CurrentYear, i, rando.Next(24, 28)),
                                     CategoryId = category,
@@ -723,10 +726,10 @@ namespace CashTrack.Data
                             }
                             if (i == CurrentMonth && CurrentDay > 7)
                             {
-                                id++;
+                                CurrentExpenseId++;
                                 var ex13 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(CurrentYear, i, rando.Next(1, 7)),
                                     CategoryId = category,
@@ -737,10 +740,10 @@ namespace CashTrack.Data
                             }
                             if (i == CurrentMonth && CurrentDay > 15)
                             {
-                                id++;
+                                CurrentExpenseId++;
                                 var ex14 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(CurrentYear, i, rando.Next(8, 15)),
                                     CategoryId = category,
@@ -751,10 +754,10 @@ namespace CashTrack.Data
                             }
                             if (i == CurrentMonth && CurrentDay > 23)
                             {
-                                id++;
+                                CurrentExpenseId++;
                                 var ex15 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(CurrentYear, i, rando.Next(16, 23)),
                                     CategoryId = category,
@@ -765,10 +768,10 @@ namespace CashTrack.Data
                             }
                             if (i == CurrentMonth && CurrentDay > 28)
                             {
-                                id++;
+                                CurrentExpenseId++;
                                 var ex16 = new ExpenseEntity()
                                 {
-                                    Id = id,
+                                    Id = CurrentExpenseId,
                                     Amount = Math.Round(Convert.ToDecimal(rando.Next(min, max) + rando.NextDouble()), 2),
                                     Date = new DateTime(CurrentYear, i, rando.Next(24, 28)),
                                     CategoryId = category,
