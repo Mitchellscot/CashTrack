@@ -38,7 +38,7 @@ namespace CashTrack.Pages
             if (result.Succeeded)
             {
                 _logger.LogInformation($"{LoginRequest.UserName} has logged in at {DateTime.Now} CST Time from {HttpContext.Connection.RemoteIpAddress}");
-                return LocalRedirect("~/Monthly");
+                return LocalRedirect("~/");
             }
             else
             {
