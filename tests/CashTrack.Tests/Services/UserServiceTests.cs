@@ -81,6 +81,50 @@ namespace CashTrack.Tests.Services
 
         }
         [Fact]
+        public async Task Can_Update_UserName()
+        {
+            var newUser = new AddEditUser()
+            {
+                FirstName = "Arthur",
+                LastName = "Scott",
+                Email = "arthur@example.com",
+                Password = "Chewbaca"
+            };
+            _userManager.Setup(u => u.CreateAsync(It.IsAny<UserEntity>(), It.IsAny<string>())).Returns(Task.FromResult(IdentityResult.Success));
+            _userManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new UserEntity()
+            {
+                Id = 1,
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName,
+                Email = newUser.Email
+            });
+            _userManager.Setup(u => u.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(new UserEntity()
+            {
+                Id = 1,
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName,
+                Email = newUser.Email
+            });
+            _userManager.Setup(u => u.UpdateAsync(It.IsAny<UserEntity>())).ReturnsAsync(IdentityResult.Success);
+            _userManager.Setup(u => u.CheckPasswordAsync(It.IsAny<UserEntity>(), It.IsAny<string>())).ReturnsAsync(true);
+            var request = new ChangeUsername()
+            {
+                Username = newUser.FirstName,
+                Password = newUser.Password,
+                NewUsername = "Edward",
+                ConfirmUsername = "Edward"
+            };
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var repo = new UserRepository(db);
+                var service = new UserService(repo, _mapper, _userManager.Object, _signInManager.Object);
+                var createUserResult = await service.CreateUserAsync(newUser);
+                var getUserEntity = await service.GetUserByIdAsync(createUserResult.Id);
+                var result = await service.UpdateUsernameAsync(request);
+                result.ShouldBeTrue();
+            }
+        }
+        [Fact]
         public async Task Can_Update_Password()
         {
             var newUser = new AddEditUser()

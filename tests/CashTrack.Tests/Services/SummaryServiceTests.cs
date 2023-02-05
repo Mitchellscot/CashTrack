@@ -52,7 +52,7 @@ namespace CashTrack.Tests.Services
                 new BudgetEntity(){ BudgetType=BudgetType.Savings, Year=year, Month=month, Amount=bs },
             };
 
-            var result = _service.GetMonthlySummary(testExpenses, testIncome, testBudgets, year, month);
+            var result = SummaryService.GetMonthlySummary(testExpenses, testIncome, testBudgets, year, month);
 
             result.BudgetedIncome.ShouldBe(bi);
             result.BudgetedExpenses.ShouldBe(bn + bw);

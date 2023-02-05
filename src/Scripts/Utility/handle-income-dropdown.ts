@@ -50,7 +50,7 @@ function adjustFormBasedOnQueryValue(queryValue: number): void {
 		case 3:
 			resetCategorySelect();
 			firstInput.step = 'any';
-			firstInput.min = '2012';
+			firstInput.min = '1900';
 			firstInput.max = currentYear;
 			firstInput.value = q && query === '3' ? q : currentYear;
 			firstInput.type = 'number';

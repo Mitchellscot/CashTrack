@@ -11,13 +11,13 @@ using CashTrack.Common.Extensions;
 namespace CashTrack.Data
 {
     /// <summary>
-    /// This purpose of this clas is to generate a db context from the EF CLI and accept arguments from the command line. See New-Lite.ps1 for an example.
+    /// This purpose of this clas is to generate a db context from the EF CLI and accept arguments from the command line. See New-Db.ps1 for an example.
     /// </summary>
     public class AppContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {
         public AppDbContext CreateDbContext(string[] args)
         {
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? CashTrackEnv.Development;
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
             var settings = new AppSettingsOptions();
             var config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
@@ -27,27 +27,14 @@ namespace CashTrack.Data
             .Build();
             config.GetSection(AppSettingsOptions.AppSettings).Bind(settings);
 
-            if (env == CashTrackEnv.Development)
-            {
-                var connectionString = $"Data Source={Path.Join(Directory.GetCurrentDirectory(),
-                    "Data",
-                    settings.ConnectionStrings[env]
-                    )}";
-                optionsBuilder.UseSqlite(connectionString);
-            }
-            else
-            {
-                optionsBuilder.UseSqlServer(config.GetConnectionString(CashTrackEnv.Production), builder =>
-                {
-                    builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5), null);
-                });
+            var connectionString = $"Data Source={Path.Join(Directory.GetCurrentDirectory(),
+                "Data",
+                settings.ConnectionStrings[env])}";
+            optionsBuilder.UseSqlite(connectionString);
 
-            }
-            bool seed = false;
-            if (args.Length > 0 && args[0].IsEqualTo("seed"))
-                seed = true;
+            var arguments = args.Length > 0 ? args[0] : string.Empty;
 
-            return new AppDbContext(optionsBuilder.Options, new FakeWebHostEnvironment(env), seed);
+            return new AppDbContext(optionsBuilder.Options, new FakeWebHostEnvironment(env), arguments);
         }
     }
     public class FakeWebHostEnvironment : IWebHostEnvironment
@@ -56,12 +43,12 @@ namespace CashTrack.Data
         public IFileProvider WebRootFileProvider { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public string ApplicationName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public IFileProvider ContentRootFileProvider { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string ContentRootPath { get; set; }
         public string EnvironmentName { get; set; }
+        public string ContentRootPath { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public FakeWebHostEnvironment(string env)
         {
             EnvironmentName = env;
-            ContentRootPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()!)!.Parent!.Parent!.FullName);
         }
     }
 }

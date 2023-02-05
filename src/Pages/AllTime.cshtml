@@ -11,7 +11,7 @@
 @using CashTrack.Pages.Shared;
 @using System.Globalization;
 @using System.Text.Json;
-@model CashTrack.Pages.SummaryModel
+@model CashTrack.Pages.AllTimeModel
 @{
     ViewData["Title"] = "- Dashboard";
     Layout = "_Layout";
@@ -40,9 +40,9 @@
                 <div class="dropdown-center">
                     <a class="btn btn-primary dropdown-toggle me-2 btn-text-overflow btn-height" href="#" role="button" data-bs-toggle="dropdown">Summary</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item text-center spin-it" asp-page="./Index">Month</a></li>
+                        <li><a class="dropdown-item text-center spin-it" asp-page="./index">Month</a></li>
                         <li><a class="dropdown-item text-center spin-it" asp-page="./Annual">Annual</a></li>
-                        <li><a class="dropdown-item text-center spin-it" asp-page="./Summary">All Time</a></li>
+                        <li><a class="dropdown-item text-center spin-it" asp-page="./AllTime">All Time</a></li>
                     </ul>
                 </div>
                 <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
@@ -128,10 +128,9 @@
                     <p>
                         Get started by
                         <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#importCsvModal">Importing Data</button>,
-                        adding
-                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Expenses</button>,
-                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addIncomeModal">Income</button>, or a
-                        <a class="white-link" asp-page="/Budget/List" asp-fragment="addBudgetModal">Budget</a>
+                        or adding
+                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Expenses</button> or
+                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addIncomeModal">Income</button>.
                 </p>
                 </div>
             </div>
@@ -169,7 +168,7 @@
                                 Averaged Monthly Savings:
                             </span>
                                 <span class="fw-bold responsive-text">
-                                     @Model.SummaryResponse.SummaryTotals.AveragedSavedPerMonth
+                                     @Model.SummaryResponse.SummaryTotals.AverageSavedPerMonth
                                 </span>
                         </li>
                     <li class="flex-fill list-group-item d-flex justify-content-between pt-3 pb-2 px-3">
@@ -177,7 +176,7 @@
                                 Average Yearly Savings:
                             </span>
                             <span class="fw-bold text-primary responsive-text">
-                                @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.AveragedSavedPerYear)
+                                @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.AverageSavedPerYear)
                             </span>
                         </li>
                     <li class="flex-fill list-group-item d-flex justify-content-between pt-3 pb-2 px-3">
@@ -205,15 +204,28 @@
                 <canvas id="overallSummaryChart" class="shadow align-self-center chart-height pt-2"></canvas>
             </div>
         }
-        @*TODO: Account for empty data, or a boring graph. Perhaps just move it out.*@
-        @if(incomeANDExpenseDataIsPresent)
+        @if(incomeANDExpenseDataIsPresent && Model.SummaryResponse.DataSpansMultipleYears)
         {
             <div class="col-12 col-lg-6 d-flex">
                 <canvas id="percentChangesChart" class="chart-height shadow align-self-center"></canvas>
             </div>
         }
+        else
+        {
+            <div class="d-flex flex-column col mt-4">
+                <div class="alert alert-dismissible alert-info col-auto text-center align-self-center">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <h4 class="mb-2">
+                        <p>More charts will show here</p> 
+                        <p>once you have data that spans multiple years.</p>
+                    </h4>
+                </div>
+            </div>
+        }
     </div>
-        <div class="row mb-2">
+    @if (Model.SummaryResponse.DataSpansMultipleYears)
+    {
+    <div class="row mb-2">
         @if (incomeANDExpenseDataIsPresent)
         {
             <div class="col-12 col-lg-6 d-flex">
@@ -227,6 +239,9 @@
             </div>
         }
     </div>
+    }
+    @if (Model.SummaryResponse.DataSpansMultipleYears)
+    {
     <div class="row mb-2">
         @if (incomeDataIsPresent)
         {
@@ -241,6 +256,8 @@
             </div>
         }
     </div>
+    }
+
     <div class="row gx-5">
         @if (expenseDataIsPresent)
         {
@@ -459,7 +476,7 @@
 
     </div>
     <div class="row mb-3">
-        @if (incomeORExpenseDataIsPresent)
+        @if (incomeORExpenseDataIsPresent && Model.SummaryResponse.DataSpansMultipleYears)
         {
             <div class="col d-flex">
                 <canvas id="annualSummaryChart" class="chart-height align-self-center shadow"></canvas>
@@ -472,7 +489,7 @@
     @await Html.PartialAsync("AddEditExpenseModal",
     new AddEditExpenseModal() {
     IsEdit = false,
-    ReturnUrl = "/Summary",
+    ReturnUrl = "/AllTime",
     SubCategoryList = new SelectList(Model.SubCategoryList, "Id", "Category"),
     Date= DateTime.Today,
     MainCategoryList = new SelectList(Model.MainCategoryList, "Id", "Category"),
@@ -487,18 +504,21 @@
 @* Add Income Modal *@
 <div class="modal fade" id="addIncomeModal">
     @await Html.PartialAsync("AddEditIncomeModal", new AddEditIncomeModal(){
-    ReturnUrl = "/Summary",
+    ReturnUrl = "/AllTime",
     IsEdit = false,
     CategoryList = new SelectList(Model.IncomeCategoryList, "Id", "Category"),
     Date= DateTime.Today,
-    ShowAddCategoryButton = false
+    ShowAddCategoryButton = false,
+    PageNumber = 1,
+    Q = string.Empty,
+    Query= 0
     });
 </div>
 @*End Add Income Modal*@
 @*Add Merchant Modal*@
 <div class="modal fade" id="addMerchantModal">
     @await Html.PartialAsync("AddEditMerchantModal", new AddEditMerchantModal() {
-    ReturnUrl = "/Summary",
+    ReturnUrl = "/AllTime",
     SuggestOnLookup = true,
     IsEdit = false
     })
@@ -508,7 +528,7 @@
 <div class="modal fade" id="addSourceModal">
     @await Html.PartialAsync("AddEditIncomeSourceModal", new AddEditIncomeSourceModal()
     {
-    ReturnUrl = "/Summary",
+    ReturnUrl = "/AllTime",
     IsEdit = false,
     SuggestOnLookup = true
     })
@@ -517,7 +537,7 @@
 @*Add Sub Category Modal*@
 <div class="modal fade" id="addSubCategoryModal">
     @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal()
-    { ReturnUrl="~/Summary",
+    { ReturnUrl="~/AllTime",
     InUse=true,
     IsEdit=false,
     MainCategoryList=new SelectList(Model.MainCategoryList, "Id", "Category"),
@@ -528,7 +548,7 @@
 @*Add Main Category Modal*@
 <div class="modal fade" id="addMainCategoryModal">
     @await Html.PartialAsync("AddEditMainCategoryModal", new AddEditMainCategoryModal() {
-    ReturnUrl = "/Summary",
+    ReturnUrl = "/AllTime",
     IsEdit = false});
 </div>
 @*EndAdd Main Category Modal*@
@@ -536,7 +556,7 @@
 <div class="modal fade" id="addIncomeCategoryModal">
     @await Html.PartialAsync("AddEditIncomeCategoryModal",
     new AddEditIncomeCategoryModal() {
-    ReturnUrl = "/Summary",
+    ReturnUrl = "/AllTime",
     InUse = true,
     IsEdit = false,
     })
@@ -544,7 +564,7 @@
 @*End Add Income Category Modal*@
 @*Import Transactions Modal*@
 <div class="modal fade" id="importCsvModal">
-    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Summary" })
+    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/AllTime" })
 </div>
 @*End Import Transactions Modal*@
 @await Html.PartialAsync("TransactionBreakdownModal", new TransactionBreakdownModal()
@@ -555,7 +575,6 @@
 })
 
 @section Scripts {
-    <script src="~/js/summary.js"></script>
     <script asp-append-version="true" src="https://cdn.jsdelivr.net/npm/chart.js@4.1.1/dist/chart.umd.js"></script>
     @if (incomeORExpenseDataIsPresent)
     {
@@ -682,9 +701,9 @@
         @await Html.PartialAsync("AllTimePercentChangeChart", new AllTimePercentChangeChart()
         {
             ElementId = "percentChangesChart",
-            IncomeDataset = Model.SummaryResponse.PercentChangesChart.IncomeDataset,
-            ExpenseDataset = Model.SummaryResponse.PercentChangesChart.ExpenseDataset,
-            SavingsDataset = Model.SummaryResponse.PercentChangesChart.SavingsDataset,
+            IncomeDataset = Model.SummaryResponse.PercentChangesChart.IncomeDataset.Replace(decimal.MaxValue.ToString(), "NaN"),
+            ExpenseDataset = Model.SummaryResponse.PercentChangesChart.ExpenseDataset.Replace(decimal.MaxValue.ToString(), "NaN"),
+            SavingsDataset = Model.SummaryResponse.PercentChangesChart.SavingsDataset.Replace(decimal.MaxValue.ToString(), "NaN"),
             Title = "Percent Changes By Year",
             Labels = Model.SummaryResponse.PercentChangesChart.Labels,
         })

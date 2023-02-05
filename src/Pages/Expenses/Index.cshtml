@@ -77,7 +77,7 @@
     <div class="modal fade" id="addEditSubCategoryModal" data-bs-backdrop="false">
         @await Html.PartialAsync("AddEditSubCategoryModal", new AddEditSubCategoryModal() 
         { 
-            ReturnUrl="/Expenses/Index#addExpenseModal", 
+            ReturnUrl="/Expenses/Index#addExpenseModal#addExpenseModal", 
             InUse=true, 
             IsEdit=false, 
             MainCategoryList= new SelectList(Model.MainCategoryList, "Id", "Category")

@@ -10,6 +10,7 @@ import {
 	forceRefundCategoryWhenRefundIsCheckedAddModal,
 	forceRefundCategoryWhenRefundIsCheckedEditModal,
 } from '../Utility/force-refund';
+import showModalFromUrlHash from '../Utility/show-modal';
 
 autoSuggestIncomeSourceNames();
 formatInputOnPageLoad();
@@ -17,3 +18,4 @@ formatInputOnSelectListChange();
 formatAmountOnChange();
 forceRefundCategoryWhenRefundIsCheckedAddModal();
 forceRefundCategoryWhenRefundIsCheckedEditModal();
+showModalFromUrlHash('#addIncomeModal');

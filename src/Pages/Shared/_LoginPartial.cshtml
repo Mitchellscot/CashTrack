@@ -1,7 +1,23 @@
-﻿<li class="text-nowrap list-unstyled">
-    <form method="post" asp-page="/Account/Logout" asp-route-ReturnUrl="~/" id="logoutForm">
-        <button type="submit" class="icon-button spin-it">
-            <i class="bi bi-box-arrow-right text-white logout-button"></i>
-        </button>
-    </form>
-</li>
+﻿@using CashTrack.Data.Entities
+@inject SignInManager<UserEntity> SignInManager
+
+@if (!SignInManager.IsSignedIn(User))
+{
+    <li class="mx-3">
+        <a asp-page="/Account/Login" class="text-white d-flex align-items-center">
+            <h5>Log In</h5> <i class="bi bi-box-arrow-in-right text-white logout-button ms-2"></i>
+        </a>
+    </li>
+}
+else
+{
+    <li class="text-nowrap list-unstyled">
+        <form method="post" asp-page="/Account/Logout" id="logoutForm">
+            <button type="submit" class="icon-button spin-it">
+                <i class="bi bi-box-arrow-right text-white logout-button"></i>
+            </button>
+        </form>
+    </li>
+}
+
+

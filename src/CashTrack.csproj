@@ -50,8 +50,8 @@
 		<None Remove=".prettierIgnore" />
 		<None Remove="jest.config.js" />
 		<None Remove="Scripts\Budget\budget.ts" />
+		<None Remove="Scripts\Home\alltime.ts" />
 		<None Remove="Scripts\Home\annual.ts" />
-		<None Remove="Scripts\Home\summary.ts" />
 		<None Remove="Scripts\Import\rules.ts" />
 		<None Remove="Scripts\IncomeCategories\incomeCategories.ts" />
 		<None Remove="Scripts\IncomeCategories\incomeCategoryDetail.ts" />
@@ -79,6 +79,8 @@
 		<None Remove="Scripts\Utility\source-autocomplete.ts" />
 		<None Remove="Scripts\Utility\split-calculations.ts" />
 		<None Remove="Scripts\Utility\subcategory-autocomplete.ts" />
+		<None Remove="Scripts\_tests\budget-income-switch.test.ts" />
+		<None Remove="Scripts\_tests\budget-type-switch.test.ts" />
 		<None Remove="Scripts\_tests\format-amount.test.ts" />
 	</ItemGroup>
 	<ItemGroup>
@@ -86,7 +88,7 @@
 		<TypeScriptCompile Include="Scripts\Expenses\expenses.ts" />
 		<TypeScriptCompile Include="Scripts\Expenses\split.ts" />
 		<TypeScriptCompile Include="Scripts\Home\annual.ts" />
-		<TypeScriptCompile Include="Scripts\Home\summary.ts" />
+		<TypeScriptCompile Include="Scripts\Home\alltime.ts" />
 		<TypeScriptCompile Include="Scripts\Import\rules.ts" />
 		<TypeScriptCompile Include="Scripts\IncomeCategories\incomeCategories.ts" />
 		<TypeScriptCompile Include="Scripts\IncomeCategories\incomeCategoryDetail.ts" />
@@ -120,6 +122,8 @@
 		<TypeScriptCompile Include="Scripts\Utility\source-autocomplete.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\split-calculations.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\subcategory-autocomplete.ts" />
+		<TypeScriptCompile Include="Scripts\_tests\budget-income-switch.test.ts" />
+		<TypeScriptCompile Include="Scripts\_tests\budget-type-switch.test.ts" />
 		<TypeScriptCompile Include="Scripts\_tests\format-amount.test.ts" />
 	</ItemGroup>
 	<ItemGroup>

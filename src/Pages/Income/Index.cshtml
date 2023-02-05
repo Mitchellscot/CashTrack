@@ -1,5 +1,6 @@
 ﻿@page
 @using CashTrack.Models.Common
+@using CashTrack.Models.IncomeCategoryModels;
 @using CashTrack.Models.IncomeModels
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Incomes.IndexModel
@@ -56,9 +57,26 @@
         </div>
     </div>
     @* Add Income Modal *@
-    <div class="modal fade" id="addIncomeModal">
-        @await Html.PartialAsync("AddEditIncomeModal", new AddEditIncomeModal(){ ReturnUrl = "~/Income/Index", IsEdit = false, CategoryList = new SelectList(Model.CategoryList, "Id", "Category"), Date= DateTime.Today, ShowAddCategoryButton = true });
+    <div class="modal fade" id="addIncomeModal" data-bs-backdrop="false">
+        @await Html.PartialAsync("AddEditIncomeModal", new AddEditIncomeModal(){ 
+            ReturnUrl = "~/Income/Index", 
+            IsEdit = false, 
+            CategoryList = new SelectList(Model.CategoryList, "Id", "Category"), 
+            Date= DateTime.Today, 
+            ShowAddCategoryButton = true,
+            PageNumber = Model.PageNumber,
+            Q = Model.Q,
+            Query= Model.Query
+        })
     </div>
+    <div class="modal fade" id="addIncomeCategoryModal" data-bs-backdrop="false">
+        @await Html.PartialAsync("AddEditIncomeCategoryModal",
+        new AddEditIncomeCategoryModal() {
+            ReturnUrl = "/Income/Index#addIncomeModal",
+            InUse = true,
+            IsEdit = false,
+        })
+    </div> 
     @*End Add Income Modal*@
     @if (Model.IncomeResponse != null && Model.IncomeResponse.TotalCount > 0)
     {
@@ -174,7 +192,10 @@
                                 Source = income.Source,
                                 Notes = income.Notes,
                                 Id = income.Id,
-                                ShowAddCategoryButton = true
+                                ShowAddCategoryButton = true,
+                                PageNumber = Model.PageNumber,
+                                Q = Model.Q,
+                                Query= Model.Query
                                 })
                                     </div>
                                     @*End Edit Income Modal*@

@@ -8,9 +8,9 @@ const config = {
 		settings: './Scripts/Settings/settings.ts',
 		login: './Scripts/Account/login.ts',
 		site: './Scripts/Site/site.ts',
-		home: './Scripts/Home/home.ts',
+		monthly: './Scripts/Home/monthly.ts',
 		annual: './Scripts/Home/annual.ts',
-		summary: './Scripts/Home/summary.ts',
+		alltime: './Scripts/Home/alltime.ts',
 		expenses: './Scripts/Expenses/expenses.ts',
 		split: './Scripts/Expenses/split.ts',
 		importExpenses: './Scripts/Import/importExpenses.ts',
@@ -39,8 +39,10 @@ const config = {
 			$: 'jquery',
 		}),
 		new ESLintPlugin({
-			extensions: ['.ts', '.js'],
+			extensions: ['.ts'],
 			exclude: 'node_modules',
+			context: './Scripts',
+
 		}),
 	],
 	module: {

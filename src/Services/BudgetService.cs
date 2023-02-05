@@ -296,7 +296,7 @@ namespace CashTrack.Services.BudgetService
                         yield return (monthlyIncome[i] - (monthlyExpenses[i] + monthlySavings[i])) + monthlySavings[i];
                     else yield return monthlySavings[i];
                 }
-                else if (monthlyIncome.Any(x => x.Key == i) && !monthlyExpenses.Any(x => x.Key == i))
+                else if (monthlyIncome.Any(x => x.Key == i) && !monthlyExpenses.Any(x => x.Key == i) && monthlySavings.Any(x => x.Key == i))
                     yield return monthlySavings[i];
                 else if (!monthlyIncome.Any(x => x.Key == i) && monthlyExpenses.Any(x => x.Key == i))
                     yield return 0 - monthlyExpenses[i];
@@ -479,8 +479,8 @@ namespace CashTrack.Services.BudgetService
                     var allBudgetsByYear = await _budgetRepo.Find(x => true);
 
                     budgetListItems = request.Reversed ?
-                        allBudgetsByYear.OrderByDescending(x => x.Year).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
-                        allBudgetsByYear.OrderBy(x => x.Year).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+                        allBudgetsByYear.OrderBy(x => x.Year).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
+                        allBudgetsByYear.OrderByDescending(x => x.Year).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
                     break;
                 case BudgetOrderBy.Month:
                     var allBudgetsByMonth = await _budgetRepo.Find(x => true);

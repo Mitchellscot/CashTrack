@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CashTrack.Common.Extensions;
 using CashTrack.Data.Entities;
 using CashTrack.Models.UserModels;
 using CashTrack.Repositories.UserRepository;
@@ -15,6 +16,7 @@ public interface IUserService
     Task<User[]> GetAllUsersAsync();
     Task<User> CreateUserAsync(AddEditUser request);
     Task<bool> UpdatePasswordAsync(ChangePassword request);
+    Task<bool> UpdateUsernameAsync(ChangeUsername request);
     Task<bool> UpdateLastImportDate(int userId);
 }
 public class UserService : IUserService
@@ -62,6 +64,28 @@ public class UserService : IUserService
         if (!result.Succeeded)
             return false;
 
+        return true;
+    }
+    public async Task<bool> UpdateUsernameAsync(ChangeUsername request)
+    {
+        var user = await _userManager.FindByNameAsync(request.Username);
+        if (user == null)
+            throw new ArgumentException(nameof(request.Username));
+
+        if (string.IsNullOrEmpty(request.NewUsername) || string.IsNullOrEmpty(request.ConfirmUsername))
+            throw new ArgumentNullException("There is a password missing");
+
+        if (!request.NewUsername.IsEqualTo(request.ConfirmUsername))
+            throw new ArgumentException(nameof(request.ConfirmUsername));
+        user.UserName = request.NewUsername;
+        user.NormalizedUserName = request.NewUsername.ToUpper();
+        var passwordCheck = await _userManager.CheckPasswordAsync(user, request.Password);
+        if (!passwordCheck)
+            return false;
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+            return false;
+        await _signInManager.RefreshSignInAsync(user);
         return true;
     }
 

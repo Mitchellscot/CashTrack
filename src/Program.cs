@@ -60,7 +60,10 @@ namespace CashTrack
 
             var app = builder.Build();
             ConfigureMiddleware(app);
-            ConfigureEndpoints(app);
+            if (IsProduction())
+                ConfigureProductionEndpoints(app);
+            else
+                ConfigureEndpoints(app);
 
             if (UseHttp())
                 app.Urls.Add("http://*:5000");
@@ -91,7 +94,6 @@ namespace CashTrack
                 o.UseSqlite(connectionString);
             });
 
-
             app.Services.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
             app.Services.ConfigureApplicationCookie(o => o.LoginPath = "/login");
             app.Services.AddIdentityCore<UserEntity>(o =>
@@ -110,6 +112,12 @@ namespace CashTrack
             }).AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders()
             .AddSignInManager<SignInManager<UserEntity>>();
+
+            app.Services.Configure<RouteOptions>(o =>
+            {
+                o.LowercaseUrls = true;
+                o.LowercaseQueryStrings = true;
+            });
         }
 
         private static void ConfigureAppServices(IServiceCollection services)
@@ -174,6 +182,11 @@ namespace CashTrack
         {
             app.MapRazorPages().RequireAuthorization();
             app.MapControllers().RequireAuthorization();
+        }
+        private static void ConfigureProductionEndpoints(IEndpointRouteBuilder app)
+        {
+            app.MapRazorPages();
+            app.MapControllers();
         }
 
         private static bool UseHttp()

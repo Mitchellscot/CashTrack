@@ -10,7 +10,7 @@ namespace CashTrack.Services.Common
     {
         public static List<AnnualStatistics> GetAnnualStatistics(T[] transactions)
         {
-            return transactions.GroupBy(e => e.Date.Year)
+            var stats = transactions.GroupBy(e => e.Date.Year)
                             .Select(g =>
                             {
                                 var results = g.Aggregate(new StatisticsAggregator<T>(),
@@ -26,6 +26,24 @@ namespace CashTrack.Services.Common
                                     Count = results.Count
                                 };
                             }).OrderBy(x => x.Year).ToList();
+            var firstYear = stats.Min(x => x.Year);
+            var lastYear = stats.Max(x => x.Year);
+            for (var i = firstYear; i <= lastYear; i++)
+            {
+                if (!stats.Any(x => x.Year == i))
+                {
+                    stats.Add(new AnnualStatistics()
+                    {
+                        Year = i,
+                        Average = 0,
+                        Min = 0,
+                        Max = 0,
+                        Total = 0,
+                        Count = 0
+                    });
+                }
+            }
+            return stats.OrderBy(x => x.Year).ToList();
         }
         public static List<MonthlyStatistics> GetMonthlyStatistics(T[] transactions)
         {

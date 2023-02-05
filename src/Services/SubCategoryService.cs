@@ -213,7 +213,7 @@ public class SubCategoryService : ISubCategoryService
         var uncategorizeCategoryd = (await _subCategoryRepo.Find(x => x.Name == "Uncategorized")).FirstOrDefault();
         if (uncategorizeCategoryd == null)
         {
-            throw new CategoryNotFoundException("You need to create a new category called 'Uncategorized' before you can delete a sub category. This will assigned all exepenses associated with this sub category to the 'Uncategorized' category.");
+            throw new CategoryNotFoundException("You need to have a category called 'Uncategorized' before you can delete a sub category. This will assigned all exepenses associated with this sub category to the 'Uncategorized' category.");
         }
         foreach (var expense in expenses)
         {

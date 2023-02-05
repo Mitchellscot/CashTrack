@@ -50,9 +50,9 @@
                 <div class="dropdown-center">
                     <a class="btn btn-primary dropdown-toggle me-2 btn-text-overflow btn-height" href="#" role="button" data-bs-toggle="dropdown">Summary</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item text-center spin-it" asp-page="./Index">Month</a></li>
+                        <li><a class="dropdown-item text-center spin-it" asp-page="./index">Month</a></li>
                         <li><a class="dropdown-item text-center spin-it" asp-page="./Annual">Annual</a></li>
-                        <li><a class="dropdown-item text-center spin-it" asp-page="./Summary">All Time</a></li>
+                        <li><a class="dropdown-item text-center spin-it" asp-page="./AllTime">All Time</a></li>
                     </ul>
                 </div>
                 <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
@@ -139,9 +139,8 @@
                         Get started by
                         <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#importCsvModal">Importing Data</button>,
                         adding
-                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Expenses</button>,
-                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addIncomeModal">Income</button>, or a
-                        <a class="white-link" asp-page="/Budget/List" asp-fragment="addBudgetModal">Budget</a>
+                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Expenses</button>, or
+                        <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addIncomeModal">Income</button>.
                 </p>
                 </div>
             </div>
@@ -190,7 +189,6 @@
                                     @String.Format("{0:n}", Model.SummaryResponse.AnnualSummary.SavingsGoalProgress) &#37;
                                 </span>
                             }
-
                         </li>
                         <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                         @if (Model.Year == DateTime.Now.Year)
@@ -243,7 +241,7 @@
                 <canvas id="savingsChart" class="chart-height shadow align-self-center"></canvas>
             </div>
         }
-        @if (incomeORExpenseDataIsPresent)
+        @if (incomeANDExpenseDataIsPresent)
         {
             <div class="col-12 col-lg-6 d-flex">
                 <canvas id="incomeExpenseChart" class="chart-height shadow align-self-center"></canvas>
@@ -468,7 +466,7 @@
 
     </div>
     <div class="row mb-3">
-        @if (incomeORExpenseDataIsPresent)
+        @if (incomeORExpenseDataIsPresent && DateTime.Now.Month > 1)
         {
             <div class="col d-flex">
                 <canvas id="annualMonthlySummaryChart" class="chart-height align-self-center shadow"></canvas>
@@ -506,7 +504,10 @@
     IsEdit = false,
     CategoryList = new SelectList(Model.IncomeCategoryList, "Id", "Category"),
     Date= DateTime.Today,
-    ShowAddCategoryButton = false
+    ShowAddCategoryButton = false,
+    PageNumber = 1,
+    Q = string.Empty,
+    Query= 0
     });
 </div>
 @*End Add Income Modal*@
@@ -658,7 +659,7 @@
             IsSummaryChart = true
         })
     }
-    @if (incomeORExpenseDataIsPresent)
+    @if (incomeORExpenseDataIsPresent && DateTime.Now.Month > 1)
     {
         @await Html.PartialAsync("AnnualMonthlySummaryChart", new AnnualMonthlySummaryChart()
         {

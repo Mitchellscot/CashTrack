@@ -81,7 +81,8 @@
         Year = DateTime.Now.Year,
         Amount = 0,
         TimeSpan = AllocationTimeSpan.Month,
-        Type = BudgetType.Need
+        Type = BudgetType.Need,
+        ReturnUrl="~/Budget/List"
         })
     </div>
     @if (Model.BudgetListResponse.ListItems == null || Model.BudgetListResponse.TotalCount == 0)
