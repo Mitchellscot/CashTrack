@@ -203,7 +203,7 @@ namespace CashTrack.Data
 
             string csvFileDirectory = env == CashTrackEnv.Test ?
                 Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.FullName, "ct-data", "TestData") :
-                env == CashTrackEnv.Development ? //TODO: CHANGE TO PRODUCTION
+                env == CashTrackEnv.Production ?
                 Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "ct-data", "DemoData")
                 : Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "ct-data");
 
@@ -213,7 +213,7 @@ namespace CashTrack.Data
                 throw new Exception("You need to add ct-data to the project or write some code that generates test data");
             }
 
-            if (args.IsEqualTo("seed")) //TODO: ADD PRODUCTION
+            if (args.IsEqualTo("seed") && env == CashTrackEnv.Production)
             {
                 var users = CsvParser.ProcessUserFile(Path.Combine(csvFileDirectory, "Users.csv"));
                 foreach (var user in users)
@@ -258,47 +258,48 @@ namespace CashTrack.Data
                 mb.Entity<ExpenseEntity>().HasData(expenses);
                 mb.Entity<BudgetEntity>().HasData(GenerateData.IncomeBudgets());
             }
-        }
 
-        //if (args.IsEqualTo("seed") || env == CashTrackEnv.Test)
-        //{
-        //    var users = CsvParser.ProcessUserFile(Path.Combine(csvFileDirectory, "Users.csv"));
-        //    foreach (var user in users)
-        //    {
-        //        var passwordHasher = new PasswordHasher<UserEntity>();
-        //        var seededUser = new UserEntity()
-        //        {
-        //            Id = user.Id,
-        //            UserName = user.UserName,
-        //            FirstName = user.FirstName,
-        //            LastName = user.LastName,
-        //            Email = user.Email,
-        //            NormalizedEmail = user.NormalizedEmail,
-        //            NormalizedUserName = user.NormalizedUserName,
-        //            SecurityStamp = Guid.NewGuid().ToString("D"),
-        //            EmailConfirmed = true
-        //        };
-        //        var hashed = passwordHasher.HashPassword(seededUser, user.PasswordHash);
-        //        seededUser.PasswordHash = hashed;
-        //        mb.Entity<UserEntity>().HasData(seededUser);
-        //        var claim = new IdentityUserClaim<int>()
-        //        {
-        //            Id = user.Id,
-        //            UserId = user.Id,
-        //            ClaimType = ClaimTypes.NameIdentifier,
-        //            ClaimValue = user.UserName,
-        //        };
-        //        mb.Entity<IdentityUserClaim<int>>().HasData(claim);
-        //    }
-        //    mb.Entity<MainCategoryEntity>().HasData(CsvParser.ProcessMainCategoryFile(Path.Combine(csvFileDirectory, "MainCategories.csv")));
-        //    mb.Entity<SubCategoryEntity>().HasData(CsvParser.ProcessSubCategoryFile(Path.Combine(csvFileDirectory, "SubCategories.csv")));
-        //    mb.Entity<MerchantEntity>().HasData(CsvParser.ProcessMerchantFile(Path.Combine(csvFileDirectory, "Merchants.csv")));
-        //    mb.Entity<ExpenseEntity>().HasData(CsvParser.ProcessExpenseFile(Path.Combine(csvFileDirectory, "Expenses.csv")));
-        //    mb.Entity<IncomeCategoryEntity>().HasData(CsvParser.ProcessIncomeCategoryFile(Path.Combine(csvFileDirectory, "IncomeCategories.csv")));
-        //    mb.Entity<IncomeSourceEntity>().HasData(CsvParser.ProcessIncomeSourceFile(Path.Combine(csvFileDirectory, "IncomeSources.csv")));
-        //    mb.Entity<IncomeEntity>().HasData(CsvParser.ProcessIncomeFile(Path.Combine(csvFileDirectory, "Income.csv")));
-        //    mb.Entity<ImportRuleEntity>().HasData(CsvParser.ProcessImportRuleFile(Path.Combine(csvFileDirectory, "ImportRules.csv")));
-        //    mb.Entity<BudgetEntity>().HasData(CsvParser.ProcessBudgetFile(Path.Combine(csvFileDirectory, "Budgets.csv")));
-        //}
+
+            if (args.IsEqualTo("seed") || env == CashTrackEnv.Test)
+            {
+                var users = CsvParser.ProcessUserFile(Path.Combine(csvFileDirectory, "Users.csv"));
+                foreach (var user in users)
+                {
+                    var passwordHasher = new PasswordHasher<UserEntity>();
+                    var seededUser = new UserEntity()
+                    {
+                        Id = user.Id,
+                        UserName = user.UserName,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Email = user.Email,
+                        NormalizedEmail = user.NormalizedEmail,
+                        NormalizedUserName = user.NormalizedUserName,
+                        SecurityStamp = Guid.NewGuid().ToString("D"),
+                        EmailConfirmed = true
+                    };
+                    var hashed = passwordHasher.HashPassword(seededUser, user.PasswordHash);
+                    seededUser.PasswordHash = hashed;
+                    mb.Entity<UserEntity>().HasData(seededUser);
+                    var claim = new IdentityUserClaim<int>()
+                    {
+                        Id = user.Id,
+                        UserId = user.Id,
+                        ClaimType = ClaimTypes.NameIdentifier,
+                        ClaimValue = user.UserName,
+                    };
+                    mb.Entity<IdentityUserClaim<int>>().HasData(claim);
+                }
+                mb.Entity<MainCategoryEntity>().HasData(CsvParser.ProcessMainCategoryFile(Path.Combine(csvFileDirectory, "MainCategories.csv")));
+                mb.Entity<SubCategoryEntity>().HasData(CsvParser.ProcessSubCategoryFile(Path.Combine(csvFileDirectory, "SubCategories.csv")));
+                mb.Entity<MerchantEntity>().HasData(CsvParser.ProcessMerchantFile(Path.Combine(csvFileDirectory, "Merchants.csv")));
+                mb.Entity<ExpenseEntity>().HasData(CsvParser.ProcessExpenseFile(Path.Combine(csvFileDirectory, "Expenses.csv")));
+                mb.Entity<IncomeCategoryEntity>().HasData(CsvParser.ProcessIncomeCategoryFile(Path.Combine(csvFileDirectory, "IncomeCategories.csv")));
+                mb.Entity<IncomeSourceEntity>().HasData(CsvParser.ProcessIncomeSourceFile(Path.Combine(csvFileDirectory, "IncomeSources.csv")));
+                mb.Entity<IncomeEntity>().HasData(CsvParser.ProcessIncomeFile(Path.Combine(csvFileDirectory, "Income.csv")));
+                mb.Entity<ImportRuleEntity>().HasData(CsvParser.ProcessImportRuleFile(Path.Combine(csvFileDirectory, "ImportRules.csv")));
+                mb.Entity<BudgetEntity>().HasData(CsvParser.ProcessBudgetFile(Path.Combine(csvFileDirectory, "Budgets.csv")));
+            }
+        }
     }
 }
