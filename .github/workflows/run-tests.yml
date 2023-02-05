@@ -15,8 +15,6 @@ jobs:
           repository: mitchellscot/ct-data
           token: ${{ secrets.CHECKOUT_CT_DATA_TOKEN }}
           path: ./ct-data
-      - name: Copy Appsettings.json
-        run: cp ./ct-data/appsettings.json ./src/appsettings.json
       - name: Copy Appsettings.Development.json
         run: cp ./ct-data/appsettings.Development.json ./src/appsettings.Development.json
       - name: Copy Appsettings.Test.json
