@@ -22,7 +22,7 @@ jobs:
       - name: Add Variables To Appsettings Files
         uses: microsoft/variable-substitution@v1
         with:
-          files: appsettings.Test.json'
+          files: appsettings.Test.json
         env:
           AppSettings.Secret: ${{ secrets.SECRET }}
           AppSettings.ConnectionStrings.Development: ${{ secrets.CONNECTION_STRING }}
