@@ -10,12 +10,6 @@ using Microsoft.AspNetCore.Hosting;
 using System.Linq;
 using CashTrack.Common;
 using CashTrack.Common.Extensions;
-using System.Collections.Generic;
-using CashTrack.Models.IncomeModels;
-using CashTrack.Models.Common;
-using CashTrack.Models.MerchantModels;
-using static Azure.Core.HttpHeader;
-using System.Drawing;
 
 namespace CashTrack.Data
 {
@@ -256,13 +250,13 @@ namespace CashTrack.Data
                 mb.Entity<IncomeCategoryEntity>().HasData(incomeCategories);
                 var incomes = GenerateData.Income(incomeCategories);
                 mb.Entity<IncomeEntity>().HasData(incomes);
-                //need merchants before you can do expenses
                 mb.Entity<MerchantEntity>().HasData(CsvParser.ProcessMerchantFile(Path.Combine(csvFileDirectory, "Merchants.csv")));
                 var subCategories = CsvParser.ProcessSubCategoryFile(Path.Combine(csvFileDirectory, "SubCategories.csv"));
                 mb.Entity<SubCategoryEntity>().HasData(subCategories);
 
                 var expenses = GenerateData.Expenses(subCategories);
                 mb.Entity<ExpenseEntity>().HasData(expenses);
+                mb.Entity<BudgetEntity>().HasData(GenerateData.IncomeBudgets());
             }
         }
 
