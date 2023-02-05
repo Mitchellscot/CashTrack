@@ -1025,7 +1025,7 @@ namespace CashTrack.Services.SummaryService
                 budgetedIncome > 0 && dippingIntoBudgetedSavings ?
                 realizedSavings :
                 budgetedIncome > 0 ?
-                budgetedSavings + unspent : 0;
+                budgetedSavings + unspent : incomeToCompareBy - realizedExpenses;
             return new MonthlySummary()
             {
                 RealizedIncome = realizedIncome,
