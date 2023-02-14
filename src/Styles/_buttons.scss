@@ -26,6 +26,13 @@
     cursor: pointer;
 }
 
+.offcanvas-btn {
+    border: 0px;
+    background-color: transparent;
+    color: $PRIMARY_COLOR;
+    cursor: pointer;
+}
+
 .nav-btn:hover {
     text-decoration: none;
     color: $primary;
@@ -38,4 +45,12 @@
 .logout-button {
     cursor: pointer;
     font-size: 1.8rem;
+}
+.hamburger {
+    cursor: pointer;
+    font-size: 2.5rem;
+    color: $WHITE_COLOR;
+}
+.login-partial{
+    margin-bottom: 0;
 }
