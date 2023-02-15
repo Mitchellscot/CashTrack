@@ -1,5 +1,6 @@
 ﻿@using System.Globalization;
 @using CashTrack.Common.Extensions;
+@using CashTrack.Common;
 @model CashTrack.Pages.Shared.TransactionBreakdownModal
 @{
     var month = Model.Month > 0 ? @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month) : "";
@@ -12,8 +13,17 @@
                     @if (Model.Transactions.Any())
                     {
                         <div class="d-flex justify-content-between">
-                        <a asp-page="./print" asp-route-type="transaction" asp-route-year="@Model.Year" asp-route-month="@Model.Month" class="btn btn-primary mb-3">PRINT <i class="bi bi-printer align-self-center icon-button"></i></a>
-                        <h5 class="modal-title">@title Expense Breakdown</h5>
+                        <a asp-page="./print" asp-route-type="transaction" asp-route-year="@Model.Year" asp-route-month="@Model.Month" class="btn btn-primary mb-3">PRINT
+                            @await Html.PartialAsync("Icons", new Icons()
+                            {
+                            Icon = Icon.Printer,
+                            Color = IconColors.White,
+                            Classes = "align-self-center d-none d-sm-inline-block",
+                            Width = 18,
+                            Height = 18
+                            })
+                            </a>
+                        <h5 class="modal-title text-center text-sm-start">@title Expense Breakdown</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal">
                         </button>
                     </div>
@@ -33,7 +43,7 @@
                                     <td>
                                         <h6 class="fw-bold">@budget.Category</h6>
                                     </td>
-                                    <td class="border-end">
+                                    <td class="border-end d-none d-sm-block">
                                         &nbsp;
                                     </td>
                                     <td class="border-end border-top">
@@ -50,7 +60,7 @@
                             else
                             {
                                 <tr class="border-end border-start">
-                                    <td>
+                                    <td class="d-none d-sm-block">
                                         &nbsp;
                                     </td>
                                     <td class="border-end">
@@ -77,8 +87,16 @@
                 </div>
                 @if (Model.Transactions.Any())
                 {
-                    <div class="modal-footer d-flex justify-content-between">
-                    <a asp-route-type="transaction" asp-page="./print" asp-route-year="@Model.Year" asp-route-month="@Model.Month" class="btn btn-primary mb-3">PRINT <i class="bi bi-printer align-self-center icon-button"></i></a>
+                    <div class="modal-footer d-flex justify-content-between align-items-center">
+                    <a asp-route-type="transaction" asp-page="./print" asp-route-year="@Model.Year" asp-route-month="@Model.Month" class="btn btn-primary"><span>PRINT</span>                         @await Html.PartialAsync("Icons", new Icons()
+                        {
+                            Icon = Icon.Printer,
+                            Color = IconColors.White,
+                            Classes = "align-self-center",
+                            Width = 18,
+                            Height = 18
+                        })
+                        </a>
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
                     </div>
                 }

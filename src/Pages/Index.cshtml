@@ -46,7 +46,7 @@
             </div>
         </div>
     }
-    <div class="row mt-2 border-bottom d-flex justify-content-between">
+    <div class="row mt-2 border-bottom d-flex justify-content-lg-between flex-column flex-md-row flex-lg-nowrap">
         <div class="d-flex col-auto align-self-center">
             <h3 class="me-2">
                 @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Model.Month) @Model.Year
@@ -56,7 +56,7 @@
                 <p class="fst-italic align-self-end ms-3">Last Import: @Model.SummaryResponse.LastImport.ToShortDateString()</p>
             }
         </div>
-        <div class="col-auto d-flex">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between justify-content-lg-start col-lg-auto">
             <form method="get" class="d-flex btn-height">
                 <div class="input-group me-2">
                     <select onchange="this.form.submit()" style="min-width: 135px;" data-val="true" asp-for=@Model.Month asp-items="@Model.MonthList" class="form-select text-center" id="monthlyBudgetMonthSelection">
@@ -67,17 +67,11 @@
                     </select>
                 </div>
             </form>
-            <div class="d-flex justify-content-end">
-                <button class="btn btn-secondary btn-height me-2 btn-text-overflow" type="button" data-bs-toggle="modal" data-bs-target="#expenseStats">View Details</button>
-                <div class="dropdown-center">
-                    <a class="btn btn-primary dropdown-toggle me-2 btn-text-overflow btn-height" href="#" role="button" data-bs-toggle="dropdown">Summary</a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item text-center spin-it" asp-page="./Monthly">Month</a></li>
-                        <li><a class="dropdown-item text-center spin-it" asp-page="./Annual">Annual</a></li>
-                        <li><a class="dropdown-item text-center spin-it" asp-page="./AllTime">All Time</a></li>
-                    </ul>
-                </div>
+            <div class="d-flex justify-content-sm-end flex-column flex-sm-row mb-2 col-lg-auto dropdown-center">
+                <button class="btn btn-secondary btn-height my-2 my-sm-0 me-sm-2 btn-text-overflow" type="button" data-bs-toggle="modal" data-bs-target="#expenseStats">View Details</button>
+                
                 <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
+
                 <ul class="dropdown-menu">
                     <li>
                         <button class="dropdown-item text-center"
@@ -150,7 +144,7 @@
             </div>
         </div>
     </div>
-    <div class="row mb-3">
+@*    <div class="row mb-3">
         @if (!dataIsNotEmptyForTheMonth)
         {
             <div class="d-flex justify-content-center col mt-4">
@@ -271,7 +265,16 @@
             <div class="col-12 col-lg-6 rounded-2 mt-2 shadow">
                 <div class="d-flex">
                 <h4 class="mt-1 me-2">Budgeted Income</h4>
-                <button class="icon-button" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="This bar represents realized income versus budgeted income."><i class="bi bi-question-circle text-primary action-icon align-self-center"></i></button>
+                <button class="icon-button" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="This bar represents realized income versus budgeted income.">
+                    @await Html.PartialAsync("Icons", new Icons()
+                    {
+                        Icon = Icon.QuestionCircle,
+                        Color = IconColors.Primary,
+                        Height=22,
+                        Width=22,
+                        Classes="align-self-center"
+                    })
+                    </button>
             </div>
             <div class="progress border-bottom my-2">
                 <div class="progress-bar bg-success" style="width: @realizedIncomePercentage">@realizedIncomePercentage</div>
@@ -279,7 +282,14 @@
             <div class="d-flex">
                 <h4 class="me-2">Budgeted Expenses</h4>
                 <button class="icon-button" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="This bar represents realized expenses versus budgeted expenses.">
-                    <i class="bi bi-question-circle text-primary action-icon align-self-center"></i>
+                    @await Html.PartialAsync("Icons", new Icons()
+                    {
+                        Icon = Icon.QuestionCircle,
+                        Color = IconColors.Primary,
+                        Height=22,
+                        Width=22,
+                        Classes="align-self-center"
+                    })
                 </button>
             </div>
             <div class="progress my-2">
@@ -288,7 +298,14 @@
             <div class="d-flex">
                 <h4 class="me-2">Budgeted Savings</h4>
                 <button class="icon-button" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="This bar represents money you have budgeted for savings. Since this is a top priority, this bar fills up first and starts to decrease after budgeted expenses and discretionary expenses have decreased.">
-                    <i class="bi bi-question-circle text-primary action-icon align-self-center"></i>
+                        @await Html.PartialAsync("Icons", new Icons()
+                    {
+                    Icon = Icon.QuestionCircle,
+                    Color = IconColors.Primary,
+                    Height=22,
+                    Width=22,
+                    Classes="align-self-center"
+                    })
                 </button>
             </div>
             <div class="progress my-2">
@@ -297,7 +314,14 @@
             <div class="d-flex">
                 <h4 class="me-2">Discretionary Spending</h4>
                 <button class="icon-button" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="This bar represents money you can spend at your discretion after you have met the budgeted expenses amount and before you start decreasing your budgeted savings amount. If  there is still money set aside after the month is done, it will be added towards your savings (see Estimated Savings).">
-                    <i class="bi bi-question-circle text-primary action-icon align-self-center"></i>
+                        @await Html.PartialAsync("Icons", new Icons()
+                    {
+                    Icon = Icon.QuestionCircle,
+                    Color = IconColors.Primary,
+                    Height=22,
+                    Width=22,
+                    Classes="align-self-center"
+                    })
                 </button>
             </div>
             <div class="progress my-2">
@@ -306,7 +330,14 @@
             <div class="d-flex">
                 <h4 class="me-2">Annual Savings Goal</h4>
                 <button class="icon-button" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="This bar represents the amount of money you have saved towards your annual savings goal, which is the budgeted amount for each month. This only includes money from the previous months of this year  and not the current month.">
-                    <i class="bi bi-question-circle text-primary action-icon align-self-center"></i>
+                    @await Html.PartialAsync("Icons", new Icons()
+                    {
+                    Icon = Icon.QuestionCircle,
+                    Color = IconColors.Primary,
+                    Height=22,
+                    Width=22,
+                    Classes="align-self-center"
+                    })
                 </button>
             </div>
             <div class="progress my-2">
@@ -363,7 +394,7 @@
             <div class="col-12 col-lg-6 d-flex">
                 <canvas id="dailyExpenseChart" class="chart-height shadow align-self-center"></canvas>
             </div>
-        }
+        }class="bi
     </div>
     <div class="row mb-1 gx-5">
         @if (Model.SummaryResponse.TopExpenses.Count > 1)
@@ -541,7 +572,7 @@
                 <canvas id="monthlySummaryChart" class="chart-height shadow align-self-center"></canvas>
             </div>
         }
-    </div>
+    </div>*@
 </div>
 @* Add Expense Modal *@
 <div class="modal fade" id="addExpenseModal">
