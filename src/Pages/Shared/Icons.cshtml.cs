@@ -40,6 +40,9 @@ namespace CashTrack.Pages.Shared
         Gear,
         BarChartFill,
         BarChart,
-        Calendar3
+        Calendar3,
+        ChartLine,
+        PieChart,
+        CalendarCheck
     }
 }
