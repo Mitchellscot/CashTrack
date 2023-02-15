@@ -37,6 +37,9 @@ namespace CashTrack.Pages.Shared
         CashCoin,
         Bank,
         GraphUp,
-        Gear
+        Gear,
+        BarChartFill,
+        BarChart,
+        Calendar3
     }
 }

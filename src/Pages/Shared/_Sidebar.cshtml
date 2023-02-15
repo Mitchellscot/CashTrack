@@ -1,6 +1,143 @@
 ﻿@using CashTrack.Common;
-<nav class="sidebar col-md-2 col-lg-2 d-md-block bg-light collapse container">
-    <div class="nav row sidebar-heading align-items-center">
+<nav class="sidebar col-md-2 d-md-block bg-light collapse">
+    <ul class="navbar-nav">
+        
+        <li class="nav-item mt-3 align-items-center">
+            <button type="button" class="nav-btn" data-bs-toggle="collapse" data-bs-target="#summaryLinks">
+                <h4 class="text-center">
+                    <span class="ms-md-1 ms-lg-2 ms-xl-4 ms-xxl-4">Summary</span>
+                    @await Html.PartialAsync("Icons", new Icons()
+                    {
+                    Icon = Icon.GraphUp,
+                    Color = IconColors.Primary,
+                    Height = 24,
+                    Width = 24,
+                    Classes="ms-lg-1 ms-xl-3 ms-xxl-5 d-none d-lg-inline-block"
+                        })
+                </h4>
+            </button>
+        </li>
+        
+        <li class="nav-item mt-1 align-items-center collapse" id="summaryLinks">
+                <a asp-page="/Index" class="nav-link spin-it">
+                <h5 class="text-center">
+                    <span>Monthly</span>
+                    @await Html.PartialAsync("Icons", new Icons()
+                    {
+                    Icon = Icon.Calendar3,
+                    Color = IconColors.Primary,
+                    Height = 22,
+                    Width = 22,
+                    Classes="ms-lg-1 ms-xl-3 ms-xxl-5 d-none d-lg-inline-block"
+                        })
+                    </h5>
+                </a>
+                <a asp-page="/Annual" class="nav-link spin-it">
+                <h5 class="text-center">
+                    <span>Annually</span>
+                    @await Html.PartialAsync("Icons", new Icons()
+                    {
+                    Icon = Icon.BarChart,
+                    Color = IconColors.Primary,
+                    Height = 22,
+                    Width = 22,
+                    Classes="ms-lg-1 ms-xl-3 ms-xxl-5 d-none d-lg-inline-block"
+                        }) 
+                    </h5>
+                </a>
+                <a asp-page="/AllTime" class="nav-link spin-it">
+                <h5 class="text-center">
+                    <span>All Time</span>
+                    @await Html.PartialAsync("Icons", new Icons()
+                    {
+                    Icon = Icon.BarChartFill,
+                    Color = IconColors.Primary,
+                    Height = 22,
+                    Width = 22,
+                    Classes="ms-lg-1 ms-xl-3 ms-xxl-5 d-none d-lg-inline-block"
+                        }) 
+                    </h5>
+                </a>
+            </li>
+            
+            <li class="nav-item align-items-center mt-3">
+                <button type="button" class="nav-btn" data-bs-toggle="collapse" data-bs-target="#expensesLinks">
+                    <h4 class="text-center">
+                    <span class="ms-md-1 ms-lg-2 ms-xl-4 ms-xxl-4">Expenses</span>
+                    @await Html.PartialAsync("Icons", new Icons()
+                    {
+                    Icon = Icon.Receipt,
+                    Color = IconColors.Primary,
+                    Height = 24,
+                    Width = 24,
+                    Classes="ms-lg-1 ms-xl-3 ms-xxl-5 d-none d-lg-inline-block"
+                        })
+                    </h4>
+                </button>
+            </li>
+            
+        <li class="nav-item align-items-center collapse" id="expensesLinks">
+            <a asp-page="/Expenses/Index" class="nav-link spin-it">
+                <h5 class="text-center">
+                    <span>Expense List</span>
+                @await Html.PartialAsync("Icons", new Icons()
+                    {
+                    Icon = Icon.Cardlist,
+                    Color = IconColors.Primary,
+                    Height = 22,
+                    Width = 22,
+                    Classes="ms-lg-1 ms-xl-3 ms-xxl-4 d-none d-lg-inline-block"
+                    })
+                </h5>
+            </a>
+            <a asp-page="/Expenses/Merchants/Index" class="nav-link spin-it">
+                <h5 class="text-center">
+                    <span>Merchants</span>
+                 @await Html.PartialAsync("Icons", new Icons()
+                    {
+                    Icon = Icon.Shop,
+                    Color = IconColors.Primary,
+                    Height = 22,
+                    Width = 22,
+                    Classes="ms-lg-1 ms-xl-3 ms-xxl-4 d-none d-lg-inline-block"
+                    })
+                </h5>
+            </a>
+            <a asp-page="/Expenses/Categories/Index" class="nav-link spin-it">
+                <h5 class="text-center">
+                    <span>Categories</span>
+                 @await Html.PartialAsync("Icons", new Icons()
+                    {
+                    Icon = Icon.Diagram,
+                    Color = IconColors.Primary,
+                    Height = 22,
+                    Width = 22,
+                    Classes="ms-lg-1 ms-xl-3 ms-xxl-4 d-none d-lg-inline-block"
+                    }) 
+                </h5>
+            </a>
+        </li>
+
+        <li class="nav-item align-items-center mt-3">
+            <button type="button" class="nav-btn" data-bs-toggle="collapse" data-bs-target="#incomesLinks">
+                <h4 class="text-center">
+                    <span class="ms-md-1 ms-lg-2 ms-xl-4 ms-xxl-4">Income</span>
+                    @await Html.PartialAsync("Icons", new Icons()
+                    {
+                    Icon = Icon.CashCoin,
+                    Color = IconColors.Primary,
+                    Height = 24,
+                    Width = 24,
+                    Classes="ms-lg-1 ms-xl-3 ms-xxl-5 d-none d-lg-inline-block"
+                        })
+                </h4>
+            </button>
+        </li>
+        
+    </ul>
+
+@*
+    <div class="nav sidebar-heading align-items-center">
         <div class="col-lg-9 col-md-6 nav-link pb-0">
             <button type="button" class="text-primary nav-btn">
                 <a asp-page="/Monthly" class="text-primary spin-it">Dashboard</a>
@@ -105,10 +242,10 @@
         <div class="col-2">
             <button class="text-primary nav-btn" asp-page="/Settings/Index">
                 <a asp-page="/Settings/Index">
-                    @*<img height="24" width="24" src="~/images/icons/gear.svg" class="d-none d-xl-block" />*@
+                    <img height="24" width="24" src="~/images/icons/gear.svg" class="d-none d-xl-block" />
                     @await Html.PartialAsync("Icons", new Icons(){ Icon = Icon.Gear, Height=24, Width=24, Color = IconColors.Primary, Classes="d-none d-xl-block" })
                 </a>
             </button>
         </div>
-    </div>
+    </div>*@
 </nav>
