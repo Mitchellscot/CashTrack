@@ -73,4 +73,15 @@
         public const string PurpleDark = "rgba(84, 29, 108, .8)";
         public const string PurpleBold = "rgba(136, 78, 160, 1)";
     }
+    public static class IconColors
+    {
+        public const string Primary = "#2c3e50";
+        public const string Secondary = "#95A5A6";
+        public const string Success = "#18BC9C";
+        public const string Info = "#3498DB";
+        public const string Warning = "#F39C12";
+        public const string Danger = "#E74C3C";
+        public const string White = "#FFFFFF";
+        public const string Black = "#000000";
+    }
 }
