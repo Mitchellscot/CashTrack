@@ -108,7 +108,7 @@
                 </ul>
             </div>
     </div>
-@*    <div class="row mb-3">
+    <div class="row mb-3">
         @if (!incomeORExpenseDataIsPresent)
         {
             <div class="d-flex justify-content-center col mt-4">
@@ -213,23 +213,24 @@
             </div>
         }
     </div>
+        @*
     @if (Model.SummaryResponse.DataSpansMultipleYears)
     {
-    <div class="row mb-2">
+
         @if (incomeANDExpenseDataIsPresent)
         {
-            <div class="col-12 col-lg-6 d-flex">
+            <div class="col col-lg-6 d-flex">
                 <canvas id="savingsChart" class="chart-height shadow align-self-center"></canvas>
             </div>
         }
         @if (incomeORExpenseDataIsPresent)
         {
-            <div class="col-12 col-lg-6 d-flex">
+            <div class="col col-lg-6 d-flex">
                 <canvas id="incomeExpenseChart" class="chart-height shadow align-self-center"></canvas>
             </div>
         }
-    </div>
     }
+
     @if (Model.SummaryResponse.DataSpansMultipleYears)
     {
     <div class="row mb-2">
