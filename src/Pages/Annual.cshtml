@@ -227,7 +227,7 @@
     </div>
     @if (incomeANDExpenseDataIsPresent)
     {
-    <div class="row mb-3">
+    <div class="row mb-3 flex-wrap">
 
             <div class="col col-xl-6 d-flex annual-charts flex-fill">
                 <canvas id="savingsChart" class="chart-height shadow align-self-center"></canvas>
@@ -236,24 +236,27 @@
             <div class="col col-xl-6 d-flex annual-charts flex-fill">
                 <canvas id="incomeExpenseChart" class="chart-height shadow align-self-center"></canvas>
             </div>
-        
     </div>
     }
-        @*
-
+    <div class="row mb-3">
+        @if (incomeORExpenseDataIsPresent && DateTime.Now.Month > 1)
+        {
+            <div class="col d-flex">
+                <canvas id="annualMonthlySummaryChart" class="chart-height align-self-center shadow"></canvas>
+            </div>
+        }
+    </div>
     <div class="row gx-5">
         @if (expenseDataIsPresent)
         {
-            <div class="col-12 col-lg-6 my-3">
-                <div class="row shadow">
-                    <div class="col-6 pie-stats">
+            <div class="col col-md-6 mb-3 col-xxl-3 px-3 shadow flex-fill">
                         <div class="d-flex justify-content-center">
                             <span class="mb-0 fw-bold d-none d-lg-block">Top Expenses</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Expenses/Index" asp-route-Query="4" asp-route-Q="@Model.Year" asp-route-PageNumber="1">
                                 View All
                         </a>
                         </div>
-                <div class="table-responsive-lg">
-                    <table class="table table-sm align-middle text-center mb-0">
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle text-center mb-3">
                         <thead class="p-0 m-0">
                             <tr>
                                 <th class="p-0 m-0">
@@ -288,25 +291,19 @@
                 </div>
                 @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.SubCategoryPercentages.Values.Sum() > 0)
                 {
-                    <div class="col-6 d-flex">
+                <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
                             <canvas id="subCategoryPie" class="chart-height align-self-center"></canvas>
                     </div>
                 }
-                </div>
-            </div>
-        }
-        @if (expenseDataIsPresent)
-        {
-            <div class="col-12 col-lg-6 my-3">
-                <div class="row shadow">
-                    <div class="col-6 pie-stats">
+
+        <div class="col col-md-6 mb-3 col-xxl-3 px-3 shadow flex-fill">
                         <div class="d-flex justify-content-center">
                             <span class="mb-0 fw-bold d-none d-lg-block">Top Categories</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Expenses/Categories/Index" asp-route-Query="3" asp-route-Q2=true asp-route-PageNumber="1">
                                 View All
                             </a>
                         </div>
-                        <div class="table-responsive-lg">
-                            <table class="table table-sm align-middle text-center mb-0">
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle text-center mb-3">
                                 <thead class="p-0 m-0">
                                     <tr>
                                         <th class="p-0 m-0">
@@ -341,27 +338,22 @@
                     </div>
                     @if (expenseDataIsPresent)
                     {
-                        <div class="col-6 d-flex">
+                    <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
                             <canvas id="mainCategoryPie" class="chart-height align-self-center"></canvas>
                         </div>
                     }
-                </div>
-            </div>
         }
-    </div>
-    <div class="row gx-5">
+
         @if(expenseDataIsPresent)
         {
-        <div class="col-12 col-lg-6 my-3">
-            <div class="row shadow">
-                    <div class="col-6 pie-stats">
+            <div class="col col-md-6 mb-3 col-xxl-3 px-3 shadow flex-fill">
                     <div class="d-flex justify-content-center">
                         <span class="mb-0 fw-bold d-none d-lg-block">Top Merchants</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Merchants/Index" asp-route-Query="3" asp-route-Q2=true asp-route-PageNumber="1">
                             View All
                         </a>
                     </div>
-                    <div class="table-responsive-lg">
-                        <table class="table table-sm align-middle text-center mb-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle text-center mb-3">
                             <thead class="p-0 m-0">
                                 <tr>
                                     <th class="p-0 m-0">
@@ -396,25 +388,21 @@
                 </div>
                 @if (expenseDataIsPresent)
                 {
-                    <div class="col-6 d-flex">
+                        <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
                             <canvas id="merchantPie" class="chart-height align-self-center"></canvas>
                     </div>
                 }
-            </div>
-        </div>
         }
         @if (incomeDataIsPresent)
         {
-            <div class="col-12 col-lg-6 my-3">
-                <div class="row shadow">
-                    <div class="col-6 pie-stats">
+            <div class="col col-md-6 mb-3 col-xxl-3 px-3 shadow flex-fill">
                         <div class="d-flex justify-content-center">
                             <span class="mb-0 fw-bold d-none d-lg-block">Top Income Sources</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Sources/Index" asp-route-PageNumber="1">
                                 View All
                             </a>
                         </div>
-                        <div class="table-responsive-lg">
-                            <table class="table table-sm align-middle text-center mb-0">
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle text-center mb-3">
                                 <thead class="p-0 m-0">
                                     <tr>
                                         <th class="p-0 m-0">
@@ -449,23 +437,13 @@
                     </div>
                     @if (Model.SummaryResponse.IncomeSourcePercentages != null && Model.SummaryResponse.IncomeSourcePercentages.Values.Sum() > 0)
                     {
-                        <div class="col-6 d-flex">
+                        <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
                             <canvas id="incomeSourcePie" class="chart-height align-self-center"></canvas>
                         </div>
                     }
-                </div>
-            </div>
         }
 
     </div>
-    <div class="row mb-3">
-        @if (incomeORExpenseDataIsPresent && DateTime.Now.Month > 1)
-        {
-            <div class="col d-flex">
-                <canvas id="annualMonthlySummaryChart" class="chart-height align-self-center shadow"></canvas>
-            </div>
-        }
-    </div>*@
 </div>
 @await Html.PartialAsync("TransactionBreakdownModal", new TransactionBreakdownModal()
 {
