@@ -27,7 +27,8 @@
     new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
-    <div class="row mt-2 border-bottom d-flex justify-content-between">
+
+    <div class="row mt-2 border-bottom d-flex justify-content-md-between flex-column flex-md-row flex-lg-nowrap">
         <div class="d-flex col-auto align-self-center">
         <h3 class="me-2">
             @Model.Year
@@ -37,7 +38,7 @@
             <p class="fst-italic align-self-end ms-3">Last Import: @Model.SummaryResponse.LastImport.ToShortDateString()</p>
         }
         </div>
-        <div class="col-auto d-flex">
+        <div class="d-flex flex-column flex-sm-row justify-content-sm-between justify-content-md-start col-md-auto">
             <form method="get" class="d-flex btn-height">
                 <div class="input-group me-2">
                     <select onchange="this.form.submit()" data-val="true" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="monthlyBudgetYearSelection">
@@ -45,16 +46,8 @@
                     </select>
                 </div>
             </form>
-            <div class="d-flex justify-content-end">
-                <button class="btn btn-secondary btn-height me-2 btn-text-overflow" type="button" data-bs-toggle="modal" data-bs-target="#expenseStats">View Details</button>
-                <div class="dropdown-center">
-                    <a class="btn btn-primary dropdown-toggle me-2 btn-text-overflow btn-height" href="#" role="button" data-bs-toggle="dropdown">Summary</a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item text-center spin-it" asp-page="./index">Month</a></li>
-                        <li><a class="dropdown-item text-center spin-it" asp-page="./Annual">Annual</a></li>
-                        <li><a class="dropdown-item text-center spin-it" asp-page="./AllTime">All Time</a></li>
-                    </ul>
-                </div>
+            <div class="d-flex justify-content-sm-end flex-column flex-sm-row mb-2 col-lg-auto dropdown-center">
+                <button class="btn btn-secondary btn-height my-2 my-sm-0 me-sm-2 btn-text-overflow" type="button" data-bs-toggle="modal" data-bs-target="#expenseStats">View Details</button>
                 <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
                 <ul class="dropdown-menu">
                     <li>
@@ -128,7 +121,7 @@
             </div>
         </div>
     </div>
-    <div class="row mb-3">
+    <div class="row mb-3 flex-wrap">
         @if (!incomeORExpenseDataIsPresent)
         {
             <div class="d-flex justify-content-center col mt-4">
@@ -147,10 +140,10 @@
         }
         @if (incomeORExpenseDataIsPresent)
             {
-            <div class="col-6 col-lg-3 mt-1 d-flex flex-column align-content-center">
+            <div class="col col-sm-6 col-xl-3 mt-1 d-flex flex-column align-content-center monthly-summary-chart mb-3">
                 <ul class="list-group text-center mt-2 shadow flex-fill d-flex justify-content-between">
                         <li class="flex-fill list-group-item d-flex justify-content-between p-3">
-                            <span class="d-none d-md-block">
+                            <span>
                                 Earned: &nbsp;
                             </span>
                             <span class="fw-bold text-primary responsive-text">
@@ -158,7 +151,7 @@
                             </span>
                         </li>
                     <li class="flex-fill list-group-item d-flex justify-content-between p-3">
-                            <span class="d-none d-md-block">
+                            <span>
                                 Spent:
                             </span>
                             <span class="fw-bold text-primary responsive-text">
@@ -166,7 +159,7 @@
                             </span>
                         </li>
                     <li class="flex-fill list-group-item d-flex justify-content-between p-3">
-                            <span class="d-none d-md-block">
+                            <span>
                                 Saved:
                             </span>
                             <span class="fw-bold text-primary responsive-text">
@@ -174,7 +167,7 @@
                             </span>
                         </li>
                         <li class="flex-fill list-group-item d-flex justify-content-between p-3">
-                            <span class="d-none d-md-block">
+                            <span>
                                 Savings Goal:
                             </span>
                             @if (Model.SummaryResponse.AnnualSummary.SavingsGoalProgress < 0)
@@ -193,7 +186,7 @@
                         <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                         @if (Model.Year == DateTime.Now.Year)
                         {
-                            <span class="d-none d-md-block">
+                            <span>
                                 Monthly Savings to Meet Goal:
                             </span>
                             <span class="fw-bold text-primary responsive-text">
@@ -202,8 +195,8 @@
                         }
                         else
                         {
-                            <span class="d-none d-md-block">
-                                Average Monthly Savings:
+                            <span>
+                                Average Savings:
                             </span>
                             <span class="fw-bold text-primary responsive-text">
                                 @String.Format("{0:n}", Model.SummaryResponse.AnnualSummary.AveragedSavedPerMonth)
@@ -211,7 +204,7 @@
                         }
                         </li>
                         <li class="flex-fill list-group-item d-flex justify-content-between p-3">
-                            <span class="d-none d-md-block">
+                            <span>
                                 Budget Variance:
                             </span>
                             <span class="fw-bold text-primary responsive-text">
@@ -220,34 +213,34 @@
                         </li>
                     </ul>
                 </div>
-            }
-        @if (incomeORExpenseDataIsPresent)
-        {
-            <div class="col-6 col-lg-3 d-flex">
-                <canvas id="overallSummaryChart" class="shadow align-self-center chart-height pt-2"></canvas>
+
+            <div class="col col-sm-6 col-xl-3 pt-2 monthly-overall-summary-chart mb-3">
+                <canvas id="overallSummaryChart" class="shadow"></canvas>
             </div>
         }
         @if(expenseDataIsPresent)
         {
-            <div class="col-12 col-lg-6 d-flex">
-                <canvas id="monthlyStatisticsChart" class="chart-height shadow align-self-center"></canvas>
+            <div class="col col-xl-6 flex-fill rounded-2 mt-2 mb-3 d-flex">
+                <canvas id="monthlyStatisticsChart" class="chart-height align-self-center monthly-progress-chart"></canvas>
             </div>
         }
     </div>
-    <div class="row mb-2">
-        @if (incomeANDExpenseDataIsPresent)
-        {
-            <div class="col-12 col-lg-6 d-flex">
+    @if (incomeANDExpenseDataIsPresent)
+    {
+    <div class="row mb-3">
+
+            <div class="col col-xl-6 d-flex annual-charts flex-fill">
                 <canvas id="savingsChart" class="chart-height shadow align-self-center"></canvas>
             </div>
-        }
-        @if (incomeANDExpenseDataIsPresent)
-        {
-            <div class="col-12 col-lg-6 d-flex">
+
+            <div class="col col-xl-6 d-flex annual-charts flex-fill">
                 <canvas id="incomeExpenseChart" class="chart-height shadow align-self-center"></canvas>
             </div>
-        }
+        
     </div>
+    }
+        @*
+
     <div class="row gx-5">
         @if (expenseDataIsPresent)
         {
@@ -472,7 +465,7 @@
                 <canvas id="annualMonthlySummaryChart" class="chart-height align-self-center shadow"></canvas>
             </div>
         }
-    </div>
+    </div>*@
 </div>
 @await Html.PartialAsync("TransactionBreakdownModal", new TransactionBreakdownModal()
 {

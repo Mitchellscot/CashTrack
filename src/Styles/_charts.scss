@@ -43,3 +43,9 @@
 .daily-expense-chart {
     min-width: 550px;
 }
+
+.annual-charts {
+    @media (min-width: $MD_BREAKPOINT) {
+        min-height: 360px;
+    }
+}
