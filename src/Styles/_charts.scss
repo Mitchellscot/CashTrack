@@ -1,4 +1,6 @@
-﻿.card-chart-height {
+﻿@import 'variables';
+
+.card-chart-height {
     height: 100px;
 }
 
@@ -8,4 +10,36 @@
 
 .pie-stats {
     min-height: 380px;
+}
+
+.monthly-summary-chart {
+    min-width: 280px;
+
+    @media (min-width: $SM_BREAKPOINT) {
+        min-width: 0px;
+    }
+}
+
+.monthly-progress-chart {
+    max-height: 400px;
+    min-height: 360px;
+    min-width: 350px;
+
+    @media (min-width: $SM_BREAKPOINT) {
+        min-width: 300px;
+    }
+}
+
+.monthly-overall-summary-chart {
+    min-width: 375px;
+    max-height: 400px;
+    min-height: 360px;
+
+    @media (min-width: $SM_BREAKPOINT) {
+        min-width: 0px;
+    }
+}
+
+.daily-expense-chart {
+    min-width: 550px;
 }
