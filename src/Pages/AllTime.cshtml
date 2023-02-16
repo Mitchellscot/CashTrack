@@ -28,15 +28,14 @@
     new _MessagePartial() { Message = Model.SuccessMessage, MessageType = MessageType.Success, Show = Model.SuccessMessage != null })
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
-    <div class="row mt-2 border-bottom d-flex justify-content-between">
+    <div class="row mt-2 border-bottom d-flex justify-content-sm-between flex-column flex-sm-row">
         <div class="d-flex col-auto align-self-center">
         <h3 class="me-2">
             All Time Summary
         </h3>
         </div>
-        <div class="col-auto d-flex">
-            <div class="d-flex justify-content-end">
-                <button class="btn btn-secondary btn-height me-2 btn-text-overflow" type="button" data-bs-toggle="modal" data-bs-target="#expenseStats">View Details</button>
+        <div class="d-flex flex-column flex-sm-row col-sm-auto justify-content-sm-end mb-2 dropdown-center">
+                <button class="btn btn-secondary btn-height my-2 my-sm-0 me-sm-2 btn-text-overflow" type="button" data-bs-toggle="modal" data-bs-target="#expenseStats">View Details</button>
                 <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
                 <ul class="dropdown-menu">
                     <li>
@@ -108,9 +107,8 @@
                     </li>
                 </ul>
             </div>
-        </div>
     </div>
-    <div class="row mb-3">
+@*    <div class="row mb-3">
         @if (!incomeORExpenseDataIsPresent)
         {
             <div class="d-flex justify-content-center col mt-4">
@@ -474,7 +472,7 @@
                 <canvas id="annualSummaryChart" class="chart-height align-self-center shadow"></canvas>
             </div>
         }
-    </div>
+    </div>*@
 </div>
 @* Add Expense Modal *@
 <div class="modal fade" id="addExpenseModal">
