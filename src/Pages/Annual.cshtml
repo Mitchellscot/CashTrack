@@ -289,7 +289,7 @@
                 </div>
                 @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.SubCategoryPercentages.Values.Sum() > 0)
                 {
-                <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
+                <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats justify-content-center">
                             <canvas id="subCategoryPie" class="chart-height align-self-center"></canvas>
                     </div>
                 }
@@ -336,7 +336,7 @@
                     </div>
                     @if (expenseDataIsPresent)
                     {
-                    <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
+                    <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats justify-content-center">
                             <canvas id="mainCategoryPie" class="chart-height align-self-center"></canvas>
                         </div>
                     }
@@ -386,7 +386,7 @@
                 </div>
                 @if (expenseDataIsPresent)
                 {
-                        <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
+                        <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats justify-content-center">
                             <canvas id="merchantPie" class="chart-height align-self-center"></canvas>
                     </div>
                 }
@@ -435,7 +435,7 @@
                     </div>
                     @if (Model.SummaryResponse.IncomeSourcePercentages != null && Model.SummaryResponse.IncomeSourcePercentages.Values.Sum() > 0)
                     {
-                        <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
+                        <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats justify-content-center">
                             <canvas id="incomeSourcePie" class="chart-height align-self-center"></canvas>
                         </div>
                     }

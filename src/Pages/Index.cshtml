@@ -446,7 +446,7 @@
             </div>
             @if (Model.SummaryResponse.SubCategoryPercentages != null && Model.SummaryResponse.SubCategoryPercentages.Values.Sum() > 0)
             {
-                <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
+                <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats justify-content-center">
                     <canvas id="subCategoryPie" class="chart-height align-self-center"></canvas>
                 </div>
             }
@@ -497,7 +497,7 @@
         }
         @if (Model.SummaryResponse.MerchantPercentages != null && Model.SummaryResponse.MerchantPercentages.Values.Sum() > 0)
         {
-            <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
+            <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats justify-content-center">
                 <canvas id="merchantPie" class="chart-height align-self-center"></canvas>
             </div>
         }
@@ -547,7 +547,7 @@
             @if (Model.SummaryResponse.MainCategoryPercentages != null && Model.SummaryResponse.MainCategoryPercentages.Values.Sum() > 0)
             {
                 <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
-                    <canvas id="mainCategoryPie" class="chart-height align-self-center"></canvas>
+                    <canvas id="mainCategoryPie" class="chart-height align-self-center justify-content-center"></canvas>
                 </div>
             }
         }

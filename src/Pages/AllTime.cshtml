@@ -300,7 +300,7 @@
             </div>
             @if (Model.SummaryResponse.SubCategoryPercentages != null && expenseDataIsPresent)
             {
-                <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
+                <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats justify-content-center">
                     <canvas id="subCategoryPie" class="chart-height align-self-center"></canvas>
                 </div>
             }
@@ -350,7 +350,7 @@
             </div>
             @if (Model.SummaryResponse.MainCategoryPercentages != null && expenseDataIsPresent)
             {
-                <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
+                <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats justify-content-center">
                     <canvas id="mainCategoryPie" class="chart-height align-self-center"></canvas>
                 </div>
             }
@@ -402,7 +402,7 @@
                     </div>
                     @if (Model.SummaryResponse.MerchantPercentages != null && expenseDataIsPresent)
                     {
-                <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
+                    <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats justify-content-center">
                             <canvas id="merchantPie" class="chart-height align-self-center"></canvas>
                         </div>
                     }
@@ -415,7 +415,7 @@
                                 View All
                             </a>
                         </div>
-                        <div class="table-responsive">
+                        <div class="table">
                             <table class="table table-sm align-middle text-center mb-3">
                                 <thead class="p-0 m-0">
                                     <tr>
@@ -434,7 +434,7 @@
                                     @foreach (var expense in @Model.SummaryResponse.TopSources)
                                     {
                                         <tr>
-                                            <td>
+                                            <td style="text-overflow: ellipsis;">
                                                 @expense.Name
                                             </td>
                                             <td>
@@ -451,14 +451,14 @@
                     </div>
                     @if (Model.SummaryResponse.IncomeSourcePercentages != null && incomeDataIsPresent)
                     {
-                        <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
+                <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats justify-content-center">
                             <canvas id="incomeSourcePie" class="chart-height align-self-center"></canvas>
                         </div>
                     }
         }
     </div>
-
 </div>
+
 @* Add Expense Modal *@
 <div class="modal fade" id="addExpenseModal">
     @await Html.PartialAsync("AddEditExpenseModal",
