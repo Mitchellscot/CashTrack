@@ -525,7 +525,7 @@ namespace CashTrack.Services.SummaryService
             {
                 IncomeDataset = incomeData.Sum() > 0 ? JsonSerializer.Serialize(incomeData) : string.Empty,
                 ExpenseDataset = expenseData.Sum() > 0 ? JsonSerializer.Serialize(expenseData) : string.Empty,
-                SavingsDataset = calculatedSavings.Sum() > 0 ? JsonSerializer.Serialize(calculatedSavings) : string.Empty,
+                SavingsDataset = calculatedSavings.Sum() != 0 ? JsonSerializer.Serialize(calculatedSavings) : string.Empty,
                 BudgetedIncomeDataset = budgetedIncome.Sum() > 0 ? JsonSerializer.Serialize(budgetedIncomeDataset).Replace(decimal.MaxValue.ToString(), "NaN") : string.Empty,
                 BudgetedExpenseDataset = budgetedExpenses.Sum() > 0 ? JsonSerializer.Serialize(budgetedExpenseDataset).Replace(decimal.MaxValue.ToString(), "NaN") : string.Empty,
                 BudgetedSavingsDataset = budgetedSavings.Sum() > 0 ? JsonSerializer.Serialize(budgetedSavingsDataset).Replace(decimal.MaxValue.ToString(), "NaN") : string.Empty

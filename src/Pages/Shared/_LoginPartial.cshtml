@@ -3,7 +3,7 @@
 
 @if (!SignInManager.IsSignedIn(User))
 {
-    <li class="mx-3">
+    <li class="mx-3 d-none d-md-block">
         <a asp-page="/Account/Login" class="text-white d-flex align-items-center">
             <h5>Log In</h5> <i class="bi bi-box-arrow-in-right text-white logout-button ms-2"></i>
         </a>
@@ -11,12 +11,17 @@
 }
 else
 {
-    <li class="text-nowrap list-unstyled">
+    <li class="text-nowrap list-unstyled d-none d-md-block my-md-2 me-md-4">
         <form method="post" asp-page="/Account/Logout" id="logoutForm">
             <button type="submit" class="icon-button spin-it">
                 <i class="bi bi-box-arrow-right text-white logout-button"></i>
             </button>
         </form>
+    </li>
+    <li class="text-nowrap list-unstyled d-block d-md-none">
+        <button type="button" class="icon-button me-3" data-bs-toggle="offcanvas" data-bs-target="#offCanvasMenu">
+            <i class="bi bi-list hamburger"></i>
+        </button>
     </li>
 }
 

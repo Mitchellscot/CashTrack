@@ -70,7 +70,7 @@ namespace CashTrack.Pages.Import
                 await PrepareData();
                 return Page();
             }
-            if (IsRefund || SelectedIncome.Category.IsEqualTo("Refund"))
+            if (IsRefund || (SelectedIncome.Category != null && SelectedIncome.Category.IsEqualTo("Refund")))
                 return RedirectToPage("../Income/Refund", new { id = incomeId });
 
             TempData["SuccessMessage"] = "Sucessfully Added New Income!";

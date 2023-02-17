@@ -39,6 +39,7 @@
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 tooltip: {
                     callbacks: {
@@ -46,7 +47,8 @@
                     }
                 },
                 title: {
-                    display: false
+                    display: true,
+                    text: '@Model.Title'
                 },
                 legend: {
                     display: true

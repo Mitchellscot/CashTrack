@@ -1,10 +1,16 @@
 ﻿@import '../node_modules/bootswatch/dist/flatly/_variables';
 
+$XS_BREAKPOINT: 0px;
+$SM_BREAKPOINT: 576px;
 $MD_BREAKPOINT: 768px;
+$LG_BREAKPOINT: 992px;
+$XL_BREAKPOINT: 1200px;
+$XXL_BREAKPOINT: 1400px;
+
 $PRIMARY_COLOR: $primary;
 $SUCCESS_COLOR: $success;
 $WHITE_COLOR: $white;
-$TEXT_COLOR: $gray-900; 
+$TEXT_COLOR: $gray-900;
 $BTN_HEIGHT: 38px;
 $ROW_HEIGHT: 34px;
 $FONT_FAM: $font-family-sans-serif;

@@ -1,0 +1,177 @@
+﻿@using CashTrack.Common;
+@{
+}
+
+
+<div class="offcanvas offcanvas-start bg-light" tabindex="-1" id="offCanvasMenu">
+
+  <div class="offcanvas-header d-flex justify-content-end">
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+
+    <nav class="offcanvas-body">
+        <ul class="navbar-nav">
+
+            <li class="nav-item">
+                <button type="button" class="nav-btn px-0" data-bs-toggle="collapse" data-bs-target="#dashboardLinks">
+                    <h3 class="fw-bolder">
+                    @await Html.PartialAsync("Icons", new Icons()
+                    {
+                        Icon = Icon.GraphUp,
+                        Color = IconColors.Primary,
+                        Height=28,
+                        Width=28,
+                        Classes="me-3"
+                    })
+                        <span>Summary</span>
+                    </h3>
+                </button>
+            </li>
+            <li class="nav-item collapse" id="dashboardLinks">
+                <a asp-page="/Index" class="nav-link spin-it">
+                    <h4 class="fw-bolder">
+                        <i class="bi bi-calendar3 me-3 ms-5"></i>
+                        <span>Monthly</span>
+                    </h4>
+                </a>
+                <a asp-page="/Annual" class="nav-link spin-it">
+                    <h4 class="fw-bolder">
+                        <i class="bi bi-bar-chart me-3 ms-5"></i>
+                        <span>Annually</span>
+                    </h4>
+                </a>
+                <a asp-page="/AllTime" class="nav-link spin-it">
+                    <h4 class="fw-bolder">
+                        <i class="bi bi-bar-chart-fill me-3 ms-5"></i>
+                        <span>All Time</span>
+                    </h4>
+                </a>
+            </li>
+
+            <li class="nav-item mt-4">
+                <button type="button" class="nav-btn px-0" data-bs-toggle="collapse" data-bs-target="#expenseLinks">
+                    <h3 class="fw-bolder">
+                    @await Html.PartialAsync("Icons", new Icons()
+                    {
+                        Icon = Icon.Receipt,
+                        Color = IconColors.Primary,
+                        Height=28,
+                        Width=28,
+                        Classes="me-3"
+                    })
+                        <span>Expenses</span>
+                    </h3>
+                </button>
+            </li>
+            <li class="nav-item collapse" id="expenseLinks">
+                <a asp-page="/Expenses/Index" class="nav-link spin-it">
+                    <h4 class="fw-bolder">
+                        <i class="bi bi-card-list me-3 ms-5"></i>
+                        <span>Expense List</span>
+                    </h4>
+                </a>
+                <a asp-page="/Expenses/Merchants/Index" class="nav-link spin-it">
+                    <h4 class="fw-bolder">
+                        <i class="bi bi-shop me-3 ms-5"></i>
+                        <span>Merchants</span>
+                    </h4>
+                </a>
+                <a asp-page="/Expenses/Categories/Index" class="nav-link spin-it">
+                    <h4 class="fw-bolder">
+                        <i class="bi bi-diagram-3 me-3 ms-5"></i>
+                        <span>Categories</span>
+                    </h4>
+                </a>
+            </li>
+
+            <li class="nav-item mt-4">
+                <button type="button" class="nav-btn px-0" data-bs-toggle="collapse" data-bs-target="#incomeLinks">
+                    <h3 class="fw-bolder">
+                    @await Html.PartialAsync("Icons", new Icons()
+                    {
+                        Icon = Icon.CashCoin,
+                        Color = IconColors.Primary,
+                        Height=28,
+                        Width=28,
+                        Classes="me-3"
+                    })
+                        <span>Income</span>
+                    </h3>
+                </button>
+            </li>
+            <li class="nav-item collapse" id="incomeLinks">
+                <a asp-page="/Income/Index" class="nav-link spin-it">
+                    <h4 class="fw-bolder">
+                        <i class="bi bi-card-list me-3 ms-5"></i>
+                        <span>Income List</span>
+                    </h4>
+                </a>
+                <a asp-page="/Income/Sources/Index" class="nav-link spin-it">
+                    <h4 class="fw-bolder">
+                        <i class="bi bi-bank me-3 ms-5"></i>
+                        <span>Sources</span>
+                    </h4>
+                </a>
+                <a asp-page="/Income/Categories/Index" class="nav-link spin-it">
+                    <h4 class="fw-bolder">
+                        <i class="bi bi-diagram-3 me-3 ms-5"></i>
+                        <span>Categories</span>
+                    </h4>
+                </a>
+            </li>
+
+            <li class="nav-item mt-4">
+                <button type="button" class="nav-btn px-0" data-bs-toggle="collapse" data-bs-target="#budgetLinks">
+                    <h3 class="fw-bolder">
+                    @await Html.PartialAsync("Icons", new Icons()
+                    {
+                        Icon = Icon.PieChart,
+                        Color = IconColors.Primary,
+                        Height=28,
+                        Width=28,
+                        Classes="me-3"
+                    })
+                        <span>Budget</span>
+                    </h3>
+                </button>
+            </li>
+            <li class="nav-item collapse" id="budgetLinks">
+                <a asp-page="/Budget/Annual" class="nav-link spin-it">
+                    <h4 class="fw-bolder">
+                        <i class="bi bi-bar-chart-line me-3 ms-5"></i>
+                        <span>Annual</span>
+                    </h4>
+                </a>
+                <a asp-page="/Budget/Monthly" class="nav-link spin-it">
+                    <h4 class="fw-bolder">
+                        <i class="bi bi-calendar2-check me-3 ms-5"></i>
+                        <span>Monthly</span>
+                    </h4>
+                </a>
+                <a asp-page="/Budget/List" class="nav-link spin-it">
+                    <h4 class="fw-bolder">
+                        <i class="bi bi-card-list me-3 ms-5"></i>
+                        <span>Budget List</span>
+                    </h4>
+                </a>
+            </li>
+
+            <li class="nav-item mt-4">
+                <a asp-page="/Settings/Index" class="nav-link spin-it">
+                    <h3 class="fw-bolder">
+                    @await Html.PartialAsync("Icons", new Icons()
+                    {
+                        Icon = Icon.Gear,
+                        Color = IconColors.Primary,
+                        Height=28,
+                        Width=28,
+                        Classes="me-3"
+                    })
+                        <span>Settings</span>
+                    </h3>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+</div>
