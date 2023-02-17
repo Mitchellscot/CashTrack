@@ -66,7 +66,7 @@ namespace CashTrack
                 ConfigureEndpoints(app);
 
             if (UseHttp())
-                app.Urls.Add("http://localhost:5000");
+                app.Urls.Add("http://*:5000");
 
             app.Logger.LogInformation($"Using environment: {_env}");
             app.Logger.LogInformation($"Listening on {string.Join(", ", app.Urls)}");
