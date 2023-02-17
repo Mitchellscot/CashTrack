@@ -140,7 +140,7 @@
         }
         @if (incomeORExpenseDataIsPresent)
             {
-            <div class="col col-sm-6 col-xl-3 mt-1 d-flex flex-column align-content-center monthly-summary-chart mb-3">
+            <div class="col col-sm-6 col-xl-3 mt-1 d-flex flex-column align-content-center summary-chart mb-3">
                 <ul class="list-group text-center mt-2 shadow flex-fill d-flex justify-content-between">
                         <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                             <span>
@@ -214,14 +214,14 @@
                     </ul>
                 </div>
 
-            <div class="col col-sm-6 col-xl-3 pt-2 monthly-overall-summary-chart mb-3">
+            <div class="col col-sm-6 col-xl-3 pt-2 overall-summary-chart mb-3">
                 <canvas id="overallSummaryChart" class="shadow"></canvas>
             </div>
         }
         @if(expenseDataIsPresent)
         {
-            <div class="col col-xl-6 flex-fill rounded-2 mt-2 mb-3 d-flex">
-                <canvas id="monthlyStatisticsChart" class="chart-height align-self-center monthly-progress-chart"></canvas>
+            <div class="col col-xl-6 rounded-2 mt-2 mb-3 d-flex chart-width-full-xl-half flex-fill">
+                <canvas id="monthlyStatsChart" class="shadow align-self-center"></canvas>
             </div>
         }
     </div>
@@ -229,23 +229,21 @@
     {
     <div class="row mb-3 flex-wrap">
 
-            <div class="col col-xl-6 d-flex annual-charts flex-fill">
-                <canvas id="savingsChart" class="chart-height shadow align-self-center"></canvas>
+            <div class="col col-xl-6 d-flex chart-width-full-xl-half flex-fill">
+                <canvas id="savingsChart" class="shadow align-self-center"></canvas>
             </div>
 
-            <div class="col col-xl-6 d-flex annual-charts flex-fill">
-                <canvas id="incomeExpenseChart" class="chart-height shadow align-self-center"></canvas>
+            <div class="col col-xl-6 d-flex chart-width-full-xl-half flex-fill">
+                <canvas id="incomeExpenseChart" class="shadow align-self-center"></canvas>
             </div>
     </div>
     }
-    <div class="row mb-3">
         @if (incomeORExpenseDataIsPresent && DateTime.Now.Month > 1)
         {
-            <div class="col d-flex">
-                <canvas id="annualMonthlySummaryChart" class="chart-height align-self-center shadow"></canvas>
+            <div class="row mb-3 d-flex chart-full-width flex-fill">
+                <canvas id="annualMonthlySummaryChart" class="align-self-center shadow"></canvas>
             </div>
         }
-    </div>
     <div class="row gx-5">
         @if (expenseDataIsPresent)
         {
@@ -551,18 +549,15 @@
     })
     @if(expenseDataIsPresent)
     {
-    @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+    @await Html.PartialAsync("MonthlyStatisticsChart", new MonthlyStatisticsChart()
     {
-        ChartType = ChartType.LineMultiAxis,
-        UseDefaultColor = true,
-        ElementId = "monthlyStatisticsChart",
+        ElementId = "monthlyStatsChart",
         Labels = JsonSerializer.Serialize(Model.SummaryResponse.MonthlyExpenseStatistics.Select(x => x.Month).ToArray()),
-        Dataset = JsonSerializer.Serialize(Model.SummaryResponse.MonthlyExpenseStatistics.Select(x => x.Count).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
-        Dataset2 = JsonSerializer.Serialize(Model.SummaryResponse.MonthlyExpenseStatistics.Select(x => x.Average).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
-        Dataset3 = JsonSerializer.Serialize(Model.SummaryResponse.MonthlyExpenseStatistics.Select(x => x.Min).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
-        Dataset4 = JsonSerializer.Serialize(Model.SummaryResponse.MonthlyExpenseStatistics.Select(x => x.Max).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
-        Title = "Monthly Expense Statistics",
-        Responsive = true
+        CountDataset = JsonSerializer.Serialize(Model.SummaryResponse.MonthlyExpenseStatistics.Select(x => x.Count).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+        AverageDataset = JsonSerializer.Serialize(Model.SummaryResponse.MonthlyExpenseStatistics.Select(x => x.Average).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+        MinDataset = JsonSerializer.Serialize(Model.SummaryResponse.MonthlyExpenseStatistics.Select(x => x.Min).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+        MaxDataset = JsonSerializer.Serialize(Model.SummaryResponse.MonthlyExpenseStatistics.Select(x => x.Max).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+        Title = "Monthly Expense Statistics"
     })
     }
     @if (incomeANDExpenseDataIsPresent)

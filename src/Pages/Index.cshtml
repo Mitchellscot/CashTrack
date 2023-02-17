@@ -165,7 +165,7 @@
         }
         @if (dataIsNotEmptyForTheMonth)
         {
-            <div class="col col-sm-6 col-xl-3 mt-1 d-flex flex-column align-content-center monthly-summary-chart mb-3">
+            <div class="col col-sm-6 col-xl-3 mt-1 d-flex flex-column align-content-center summary-chart mb-3">
                 <ul class="list-group text-center mt-2 shadow flex-fill d-flex justify-content-between">
                     <li class="flex-fill list-group-item d-flex justify-content-between p-3">
                         <span>
@@ -255,7 +255,7 @@
                 </ul>
             </div>
 
-            <div class="col col-sm-6 col-xl-3 pt-2 monthly-overall-summary-chart mb-3">
+            <div class="col col-sm-6 col-xl-3 pt-2 overall-summary-chart mb-3">
                 <canvas id="overallSummaryChart" class="shadow"></canvas>
             </div>
         }
@@ -384,21 +384,21 @@
     <div class="row mb-3 flex-wrap">
         @if (Model.SummaryResponse.DailyExpenseLineChart != null && Model.SummaryResponse.DailyExpenseLineChart.ExpenseMax != 0)
         {
-            <div class="col col-xxl-6 mb-3 d-none d-sm-flex daily-expense-chart">
-                <canvas id="dailyExpenseChart" class="chart-height shadow align-self-center"></canvas>
+            <div class="col col-xxl-6 mb-3 d-flex chart-width-full-xxl-half flex-fill">
+                <canvas id="dailyExpenseChart" class="shadow align-self-center"></canvas>
             </div>
         }
         @if (Model.SummaryResponse.DailyExpenseChart.Any())
         {
-            <div class="col col-xxl-6 d-none d-sm-flex mb-3 daily-expense-chart">
-                <canvas id="dailyExpenseBarChart" class="chart-height shadow align-self-center"></canvas>
+            <div class="col col-xxl-6 d-flex mb-3 chart-width-full-xxl-half flex-fill">
+                <canvas id="dailyExpenseBarChart" class="shadow align-self-center"></canvas>
             </div>
         }
     </div>
     @if (dataIsNotEmptyForTheMonth && Model.SummaryResponse.MonthlySummary.RealizedExpenses > 0)
     {
-        <div class="row d-flex mb-3">
-            <canvas id="monthlySummaryChart" class="chart-height shadow align-self-center"></canvas>
+        <div class="row d-flex mb-3 chart-full-width flex-fill">
+            <canvas id="monthlySummaryChart" class="shadow align-self-center"></canvas>
         </div>
     }
     <div class="row mb-3 flex-wrap">
@@ -553,8 +553,8 @@
         }
         @if (Model.SummaryResponse.YearToDate != null && Model.SummaryResponse.TopExpenses.Count > 1)
         {
-            <div class="col col-xxl-6 d-flex flex-fill">
-                <canvas id="ytdChart" class="chart-height shadow align-self-center"></canvas>
+            <div class="col col-xxl-6 d-flex flex-fill chart-width-full-xxl-half">
+                <canvas id="ytdChart" class="shadow align-self-center"></canvas>
             </div>
         }
     </div>

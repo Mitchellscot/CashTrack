@@ -30,83 +30,83 @@
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
     <div class="row mt-2 border-bottom d-flex justify-content-sm-between flex-column flex-sm-row">
         <div class="d-flex col-auto align-self-center">
-        <h3 class="me-2">
-            All Time Summary
-        </h3>
+            <h3 class="me-2">
+                All Time Summary
+            </h3>
         </div>
         <div class="d-flex flex-column flex-sm-row col-sm-auto justify-content-sm-end mb-2 dropdown-center">
-                <button class="btn btn-secondary btn-height my-2 my-sm-0 me-sm-2 btn-text-overflow" type="button" data-bs-toggle="modal" data-bs-target="#expenseStats">View Details</button>
-                <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
-                <ul class="dropdown-menu">
-                    <li>
-                        <button class="dropdown-item text-center"
-                                id="addExpenseButton"
-                                data-bs-toggle="modal"
-                                data-bs-target="#addExpenseModal">
-                            Expense
-                        </button>
-                    </li>
-                    <li>
-                        <button class="dropdown-item text-center"
-                                id="addIncomeButton"
-                                data-bs-toggle="modal"
-                                data-bs-target="#addIncomeModal">
-                            Income
-                        </button>
-                    </li>
-                    <li class="dropdown-divider"></li>
-                    <li class="dropdown-item">
-                        <button class="dropdown-item text-center"
-                                id="addMerchantButton"
-                                data-bs-toggle="modal"
-                                data-bs-target="#addMerchantModal">
-                            Merchant
-                        </button>
-                    </li>
-                    <li class="dropdown-item">
-                        <button class="dropdown-item text-center"
-                                id="addMerchantButton"
-                                data-bs-toggle="modal"
-                                data-bs-target="#addSourceModal">
-                            Income Source
-                        </button>
-                    </li>
-                    <li class="dropdown-divider"></li>
-                    <li class="dropdown-item">
-                        <button class="dropdown-item text-center"
-                                id="addIncomeCategoryButton"
-                                data-bs-toggle="modal"
-                                data-bs-target="#addIncomeCategoryModal">
-                            Income Category
-                        </button>
-                    </li>
-                    <li class="dropdown-item">
-                        <button class="dropdown-item text-center"
-                                id="addSubCategoryButton"
-                                data-bs-toggle="modal"
-                                data-bs-target="#addSubCategoryModal">
-                            Expense Category
-                        </button>
-                    </li>
-                    <li class="dropdown-item">
-                        <button class="dropdown-item text-center"
-                                id="addMainCategoryButton"
-                                data-bs-toggle="modal"
-                                data-bs-target="#addMainCategoryModal">
-                            Main Category
-                        </button>
-                    </li>
-                    <li class="dropdown-divider"></li>
-                    <li>
-                        <button class="dropdown-item text-center"
-                                id="importCsvButton"
-                                data-bs-toggle="modal"
-                                data-bs-target="#importCsvModal">
-                            Import Transactions
-                        </button>
-                    </li>
-                </ul>
-            </div>
+            <button class="btn btn-secondary btn-height my-2 my-sm-0 me-sm-2 btn-text-overflow" type="button" data-bs-toggle="modal" data-bs-target="#expenseStats">View Details</button>
+            <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
+            <ul class="dropdown-menu">
+                <li>
+                    <button class="dropdown-item text-center"
+                            id="addExpenseButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addExpenseModal">
+                        Expense
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item text-center"
+                            id="addIncomeButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addIncomeModal">
+                        Income
+                    </button>
+                </li>
+                <li class="dropdown-divider"></li>
+                <li class="dropdown-item">
+                    <button class="dropdown-item text-center"
+                            id="addMerchantButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addMerchantModal">
+                        Merchant
+                    </button>
+                </li>
+                <li class="dropdown-item">
+                    <button class="dropdown-item text-center"
+                            id="addMerchantButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addSourceModal">
+                        Income Source
+                    </button>
+                </li>
+                <li class="dropdown-divider"></li>
+                <li class="dropdown-item">
+                    <button class="dropdown-item text-center"
+                            id="addIncomeCategoryButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addIncomeCategoryModal">
+                        Income Category
+                    </button>
+                </li>
+                <li class="dropdown-item">
+                    <button class="dropdown-item text-center"
+                            id="addSubCategoryButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addSubCategoryModal">
+                        Expense Category
+                    </button>
+                </li>
+                <li class="dropdown-item">
+                    <button class="dropdown-item text-center"
+                            id="addMainCategoryButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addMainCategoryModal">
+                        Main Category
+                    </button>
+                </li>
+                <li class="dropdown-divider"></li>
+                <li>
+                    <button class="dropdown-item text-center"
+                            id="importCsvButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#importCsvModal">
+                        Import Transactions
+                    </button>
+                </li>
+            </ul>
+        </div>
     </div>
     <div class="row mb-3">
         @if (!incomeORExpenseDataIsPresent)
@@ -121,83 +121,81 @@
                         or adding
                         <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Expenses</button> or
                         <button class="white-text-button" data-bs-toggle="modal" data-bs-target="#addIncomeModal">Income</button>.
-                </p>
+                    </p>
                 </div>
             </div>
         }
         @if (incomeORExpenseDataIsPresent)
-            {
-            <div class="col-6 col-lg-3 mt-1 d-flex flex-column align-content-center">
+        {
+            <div class="col col-sm-6 col-xl-3 mt-1 d-flex flex-column align-content-center summary-chart mb-3">
                 <ul class="list-group text-center mt-2 shadow flex-fill d-flex justify-content-between">
-                        <li class="flex-fill list-group-item d-flex justify-content-between p-3">
-                            <span class="d-none d-md-block">
-                                Earned: &nbsp;
-                            </span>
-                            <span class="fw-bold text-primary responsive-text">
-                                @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.Earned)
-                            </span>
-                        </li>
+                    <li class="flex-fill list-group-item d-flex justify-content-between p-3">
+                        <span>
+                            Earned: &nbsp;
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.Earned)
+                        </span>
+                    </li>
                     <li class="flex-fill list-group-item d-flex justify-content-between pt-3 pb-2 px-3">
-                            <span class="d-none d-md-block">
-                                Spent:
-                            </span>
-                            <span class="fw-bold text-primary responsive-text">
-                                @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.Spent)
-                            </span>
-                        </li>
+                        <span>
+                            Spent:
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.Spent)
+                        </span>
+                    </li>
                     <li class="flex-fill list-group-item d-flex justify-content-between pt-3 pb-2 px-3">
-                            <span class="d-none d-md-block">
-                                Saved:
-                            </span>
-                            <span class="fw-bold text-primary responsive-text">
-                                @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.Saved)
-                            </span>
-                        </li>
+                        <span>
+                            Saved:
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.Saved)
+                        </span>
+                    </li>
                     <li class="flex-fill list-group-item d-flex justify-content-between pt-3 pb-2 px-3">
-                            <span class="d-none d-md-block">
-                                Averaged Monthly Savings:
-                            </span>
-                                <span class="fw-bold responsive-text">
-                                     @Model.SummaryResponse.SummaryTotals.AverageSavedPerMonth
-                                </span>
-                        </li>
+                        <span>
+                            Avg Monthly Savings:
+                        </span>
+                        <span class="fw-bold responsive-text">
+                            @Model.SummaryResponse.SummaryTotals.AverageSavedPerMonth
+                        </span>
+                    </li>
                     <li class="flex-fill list-group-item d-flex justify-content-between pt-3 pb-2 px-3">
-                            <span class="d-none d-md-block">
-                                Average Yearly Savings:
-                            </span>
-                            <span class="fw-bold text-primary responsive-text">
-                                @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.AverageSavedPerYear)
-                            </span>
-                        </li>
+                        <span>
+                            Avg Yearly Savings:
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.AverageSavedPerYear)
+                        </span>
+                    </li>
                     <li class="flex-fill list-group-item d-flex justify-content-between pt-3 pb-2 px-3">
-                            <span class="d-none d-md-block">
-                                Expense Growth Per Year:
-                            </span>
-                            <span class="fw-bold text-primary responsive-text">
-                                @Model.SummaryResponse.SummaryTotals.ExpenseGrowthPerYear &#37;
-                            </span>
-                        </li>
+                        <span>
+                            Expense Growth:
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @Model.SummaryResponse.SummaryTotals.ExpenseGrowthPerYear &#37;
+                        </span>
+                    </li>
                     <li class="flex-fill list-group-item d-flex justify-content-between pt-3 pb-2 px-3">
-                            <span class="d-none d-md-block">
-                                Income Growth Per Year:
-                            </span>
-                            <span class="fw-bold text-primary responsive-text">
-                                @Model.SummaryResponse.SummaryTotals.IncomeGrowthPerYear &#37;
-                            </span>
-                        </li>
-                    </ul>
-                </div>
-            }
-        @if (incomeORExpenseDataIsPresent)
-        {
-            <div class="col-6 col-lg-3 d-flex">
-                <canvas id="overallSummaryChart" class="shadow align-self-center chart-height pt-2"></canvas>
+                        <span>
+                            Income Growth:
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @Model.SummaryResponse.SummaryTotals.IncomeGrowthPerYear &#37;
+                        </span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col col-sm-6 col-xl-3 pt-2 overall-summary-chart mb-3">
+                <canvas id="overallSummaryChart" class="shadow"></canvas>
             </div>
         }
-        @if(incomeANDExpenseDataIsPresent && Model.SummaryResponse.DataSpansMultipleYears)
+        @if (incomeANDExpenseDataIsPresent && Model.SummaryResponse.DataSpansMultipleYears)
         {
-            <div class="col-12 col-lg-6 d-flex">
-                <canvas id="percentChangesChart" class="chart-height shadow align-self-center"></canvas>
+            <div class="col col-xl-6 rounded-2 mt-2 mb-3 d-flex chart-width-full-xl-half flex-fill">
+                <canvas id="percentChangesChart" class="shadow align-self-center"></canvas>
             </div>
         }
         else
@@ -205,63 +203,69 @@
             <div class="d-flex flex-column col mt-4">
                 <div class="alert alert-dismissible alert-info col-auto text-center align-self-center">
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    <h4 class="mb-2">
-                        <p>More charts will show here</p> 
-                        <p>once you have data that spans multiple years.</p>
-                    </h4>
+                    <div class="mb-2">
+                        <p class="h4">More charts will show here</p>
+                        <p class="h4">once you have data that spans multiple years.</p>
+                    </div>
                 </div>
             </div>
         }
     </div>
-        @*
-    @if (Model.SummaryResponse.DataSpansMultipleYears)
-    {
-
-        @if (incomeANDExpenseDataIsPresent)
-        {
-            <div class="col col-lg-6 d-flex">
-                <canvas id="savingsChart" class="chart-height shadow align-self-center"></canvas>
-            </div>
-        }
-        @if (incomeORExpenseDataIsPresent)
-        {
-            <div class="col col-lg-6 d-flex">
-                <canvas id="incomeExpenseChart" class="chart-height shadow align-self-center"></canvas>
-            </div>
-        }
-    }
 
     @if (Model.SummaryResponse.DataSpansMultipleYears)
     {
-    <div class="row mb-2">
-        @if (incomeDataIsPresent)
-        {
-            <div class="col-12 col-lg-6 d-flex">
-                <canvas id="incomeStatisticsChart" class="chart-height shadow align-self-center"></canvas>
-            </div>
-        }
-        @if (expenseDataIsPresent)
-        {
-            <div class="col-12 col-lg-6 d-flex">
-                <canvas id="expenseStatisticsChart" class="chart-height shadow align-self-center"></canvas>
-            </div>
-        }
-    </div>
+        <div class="row mb-3 flex-wrap">
+            @if (incomeANDExpenseDataIsPresent)
+            {
+                <div class="col col-xl-6 d-flex chart-width-full-xl-half flex-fill">
+                    <canvas id="savingsChart" class="shadow align-self-center"></canvas>
+                </div>
+            }
+            @if (incomeORExpenseDataIsPresent)
+            {
+                <div class="col col-xl-6 d-flex chart-width-full-xl-half flex-fill">
+                    <canvas id="incomeExpenseChart" class="shadow align-self-center"></canvas>
+                </div>
+            }
+        </div>
     }
-
+    @if (incomeORExpenseDataIsPresent && Model.SummaryResponse.DataSpansMultipleYears)
+    {
+        <div class="row mb-3 d-flex chart-full-width flex-fill">
+            <canvas id="annualSummaryChart" class="align-self-center shadow"></canvas>
+        </div>
+    }
+    @if (Model.SummaryResponse.DataSpansMultipleYears)
+    {
+        <div class="row mb-3 flex-wrap">
+            @if (incomeDataIsPresent)
+            {
+                <div class="col col-xl-6 d-flex chart-width-full-xl-half flex-fill">
+                    <canvas id="incomeStatisticsChart" class="shadow align-self-center"></canvas>
+                </div>
+            }
+            @if (expenseDataIsPresent)
+            {
+                <div class="col col-xl-6 d-flex chart-width-full-xl-half flex-fill">
+                    <canvas id="expenseStatisticsChart" class="shadow align-self-center"></canvas>
+                </div>
+            }
+        </div>
+    }
     <div class="row gx-5">
         @if (expenseDataIsPresent)
         {
-            <div class="col-12 col-lg-6 my-3">
-                <div class="row shadow">
-                    <div class="col-6 pie-stats">
-                        <div class="d-flex justify-content-center">
-                            <span class="mb-0 fw-bold d-none d-lg-block">Top Expenses</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Expenses/Index" asp-route-Query="4" asp-route-Q="@DateTime.Now.Year" asp-route-PageNumber="1">
-                                View All
-                        </a>
-                        </div>
+            <div class="col col-md-6 mb-3 col-xxl-3 px-3 shadow flex-fill">
+                <div class="d-flex justify-content-center">
+                    <span class="mb-0 fw-bold">
+                        Top Expenses
+                    </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a class="link-success float-end text-decoration-underline" asp-page="./Expenses/Index" asp-route-Query="4" asp-route-Q="@DateTime.Now.Year" asp-route-PageNumber="1">
+                        View All
+                    </a>
+                </div>
                 <div class="table-responsive">
-                    <table class="table table-sm align-middle text-center mb-0">
+                    <table class="table table-sm align-middle text-center mb-3">
                         <thead class="p-0 m-0">
                             <tr>
                                 <th class="p-0 m-0">
@@ -293,32 +297,81 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+            @if (Model.SummaryResponse.SubCategoryPercentages != null && expenseDataIsPresent)
+            {
+                <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
+                    <canvas id="subCategoryPie" class="chart-height align-self-center"></canvas>
                 </div>
-                @if (Model.SummaryResponse.SubCategoryPercentages != null && expenseDataIsPresent)
-                {
-                    <div class="col-6 d-flex">
-                            <canvas id="subCategoryPie" class="chart-height align-self-center"></canvas>
-                    </div>
-                }
+            }
+
+            <div class="col col-md-6 mb-3 col-xxl-3 px-3 shadow flex-fill">
+                <div class="d-flex justify-content-center">
+                    <span class="mb-0 fw-bold">
+                        Top Categories
+                    </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a class="link-success float-end text-decoration-underline" asp-page="./Expenses/Categories/Index" asp-route-Query="3" asp-route-Q2=true asp-route-PageNumber="1">
+                        View All
+                    </a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle text-center mb-3">
+                        <thead class="p-0 m-0">
+                            <tr>
+                                <th class="p-0 m-0">
+                                    Category
+                                </th>
+                                <th class="p-0 m-0">
+                                    Amount
+                                </th>
+                                <th class="p-0 m-0">
+                                    Count
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var expense in @Model.SummaryResponse.TopCategories)
+                            {
+                                <tr>
+                                    <td>
+                                        @expense.Name
+                                    </td>
+                                    <td>
+                                        @String.Format("{0:n}", expense.Amount)
+                                    </td>
+                                    <td>
+                                        @expense.Count
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
+            @if (Model.SummaryResponse.MainCategoryPercentages != null && expenseDataIsPresent)
+            {
+                <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
+                    <canvas id="mainCategoryPie" class="chart-height align-self-center"></canvas>
+                </div>
+            }
         }
-        @if (expenseDataIsPresent)
+    </div>
+
+    <div class="row gx-5">
+        @if (Model.SummaryResponse.TopMerchants != null && expenseDataIsPresent)
         {
-            <div class="col-12 col-lg-6 my-3">
-                <div class="row shadow">
-                    <div class="col-6 pie-stats">
+            <div class="col col-md-6 mb-3 col-xxl-3 px-3 shadow flex-fill">
                         <div class="d-flex justify-content-center">
-                            <span class="mb-0 fw-bold d-none d-lg-block">Top Categories</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Expenses/Categories/Index" asp-route-Query="3" asp-route-Q2=true asp-route-PageNumber="1">
+                            <span class="mb-0 fw-bold">Top Merchants</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Merchants/Index" asp-route-Query="3" asp-route-Q2=true asp-route-PageNumber="1">
                                 View All
                             </a>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-sm align-middle text-center mb-0">
+                            <table class="table table-sm align-middle text-center mb-3">
                                 <thead class="p-0 m-0">
                                     <tr>
                                         <th class="p-0 m-0">
-                                            Category
+                                            Merchant
                                         </th>
                                         <th class="p-0 m-0">
                                             Amount
@@ -329,7 +382,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var expense in @Model.SummaryResponse.TopCategories)
+                                    @foreach (var expense in @Model.SummaryResponse.TopMerchants)
                                     {
                                         <tr>
                                             <td>
@@ -347,82 +400,23 @@
                             </table>
                         </div>
                     </div>
-                    @if (Model.SummaryResponse.MainCategoryPercentages != null && expenseDataIsPresent)
+                    @if (Model.SummaryResponse.MerchantPercentages != null && expenseDataIsPresent)
                     {
-                        <div class="col-6 d-flex">
-                            <canvas id="mainCategoryPie" class="chart-height align-self-center"></canvas>
+                <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
+                            <canvas id="merchantPie" class="chart-height align-self-center"></canvas>
                         </div>
                     }
-                </div>
-            </div>
-        }
-    </div>
-    <div class="row gx-5">
-        @if(Model.SummaryResponse.TopMerchants != null && expenseDataIsPresent)
-        {
-        <div class="col-12 col-lg-6 my-3">
-            <div class="row shadow">
-                    <div class="col-6 pie-stats">
-                    <div class="d-flex justify-content-center">
-                        <span class="mb-0 fw-bold d-none d-lg-block">Top Merchants</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Merchants/Index" asp-route-Query="3" asp-route-Q2=true asp-route-PageNumber="1">
-                            View All
-                        </a>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-sm align-middle text-center mb-0">
-                            <thead class="p-0 m-0">
-                                <tr>
-                                    <th class="p-0 m-0">
-                                        Merchant
-                                    </th>
-                                    <th class="p-0 m-0">
-                                        Amount
-                                    </th>
-                                    <th class="p-0 m-0">
-                                        Count
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var expense in @Model.SummaryResponse.TopMerchants)
-                                {
-                                    <tr>
-                                        <td>
-                                            @expense.Name
-                                        </td>
-                                        <td>
-                                            @String.Format("{0:n}", expense.Amount)
-                                        </td>
-                                        <td>
-                                            @expense.Count
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                @if (Model.SummaryResponse.MerchantPercentages != null && expenseDataIsPresent)
-                {
-                    <div class="col-6 d-flex">
-                            <canvas id="merchantPie" class="chart-height align-self-center"></canvas>
-                    </div>
-                }
-            </div>
-        </div>
         }
         @if (Model.SummaryResponse.TopSources != null && incomeDataIsPresent)
         {
-            <div class="col-12 col-lg-6 my-3">
-                <div class="row shadow">
-                    <div class="col-6 pie-stats">
+            <div class="col col-md-6 mb-3 col-xxl-3 px-3 shadow flex-fill">
                         <div class="d-flex justify-content-center">
-                            <span class="mb-0 fw-bold d-none d-lg-block">Top Income Sources</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Sources/Index" asp-route-PageNumber="1">
+                            <span class="mb-0 fw-bold">Top Income Sources</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="./Sources/Index" asp-route-PageNumber="1">
                                 View All
                             </a>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-sm align-middle text-center mb-0">
+                            <table class="table table-sm align-middle text-center mb-3">
                                 <thead class="p-0 m-0">
                                     <tr>
                                         <th class="p-0 m-0">
@@ -457,23 +451,13 @@
                     </div>
                     @if (Model.SummaryResponse.IncomeSourcePercentages != null && incomeDataIsPresent)
                     {
-                        <div class="col-6 d-flex">
+                        <div class="col col-md-6 col-xxl-3 d-flex mb-3 pie-stats">
                             <canvas id="incomeSourcePie" class="chart-height align-self-center"></canvas>
                         </div>
                     }
-                </div>
-            </div>
         }
-
     </div>
-    <div class="row mb-3">
-        @if (incomeORExpenseDataIsPresent && Model.SummaryResponse.DataSpansMultipleYears)
-        {
-            <div class="col d-flex">
-                <canvas id="annualSummaryChart" class="chart-height align-self-center shadow"></canvas>
-            </div>
-        }
-    </div>*@
+
 </div>
 @* Add Expense Modal *@
 <div class="modal fade" id="addExpenseModal">
@@ -582,36 +566,30 @@
         RealizedSavings = JsonSerializer.Serialize(Model.SummaryResponse.OverallSummaryChart.RealizedSavings)
     })
     }
-    @if(incomeDataIsPresent)
+    @if (incomeDataIsPresent)
     {
-        @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+        @await Html.PartialAsync("MonthlyStatisticsChart", new MonthlyStatisticsChart()
     {
-        ChartType = ChartType.LineMultiAxis,
-        UseDefaultColor = true,
         ElementId = "incomeStatisticsChart",
         Labels = JsonSerializer.Serialize(Model.SummaryResponse.IncomeStatistics.Select(x => x.Year).ToArray()),
-        Dataset = JsonSerializer.Serialize(Model.SummaryResponse.IncomeStatistics.Select(x => x.Count).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
-        Dataset2 = JsonSerializer.Serialize(Model.SummaryResponse.IncomeStatistics.Select(x => x.Average).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
-        Dataset3 = JsonSerializer.Serialize(Model.SummaryResponse.IncomeStatistics.Select(x => x.Min).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
-        Dataset4 = JsonSerializer.Serialize(Model.SummaryResponse.IncomeStatistics.Select(x => x.Max).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
-        Title = "Annual Income Statistics",
-        Responsive = true
+        CountDataset = JsonSerializer.Serialize(Model.SummaryResponse.IncomeStatistics.Select(x => x.Count).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+        AverageDataset = JsonSerializer.Serialize(Model.SummaryResponse.IncomeStatistics.Select(x => x.Average).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+        MinDataset = JsonSerializer.Serialize(Model.SummaryResponse.IncomeStatistics.Select(x => x.Min).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+        MaxDataset = JsonSerializer.Serialize(Model.SummaryResponse.IncomeStatistics.Select(x => x.Max).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+        Title = "Annual Income Statistics"
     })
     }
-    @if(expenseDataIsPresent)
+    @if (expenseDataIsPresent)
     {
-    @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+        @await Html.PartialAsync("MonthlyStatisticsChart", new MonthlyStatisticsChart()
     {
-        ChartType = ChartType.LineMultiAxis,
-        UseDefaultColor = true,
         ElementId = "expenseStatisticsChart",
         Labels = JsonSerializer.Serialize(Model.SummaryResponse.ExpenseStatistics.Select(x => x.Year).ToArray()),
-        Dataset = JsonSerializer.Serialize(Model.SummaryResponse.ExpenseStatistics.Select(x => x.Count).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
-        Dataset2 = JsonSerializer.Serialize(Model.SummaryResponse.ExpenseStatistics.Select(x => x.Average).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
-        Dataset3 = JsonSerializer.Serialize(Model.SummaryResponse.ExpenseStatistics.Select(x => x.Min).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
-        Dataset4 = JsonSerializer.Serialize(Model.SummaryResponse.ExpenseStatistics.Select(x => x.Max).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
-        Title = "Annual Expense Statistics",
-        Responsive = true
+        CountDataset = JsonSerializer.Serialize(Model.SummaryResponse.ExpenseStatistics.Select(x => x.Count).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+        AverageDataset = JsonSerializer.Serialize(Model.SummaryResponse.ExpenseStatistics.Select(x => x.Average).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+        MinDataset = JsonSerializer.Serialize(Model.SummaryResponse.ExpenseStatistics.Select(x => x.Min).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+        MaxDataset = JsonSerializer.Serialize(Model.SummaryResponse.ExpenseStatistics.Select(x => x.Max).ToArray()).Replace(int.MaxValue.ToString(), "NaN"),
+        Title = "Annual Expense Statistics"
     })
     }
     @if (Model.SummaryResponse.SubCategoryPercentages != null && expenseDataIsPresent)

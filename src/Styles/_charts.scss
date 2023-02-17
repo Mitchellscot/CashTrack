@@ -12,7 +12,7 @@
     min-height: 380px;
 }
 
-.monthly-summary-chart {
+.summary-chart {
     min-width: 280px;
 
     @media (min-width: $SM_BREAKPOINT) {
@@ -30,7 +30,7 @@
     }
 }
 
-.monthly-overall-summary-chart {
+.overall-summary-chart {
     min-width: 375px;
     max-height: 400px;
     min-height: 360px;
@@ -40,12 +40,55 @@
     }
 }
 
-.daily-expense-chart {
-    min-width: 550px;
+.chart-width-full-xl-half {
+    min-height: 340px;
+
+    @media (min-width: $SM_BREAKPOINT) {
+        min-height: 360px;
+    }
+
+    @media (min-width: $LG_BREAKPOINT) {
+        min-height: 380px;
+    }
+
+    @media (min-width: $XL_BREAKPOINT) {
+        min-height: 380px;
+        max-height: 400px;
+        min-width: 50%;
+    }
 }
 
-.annual-charts {
-    @media (min-width: $MD_BREAKPOINT) {
+.chart-width-full-xxl-half {
+    min-height: 340px;
+
+    @media (min-width: $SM_BREAKPOINT) {
         min-height: 360px;
+    }
+
+    @media (min-width: $LG_BREAKPOINT) {
+        min-height: 380px;
+    }
+
+    @media (min-width: $XXL_BREAKPOINT) {
+        min-height: 400px;
+        max-height: 415px;
+        min-width: 50%;
+    }
+}
+
+.chart-full-width {
+    min-height: 340px;
+
+    @media (min-width: $SM_BREAKPOINT) {
+        min-height: 360px;
+    }
+
+    @media (min-width: $LG_BREAKPOINT) {
+        min-height: 380px;
+    }
+
+    @media (min-width: $XXL_BREAKPOINT) {
+        min-height: 400px;
+        max-height: 415px;
     }
 }
