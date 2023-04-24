@@ -51,6 +51,23 @@
             <button class="btn btn-primary btn-height align-self-end spin-it" type="submit">Change Password</button>
         </div>
     </form>
+        <form asp-page-handler="ChangeDefaultTax" method="post" class="row d-flex justify-content-around align-content-center">
+            <div class="form-group col-md-3 col-6">
+                <label asp-for="DefaultTax" class="form-label mt-2">Current Default Tax</label>
+                <input class="form-control" asp-for="DefaultTax" type="number" disabled />
+            </div>
+            <div class="form-group col-md-3 col-6">
+                <label asp-for="NewTax" class="form-label mt-2">Update Default Tax</label>
+                <input class="form-control" asp-for="NewTax" type="number" novalidate step="0.0000001"/>
+            </div>
+            <div class="col-6 col-md-3 d-flex align-items-end text-center">
+                <span class="align-content-center card border-light d-md-block d-none">Default tax is used when splitting transactions.</span>
+            </div>
+            <div class="col-6 col-md-3 d-flex align-content-center">
+                <button class="btn btn-primary btn-height align-self-end spin-it" type="submit">Change Default Tax</button>
+            </div>
+
+    </form>
     </div>
     <h2>Export</h2>
     <form class="row my-3 border rounded border-2 shadow" method="post">

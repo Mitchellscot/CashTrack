@@ -229,7 +229,8 @@ namespace CashTrack.Data
                         NormalizedEmail = user.NormalizedEmail,
                         NormalizedUserName = user.NormalizedUserName,
                         SecurityStamp = Guid.NewGuid().ToString("D"),
-                        EmailConfirmed = true
+                        EmailConfirmed = true,
+                        DefaultTax = Convert.ToDecimal(user.DefaultTax)
                     };
                     var hashed = passwordHasher.HashPassword(seededUser, user.PasswordHash);
                     seededUser.PasswordHash = hashed;
@@ -276,7 +277,8 @@ namespace CashTrack.Data
                         NormalizedEmail = user.NormalizedEmail,
                         NormalizedUserName = user.NormalizedUserName,
                         SecurityStamp = Guid.NewGuid().ToString("D"),
-                        EmailConfirmed = true
+                        EmailConfirmed = true,
+                        DefaultTax = Convert.ToDecimal(user.DefaultTax)
                     };
                     var hashed = passwordHasher.HashPassword(seededUser, user.PasswordHash);
                     seededUser.PasswordHash = hashed;

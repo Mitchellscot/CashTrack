@@ -101,6 +101,7 @@ namespace CashTrack.Data.CsvFiles
             public string? NormalizedEmail { get; set; }
             public string? PasswordHash { get; set; }
             public string? LastImport { get; set; }
+            public string? DefaultTax { get; set; }
         }
         public class CsvImportRule
         {

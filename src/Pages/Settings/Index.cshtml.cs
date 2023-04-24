@@ -34,10 +34,14 @@ namespace CashTrack.Pages.Settings
         [BindProperty]
         public ChangeUsername ChangeUsername { get; set; }
         [BindProperty]
-        public decimal Tax { get; set; }
-        public IActionResult OnGet()
+        public decimal DefaultTax { get; set; }
+        [BindProperty]
+        public decimal NewTax { get; set; }
+
+        public async Task<IActionResult> OnGet()
         {
             ExportOptions = new SelectList(ExportFileOptions.GetAll, "Key", "Value");
+            DefaultTax = await _userService.GetDefaultTax(User.Identity.Name);
             return Page();
         }
         public async Task<IActionResult> OnPostChangePassword()
@@ -84,6 +88,27 @@ namespace CashTrack.Pages.Settings
                 return Page();
             }
             TempData["SuccessMessage"] = "Successfully changed your username!";
+            return LocalRedirect("/Settings");
+        }
+        public async Task<IActionResult> OnPostChangeDefaultTax()
+        {
+            if (NewTax == decimal.Zero)
+            {
+                ModelState.AddModelError("", "Please add a new default tax and try again.");
+                return Page();
+            }
+            if (NewTax >= decimal.One || NewTax <= decimal.Zero)
+            {
+                ModelState.AddModelError("", "Tax rate must be betwee 0 and 1. Please enter a valid decimal.");
+                return Page();
+            }
+            var result = await _userService.UpdateDefaultTax(User.Identity.Name, NewTax);
+            if (!result)
+            {
+                ModelState.AddModelError("", "There was an error changing your default tax. Try again.");
+                return Page();
+            }
+            TempData["SuccessMessage"] = "Successfully changed your default tax!";
             return LocalRedirect("/Settings");
         }
         public async Task<ActionResult> OnPostExport(int ExportOption, bool ExportAsReadable)

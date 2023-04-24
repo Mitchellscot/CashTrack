@@ -5,6 +5,7 @@ using CashTrack.Pages.Shared;
 using CashTrack.Services.ExpenseService;
 using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
+using CashTrack.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
@@ -20,10 +21,11 @@ namespace CashTrack.Pages.Expenses
     {
         private readonly IExpenseService _expenseService;
         private readonly ISubCategoryService _subCategoryService;
-        private readonly IMerchantService _merchantService;
-        private IOptions<AppSettingsOptions> _appSettings;
+        private readonly IUserService _userService;
 
-        public SplitModel(IExpenseService expenseService, ISubCategoryService subCategoryService, IMerchantService merchantService, IOptions<AppSettingsOptions> appSettings) => (_expenseService, _subCategoryService, _merchantService, _appSettings) = (expenseService, subCategoryService, merchantService, appSettings);
+        public SplitModel(IExpenseService expenseService, 
+            ISubCategoryService subCategoryService, 
+            IUserService userService) => (_expenseService, _subCategoryService, _userService) = (expenseService, subCategoryService, userService);
 
         [BindProperty]
         public List<ExpenseSplit> ExpenseSplits { get; set; } = new List<ExpenseSplit>();
@@ -108,7 +110,7 @@ namespace CashTrack.Pages.Expenses
             Total = originalExpense.Amount;
             Date = originalExpense.Date;
             Merchant = originalExpense.Merchant;
-            this.Tax = Tax ?? _appSettings.Value.DefaultTax;
+            this.Tax = Tax ?? await _userService.GetDefaultTax(User.Identity.Name);
             this.Split = Split ?? 2;
             for (int i = 0; i < this.Split; i++)
             {

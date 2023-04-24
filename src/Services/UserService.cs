@@ -18,6 +18,8 @@ public interface IUserService
     Task<bool> UpdatePasswordAsync(ChangePassword request);
     Task<bool> UpdateUsernameAsync(ChangeUsername request);
     Task<bool> UpdateLastImportDate(int userId);
+    Task<decimal> GetDefaultTax(string userName);
+    Task<bool> UpdateDefaultTax(string userName, decimal newTax);
 }
 public class UserService : IUserService
 {
@@ -66,6 +68,24 @@ public class UserService : IUserService
 
         return true;
     }
+    public async Task<decimal> GetDefaultTax(string userName)
+    {
+        var user = await _userManager.FindByNameAsync(userName);
+        if (user == null)
+            throw new ArgumentException(nameof(user));
+
+        return user.DefaultTax;
+    }
+    public async Task<bool> UpdateDefaultTax(string userName, decimal newTax)
+    {
+        var user = await _userManager.FindByNameAsync(userName);
+        if (user == null)
+            throw new ArgumentException(nameof(user));
+
+        user.DefaultTax = newTax;
+        var update = await _userManager.UpdateAsync(user);
+        return update.Succeeded;
+    }
     public async Task<bool> UpdateUsernameAsync(ChangeUsername request)
     {
         var user = await _userManager.FindByNameAsync(request.Username);
@@ -103,13 +123,13 @@ public class UserService : IUserService
 
     public async Task<bool> UpdateLastImportDate(int userId)
     {
-        var user = await _userRepo.FindById(userId);
+        var user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null)
-            throw new ArgumentException(nameof(user));
+            throw new ArgumentNullException(nameof(user));
 
         user.LastImport = DateTime.Now;
-        var update = await _userRepo.Update(user);
-        return update > 0;
+        var update = await _userManager.UpdateAsync(user);
+        return update.Succeeded;
     }
 }
 public class UserMapperProfile : Profile

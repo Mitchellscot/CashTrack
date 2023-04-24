@@ -10,5 +10,6 @@ namespace CashTrack.Data.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime LastImport { get; set; } = DateTime.MinValue;
+        public decimal DefaultTax { get; set; } = decimal.Zero;
     }
 }
