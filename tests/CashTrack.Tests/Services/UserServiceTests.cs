@@ -81,6 +81,36 @@ namespace CashTrack.Tests.Services
 
         }
         [Fact]
+        public async Task Can_Get_Default_Tax()
+        {
+            var defaultTax = 0.07875M;
+            _userManager.Setup(u => u.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(new UserEntity()
+            {
+                Id = 1,
+                UserName = "test",
+                DefaultTax = defaultTax
+            });
+            var tax = await _sut.GetDefaultTax("test");
+            tax.ShouldBe(defaultTax);
+        }
+        [Fact]
+        public async Task Can_Update_Default_Tax()
+        {
+            var defaultTax = 0.07875M;
+            _userManager.Setup(u => u.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(new UserEntity()
+            {
+                Id = 1,
+                UserName = "test",
+                DefaultTax = defaultTax
+            });
+            _userManager.Setup(u => u.UpdateAsync(It.IsAny<UserEntity>())).ReturnsAsync(IdentityResult.Success);
+            var newTax = 0.10M;
+            var result = await _sut.UpdateDefaultTax("test", newTax);
+            result.ShouldBeTrue();
+            var updatedTax = await _sut.GetDefaultTax("test");
+            updatedTax.ShouldBe(newTax);
+        }
+        [Fact]
         public async Task Can_Update_UserName()
         {
             var newUser = new AddEditUser()
@@ -164,6 +194,41 @@ namespace CashTrack.Tests.Services
                 var createUserResult = await service.CreateUserAsync(newUser);
                 var getUserEntity = await service.GetUserByIdAsync(createUserResult.Id);
                 var result = await service.UpdatePasswordAsync(request);
+                result.ShouldBeTrue();
+            }
+        }
+        [Fact]
+        public async Task Can_Update_Last_Import_Date()
+        {
+            var newUser = new AddEditUser()
+            {
+                FirstName = "Arthur",
+                LastName = "Scott",
+                Email = "arthur@example.com",
+                Password = "Chewbaca"
+            };
+            _userManager.Setup(u => u.CreateAsync(It.IsAny<UserEntity>(), It.IsAny<string>())).Returns(Task.FromResult(IdentityResult.Success));
+            _userManager.Setup(u => u.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(new UserEntity()
+            {
+                Id = 1,
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName,
+                Email = newUser.Email
+            });
+            _userManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new UserEntity()
+            {
+                Id = 1,
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName,
+                Email = newUser.Email
+            });
+            _userManager.Setup(u => u.UpdateAsync(It.IsAny<UserEntity>())).ReturnsAsync(IdentityResult.Success);
+            using (var db = new AppDbContextFactory().CreateDbContext())
+            {
+                var repo = new UserRepository(db);
+                var service = new UserService(repo, _mapper, _userManager.Object, _signInManager.Object);
+                var createUserResult = await service.CreateUserAsync(newUser);
+                var result = await service.UpdateLastImportDate(createUserResult.Id);
                 result.ShouldBeTrue();
             }
         }

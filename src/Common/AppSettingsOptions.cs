@@ -8,7 +8,6 @@ namespace CashTrack.Common
         public const string AppSettings = "AppSettings";
         public string Secret { get; set; }
         public string IpAddress { get; set; }
-        public decimal DefaultTax { get; set; }
         public Dictionary<string, string> ConnectionStrings { get; set; }
     }
 }

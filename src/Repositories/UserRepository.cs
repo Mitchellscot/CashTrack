@@ -72,7 +72,7 @@ public class UserRepository : IUserRepository
     {
         try
         {
-            return await _context.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("An error occured while trying to save the last import date.");
+            return await _context.SaveChangesAsync() > 0 ? entity.Id : throw new Exception("An error occured while trying to save the user to the database.");
         }
         catch (Exception)
         {
