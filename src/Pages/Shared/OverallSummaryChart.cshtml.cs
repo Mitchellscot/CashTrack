@@ -1,6 +1,4 @@
 using CashTrack.Common;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.Json;
 
 namespace CashTrack.Pages.Shared
