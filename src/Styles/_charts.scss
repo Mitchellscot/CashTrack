@@ -92,3 +92,19 @@
         max-height: 415px;
     }
 }
+.budget-chart-full-width {
+    min-height: 300px;
+
+    @media (min-width: $SM_BREAKPOINT) {
+        min-height: 360px;
+    }
+
+    @media (min-width: $LG_BREAKPOINT) {
+        min-height: 380px;
+    }
+
+    @media (min-width: $XXL_BREAKPOINT) {
+        min-height: 400px;
+        max-height: 415px;
+    }
+}

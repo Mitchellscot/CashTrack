@@ -101,7 +101,7 @@
                 </select>
             </div>
         </form>
-        <div class="col-12 col-md-3 mt-2 d-flex justify-content-end">
+        <div class="col-12 col-md-3 mt-2 d-flex justify-content-center justify-content-md-end">
             <button class="btn btn-secondary text-wrap import-link btn-height" data-bs-toggle="modal" data-bs-target="#budgetStats">View Details</button>
         </div>
 
@@ -143,17 +143,17 @@
         @if (!dataIsEmptyForTheMonth && Model.BudgetPageResponse.MonthlyBudgetChartData != null)
         {
             <div class="col d-flex">
-                <canvas id="monthlyBudgetChart" class="chart-height shadow align-self-center"></canvas>
+                <canvas id="monthlyBudgetChart" class="budget-chart-full-width shadow align-self-center"></canvas>
             </div>
         }
     </div>
     <div class="row mb-1 g-3">
         @if (!dataIsEmptyForTheMonth && Model.BudgetPageResponse.MonthlySummary != null)
         {
-            <div class="col-6 col-lg-3">
+            <div class="col col-sm-6 col-xl-3 summary-chart">
                 <ul class="list-group text-center mt-3 shadow">
                     <li class="list-group-item d-flex justify-content-between p-3">
-                        <span class="d-none d-md-block">
+                        <span class="">
                             Income: &nbsp;
                         </span>
                         <span class="fw-bold text-primary responsive-text">
@@ -161,7 +161,7 @@
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between p-3">
-                        <span class="d-none d-md-block">
+                        <span class="">
                             Expenses:
                         </span>
                         <span class="fw-bold text-primary responsive-text">
@@ -169,7 +169,7 @@
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between p-3">
-                        <span class="d-none d-md-block">
+                        <span class="">
                             Needs:
                         </span>
                         <span class="fw-bold text-primary responsive-text">
@@ -177,7 +177,7 @@
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between p-3">
-                        <span class="d-none d-md-block">
+                        <span class="">
                             Wants:
                         </span>
                         <span class="fw-bold text-primary responsive-text">
@@ -185,7 +185,7 @@
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between p-3">
-                        <span class="d-none d-md-block">
+                        <span class="">
                             Savings:
                         </span>
                         <span class="fw-bold text-primary responsive-text">
@@ -193,7 +193,7 @@
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between p-3">
-                        <span class="d-none d-md-block">
+                        <span class="">
                             Unallocated:
                         </span>
                         <span class="fw-bold text-primary responsive-text">
@@ -205,19 +205,19 @@
         }
         @if (!dataIsEmptyForTheMonth && Model.BudgetPageResponse.TypePercentages != null)
         {
-            <div class="col-6 col-lg-3 mt-3 d-flex">
+            <div class="col col-sm-6 col-xl-3 mt-3 d-flex">
                 <canvas id="typePercentagesDonut" class="chart-height align-self-center px-1"></canvas>
             </div>
         }
         @if (!dataIsEmptyForTheMonth && Model.BudgetPageResponse.SubCategoryPercentages != null)
         {
-            <div class="col-6 col-lg-3 mt-3 d-flex">
+            <div class="col col-sm-6 col-xl-3 mt-3 d-flex">
                 <canvas id="subCategoryPie" class="chart-height align-self-center px-1"></canvas>
             </div>
         }
         @if (!dataIsEmptyForTheMonth && Model.BudgetPageResponse.MainCategoryPercentages != null)
         {
-            <div class="col-6 col-lg-3 mt-3 d-flex">
+            <div class="col col-sm-6 col-xl-3 mt-3 d-flex">
                 <canvas id="mainCategoryPie" class="chart-height align-self-center px-1"></canvas>
             </div>
         }

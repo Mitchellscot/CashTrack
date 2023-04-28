@@ -89,7 +89,7 @@
         })
     </div>
     <div class="row d-flex justify-content-between">
-        <form method="get" class="mt-2 col-2">
+        <form method="get" class="mt-2 col-6 col-sm-4 col-lg-3 col-xl-2">
             <div class="input-group">
                 <span class="input-group-text">Year</span>
                 <select data-val="true" onchange="this.form.submit()" asp-for=@Model.Year asp-items="@Model.YearSelectList" class="form-select text-center" id="annualBudgetYearSelection">
@@ -97,7 +97,7 @@
                 </select>
             </div>
         </form>
-        <div class="col-12 col-md-3 mt-2 d-flex justify-content-end">
+        <div class="col-6 col-sm-8 col-lg-9 col-xl-10 mt-2 d-flex justify-content-end">
             <button class="btn btn-secondary text-wrap import-link btn-height" data-bs-toggle="modal" data-bs-target="#budgetStats">View Details</button>
         </div>
     </div>
@@ -134,13 +134,11 @@
     }
     else
     {
-            
-
     <div class="row mb-1">
         @if (Model.BudgetPageResponse.AnnualBudgetChartData != null && !dataIsEmptyForTheYear)
         {
             <div class="col d-flex">
-                <canvas id="annualBudgetChart" class="chart-height shadow align-content-center px-1"></canvas>
+                <canvas id="annualBudgetChart" class="budget-chart-full-width shadow align-content-center px-1"></canvas>
             </div>
         }
     </div>
@@ -148,10 +146,10 @@
     <div class="row mb-1 g-3">
         @if (Model.BudgetPageResponse.AnnualSummary != null && !dataIsEmptyForTheYear)
         {
-            <div class="col-6 col-lg-3">
+            <div class="col col-sm-6 col-xl-3 summary-chart">
                 <ul class="list-group text-center mt-3 shadow">
                     <li class="list-group-item d-flex justify-content-between p-3">
-                        <span class="d-none d-md-block">
+                        <span class="">
                             Income: &nbsp;
                         </span>
                         <span class="fw-bold text-primary responsive-text">
@@ -159,7 +157,7 @@
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between p-3">
-                        <span class="d-none d-md-block">
+                        <span class="">
                             Expenses:
                         </span>
                         <span class="fw-bold text-primary responsive-text">
@@ -167,7 +165,7 @@
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between p-3">
-                        <span class="d-none d-md-block">
+                        <span class="">
                             Needs:
                         </span>
                         <span class="fw-bold text-primary responsive-text">
@@ -175,7 +173,7 @@
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between p-3">
-                        <span class="d-none d-md-block">
+                        <span class="">
                             Wants:
                         </span>
                         <span class="fw-bold text-primary responsive-text">
@@ -183,7 +181,7 @@
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between p-3">
-                        <span class="d-none d-md-block">
+                        <span class="">
                             Savings:
                         </span>
                         <span class="fw-bold text-primary responsive-text">
@@ -191,7 +189,7 @@
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between p-3">
-                        <span class="d-none d-md-block">
+                        <span class="">
                             Unallocated:
                         </span>
                         <span class="fw-bold text-primary responsive-text">
@@ -203,19 +201,19 @@
         }
         @if (Model.BudgetPageResponse.TypePercentages != null && !dataIsEmptyForTheYear)
         {
-            <div class="col-6 col-lg-3 mt-3 d-flex">
+            <div class="col col-sm-6 col-xl-3 mt-3 d-flex">
                 <canvas id="typePercentagesDonut" class="chart-height align-self-center"></canvas>
             </div>
         }
         @if (Model.BudgetPageResponse.SubCategoryPercentages != null && !dataIsEmptyForTheYear)
         {
-            <div class="col-6 col-lg-3 mt-3 d-flex">
+            <div class="col col-sm-6 col-xl-3 mt-3 d-flex">
                 <canvas id="subCategoryPie" class="chart-height align-self-center"></canvas>
             </div>
         }
         @if (Model.BudgetPageResponse.MainCategoryPercentages != null && !dataIsEmptyForTheYear)
         {
-            <div class="col-6 col-lg-3 mt-3 d-flex">
+            <div class="col col-sm-6 col-xl-3 mt-3 d-flex">
                 <canvas id="mainCategoryPie" class="chart-height align-self-center"></canvas>
             </div>
         }
