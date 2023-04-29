@@ -6,12 +6,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using CashTrack.Common;
-using CashTrack.Common.Extensions;
 
 namespace CashTrack.Data
 {
     /// <summary>
-    /// This purpose of this clas is to generate a db context from the EF CLI and accept arguments from the command line. See New-Db.ps1 for an example.
+    /// This purpose of this class is to generate a db context from the EF CLI and accept arguments from the command line. See New-Db.ps1 for an example.
     /// </summary>
     public class AppContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {

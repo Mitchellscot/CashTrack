@@ -43,7 +43,7 @@ namespace CashTrack.Services.Common
             Merchant = _merchants.Where(x => x.Id == MerchantId).FirstOrDefault();
             Location = Merchant != null ?
                 Merchant.IsOnline ? "Online" :
-                Merchant.City.IsEqualTo("Various") ? "Various" :
+                !string.IsNullOrEmpty(Merchant.City) && Merchant.City.IsEqualTo("Various") ? "Various" :
                 !string.IsNullOrEmpty(Merchant.City) && !string.IsNullOrEmpty(Merchant.State) ? $"{Merchant.City}, {Merchant.State}"
             : null : null;
             return this;
