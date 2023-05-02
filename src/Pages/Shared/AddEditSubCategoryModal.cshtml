@@ -23,16 +23,16 @@
                     }
                     <input asp-for="@Model.IsEdit" type="hidden" />
                     <input asp-for="@Model.ReturnUrl" type="hidden" />
-                    <div class="row mb-3">
-                        <div class="col-8">
+                    <div class="row mb-1 d-flex justify-content-center">
+                        <div class="col-12 col-lg-8 mb-1 mb-lg-0">
                             <label class="visually-hidden" asp-for="@Model.Name">Name</label>
                             <div class="input-group">
                                 <div class="input-group-text text-center">Name</div>
-                                <input required data-val="true" asp-for=@Model.Name type="text" class="form-control text-center">
+                                <input required data-val="true" asp-for=@Model.Name type="text" class="form-control">
                                 <span asp-validation-for="@Model.Name"></span>
                             </div>
                         </div>
-                        <div class="col-4 align-self-center border rounded py-1">
+                        <div class="col-auto col-lg-4 align-self-center border rounded py-1 mb-1 mb-lg-0">
 
                             <div class="form-check form-switch ">
                                 <label class="form-check-label" asp-for="@Model.InUse">Currently In Use</label>
@@ -41,8 +41,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-8">
+                    <div class="row mb-2">
+                        <div class="col-12 col-lg-8">
                             <div class="input-group">
                                 <div class="input-group-text">Category</div>
                                 <label class="visually-hidden" asp-for="@Model.MainCategoryId">Main Category</label>
@@ -55,7 +55,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-3 px-1">
+                    <div class="row mb-2 px-1">
                         <label class="visually-hidden" asp-for="@Model.Notes"></label>
                         <textarea class="form-control" asp-for="@Model.Notes" rows="3" placeholder="Notes"></textarea>
                     </div>
