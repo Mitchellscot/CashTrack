@@ -19,7 +19,7 @@
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() { Message = "No Income Found!", MessageType = MessageType.Info, Show = Model.IncomeResponse != null && Model.IncomeResponse.TotalCount == 0 })
 
-    <div class="row mb-1">
+    <div class="row mb-1 d-flex justify-content-center justify-content-sm-between">
         <div class="col-xl-6 col-12 mb-1 mr-auto">
             <form method="get">
                 <div class="input-group">
@@ -40,7 +40,7 @@
         </div>
         <div class="col-xl-3 col-6 px-xl-0 d-none d-sm-block">
             <div class="btn-group" role="group">
-                <div class="input-group-prepend d-none d-md-block">
+                <div class="input-group-prepend">
                     <div class="input-group-text rounded-0 rounded-start">Current</div>
                 </div>
                 <a asp-page="./Index" asp-route-Query="8" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary">Month</a>
@@ -52,7 +52,7 @@
         <div class="col-3 col-xl-1 d-none d-sm-block">
             <span class="validation-text" asp-validation-for="@Model.Q"></span>
         </div>
-        <div class="col-xs-12 col-xl-2 col-3 d-flex justify-content-md-end me-xl-0">
+        <div class="col-auto col-xl-2 me-xl-0 d-flex justify-content-end">
             <button class="btn btn-primary text-wrap btn-height" data-bs-toggle="modal" data-bs-target="#addIncomeModal" id="addIncomeButton">Add Income</button>
         </div>
     </div>

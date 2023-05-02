@@ -40,8 +40,8 @@
                     <input asp-for="@Model.IsEdit" type="hidden" />
                     <input asp-for="@Model.ReturnUrl" type="hidden" />
                     <input asp-for="@Model.RefundNotes" type="hidden" />
-                    <div class="row mb-3">
-                        <div class="col-4">
+                    <div class="row mb-2 d-flex justify-content-center">
+                        <div class="col-12 col-sm-12 col-lg-4 mb-1 mb-lg-0">
                             <label class="visually-hidden" asp-for="@Model.Date">Date</label>
                             <div class="input-group">
                                 <div class="input-group-text text-center">Date</div>
@@ -54,7 +54,7 @@
                                 <span asp-validation-for="@Model.Date"></span>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-12 col-sm-12 col-lg-4 mb-1 mb-lg-0">
                             <label class="visually-hidden" asp-for="@Model.Amount">Amount</label>
                             <div class="input-group">
                                 <div class="input-group-text">$</div>
@@ -69,7 +69,7 @@
                                 <span asp-validation-for="@Model.Amount"></span>
                             </div>
                         </div>
-                        <div class="col-4 align-self-center border rounded py-1 d-flex justify-content-center">
+                        <div class="col-auto col-lg-4 align-self-center border rounded py-1 d-flex justify-content-center">
                             <div class="form-check form-switch">
                                 <label class="form-check-label" asp-for="@Model.IsRefund">This is a Refund</label>
                                 <input class="form-check-input @addOrEditClassForSwitch" type="checkbox" data-val="true"
@@ -79,8 +79,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-8">
+                    <div class="row mb-2 d-flex justify-content-center justify-content-lg-between">
+                        <div class="col-sm-12 col-lg-8 mb-1 mb-lg-0">
                             <div class="input-group">
                                 <div class="input-group-text">Category</div>
                                 <label class="visually-hidden" asp-for="@Model.CategoryId">Category</label>
@@ -100,7 +100,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-4 d-flex justify-content-center">
+                        <div class="col-auto col-lg-4 d-flex justify-content-center">
                             @if (Model.ShowAddCategoryButton)
                             {
                                 <button class="btn btn-secondary" type="button" data-bs-target="#addIncomeCategoryModal" data-bs-toggle="modal">Add New Category</button>
@@ -108,8 +108,8 @@
                         </div>
                         <span class="validation-text" asp-validation-for="@Model.CategoryId"></span>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-8">
+                    <div class="row mb-2 d-flex justify-content-center justify-content-lg-between">
+                        <div class="col-sm-12 col-lg-8 mb-1 mb-lg-0">
                             <div class="input-group">
                                 <div class="input-group-text">Source</div>
                                 <label class="visually-hidden" asp-for="@Model.Source">Income Source</label>
@@ -117,15 +117,15 @@
                                        type="text" asp-for="@Model.Source" />
                             </div>
                         </div>
-                        <div class="col-4 align-self-center border rounded py-1">
-                            <div class="form-check ">
+                        <div class="align-self-center border rounded py-1 col-auto col-lg-4 d-flex justify-content-center">
+                            <div class="form-check">
                                 <label class="form-check-label" asp-for="@Model.CreateNewSource">Create New Income Source</label>
                                 <input class="form-check-input" type="checkbox" role="switch" asp-for="@Model.CreateNewSource" />
                             </div>
                         </div>
                         <span class="validation-text" asp-validation-for="@Model.Source"></span>
                     </div>
-                    <div class="row mb-3 px-1">
+                    <div class="row mb-2 px-1">
                         <label class="visually-hidden" asp-for="@Model.Notes"></label>
                         <textarea class="form-control" asp-for="@Model.Notes" rows="3" placeholder="Notes"></textarea>
                     </div>
