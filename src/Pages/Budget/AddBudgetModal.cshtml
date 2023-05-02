@@ -19,24 +19,24 @@
                       asp-page="./List"
                       asp-page-handler="AddBudgetModal">
                       <input asp-for="@Model.ReturnUrl" type="hidden" />
-                    <div class="row mb-2">
-                        <div class="col">
+                    <div class="row mb-2 d-flex justify-content-center ">
+                        <div class="col-12 col-lg-8 mb-1 mb-lg-0">
                             <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input asp-for=@Model.Amount type="number"
-                                       min="0"
-                                       step="any"
-                                       class="form-control format-amount-js text-center"
-                                       data-is-integer="true"
-                                       placeholder="0">
-                                <span class="input-group-text">.00</span>
-                                <div class="border rounded align-self-center px-5 py-2">
-                                    <div class="form-check form-switch">
-                                        <label class="form-check-label" asp-for="@Model.IsIncome">This is Income</label>
-                                        <input class="form-check-input" type="checkbox" role="switch" id="budgetIncomeSwitch"
-                                               asp-for="@Model.IsIncome" />
-                                    </div>
-                                </div>
+                            <span class="input-group-text">$</span>
+                            <input asp-for=@Model.Amount type="number"
+                            min="0"
+                            step="any"
+                            class="form-control format-amount-js text-center"
+                            data-is-integer="true"
+                            placeholder="0">
+                            <span class="input-group-text">.00</span>
+                            </div>
+                        </div>
+                        <div class="col-auto col-lg-4 border rounded align-self-center px-3 px-lg-5 py-2">
+                            <div class="form-check form-switch">
+                                <label class="form-check-label" asp-for="@Model.IsIncome">This is Income</label>
+                                <input class="form-check-input" type="checkbox" role="switch" id="budgetIncomeSwitch"
+                                asp-for="@Model.IsIncome" />
                             </div>
                         </div>
                     </div>
