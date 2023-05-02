@@ -51,7 +51,7 @@
                                 <span asp-validation-for="@Model.City"></span>
                             </div>
                         </div>
-                        <div class="col-auto col-sm-6 col-lg-4 mb-1 mb-lg-0">
+                        <div class="col-12 col-sm-6 col-lg-4 mb-1 mb-lg-0">
                             <label class="visually-hidden" asp-for="@Model.State">State</label>
                             <div class="input-group">
                                 <div class="input-group-text">State</div>
@@ -59,7 +59,7 @@
                                     var states = new List<string> { "MN", "CA", "VA", "Various" };
                                     var dropdownList = new SelectList(states);
                                 }
-                                <select data-val="true" asp-for=@Model.State asp-items="dropdownList" data-width="100%" class="form-control text-center" id="addEditMerchantState">
+                                <select data-val="true" asp-for=@Model.State asp-items="dropdownList" data-width="100%" class="form-control" id="addEditMerchantState">
                                     <option value="" selected disabled hidden></option>
                                 </select>
                                 <span asp-validation-for="@Model.State"></span>

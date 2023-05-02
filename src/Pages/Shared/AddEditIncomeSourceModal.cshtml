@@ -21,10 +21,10 @@
                     <input asp-for="@Model.ReturnUrl" type="hidden" />
                     @if (Model.IsEdit)
                     {
-                                <input asp-for="@Model.Id" type="hidden" />
+                        <input asp-for="@Model.Id" type="hidden" />
                     }
-                    <div class="row mb-3">
-                        <div class="col-8">
+                    <div class="row mb-2 d-flex justify-content-center">
+                        <div class="col-12 col-lg-8 mb-1 mb-lg-0">
                             <label class="visually-hidden" asp-for="@Model.Name">Name</label>
                             <div class="input-group">
                                 <div class="input-group-text text-center">Name</div>
@@ -32,7 +32,7 @@
                                 <span asp-validation-for="@Model.Name"></span>
                             </div>
                         </div>
-                        <div class="col-4 align-self-center border rounded py-1">
+                        <div class="col-auto col-lg-4 align-self-center border rounded py-1">
                             <div class="form-check form-switch ">
                                 <label class="form-check-label" asp-for="@Model.SuggestOnLookup">Suggest On Lookup</label>
                                 <input class="form-check-input" type="checkbox" role="switch" id="addIncomeSourceSuggestOnLookup" data-val="true"
@@ -41,16 +41,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-4">
+                    <div class="row mb-2 d-flex justify-content-center">
+                        <div class="col-12 col-sm-6 col-lg-4 mb-1 mb-lg-0">
                             <label class="visually-hidden" asp-for="@Model.City">City</label>
                             <div class="input-group">
                                 <div class="input-group-text">City</div>
-                                <input data-val="true" asp-for=@Model.City type="text" class="form-control text-center" id="addEditSourceCity">
+                                <input data-val="true" asp-for=@Model.City type="text" class="form-control" id="addEditSourceCity">
                                 <span asp-validation-for="@Model.City"></span>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-12 col-sm-6 col-lg-4 mb-1 mb-lg-0">
                             <label class="visually-hidden" asp-for="@Model.State">State</label>
                             <div class="input-group">
                                 <div class="input-group-text">State</div>
@@ -64,15 +64,15 @@
                                 <span asp-validation-for="@Model.State"></span>
                             </div>
                         </div>
-                        <div class="col-4 align-self-center border rounded py-1">
-                            <div class="form-check form-switch ">
+                        <div class="col-auto col-lg-4 align-self-center border rounded py-1 mb-1 mb-lg-0">
+                            <div class="form-check form-switch">
                                 <label class="form-check-label" asp-for="@Model.IsOnline">Online Source</label>
                                 <input class="form-check-input" type="checkbox" role="switch" id="addEditSourceIsOnline" data-val="true" asp-for="@Model.IsOnline" />
                                 <span asp-validation-for="@Model.IsOnline"></span>
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-3 px-1">
+                    <div class="row mb-2 px-1">
                         <label class="visually-hidden" asp-for="@Model.Notes"></label>
                         <textarea class="form-control" asp-for="@Model.Notes" id="addIncomeSourceNotes" rows="3" placeholder="Notes"></textarea>
                     </div>

@@ -33,7 +33,7 @@
                     <input asp-for="@Model.ReturnUrl" type="hidden" />
                     <input asp-for="@Model.RefundNotes" type="hidden" />
                     <div class="row mb-2 d-flex justify-content-center">
-                        <div class="col-auto col-sm-6 col-lg-4 mb-1">
+                        <div class="col-12 col-sm-6 col-lg-4 mb-1">
                             <label class="visually-hidden" asp-for="@Model.Date">Date</label>
                             <div class="input-group">
                                 <div class="input-group-text text-center">Date</div>
@@ -41,7 +41,7 @@
                                 <span asp-validation-for="@Model.Date"></span>
                             </div>
                         </div>
-                        <div class="col-auto col-sm-6 col-lg-4 mb-1">
+                        <div class="col-12 col-sm-6 col-lg-4 mb-1">
                             <label class="visually-hidden" asp-for="@Model.Amount">Amount</label>
                             <div class="input-group">
                                 <div class="input-group-text">$</div>
@@ -112,7 +112,7 @@
                                             <option value="" selected disabled hidden>Select</option>
                                         }
                                     </select>
-                                    <div class="input-group-text d-none d-md-block">Main Category</div>
+                                    <div class="input-group-text d-none d-sm-block">Main Category</div>
                                     @{
                                         var mainCategoryInputId =
                                         Model.IsEdit ? $"editExpenseMainCategory-{Model.Id}" : "addExpenseMainCategory";
@@ -125,7 +125,7 @@
                         }
                     </div>
                     <div class="row mb-2 d-flex justify-content-center">
-                        <div class="col-auto col-lg-8 mb-1">
+                        <div class="col-12 col-lg-8 mb-1">
                             <div class="input-group">
                                 <div class="input-group-text">Merchant</div>
                                 <label class="visually-hidden" asp-for="@Model.Merchant">Merchant</label>
