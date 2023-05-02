@@ -32,8 +32,8 @@
                     <input asp-for="@Model.IsEdit" type="hidden" />
                     <input asp-for="@Model.ReturnUrl" type="hidden" />
                     <input asp-for="@Model.RefundNotes" type="hidden" />
-                    <div class="row mb-3">
-                        <div class="col-4">
+                    <div class="row mb-2 d-flex justify-content-center">
+                        <div class="col-auto col-sm-6 col-lg-4 mb-1">
                             <label class="visually-hidden" asp-for="@Model.Date">Date</label>
                             <div class="input-group">
                                 <div class="input-group-text text-center">Date</div>
@@ -41,7 +41,7 @@
                                 <span asp-validation-for="@Model.Date"></span>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-auto col-sm-6 col-lg-4 mb-1">
                             <label class="visually-hidden" asp-for="@Model.Amount">Amount</label>
                             <div class="input-group">
                                 <div class="input-group-text">$</div>
@@ -56,7 +56,7 @@
                                 <span asp-validation-for="@Model.Amount"></span>
                             </div>
                         </div>
-                        <div class="col-4 align-self-center border rounded py-1">
+                        <div class="col-auto col-sm-6 col-lg-4 border rounded py-1 d-flex justify-content-center">
                             <div class="form-check form-switch">
                                 <label class="form-check-label"
                                        asp-for="@Model.ExcludeFromStatistics">Exclude From Statistics</label>
@@ -66,10 +66,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-3">
+                    <div class="row mb-2 d-flex justify-content-center">
                         @if (Model.ShowAddCategoryButton)
                         {
-                            <div class="col-8">
+                            <div class="col-auto col-lg-8 mb-1">
                                 <div class="input-group">
                                     <div class="input-group-text">Category</div>
                                     <label class="visually-hidden" asp-for="@Model.SubCategoryId">Category</label>
@@ -81,7 +81,7 @@
                                             <option value="" selected disabled hidden>Select</option>
                                         }
                                     </select>
-                                    <div class="input-group-text">Main Category</div>
+                                    <div class="input-group-text d-none d-lg-block">Main Category</div>
                                     @{
                                         var mainCategoryInputId =
                                         Model.IsEdit ? $"editExpenseMainCategory-{Model.Id}" : "addExpenseMainCategory";
@@ -91,7 +91,7 @@
                                        id=@mainCategoryInputId required />
                                 </div>
                             </div>
-                            <div class="col-4 d-flex justify-content-center">
+                            <div class="col-auto col-lg-4">
 
                                 <button type="button" class="btn btn-secondary" data-bs-target="#addEditSubCategoryModal" data-bs-toggle="modal">Add New Category</button>
 
@@ -112,7 +112,7 @@
                                             <option value="" selected disabled hidden>Select</option>
                                         }
                                     </select>
-                                    <div class="input-group-text">Main Category</div>
+                                    <div class="input-group-text d-none d-md-block">Main Category</div>
                                     @{
                                         var mainCategoryInputId =
                                         Model.IsEdit ? $"editExpenseMainCategory-{Model.Id}" : "addExpenseMainCategory";
@@ -125,8 +125,8 @@
                         }
 
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-8">
+                    <div class="row mb-2 d-flex justify-content-center">
+                        <div class="col-auto col-lg-8 mb-1">
                             <div class="input-group">
                                 <div class="input-group-text">Merchant</div>
                                 <label class="visually-hidden" asp-for="@Model.Merchant">Merchant</label>
@@ -134,7 +134,7 @@
                                        data-val="true" type="text" asp-for="@Model.Merchant" />
                             </div>
                         </div>
-                        <div class="col-4 align-self-center border rounded py-1">
+                        <div class="col-auto col-lg-4 align-self-center border rounded py-1">
                             <div class="form-check">
                                 <label class="form-check-label" asp-for="@Model.CreateNewMerchant">Create New Merchant</label>
                                 <input class="form-check-input" type="checkbox"
@@ -143,7 +143,7 @@
                         </div>
                         <span class="validation-text" asp-validation-for="@Model.Merchant"></span>
                     </div>
-                    <div class="row mb-3 px-1">
+                    <div class="row mb-2 px-1">
                         <label class="visually-hidden" asp-for="@Model.Notes"></label>
                         <textarea class="form-control" asp-for="@Model.Notes" rows="3" placeholder="Notes"></textarea>
                     </div>
