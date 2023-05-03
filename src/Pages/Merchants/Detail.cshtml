@@ -17,7 +17,7 @@
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
 
-    <div class="row mb-0">
+    <div class="row mb-0 d-flex justify-content-center">
         <div class="d-flex align-content-center justify-content-center col ms-5 ps-5">
             <h3 class="fw-bold">@Model.Merchant.Name</h3>
             <div class="text-muted align-self-center ms-2 fst-italic">@Model.Merchant.MostUsedCategory</div>
@@ -55,6 +55,7 @@
         </div>
     </div>
     @*End Delete Modal*@
+    @*Edit Modal*@
     <div class="modal fade" id="editMerchantModal">
         @await Html.PartialAsync("AddEditMerchantModal", new AddEditMerchantModal() {
         Name = Model.Merchant.Name,
@@ -67,36 +68,62 @@
         ReturnUrl="~/Merchants/Index"
         })
     </div>
+    @*End Edit Modal*@
     <hr />
     <div class="container border shadow">
         <div class="row">
-            <div class="col-4 col-lg-3 mt-3">
+            <div class="col-12 col-lg-3 mt-3">
                 <ul class="list-group text-center shadow">
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Month: &nbsp;</span><span class="fw-bold text-primary">@Model.Merchant.ExpenseTotals.TotalSpentThisMonth</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Year: &nbsp;</span><span class="fw-bold text-primary responsive-text">@Model.Merchant.ExpenseTotals.TotalSpentThisYear</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Total: &nbsp;</span><span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Merchant.ExpenseTotals.TotalSpentAllTime)</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Min: &nbsp;</span><span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Merchant.ExpenseTotals.Min)</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Max: &nbsp;</span><span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Merchant.ExpenseTotals.Max)</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Average: &nbsp;</span><span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Merchant.ExpenseTotals.Average)</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Count: &nbsp;</span><span class="fw-bold text-primary responsive-text">@Model.Merchant.ExpenseTotals.Count</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Category: &nbsp;</span><span class="fw-bold text-primary responsive-text">@Model.Merchant.MostUsedCategory</span></li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Month: &nbsp;</span>
+                        <span class="fw-bold text-primary">@Model.Merchant.ExpenseTotals.TotalSpentThisMonth</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Year: &nbsp;</span>
+                        <span class="fw-bold text-primary responsive-text">@Model.Merchant.ExpenseTotals.TotalSpentThisYear</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Total: &nbsp;</span>
+                        <span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Merchant.ExpenseTotals.TotalSpentAllTime)</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Min: &nbsp;</span>
+                        <span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Merchant.ExpenseTotals.Min)</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Max: &nbsp;</span>
+                        <span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Merchant.ExpenseTotals.Max)</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Average: &nbsp;</span>
+                        <span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Merchant.ExpenseTotals.Average)
+                        </span>
+                        </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Count: &nbsp;</span>
+                        <span class="fw-bold text-primary responsive-text">@Model.Merchant.ExpenseTotals.Count</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Category: &nbsp;</span>
+                        <span class="fw-bold text-primary responsive-text">@Model.Merchant.MostUsedCategory</span>
+                    </li>
                 </ul>
             </div>
-            <div class="col-4 col-lg-5 shadow">
+            <div class="col-12 col-lg-4 col-xl-5 shadow mb-3 mb-lg-0">
                 <form method="get">
                     <div class="input-group mx-auto m-3">
-                        <span class="input-group-text d-none d-lg-block">Name</span>
+                        <span class="input-group-text">Name</span>
                         <select data-val="true" onchange="this.form.submit()" asp-for=@Model.SearchTerm asp-items="@Model.MerchantSelectList" class="form-select text-center" id="addEditMerchantState">
                             <option value="@Model.Merchant.Name" selected disabled hidden></option>
                         </select>
                     </div>
                 </form>
                 <div class="input-group mx-auto m-3">
-                    <span class="input-group-text d-none d-lg-block">City &nbsp;&nbsp;&nbsp;</span>
+                    <span class="input-group-text">City &nbsp;&nbsp;&nbsp;</span>
                     <input type="text" class="white-on-disabled form-control text-center" asp-for="@Model.Merchant.City" disabled />
                 </div>
                 <div class="input-group mx-auto m-3">
-                    <span class="input-group-text d-none d-lg-block">State&nbsp;</span>
+                    <span class="input-group-text">State&nbsp;</span>
                     <input type="text" class="white-on-disabled form-control text-center" asp-for="@Model.Merchant.State" disabled />
                 </div>
                 <div class="input-group mx-auto m-3">
@@ -104,16 +131,16 @@
                         var isOnlineText = Model.Merchant.IsOnline ? "Online" : "Not Online";
                         var isActiveText = Model.Merchant.SuggestOnLookup ? "Active" : "Inactive";
                     }
-                    <span class="input-group-text d-none d-lg-block">Online</span>
+                    <span class="input-group-text">Online</span>
                     <input type="text" class="white-on-disabled form-control text-center"
                            asp-for="@Model.Merchant.IsOnline" disabled value="@isOnlineText" />
                 </div>
                 <div class="input-group mx-auto m-3">
-                    <span class="input-group-text d-none d-lg-block">Active</span>
+                    <span class="input-group-text">Active</span>
                     <input type="text" class="white-on-disabled form-control text-center"
                            asp-for="@Model.Merchant.IsOnline" disabled value="@isActiveText" />
                 </div>
-                <div class="form-floating mx-auto">
+                <div class="form-floating mx-auto mb-2 mb-lg-0">
                     <textarea type="text" class="form-control white-on-disabled py-0 notes-height" id="merchantNotes" asp-for="@Model.Merchant.Notes" disabled></textarea>
                     @if (string.IsNullOrEmpty(Model.Merchant.Notes))
                     {
@@ -121,14 +148,14 @@
                     }
                 </div>
             </div>
-            <div class="col-4 shadow px-2">
+            <div class="col-12 col-lg-5 col-xl-4 shadow px-2">
                 <div class="d-flex justify-content-center">
-                    <span class="mb-0 fw-bold d-none d-lg-block">Recent Expenses</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="../Expenses/Index" asp-route-Query="7" asp-route-Q="@Model.Merchant.Name" asp-route-PageNumber="1">
+                    <span class="mb-0 fw-bold">Recent Expenses</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="../Expenses/Index" asp-route-Query="7" asp-route-Q="@Model.Merchant.Name" asp-route-PageNumber="1">
                         View All
                     </a>
                 </div>
                 <div class="table-responsive-lg">
-                    <table class="table table-sm align-middle text-center mb-0">
+                    <table class="table table-sm align-middle text-center mb-2 mb-lg-0">
                         <thead class="p-0 m-0">
                             <tr>
                                 <th class="p-0 m-0">
