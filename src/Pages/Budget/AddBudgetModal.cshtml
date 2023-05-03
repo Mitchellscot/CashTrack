@@ -112,7 +112,7 @@
                                     class="form-control text-center load-main-category-js">
                                 <option value="" selected disabled hidden>Select</option>
                             </select>
-                            <div class="input-group-text">Main Category</div>
+                            <div class="input-group-text d-none d-sm-block">Main Category</div>
                             <input disabled type="text"
                                    class="form-control text-center bg-white"
                                    id="mainCategoryInput" required />
@@ -124,16 +124,20 @@
                         <tr class="text-center">
 
                             <th scope="col">
-                                Last 6 Months
+                                <span class="d-none d-md-block">Last 6 Months</span>
+                                <span class="d-block d-md-none">6 Mos</span>
                             </th>
                             <th scope="col">
-                                This Year
+                                <span class="d-none d-md-block">This Year</span>
+                                <span class="d-block d-md-none">Current Yr</span>
                             </th>
                             <th scope="col">
-                                Last Year
+                                <span class="d-none d-md-block">Last Year</span>
+                                <span class="d-block d-md-none">Last Yr</span>
                             </th>
                             <th scope="col">
-                                Two Years Ago
+                                <span class="d-none d-md-block">Two Years Ago</span>
+                                <span class="d-block d-md-none">2 Yrs Ago</span>
                             </th>
                             <th></th>
                         </tr>
@@ -148,7 +152,7 @@
                             </td>
                             <td id="twoYearsAgoAverages">
                             </td>
-                            <td class="text-muted">Monthly Averages</td>
+                            <td class="text-muted d-none d-lg-block">Monthly Averages</td>
                         </tr>
                         <tr class="text-center" scope="row">
                             <td id="sixMonthTotals">
@@ -159,7 +163,7 @@
                             </td>
                             <td id="twoYearsAgoTotals">
                             </td>
-                            <td class="text-muted">Annual Totals</td>
+                            <td class="text-muted d-none d-lg-block">Annual Totals</td>
                         </tr>
                     </tbody>
                 </table>
