@@ -15,41 +15,59 @@
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
 
-    <div class="d-flex justify-content-between align-items-center">
-        <h3>Split an Expense</h3>
+    <div class="d-flex justify-content-between align-items-center flex-sm-row flex-column">
+        <h3 class="mb-2 mb-sm-0">Split an Expense</h3>
         <div class="border rounded px-2 py-1" id="totalBox">
             <h3>Total: <span id="total" data-original-total=@Model.Total>@Model.Total</span></h3>
         </div>
     </div>
     <hr />
+
+@*This is just for mobile view only, it's hidden on larger screens.*@
+    <div class="d-sm-none row">
+        <div class="col-12">
+            <div class="input-group col-12 mb-2">
+                <span class="input-group-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <input type="text"
+                       class="form-control text-center bg-white"
+                       disabled readonly value=@Model.Date.ToShortDateString() />
+            </div>
+            <div class="input-group col-12 mb-2">
+                <span class="input-group-text">Merchant</span>
+                <input type="text"
+                       class="form-control text-center bg-white"
+                       disabled readonly value=@Model.Merchant />
+            </div>
+        </div>
+    </div>
     
     <form method="get">
         <input asp-for="@Model.ReturnUrl" type="hidden" />
         <div class="row">
-            <div class="col-lg-6 col-12 order-lg-1 order-3">
+            <div class="col-lg-6 col-12 d-none d-sm-block mb-2 mblg-0">
                 <div class="input-group">
-                    <span class="input-group-text d-none d-sm-block">Date</span>
+                    <span class="input-group-text">Date</span>
                     <input type="date"
                            class="form-control text-center bg-white"
                            disabled readonly asp-for=@Model.Date />
-                    <span class="input-group-text d-none d-sm-block">Merchant</span>
+                    <span class="input-group-text">Merchant</span>
                     <input type="text"
                            class="form-control text-center bg-white"
                            disabled readonly asp-for=@Model.Merchant />
                 </div>
             </div>
-            <div class="col-lg-3 col-6 order-lg-2 order-1">
+            <div class="col-lg-3 col-sm-6 col-12 mb-2 mb-sm-0">
                 <div class="input-group">
-                    <span class="input-group-text d-none d-sm-block"># of Expenses</span>
+                    <span class="input-group-text"># of Expenses</span>
                     <select onchange="this.form.submit()"
                             class="form-control text-center"
                             id="splitOptionsSelect"
                             asp-for="@Model.Split" asp-items="@Model.SplitOptions"></select>
                 </div>
             </div>
-            <div class="col-lg-3 col-6 order-lg-3 order-2">
+            <div class="col-lg-3 col-sm-6 col-12 mb-2 mb-sm-0">
                 <div class="input-group">
-                    <span class="input-group-text d-none d-sm-block">Tax</span>
+                    <span class="input-group-text">Tax</span>
                     <input class="form-control text-center"
                            type="number"
                            min="0.00" step=".00001" asp-for="@Model.Tax" />
@@ -63,8 +81,8 @@
     </form>
     <div class="row mt-3">
         <form class="form-horizontal"
-        method="post" 
-        id="splitExpenseForm">
+                method="post" 
+                id="splitExpenseForm">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover shadow">
                     <thead>
