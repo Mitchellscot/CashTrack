@@ -17,9 +17,9 @@
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
 
-    <div class="row mb-0">
+    <div class="row mb-0 d-flex justify-content-center">
         <div class="d-flex align-content-center justify-content-center col ms-5 ps-5">
-            <h3 class="fw-bold">@Model.Source.Name</h3>
+            <h3 class="fw-bold text-center">@Model.Source.Name</h3>
             <div class="text-muted align-self-center ms-2 fst-italic">@Model.Source.MostUsedCategory</div>
         </div>
         <div class="col-auto d-flex align-content-center justify-content-center mb-0 mt-2">
@@ -55,6 +55,7 @@
         </div>
     </div>
     @*End Delete Modal*@
+    @*Edit Modal*@
     <div class="modal fade" id="editSourceModal">
         @await Html.PartialAsync("AddEditIncomeSourceModal", new AddEditIncomeSourceModal() {
         Name = Model.Source.Name,
@@ -64,36 +65,93 @@
         ReturnUrl="~/Sources/Index"
         })
     </div>
+    @*End Edit Modal*@
     <hr />
     <div class="container border shadow">
         <div class="row">
-            <div class="col-4 col-lg-3 mt-3">
+            <div class="col-12 col-lg-3 mt-3">
                 <ul class="list-group text-center shadow">
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Month: &nbsp;</span><span class="fw-bold text-primary">@Model.Source.IncomeTotals.TotalSpentThisMonth</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Year: &nbsp;</span><span class="fw-bold text-primary responsive-text">@Model.Source.IncomeTotals.TotalSpentThisYear</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Total: &nbsp;</span><span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Source.IncomeTotals.TotalSpentAllTime)</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Min: &nbsp;</span><span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Source.IncomeTotals.Min)</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Max: &nbsp;</span><span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Source.IncomeTotals.Max)</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Average: &nbsp;</span><span class="fw-bold text-primary responsive-text">@String.Format("{0:n}", Model.Source.IncomeTotals.Average)</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Count: &nbsp;</span><span class="fw-bold text-primary responsive-text">@Model.Source.IncomeTotals.Count</span></li>
-                    <li class="list-group-item d-flex justify-content-between"><span class="d-none d-md-block">Category: &nbsp;</span><span class="fw-bold text-primary responsive-text">@Model.Source.MostUsedCategory</span></li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Month: &nbsp;
+                        </span>
+                        <span class="fw-bold text-primary">
+                            @Model.Source.IncomeTotals.TotalSpentThisMonth
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Year: &nbsp;
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @Model.Source.IncomeTotals.TotalSpentThisYear
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Total: &nbsp;
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.Source.IncomeTotals.TotalSpentAllTime)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Min: &nbsp;
+                            </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.Source.IncomeTotals.Min)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="d-none d-md-block">
+                            Max: &nbsp;
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.Source.IncomeTotals.Max)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Average: &nbsp;
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @String.Format("{0:n}", Model.Source.IncomeTotals.Average)
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Count: &nbsp;
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @Model.Source.IncomeTotals.Count
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Category: &nbsp;
+                        </span>
+                        <span class="fw-bold text-primary responsive-text">
+                            @Model.Source.MostUsedCategory
+                        </span>
+                    </li>
                 </ul>
             </div>
-            <div class="col-4 col-lg-5 shadow">
+            <div class="col-12 col-lg-4 col-xl-5 shadow mb-3 mb-lg-0">
                 <form method="get">
                     <div class="input-group mx-auto m-3">
-                        <span class="input-group-text d-none d-lg-block">Name</span>
+                        <span class="input-group-text">Name</span>
                         <select data-val="true" onchange="this.form.submit()" asp-for=@Model.SearchTerm asp-items="@Model.SourceSelectList" class="form-select text-center" id="addEditSourceState">
                             <option value="@Model.Source.Name" selected disabled hidden></option>
                         </select>
                     </div>
                 </form>
                 <div class="input-group mx-auto m-3">
-                    <span class="input-group-text d-none d-lg-block">City &nbsp;&nbsp;&nbsp;</span>
+                    <span class="input-group-text">City &nbsp;&nbsp;&nbsp;</span>
                     <input type="text" class="white-on-disabled form-control text-center" asp-for="@Model.Source.City" disabled />
                 </div>
                 <div class="input-group mx-auto m-3">
-                    <span class="input-group-text d-none d-lg-block">State&nbsp;</span>
+                    <span class="input-group-text">State&nbsp;</span>
                     <input type="text" class="white-on-disabled form-control text-center" asp-for="@Model.Source.State" disabled />
                 </div>
                 <div class="input-group mx-auto m-3">
@@ -101,16 +159,16 @@
                         var isOnlineText = Model.Source.IsOnline ? "Online" : "Not Online";
                         var isActiveText = Model.Source.SuggestOnLookup ? "Active" : "Inactive";
                     }
-                    <span class="input-group-text d-none d-lg-block">Online</span>
+                    <span class="input-group-text">Online</span>
                     <input type="text" class="white-on-disabled form-control text-center"
                            asp-for="@Model.Source.IsOnline" disabled value="@isOnlineText" />
                 </div>
                 <div class="input-group mx-auto m-3">
-                    <span class="input-group-text d-none d-lg-block">Active</span>
+                    <span class="input-group-text">Active</span>
                     <input type="text" class="white-on-disabled form-control text-center"
                            asp-for="@Model.Source.IsOnline" disabled value="@isActiveText" />
                 </div>
-                <div class="form-floating mx-auto">
+                <div class="form-floating mx-auto  mb-2 mb-lg-0">
                     <textarea type="text" class="form-control white-on-disabled py-0 notes-height" id="sourceDescription" asp-for="@Model.Source.Notes" disabled></textarea>
                     @if (string.IsNullOrEmpty(Model.Source.Notes))
                     {
@@ -118,14 +176,14 @@
                     }
                 </div>
             </div>
-            <div class="col-4 shadow">
+            <div class="col-12 col-lg-5 col-xl-4 shadow px-2">
                 <div class="d-flex justify-content-center">
-                    <span class="mb-0 fw-bold d-none d-lg-block">Recent Income</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="../Income/Index" asp-route-Query="6" asp-route-Q="@Model.Source.Name" asp-route-PageNumber="1">
+                    <span class="mb-0 fw-bold">Recent Income</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="link-success float-end text-decoration-underline" asp-page="../Income/Index" asp-route-Query="6" asp-route-Q="@Model.Source.Name" asp-route-PageNumber="1">
                         View All
                     </a>
                 </div>
                 <div class="table-responsive-lg">
-                    <table class="table table-sm align-middle text-center mb-0">
+                    <table class="table table-sm align-middle text-center mb-2 mb-lg-0">
                         <thead class="p-0 m-0">
                             <tr>
                                 <th class="p-0 m-0">
