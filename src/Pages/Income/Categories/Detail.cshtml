@@ -16,10 +16,9 @@
     @await Html.PartialAsync("_MessagePartial",
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
 
-    <div class="row mb-0">
+    <div class="row mb-0 d-flex justify-content-center">
         <div class="d-flex align-content-center justify-content-center col ms-5 ps-5">
-            <h3 class="fw-bold">@Model.IncomeCategory.Name</h3>
-
+            <h3 class="fw-bold text-center">@Model.IncomeCategory.Name</h3>
         </div>
         <div class="col-auto d-flex align-content-center justify-content-center mb-0 mt-2">
             <a class="link-primary text-decoration-underline" href="#" data-bs-toggle="modal" data-bs-target="#editIncomeCategoryModal">
@@ -61,6 +60,7 @@
         </div>
     </div>
     @*End Delete Modal*@
+    @*Edit Modal*@
     <div class="modal fade" id="editIncomeCategoryModal">
         @await Html.PartialAsync("AddEditIncomeCategoryModal", new AddEditIncomeCategoryModal() {
         Name = Model.IncomeCategory.Name,
@@ -70,56 +70,55 @@
         ReturnUrl="~/Income/Categories/Index"
         })
     </div>
-
+    @*End Edit Modal*@
     <div class="container border">
         <div class="row">
-            <div class="col-4 col-lg-3 mt-3">
+            <div class="col-12 col-lg-3 mt-3">
                 <ul class="list-group text-center shadow">
                     <li class="list-group-item d-flex justify-content-between">
-                        <span class="d-none d-md-block">Month: &nbsp;</span>
+                        <span>Month: &nbsp;</span>
                         <span class="fw-bold text-primary">@Model.IncomeCategory.IncomeTotals.TotalSpentThisMonth</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
-                        <span class="d-none d-md-block">Year: &nbsp;</span>
+                        <span>Year: &nbsp;</span>
                         <span class="fw-bold text-primary responsive-text">@Model.IncomeCategory.IncomeTotals.TotalSpentThisYear</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
-                        <span class="d-none d-md-block">Total: &nbsp;</span>
+                        <span>Total: &nbsp;</span>
                         <span class="fw-bold text-primary responsive-text">
                             @String.Format("{0:n}", Model.IncomeCategory.IncomeTotals.TotalSpentAllTime)
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
-                        <span class="d-none d-md-block">Min: &nbsp;</span>
+                        <span>Min: &nbsp;</span>
                         <span class="fw-bold text-primary responsive-text">
                             @String.Format("{0:n}", Model.IncomeCategory.IncomeTotals.Min)
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
-                        <span class="d-none d-md-block">Max: &nbsp;</span>
+                        <span>Max: &nbsp;</span>
                         <span class="fw-bold text-primary responsive-text">
                             @String.Format("{0:n}", Model.IncomeCategory.IncomeTotals.Max)
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
-                        <span class="d-none d-md-block">Average: &nbsp;</span>
+                        <span>Average: &nbsp;</span>
                         <span class="fw-bold text-primary responsive-text">
                             @String.Format("{0:n}", Model.IncomeCategory.IncomeTotals.Average)
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
-                        <span class="d-none d-md-block">Count: &nbsp;</span>
+                        <span>Count: &nbsp;</span>
                         <span class="fw-bold text-primary responsive-text">
                             @Model.IncomeCategory.IncomeTotals.Count
                         </span>
                     </li>
                 </ul>
             </div>
-
-            <div class="col-4 col-lg-5 shadow px-3">
+            <div class="col-12 col-lg-4 col-xl-5 shadow mb-3 mb-lg-0">
                 <form method="get">
                     <div class="input-group mx-auto m-3">
-                        <span class="input-group-text d-none d-lg-block">Name</span>
+                        <span class="input-group-text">Name</span>
                         <select data-val="true"
                                 onchange="this.form.submit()"
                                 asp-for=@Model.SearchTerm
@@ -128,19 +127,14 @@
                         </select>
                     </div>
                 </form>
-
                 <div class="input-group mx-auto m-3">
                     @{
                         var isActiveText = Model.IncomeCategory.InUse ? "Active" : "Inactive";
                     }
-                    <span class="input-group-text d-none d-lg-block">In Use</span>
-                    <input type="text"
-                           class="white-on-disabled form-control text-center"
-                           asp-for="@Model.IncomeCategory.InUse"
-                           disabled
-                           value="@isActiveText" />
+                    <span class="input-group-text">In Use</span>
+                    <input type="text" class="white-on-disabled form-control text-center" asp-for="@Model.IncomeCategory.InUse" disabled value="@isActiveText" />
                 </div>
-                <div class="form-floating mx-auto">
+                <div class="form-floating mx-auto mb-2 mb-lg-0">
                     <textarea type="text"
                               class="form-control white-on-disabled py-0 notes-height"
                               id="categoryNotes"
@@ -151,10 +145,9 @@
                     }
                 </div>
             </div>
-
-            <div class="col-4 shadow">
+            <div class="col-12 col-lg-5 col-xl-4 shadow px-2">
                 <div class="d-flex justify-content-center">
-                    <span class="mb-0 fw-bold d-none d-lg-block">
+                    <span class="mb-0 fw-bold">
                         Recent Income
                     </span>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -166,7 +159,7 @@
                     </a>
                 </div>
                 <div class="table-responsive-lg">
-                    <table class="table table-sm align-middle text-center mb-0">
+                    <table class="table table-sm align-middle text-center mb-2 mb-lg-0">
                         <thead class="p-0 m-0">
                             <tr>
                                 <th class="p-0 m-0">
