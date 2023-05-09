@@ -1,7 +1,7 @@
 #Remove the migration files
 Get-ChildItem  ./src/Data/Migrations -Recurse | Remove-Item
 #Remove the old database
-$dbPath = "./src/Data/cashtrack.db*"
+$dbPath = "./src/wwwroot/data/cashtrack.db*"
 if(Test-Path $dbPath){
     Get-ChildItem $dbPath | Remove-Item
 }
