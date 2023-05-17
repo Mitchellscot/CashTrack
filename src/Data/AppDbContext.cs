@@ -36,6 +36,10 @@ namespace CashTrack.Data
             _env = env.EnvironmentName;
         }
 
+        public AppDbContext()
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder mb)
         {
             base.OnModelCreating(mb);
@@ -44,6 +48,9 @@ namespace CashTrack.Data
 
             if (Database.ProviderName.IsEqualTo(SQLite))
                 ConfigureForSqlLite(mb);
+
+            if(_env.Equals(CashTrackEnv.Production, StringComparison.InvariantCultureIgnoreCase))
+                this.Database.Migrate();
 
         }
         private void ConfigureForSqlLite(ModelBuilder modelBuilder)
