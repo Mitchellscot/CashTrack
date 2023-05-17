@@ -26,8 +26,8 @@ namespace CashTrack.Data
             .Build();
             config.GetSection(AppSettingsOptions.AppSettings).Bind(settings);
 
-            var connectionString = env.Equals(CashTrackEnv.Production, StringComparison.InvariantCultureIgnoreCase) ? $"Data Source={Path.Join(Directory.GetCurrentDirectory(),
-                "wwwroot", "data",
+            var connectionString = env.Equals(CashTrackEnv.Production, StringComparison.InvariantCultureIgnoreCase) ? $"Data Source={
+                Path.Join("wwwroot", "data",
                 settings.ConnectionStrings[env])}" : $"Data Source={Path.Join(Directory.GetCurrentDirectory(),
                 "Data",
                 settings.ConnectionStrings[env])}";
