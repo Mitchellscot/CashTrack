@@ -76,6 +76,7 @@ namespace CashTrack
             if (IsProduction())
             {
                 var ctx = app.Services.GetService<AppDbContext>();
+                ctx.Database.EnsureCreated();
                 ctx.Database.Migrate();
             }
 
