@@ -1,0 +1,7 @@
+Write-Host "Installing Dotnet EF" 
+dotnet tool install --global dotnet-ef
+dotnet tool restore
+Write-Host "Creating new Migration Files" 
+dotnet ef migrations add SeededInit --project ./src/CashTrack.csproj -o ./Data/Migrations -- seed
+Write-Host "Creating new SQLite Database"
+dotnet ef database update --project ./src/CashTrack.csproj

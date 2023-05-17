@@ -40,15 +40,11 @@ jobs:
       run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
     - name: Build
       run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
-    - name: Update database
-      run: |
-        dotnet tool install --global dotnet-ef
-        dotnet tool restore
+    - name: Prepare DB
+      shell: pwsh
+      run: . ./Prod-Db.ps1
       env:
         ASPNETCORE_ENVIRONMENT: Production
-    - name: Seed DB
-      shell: pwsh
-      run: . ./Seed-Db.ps1
     - name: Publish
       run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
     - name: Publish Artifacts
