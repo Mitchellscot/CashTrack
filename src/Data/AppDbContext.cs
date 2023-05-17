@@ -258,9 +258,8 @@ namespace CashTrack.Data
                 var expenses = GenerateData.Expenses(subCategories);
                 mb.Entity<ExpenseEntity>().HasData(expenses);
                 mb.Entity<BudgetEntity>().HasData(GenerateData.IncomeBudgets());
+                return;
             }
-
-
             if (args.IsEqualTo("seed") || env == CashTrackEnv.Test)
             {
                 var users = CsvParser.ProcessUserFile(Path.Combine(csvFileDirectory, "Users.csv"));
