@@ -47,6 +47,8 @@ jobs:
         ASPNETCORE_ENVIRONMENT: Production
     - name: Publish
       run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+    - name: Copy Database to Publish folder
+      run: cp ./src/cashtrack.db ./published/cashtrack.db
     - name: Publish Artifacts
       uses: actions/upload-artifact@v3
       with:

@@ -28,7 +28,6 @@ namespace CashTrack.Data
 
             var connectionString = env.Equals(CashTrackEnv.Production, StringComparison.InvariantCultureIgnoreCase) ? $"Data Source={
                 Path.Join(Directory.GetCurrentDirectory(),
-                "wwwroot", "data",
                 settings.ConnectionStrings[env])}" : $"Data Source={Path.Join(Directory.GetCurrentDirectory(),
                 "Data",
                 settings.ConnectionStrings[env])}";
