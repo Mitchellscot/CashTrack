@@ -73,6 +73,12 @@ namespace CashTrack
             if (!IsProduction())
                 app.Logger.LogInformation($"Using Connection string {connectionString}");
 
+            if (IsProduction())
+            {
+                var ctx = app.Services.GetService<AppDbContext>();
+                ctx.Database.Migrate();
+            }
+
             app.Run();
 
         }

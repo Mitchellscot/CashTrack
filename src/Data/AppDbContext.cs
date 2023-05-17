@@ -49,9 +49,6 @@ namespace CashTrack.Data
             if (Database.ProviderName.IsEqualTo(SQLite))
                 ConfigureForSqlLite(mb);
 
-            if(_env.Equals(CashTrackEnv.Production, StringComparison.InvariantCultureIgnoreCase))
-                this.Database.Migrate();
-
         }
         private void ConfigureForSqlLite(ModelBuilder modelBuilder)
         {
