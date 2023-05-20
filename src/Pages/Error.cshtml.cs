@@ -1,4 +1,5 @@
 using CashTrack.Pages.Shared;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
@@ -12,6 +13,7 @@ namespace CashTrack.Pages
         public string RequestId { get; set; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+        public string ErrorMessage { get; set; }
 
         private readonly ILogger<ErrorModel> _logger;
 
@@ -20,9 +22,13 @@ namespace CashTrack.Pages
             _logger = logger;
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
+            _logger.LogError($"HEY MITCH: Error page hit for {HttpContext.Request.Path}");
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+            var exception = HttpContext.Features.Get<IExceptionHandlerFeature>();
+            ErrorMessage = exception?.Error?.Message ?? TempData["ErrorMessage"]?.ToString();
+            return Page();
         }
     }
 }

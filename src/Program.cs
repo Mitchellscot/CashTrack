@@ -169,7 +169,7 @@ namespace CashTrack
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
                 app.UseHttpsRedirection();
-                //app.UseMiddleware<IpAddressMiddleware>();
+                app.UseMiddleware<IpAddressMiddleware>();
             }
             app.UseStaticFiles();
             app.UseRouting();

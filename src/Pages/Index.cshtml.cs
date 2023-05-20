@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace CashTrack.Pages
 {
-
+    
     public class IndexModel : PageModelBase
     {
         private readonly ISummaryService _summaryService;
@@ -68,6 +68,7 @@ namespace CashTrack.Pages
 
         public async Task<IActionResult> OnGet()
         {
+            if(User.)
             var incomeReviews = await _incomeReviewService.GetCountOfIncomeReviews();
             var expenseReviews = await _expenseReviewService.GetCountOfExpenseReviews();
             if (expenseReviews > 0 || incomeReviews > 0)
