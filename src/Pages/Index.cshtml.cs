@@ -13,6 +13,7 @@ using CashTrack.Services.IncomeReviewService;
 using CashTrack.Services.MainCategoriesService;
 using CashTrack.Services.SubCategoryService;
 using CashTrack.Services.SummaryService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -25,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace CashTrack.Pages
 {
-    
+    [AllowAnonymous]
     public class IndexModel : PageModelBase
     {
         private readonly ISummaryService _summaryService;
@@ -77,7 +78,7 @@ namespace CashTrack.Pages
 
         public async Task<IActionResult> OnGet()
         {
-            if (!User.Identity.IsAuthenticated && _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase))
+            if (!UserIsAuthenticated && _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase))
             {
                 var result = await _signInManager.PasswordSignInAsync("demo", "demo", true, false);
                 if (result.Succeeded)
@@ -86,7 +87,7 @@ namespace CashTrack.Pages
                 }
                 else
                 {
-                    TempData["Message"] = "Please use 'demo' as a login name and password to view the app.";
+                    InfoMessage = "Please use 'demo' as a login name and password to view the app.";
                     return LocalRedirect("Account/Login");
                 }
             }

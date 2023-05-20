@@ -56,7 +56,7 @@ namespace CashTrack.Pages.Expenses
             var originalExpense = await _expenseService.GetExpenseByIdAsync(id);
             if (originalExpense == null)
             {
-                TempData["Message"] = $"Unable to find expense with Id {id}";
+                InfoMessage = $"Unable to find expense with Id {id}";
                 return LocalRedirect("./Index");
             }
             var totalAmount = expenseSplits.Sum(x => x.Amount);
@@ -90,8 +90,8 @@ namespace CashTrack.Pages.Expenses
                 return LocalRedirect(Url.Content(ReturnUrl) ?? "~/Expenses/Index");
             }
             else
-            {
-                TempData["Message"] = "There was an error splitting the expense";
+            {   
+                InfoMessage = "There was an error splitting the expense";
                 return LocalRedirect(Url.Content(ReturnUrl) ?? "~/Expenses/Index");
             }
         }
@@ -100,8 +100,8 @@ namespace CashTrack.Pages.Expenses
             var originalExpense = await _expenseService.GetExpenseByIdAsync(id);
             if (originalExpense == null)
             {
-                TempData["Message"] = $"Unable to find expense with Id {id}";
-                return LocalRedirect("./Index");
+                InfoMessage = $"Unable to find expense with Id {id}";
+                return LocalRedirect("./Index");    
             }
             SubCategoryId = originalExpense.SubCategoryId;
             var categories = await _subCategoryService.GetSubCategoryDropdownListAsync();
