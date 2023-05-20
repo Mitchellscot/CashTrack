@@ -5,6 +5,7 @@ using CashTrack.Models.UserModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.ExportService;
 using CashTrack.Services.UserService;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
@@ -20,8 +21,10 @@ namespace CashTrack.Pages.Settings
         private readonly IConfiguration _config;
         private readonly IExportService _exportService;
         private readonly IUserService _userService;
-        public Index(IConfiguration config, IExportService exportService, IUserService userService)
+        private readonly IWebHostEnvironment _env;
+        public Index(IConfiguration config, IExportService exportService, IUserService userService, IWebHostEnvironment env)
         {
+            _env = env;
             _config = config;
             _exportService = exportService;
             _userService = userService;
@@ -46,6 +49,9 @@ namespace CashTrack.Pages.Settings
         }
         public async Task<IActionResult> OnPostChangePassword()
         {
+            if (IsDemoApp())
+                return Page();
+
             if (string.IsNullOrEmpty(ChangePassword.OldPassword) || string.IsNullOrEmpty(ChangePassword.NewPassword))
             {
                 ModelState.AddModelError("", "Please fill out both the old and new Passwords");
@@ -69,6 +75,9 @@ namespace CashTrack.Pages.Settings
         }
         public async Task<IActionResult> OnPostChangeUsername()
         {
+            if (IsDemoApp())
+                return Page();
+
             if (string.IsNullOrEmpty(ChangeUsername.NewUsername) || string.IsNullOrEmpty(ChangeUsername.ConfirmUsername))
             {
                 ModelState.AddModelError("", "Please fill out both the old and new Passwords");

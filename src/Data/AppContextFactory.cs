@@ -31,7 +31,6 @@ namespace CashTrack.Data
                 settings.ConnectionStrings[env])}" : $"Data Source={Path.Join(Directory.GetCurrentDirectory(),
                 "Data",
                 settings.ConnectionStrings[env])}";
-            optionsBuilder.EnableSensitiveDataLogging();
             optionsBuilder.UseSqlite(connectionString);
 
             var arguments = args.Length > 0 ? args[0] : string.Empty;
