@@ -70,17 +70,15 @@ namespace CashTrack
 
             app.Logger.LogInformation($"Using environment: {_env}");
             app.Logger.LogInformation($"Listening on {string.Join(", ", app.Urls)}");
-            if (!IsProduction())
-                app.Logger.LogInformation($"Using Connection string {connectionString}");
+             app.Logger.LogInformation($"Using Connection string {connectionString}");
 
             app.Run();
-
         }
         private static string ConfigureConfiguration(WebApplicationBuilder app)
         {
             app.Services.Configure<AppSettingsOptions>(app.Configuration.GetSection(AppSettingsOptions.AppSettings));
 
-            return $"Data Source={Path.Join(Directory.GetCurrentDirectory(), "Data", app.Configuration[$"AppSettings:ConnectionStrings:{_env}"])}";
+            return IsProduction() ? $"Data Source={Path.Join(Directory.GetCurrentDirectory(), app.Configuration[$"AppSettings:ConnectionStrings:{_env}"])}" : $"Data Source={Path.Join(Directory.GetCurrentDirectory(), "Data", app.Configuration[$"AppSettings:ConnectionStrings:{_env}"])}";
         }
 
         private static void ConfigureServices(WebApplicationBuilder app, string connectionString)
