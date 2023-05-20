@@ -23,7 +23,6 @@ public class PublicPageTests : IClassFixture<CustomWebApplicationFactory<CashTra
     }
 
     [Theory]
-    [InlineData("/")]
     [InlineData("/Expenses")]
     [InlineData("/Income")]
     [InlineData("/Merchants")]

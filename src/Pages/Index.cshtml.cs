@@ -78,7 +78,7 @@ namespace CashTrack.Pages
 
         public async Task<IActionResult> OnGet()
         {
-            if (!UserIsAuthenticated && _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase))
+            if (User?.Identity != null || !UserIsAuthenticated && _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase))
             {
                 var result = await _signInManager.PasswordSignInAsync("demo", "demo", true, false);
                 if (result.Succeeded)
@@ -88,7 +88,7 @@ namespace CashTrack.Pages
                 else
                 {
                     InfoMessage = "Please use 'demo' as a login name and password to view the app.";
-                    return LocalRedirect("Account/Login");
+                    return LocalRedirect("~/Account/Login");
                 }
             }
 
