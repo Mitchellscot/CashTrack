@@ -68,7 +68,9 @@ namespace CashTrack.Pages
 
         public async Task<IActionResult> OnGet()
         {
-            if(User.)
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToPage("Account/Login");
+
             var incomeReviews = await _incomeReviewService.GetCountOfIncomeReviews();
             var expenseReviews = await _expenseReviewService.GetCountOfExpenseReviews();
             if (expenseReviews > 0 || incomeReviews > 0)
