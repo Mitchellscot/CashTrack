@@ -45,7 +45,7 @@ public class PublicPageTests : IClassFixture<CustomWebApplicationFactory<CashTra
     public async Task Can_Log_In()
     {
         var client = _factory.CreateClient();
-        var defaultPage = await client.GetAsync("/");
+        var defaultPage = await client.GetAsync("/login");
 
         var content = await HtmlHelpers.GetDocumentAsync(defaultPage);
 

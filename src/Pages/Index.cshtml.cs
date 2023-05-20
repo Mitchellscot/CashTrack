@@ -38,6 +38,7 @@ namespace CashTrack.Pages
         private readonly IIncomeCategoryService _incomeCategoryService;
         private readonly SignInManager<UserEntity> _signInManager;
         private readonly ILogger<IndexModel> _logger;
+        private readonly UserManager<UserEntity> _userManager;
 
         public int ReviewAmount { get; set; }
         [BindProperty(SupportsGet = true)]
@@ -63,7 +64,7 @@ namespace CashTrack.Pages
         public SubCategoryDropdownSelection[] SubCategoryList { get; set; }
         public MainCategoryDropdownSelection[] MainCategoryList { get; set; }
         public IncomeCategoryDropdownSelection[] IncomeCategoryList { get; set; }
-        public IndexModel(IExpenseService expenseService, IExpenseReviewService expenseReviewService, IIncomeReviewService incomeReviewService, ISummaryService summaryService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoryService, IIncomeCategoryService incomeCategoryService, SignInManager<UserEntity> signInManager, ILogger<IndexModel> logger)
+        public IndexModel(IExpenseService expenseService, IExpenseReviewService expenseReviewService, IIncomeReviewService incomeReviewService, ISummaryService summaryService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoryService, IIncomeCategoryService incomeCategoryService, SignInManager<UserEntity> signInManager, ILogger<IndexModel> logger, UserManager<UserEntity> userManager)
         {
             _summaryService = summaryService;
             _expenseService = expenseService;
@@ -74,21 +75,24 @@ namespace CashTrack.Pages
             _incomeCategoryService = incomeCategoryService;
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> OnGet()
         {
-            if (User?.Identity != null || !UserIsAuthenticated && _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase))
+            if (!UserIsAuthenticated && _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase))
             {
                 var result = await _signInManager.PasswordSignInAsync("demo", "demo", true, false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation($"A Demo User has logged in at {DateTime.Now} CST Time from {HttpContext.Connection.RemoteIpAddress}");
+                    var user = await _userManager.FindByIdAsync("1");
+                    await _signInManager.RefreshSignInAsync(user);
                 }
                 else
                 {
                     InfoMessage = "Please use 'demo' as a login name and password to view the app.";
-                    return LocalRedirect("~/Account/Login");
+                    return LocalRedirect("/login");
                 }
             }
 
@@ -103,10 +107,11 @@ namespace CashTrack.Pages
         }
         private async Task<IActionResult> PrepareAndRenderPage()
         {
+            var userId = _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase) ? 1 : int.Parse(this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
             IncomeCategoryList = await _incomeCategoryService.GetIncomeCategoryDropdownListAsync();
             SubCategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
             MainCategoryList = await _mainCategoryService.GetMainCategoriesForDropdownListAsync();
-            SummaryResponse = await _summaryService.GetMonthlySummaryAsync(new MonthlySummaryRequest() { Year = this.Year, Month = this.Month, UserId = int.Parse(this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value) });
+            SummaryResponse = await _summaryService.GetMonthlySummaryAsync(new MonthlySummaryRequest() { Year = this.Year, Month = this.Month, UserId = userId });
             YearSelectList = new SelectList(await _expenseService.GetAnnualSummaryYearsAsync());
             return Page();
         }
