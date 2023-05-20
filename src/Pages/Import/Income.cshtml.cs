@@ -73,7 +73,7 @@ namespace CashTrack.Pages.Import
             if (IsRefund || (SelectedIncome.Category != null && SelectedIncome.Category.IsEqualTo("Refund")))
                 return RedirectToPage("../Income/Refund", new { id = incomeId });
 
-            TempData["SuccessMessage"] = "Sucessfully Added New Income!";
+            SuccessMessage = "Sucessfully Added New Income!";
             return RedirectToPage("../Import/Income", new { pageNumber = PageNumber });
         }
         public async Task<IActionResult> OnPostRemoveIncome(int pageNumber)
@@ -84,10 +84,10 @@ namespace CashTrack.Pages.Import
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                InfoMessage = ex.Message;
                 return Page();
             }
-            TempData["SuccessMessage"] = "Successfully Removed the Income!";
+            SuccessMessage = "Successfully Removed the Income!";
             return RedirectToPage("../Import/Income", new { pageNumber = pageNumber });
         }
         private async Task PrepareData()

@@ -49,10 +49,10 @@ namespace CashTrack.Pages.Sources
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                InfoMessage = ex.Message;
                 return LocalRedirect("~/Sources/Index");
             }
-            TempData["SuccessMessage"] = "Successfully Deleted an Income Source!";
+            SuccessMessage = "Successfully Deleted an Income Source!";
             return LocalRedirect("~/Sources/Index");
         }
     }

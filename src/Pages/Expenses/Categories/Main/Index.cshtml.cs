@@ -44,7 +44,7 @@ namespace CashTrack.Pages.Expenses.Categories.Main
                 return await PrepareAndRenderPage();
             }
 
-            TempData["SuccessMessage"] = MainCategoryModal.IsEdit ? "Successfully edited a Category!" : "Successfully added a new Category!";
+            SuccessMessage = MainCategoryModal.IsEdit ? "Successfully edited a Category!" : "Successfully added a new Category!";
             return LocalRedirect(Url.Content(MainCategoryModal.ReturnUrl));
         }
         public async Task<IActionResult> OnPostDelete(int id)
@@ -55,10 +55,10 @@ namespace CashTrack.Pages.Expenses.Categories.Main
             }
             catch (Exception ex)
             {
-                TempData["InfoMessage"] = ex.Message;
+                InfoMessage = ex.Message;
                 return LocalRedirect("/Expenses/Categories/Main/Index");
             }
-            TempData["SuccessMessage"] = "Successfully Deleted a Main Category!";
+            SuccessMessage = "Successfully Deleted a Main Category!";
             return LocalRedirect("/Expenses/Categories/Main/Index");
         }
 

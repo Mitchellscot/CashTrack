@@ -53,10 +53,10 @@ namespace CashTrack.Pages.Expenses.Categories
             }
             catch (Exception ex)
             {
-                TempData["InfoMessage"] = ex.Message;
+                InfoMessage = ex.Message;
                 return LocalRedirect("~/Expenses/Categories/Index");
             }
-            TempData["SuccessMessage"] = "Successfully Deleted a Category!";
+            SuccessMessage = "Successfully Deleted a Category!";
             return LocalRedirect("~/Expenses/Categories/Index");
         }
     }

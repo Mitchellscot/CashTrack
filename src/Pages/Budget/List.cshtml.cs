@@ -44,12 +44,12 @@ namespace CashTrack.Pages.Budget
                 var success = await _budgetService.CreateBudgetItemAsync(this.BudgetModal);
                 if (success > 0)
                 {
-                    TempData["SuccessMessage"] = "Successfully Budgeted!";
+                    SuccessMessage = "Successfully Budgeted!";
                     return LocalRedirect(Url.Content(BudgetModal.ReturnUrl));
                 }
                 else
                 {
-                    TempData["InfoMessage"] = "Budget was not saved.";
+                    InfoMessage = "Budget was not saved.";
                     return LocalRedirect(Url.Content(BudgetModal.ReturnUrl));
                 }
             }
@@ -66,12 +66,12 @@ namespace CashTrack.Pages.Budget
                 var success = await _budgetService.UpdateBudgetAsync(this.BudgetModal);
                 if (success > 0)
                 {
-                    TempData["SuccessMessage"] = "Successfully Edited Budget!";
+                    SuccessMessage = "Successfully Edited Budget!";
                     return LocalRedirect(Url.Content(BudgetModal.ReturnUrl));
                 }
                 else
                 {
-                    TempData["InfoMessage"] = "Budget was not saved.";
+                    InfoMessage = "Budget was not saved.";
                     return LocalRedirect(Url.Content(BudgetModal.ReturnUrl));
                 }
             }
@@ -89,7 +89,7 @@ namespace CashTrack.Pages.Budget
                 ModelState.AddModelError("", "Unable to delete the budget");
                 return await PrepareAndRenderPage();
             }
-            TempData["SuccessMessage"] = "Successfully deleted the budget!";
+            SuccessMessage = "Successfully deleted the budget!";
             return RedirectToPage("./List", new { PageNumber = this.PageNumber, Query = this.Query, Q2 = this.Q2 });
         }
         private async Task<IActionResult> PrepareAndRenderPage()

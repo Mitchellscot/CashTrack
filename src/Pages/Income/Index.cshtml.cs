@@ -158,17 +158,17 @@ namespace CashTrack.Pages.Incomes
             }
             catch (CategoryNotFoundException)
             {
-                TempData["ErrorMessage"] = "Please select a category and try again";
+                InfoMessage = "Please select a category and try again";
                 return LocalRedirect("~/Income/Index");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                TempData["ErrorMessage"] = "There was an error saving the income.";
+                InfoMessage = "There was an error saving the income.";
                 return LocalRedirect("~/Income/Index");
             }
 
-            TempData["SuccessMessage"] = Income.IsEdit ? "Sucessfully updated the Income!" : "Sucessfully added new Income!";
+            SuccessMessage = Income.IsEdit ? "Sucessfully updated the Income!" : "Sucessfully added new Income!";
             return LocalRedirect($"{Income.ReturnUrl}?query={Query}&q={Q}&pageNumber={PageNumber}");
 
         }
@@ -180,7 +180,7 @@ namespace CashTrack.Pages.Incomes
                 ModelState.AddModelError("", "Unable to delete the Income");
                 return Page();
             }
-            TempData["SuccessMessage"] = "Sucessfully deleted Income!";
+            SuccessMessage = "Sucessfully deleted Income!";
             return RedirectToPage("./Index", new { Query = query, Q = q, PageNumber = pageNumber });
         }
         private async Task PrepareForm(int query)

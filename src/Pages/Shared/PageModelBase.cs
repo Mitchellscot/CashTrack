@@ -8,7 +8,7 @@ namespace CashTrack.Pages.Shared
     public class PageModelBase : PageModel
     {
         protected readonly string _env;
-        protected bool UserIsAuthenticated => User.Identity.IsAuthenticated && User?.Identity != null;
+        protected bool UserIsAuthenticated =>  User?.Identity != null && User.Identity.IsAuthenticated;
         public PageModelBase()
         {
             _env = System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");

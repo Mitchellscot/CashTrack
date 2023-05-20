@@ -86,7 +86,7 @@ namespace CashTrack.Pages.Expenses
             }
             if (expenseId > 0 && deleteSuccess)
             {
-                TempData["SuccessMessage"] = "Sucessfully Split the Expense!";
+                SuccessMessage = "Sucessfully Split the Expense!";
                 return LocalRedirect(Url.Content(ReturnUrl) ?? "~/Expenses/Index");
             }
             else

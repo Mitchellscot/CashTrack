@@ -27,7 +27,7 @@ namespace CashTrack.Pages
             _logger.LogError($"HEY MITCH: Error page hit for {HttpContext.Request.Path}");
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
             var exception = HttpContext.Features.Get<IExceptionHandlerFeature>();
-            ErrorMessage = exception?.Error?.Message ?? TempData["ErrorMessage"]?.ToString();
+            ErrorMessage = exception?.Error?.Message ?? TempData["InfoMessage"]?.ToString();
             return Page();
         }
     }

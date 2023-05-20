@@ -48,10 +48,10 @@ namespace CashTrack.Pages.Merchants
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                InfoMessage= ex.Message;
                 return LocalRedirect("~/Merchants/Index");
             }
-            TempData["SuccessMessage"] = "Successfully Deleted a Merchant!";
+            SuccessMessage = "Successfully Deleted a Merchant!";
             return LocalRedirect("~/Merchants/Index");
         }
     }

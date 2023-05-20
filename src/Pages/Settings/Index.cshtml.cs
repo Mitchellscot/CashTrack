@@ -64,7 +64,7 @@ namespace CashTrack.Pages.Settings
                 ModelState.AddModelError("", "There was an error changing your password. Try again.");
                 return Page();
             }
-            TempData["SuccessMessage"] = "Successfully changed your password!";
+            SuccessMessage = "Successfully changed your password!";
             return LocalRedirect("/Settings");
         }
         public async Task<IActionResult> OnPostChangeUsername()
@@ -90,7 +90,7 @@ namespace CashTrack.Pages.Settings
                 ModelState.AddModelError("", "There was an error changing your username. Try again.");
                 return Page();
             }
-            TempData["SuccessMessage"] = "Successfully changed your username!";
+            SuccessMessage = "Successfully changed your username!";
             return LocalRedirect("/Settings");
         }
         public async Task<IActionResult> OnPostChangeDefaultTax()
@@ -111,7 +111,7 @@ namespace CashTrack.Pages.Settings
                 ModelState.AddModelError("", "There was an error changing your default tax. Try again.");
                 return Page();
             }
-            TempData["SuccessMessage"] = "Successfully changed your default tax!";
+            SuccessMessage = "Successfully changed your default tax!";
             return LocalRedirect("/Settings");
         }
         public async Task<ActionResult> OnPostExport(int ExportOption, bool ExportAsReadable)

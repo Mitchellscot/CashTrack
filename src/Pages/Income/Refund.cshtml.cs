@@ -91,7 +91,7 @@ namespace CashTrack.Pages.Incomes
                 ModelState.AddModelError("", ex.Message);
                 return Page();
             }
-            TempData["SuccessMessage"] = "Sucessfully Applied the Refund!";
+            SuccessMessage = "Sucessfully Applied the Refund!";
             return LocalRedirect("~/Income/Index");
         }
         public async Task<IActionResult> OnPostDelete(int incomeId)
@@ -102,7 +102,7 @@ namespace CashTrack.Pages.Incomes
                 ModelState.AddModelError("", "Unable to delete the Refund");
                 return Page();
             }
-            TempData["SuccessMessage"] = "Sucessfully deleted Refund!";
+            SuccessMessage = "Sucessfully deleted Refund!";
             return LocalRedirect("~/Income/Index");
         }
         private async Task GetExpenseRefundsFromSelectedIds()

@@ -61,11 +61,11 @@ namespace CashTrack.Pages.Income.Categories
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                InfoMessage = ex.Message;
                 return await PrepareAndRenderPage();
             }
 
-            TempData["SuccessMessage"] = IncomeCategoryModal.IsEdit ? "Successfully edited a Category!" : "Successfully added a new Category!";
+            SuccessMessage = IncomeCategoryModal.IsEdit ? "Successfully edited a Category!" : "Successfully added a new Category!";
             return LocalRedirect(Url.Content(IncomeCategoryModal.ReturnUrl));
         }
         private async Task<IActionResult> PrepareAndRenderPage()

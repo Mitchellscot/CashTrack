@@ -65,7 +65,7 @@ namespace CashTrack.Pages.Import
 
                 if (success > 0)
                 {
-                    TempData["SuccessMessage"] = ImportRule.IsEdit ? "Successfully edited an Import Rule!" : "Successfully added a new Import Rule!";
+                    SuccessMessage = ImportRule.IsEdit ? "Successfully edited an Import Rule!" : "Successfully added a new Import Rule!";
                     return RedirectToPage("./Rules", new { query = Query, q2 = Q2, pageNumber = PageNumber });
                 }
             }
@@ -84,7 +84,7 @@ namespace CashTrack.Pages.Import
                 ModelState.AddModelError("", "Unable to delete the import rule");
                 return await PrepareAndRenderPage();
             }
-            TempData["SuccessMessage"] = "Sucessfully deleted Import Rule!";
+            SuccessMessage = "Sucessfully deleted Import Rule!";
             return RedirectToPage("./Rules", new { query = Query, q2 = q2, pageNumber = pageNumber });
         }
         private async Task<IActionResult> PrepareAndRenderPage()
