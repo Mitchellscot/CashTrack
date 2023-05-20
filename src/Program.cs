@@ -165,6 +165,7 @@ namespace CashTrack
 
                 });
             }
+            app.UseStaticFiles();
             if (IsProduction())
             {
                 app.UseExceptionHandler("/Error");
@@ -172,7 +173,6 @@ namespace CashTrack
                 app.UseHttpsRedirection();
                 app.UseMiddleware<IpAddressMiddleware>();
             }
-            app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

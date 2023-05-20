@@ -77,7 +77,7 @@ namespace CashTrack.Pages
 
         public async Task<IActionResult> OnGet()
         {
-            if (!User.Identity.IsAuthenticated && _env.Equals(CashTrackEnv.Production))
+            if (!User.Identity.IsAuthenticated && _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase))
             {
                 var result = await _signInManager.PasswordSignInAsync("demo", "demo", true, false);
                 if (result.Succeeded)
