@@ -1,3 +1,5 @@
+using CashTrack.Common;
+using CashTrack.Data.Entities;
 using CashTrack.Models.IncomeCategoryModels;
 using CashTrack.Models.MainCategoryModels;
 using CashTrack.Models.SubCategoryModels;
@@ -33,7 +35,7 @@ namespace CashTrack.Pages
         private readonly ISubCategoryService _subCategoryService;
         private readonly IMainCategoriesService _mainCategoryService;
         private readonly IIncomeCategoryService _incomeCategoryService;
-        private readonly SignInManager<User> _signInManager;
+        private readonly SignInManager<UserEntity> _signInManager;
         private readonly ILogger<IndexModel> _logger;
 
         public int ReviewAmount { get; set; }
@@ -60,7 +62,7 @@ namespace CashTrack.Pages
         public SubCategoryDropdownSelection[] SubCategoryList { get; set; }
         public MainCategoryDropdownSelection[] MainCategoryList { get; set; }
         public IncomeCategoryDropdownSelection[] IncomeCategoryList { get; set; }
-        public IndexModel(IExpenseService expenseService, IExpenseReviewService expenseReviewService, IIncomeReviewService incomeReviewService, ISummaryService summaryService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoryService, IIncomeCategoryService incomeCategoryService, SignInManager<User> signInManager, ILogger<IndexModel> logger)
+        public IndexModel(IExpenseService expenseService, IExpenseReviewService expenseReviewService, IIncomeReviewService incomeReviewService, ISummaryService summaryService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoryService, IIncomeCategoryService incomeCategoryService, SignInManager<UserEntity> signInManager, ILogger<IndexModel> logger)
         {
             _summaryService = summaryService;
             _expenseService = expenseService;
@@ -75,7 +77,7 @@ namespace CashTrack.Pages
 
         public async Task<IActionResult> OnGet()
         {
-            if (!User.Identity.IsAuthenticated)
+            if (!User.Identity.IsAuthenticated && _env.Equals(CashTrackEnv.Production))
             {
                 var result = await _signInManager.PasswordSignInAsync("demo", "demo", true, false);
                 if (result.Succeeded)

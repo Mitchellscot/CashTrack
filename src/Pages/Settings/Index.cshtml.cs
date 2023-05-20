@@ -1,16 +1,12 @@
 using CashTrack.Common;
 using CashTrack.Models.Common;
-using CashTrack.Models.ExportModels;
 using CashTrack.Models.UserModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.ExportService;
 using CashTrack.Services.UserService;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -21,10 +17,8 @@ namespace CashTrack.Pages.Settings
         private readonly IConfiguration _config;
         private readonly IExportService _exportService;
         private readonly IUserService _userService;
-        private readonly IWebHostEnvironment _env;
-        public Index(IConfiguration config, IExportService exportService, IUserService userService, IWebHostEnvironment env)
+        public Index(IConfiguration config, IExportService exportService, IUserService userService )
         {
-            _env = env;
             _config = config;
             _exportService = exportService;
             _userService = userService;

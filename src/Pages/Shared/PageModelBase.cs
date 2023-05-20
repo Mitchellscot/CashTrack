@@ -7,10 +7,10 @@ namespace CashTrack.Pages.Shared
 {
     public class PageModelBase : PageModel
     {
-        protected readonly IWebHostEnvironment _env;
-        public PageModelBase(IWebHostEnvironment env)
+        protected readonly string _env;
+        public PageModelBase()
         {
-            _env = env;
+            _env = System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         }
         [TempData]
         public string InfoMessage { get; set; }
@@ -19,7 +19,7 @@ namespace CashTrack.Pages.Shared
 
         protected bool IsDemoApp()
         {
-            if (_env.EnvironmentName.Equals(CashTrackEnv.Production, System.StringComparison.InvariantCultureIgnoreCase))
+            if (_env.Equals(CashTrackEnv.Production, System.StringComparison.InvariantCultureIgnoreCase))
             {
                 ModelState.AddModelError("", "This feature is disabled in the demo app.");
                 return true;
