@@ -22,7 +22,7 @@ namespace CashTrack.Pages.Shared
         {
             if (_env.Equals(CashTrackEnv.Production, System.StringComparison.InvariantCultureIgnoreCase))
             {
-                ModelState.AddModelError("", "This feature is disabled in the demo app.");
+                InfoMessage ="This feature is disabled in the demo app.";
                 return true;
             }
             else return false;
