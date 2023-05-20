@@ -2,6 +2,7 @@ using CashTrack.Models.IncomeCategoryModels;
 using CashTrack.Models.MainCategoryModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Models.SummaryModels;
+using CashTrack.Models.UserModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.ExpenseReviewService;
 using CashTrack.Services.ExpenseService;
@@ -10,8 +11,10 @@ using CashTrack.Services.IncomeReviewService;
 using CashTrack.Services.MainCategoriesService;
 using CashTrack.Services.SubCategoryService;
 using CashTrack.Services.SummaryService;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +33,8 @@ namespace CashTrack.Pages
         private readonly ISubCategoryService _subCategoryService;
         private readonly IMainCategoriesService _mainCategoryService;
         private readonly IIncomeCategoryService _incomeCategoryService;
+        private readonly SignInManager<User> _signInManager;
+        private readonly ILogger<IndexModel> _logger;
 
         public int ReviewAmount { get; set; }
         [BindProperty(SupportsGet = true)]
@@ -55,7 +60,7 @@ namespace CashTrack.Pages
         public SubCategoryDropdownSelection[] SubCategoryList { get; set; }
         public MainCategoryDropdownSelection[] MainCategoryList { get; set; }
         public IncomeCategoryDropdownSelection[] IncomeCategoryList { get; set; }
-        public IndexModel(IExpenseService expenseService, IExpenseReviewService expenseReviewService, IIncomeReviewService incomeReviewService, ISummaryService summaryService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoryService, IIncomeCategoryService incomeCategoryService)
+        public IndexModel(IExpenseService expenseService, IExpenseReviewService expenseReviewService, IIncomeReviewService incomeReviewService, ISummaryService summaryService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoryService, IIncomeCategoryService incomeCategoryService, SignInManager<User> signInManager, ILogger<IndexModel> logger)
         {
             _summaryService = summaryService;
             _expenseService = expenseService;
@@ -64,12 +69,25 @@ namespace CashTrack.Pages
             _subCategoryService = subCategoryService;
             _mainCategoryService = mainCategoryService;
             _incomeCategoryService = incomeCategoryService;
+            _signInManager = signInManager;
+            _logger = logger;
         }
 
         public async Task<IActionResult> OnGet()
         {
             if (!User.Identity.IsAuthenticated)
-                return RedirectToPage("Account/Login");
+            {
+                var result = await _signInManager.PasswordSignInAsync("demo", "demo", true, false);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation($"A Demo User has logged in at {DateTime.Now} CST Time from {HttpContext.Connection.RemoteIpAddress}");
+                }
+                else
+                {
+                    TempData["Message"] = "Please use 'demo' as a login name and password to view the app.";
+                    return LocalRedirect("Account/Login");
+                }
+            }
 
             var incomeReviews = await _incomeReviewService.GetCountOfIncomeReviews();
             var expenseReviews = await _expenseReviewService.GetCountOfExpenseReviews();

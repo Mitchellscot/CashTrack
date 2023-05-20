@@ -70,7 +70,8 @@ namespace CashTrack
 
             app.Logger.LogInformation($"Using environment: {_env}");
             app.Logger.LogInformation($"Listening on {string.Join(", ", app.Urls)}");
-             app.Logger.LogInformation($"Using Connection string {connectionString}");
+            if(!IsProduction())
+                app.Logger.LogInformation($"Using Connection string {connectionString}");
 
             app.Run();
         }
@@ -183,8 +184,8 @@ namespace CashTrack
         }
         private static void ConfigureProductionEndpoints(IEndpointRouteBuilder app)
         {
-            app.MapRazorPages();
-            app.MapControllers();
+            app.MapRazorPages().RequireAuthorization();
+            app.MapControllers().RequireAuthorization();
         }
 
         private static bool UseHttp()

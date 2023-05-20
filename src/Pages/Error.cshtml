@@ -4,23 +4,16 @@
     ViewData["Title"] = "Error";
     Layout = "_Layout";
 }
+<div class="container">
+    <h2 class="text-danger">An error occurred while processing your request.</h2>
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
-
-@if (Model.ShowRequestId)
-{
+    <h3>Oops</h3>
     <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+        Looks like there was an error
     </p>
-}
-
-<h3>Oops</h3>
-<p>
-    Looks like there was an error
-</p>
-<p>
-    <strong>Sorry.</strong>
-    This is just a demonstration site. These things happen.
-</p>
-<div class="d-none">@Model.ErrorMessage</div>
+    <p>
+        <strong>Sorry. </strong> This is just a demonstration site. These things happen.
+    </p>
+    <div class="d-none">@Model.ErrorMessage</div>
+    <div class="d-none">Request ID: @Model.RequestId</div>
+</div>
