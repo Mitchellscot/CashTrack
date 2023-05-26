@@ -25,7 +25,6 @@ using System.Threading.Tasks;
 
 namespace CashTrack.Pages
 {
-    [AllowAnonymous]
     public class IndexModel : PageModelBase
     {
         private readonly ISummaryService _summaryService;

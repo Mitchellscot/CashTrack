@@ -4,6 +4,7 @@ using CashTrack.Models.UserModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.ExportService;
 using CashTrack.Services.UserService;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
@@ -15,11 +16,14 @@ namespace CashTrack.Pages.Settings
     {
         private readonly IExportService _exportService;
         private readonly IUserService _userService;
-        public Index(IExportService exportService, IUserService userService )
+        private IWebHostEnvironment _env;
+        public Index(IExportService exportService, IUserService userService, IWebHostEnvironment env)
         {
+            _env = env;
             _exportService = exportService;
             _userService = userService;
         }
+
         public SelectList ExportOptions { get; set; }
         public int ExportOption { get; set; }
         public bool ExportAsReadable { get; set; }
@@ -34,6 +38,7 @@ namespace CashTrack.Pages.Settings
 
         public async Task<IActionResult> OnGet()
         {
+
             ExportOptions = new SelectList(ExportFileOptions.GetAll, "Key", "Value");
             DefaultTax = await _userService.GetDefaultTax(User.Identity.Name ?? "demo");
             return Page();
@@ -125,6 +130,15 @@ namespace CashTrack.Pages.Settings
             }
 
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, Path.GetFileName(filePath));
+        }
+        protected bool IsDemoApp()
+        {
+            if (_env.EnvironmentName.Equals(CashTrackEnv.Production, System.StringComparison.InvariantCultureIgnoreCase))
+            {
+                InfoMessage = "This feature is disabled in the demo app.";
+                return true;
+            }
+            else return false;
         }
     }
 }
