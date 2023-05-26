@@ -41,7 +41,7 @@ namespace CashTrack.Pages.Settings
         public async Task<IActionResult> OnPostChangePassword()
         {
             if (IsDemoApp())
-                return Page();
+                return await OnGet();
 
             if (string.IsNullOrEmpty(ChangePassword.OldPassword) || string.IsNullOrEmpty(ChangePassword.NewPassword))
             {
@@ -67,7 +67,7 @@ namespace CashTrack.Pages.Settings
         public async Task<IActionResult> OnPostChangeUsername()
         {
             if (IsDemoApp())
-                return Page();
+                return await OnGet();
 
             if (string.IsNullOrEmpty(ChangeUsername.NewUsername) || string.IsNullOrEmpty(ChangeUsername.ConfirmUsername))
             {
