@@ -6,7 +6,6 @@ using CashTrack.Services.ExportService;
 using CashTrack.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -16,9 +15,8 @@ namespace CashTrack.Pages.Settings
     {
         private readonly IExportService _exportService;
         private readonly IUserService _userService;
-        public Index(IConfiguration config, IExportService exportService, IUserService userService )
+        public Index(IExportService exportService, IUserService userService )
         {
-            _config = config;
             _exportService = exportService;
             _userService = userService;
         }
