@@ -4,7 +4,6 @@ using CashTrack.Models.IncomeCategoryModels;
 using CashTrack.Models.MainCategoryModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Models.SummaryModels;
-using CashTrack.Models.UserModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.ExpenseReviewService;
 using CashTrack.Services.ExpenseService;
@@ -80,22 +79,6 @@ namespace CashTrack.Pages
 
         public async Task<IActionResult> OnGet()
         {
-            if (!UserIsAuthenticated && _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase))
-            {
-                var result = await _signInManager.PasswordSignInAsync("demo", "demo", true, false);
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation($"A Demo User has logged in at {DateTime.Now} CST Time from {HttpContext.Connection.RemoteIpAddress}");
-                    var user = await _userManager.FindByIdAsync("1");
-                    await _signInManager.RefreshSignInAsync(user);
-                }
-                else
-                {
-                    InfoMessage = "Please use 'demo' as a login name and password to view the app.";
-                    return LocalRedirect("/login");
-                }
-            }
-
             var incomeReviews = await _incomeReviewService.GetCountOfIncomeReviews();
             var expenseReviews = await _expenseReviewService.GetCountOfExpenseReviews();
             if (expenseReviews > 0 || incomeReviews > 0)
@@ -107,11 +90,14 @@ namespace CashTrack.Pages
         }
         private async Task<IActionResult> PrepareAndRenderPage()
         {
-            var userId = _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase) ? 1 : int.Parse(this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
+            int id = 1;
+            var value = this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+            if (value != null && value.Value is string)
+                id = Convert.ToInt32(value.Value);
             IncomeCategoryList = await _incomeCategoryService.GetIncomeCategoryDropdownListAsync();
             SubCategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
             MainCategoryList = await _mainCategoryService.GetMainCategoriesForDropdownListAsync();
-            SummaryResponse = await _summaryService.GetMonthlySummaryAsync(new MonthlySummaryRequest() { Year = this.Year, Month = this.Month, UserId = userId });
+            SummaryResponse = await _summaryService.GetMonthlySummaryAsync(new MonthlySummaryRequest() { Year = this.Year, Month = this.Month, UserId = 1 });
             YearSelectList = new SelectList(await _expenseService.GetAnnualSummaryYearsAsync());
             return Page();
         }

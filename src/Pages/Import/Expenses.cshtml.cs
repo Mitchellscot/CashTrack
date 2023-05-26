@@ -75,8 +75,12 @@ namespace CashTrack.Pages.Import
             var result = await _importService.ImportTransactions(Import);
             if (result.ToString().Contains("Added"))
             {
+                int id = 1;
+                var value = this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+                if (value != null && value.Value is string)
+                    id = Convert.ToInt32(value.Value);
                 SuccessMessage += result;
-                var updateSuccess = await _userService.UpdateLastImportDate(int.Parse(this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value));
+                var updateSuccess = await _userService.UpdateLastImportDate(id);
                 if (!updateSuccess)
                     InfoMessage = "Unable to update the last import date.";
             }

@@ -47,10 +47,15 @@ namespace CashTrack.Pages
 
         private async Task<IActionResult> PrepareAndRenderPage()
         {
+            int id = 1;
+            var value = this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+            if (value != null && value.Value is string)
+                id = Convert.ToInt32(value.Value);
             IncomeCategoryList = await _incomeCategoryService.GetIncomeCategoryDropdownListAsync();
             SubCategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
             MainCategoryList = await _mainCategoryService.GetMainCategoriesForDropdownListAsync();
-            SummaryResponse = await _summaryService.GetAnnualSummaryAsync(new AnnualSummaryRequest() { Year = this.Year, UserId = int.Parse(this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value) });
+            SummaryResponse = await _summaryService.GetAnnualSummaryAsync(new AnnualSummaryRequest() 
+            { Year = this.Year, UserId = id });
             YearSelectList = new SelectList(await _expenseService.GetAnnualSummaryYearsAsync());
             return Page();
         }

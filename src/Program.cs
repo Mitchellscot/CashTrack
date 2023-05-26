@@ -184,8 +184,8 @@ namespace CashTrack
         }
         private static void ConfigureProductionEndpoints(IEndpointRouteBuilder app)
         {
-            app.MapRazorPages().RequireAuthorization();
-            app.MapControllers().RequireAuthorization();
+            app.MapRazorPages();
+            app.MapControllers();
         }
 
         private static bool UseHttp()
