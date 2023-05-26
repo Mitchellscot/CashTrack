@@ -110,7 +110,8 @@ namespace CashTrack.Pages.Expenses
             Total = originalExpense.Amount;
             Date = originalExpense.Date;
             Merchant = originalExpense.Merchant;
-            this.Tax = Tax ?? await _userService.GetDefaultTax(User.Identity.Name);
+            var userName = User.Identity.Name ?? "demo";
+            this.Tax = Tax ?? await _userService.GetDefaultTax(userName);
             this.Split = Split ?? 2;
             for (int i = 0; i < this.Split; i++)
             {

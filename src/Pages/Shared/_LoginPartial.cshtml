@@ -2,7 +2,7 @@
 @inject SignInManager<UserEntity> SignInManager
 
 <li class="text-nowrap list-unstyled d-none d-md-block my-md-2 me-md-4">
-    @if (!SignInManager.IsSignedIn(User))
+    @if (SignInManager.IsSignedIn(User))
     {
         <form method="post" asp-page="/Account/Logout" id="logoutForm">
             <button type="submit" class="icon-button spin-it">

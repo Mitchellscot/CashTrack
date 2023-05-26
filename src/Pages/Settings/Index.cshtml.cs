@@ -14,7 +14,6 @@ namespace CashTrack.Pages.Settings
 {
     public class Index : PageModelBase
     {
-        private readonly IConfiguration _config;
         private readonly IExportService _exportService;
         private readonly IUserService _userService;
         public Index(IConfiguration config, IExportService exportService, IUserService userService )
@@ -38,7 +37,7 @@ namespace CashTrack.Pages.Settings
         public async Task<IActionResult> OnGet()
         {
             ExportOptions = new SelectList(ExportFileOptions.GetAll, "Key", "Value");
-            DefaultTax = await _userService.GetDefaultTax(User.Identity.Name);
+            DefaultTax = await _userService.GetDefaultTax(User.Identity.Name ?? "demo");
             return Page();
         }
         public async Task<IActionResult> OnPostChangePassword()
@@ -95,6 +94,9 @@ namespace CashTrack.Pages.Settings
         }
         public async Task<IActionResult> OnPostChangeDefaultTax()
         {
+            if (IsDemoApp())
+                return Page();
+
             if (NewTax == decimal.Zero)
             {
                 ModelState.AddModelError("", "Please add a new default tax and try again.");
