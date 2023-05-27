@@ -1111,6 +1111,7 @@ namespace CashTrack.Services.SummaryService
                 return new List<ExpenseQuickView>();
 
             return expenses.Where(x => !x.ExcludeFromStatistics)
+                    .Where(x => x.Category.MainCategory.Name != "Rent") //this is mostly for the demo app...
                     .OrderByDescending(x => x.Amount)
                     .Take(10)
                     .Select(x => new ExpenseQuickView()
