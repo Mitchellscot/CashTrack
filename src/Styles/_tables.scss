@@ -1,5 +1,13 @@
-﻿.transaction-column {
+﻿@import 'variables';
+.transaction-column {
     min-width: 125px;
+}
+.print-table-resize > :not(caption) > * > * {
+    padding: 0 0 !important;
+
+    @media (min-width: $SM_BREAKPOINT) {
+        padding: 0.5rem 0.5rem !important;
+    }
 }
 
 .file-column {

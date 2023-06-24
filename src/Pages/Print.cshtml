@@ -18,7 +18,7 @@
             <div class="m-3 mb-0 col-auto d-print-none">
             <button type="button" onclick="window.print()" class="btn btn-lg btn-primary">PRINT ME</button>
             </div>
-        <table class="table-sm table-borderless border border-3 rounded-4 text-center mt-4">
+        <table class="table-sm table-borderless border rounded-4 text-center mt-4 print-table-resize">
             <tbody class="col">
             <tr>
                     <td colspan="4"><h4 class="text-center">@title Expense Breakdown</h4></td>
@@ -29,11 +29,11 @@
                 {
                     @if (budget.Category.IsEqualTo("Income"))
                     {
-                        <tr class="border-top border-bottom border-3 rounded-4 mt-5 border border-end-0 border border-start-0">
+                        <tr class="border-top border-bottom rounded-4 mt-5 border border-end-0 border border-start-0">
                             <td colspan="4" class="text-center"><h4>Summary</h4></td>
                         </tr>
                     }
-                    <tr class="border-top border-bottom border-3 rounded-4">
+                    <tr class="border-top border-bottom rounded-4">
                         <td>
                             <h6 class="fw-bold">@budget.Category</h6>
                         </td>
@@ -90,7 +90,7 @@ else if (Model.Budgets != null && Model.Budgets.Any())
         <div class="m-3 col-auto d-print-none">
             <button type="button" onclick="window.print()" class="btn btn-lg btn-primary">PRINT ME</button>
         </div>
-        <table class="table-sm table-borderless border border-3 rounded-4 text-center">
+        <table class="table-sm table-borderless border rounded-4 text-center print-table-resize">
             <tbody class="col">
                 <tr>
                     <td colspan="4"><h4 class="text-center">@title Expense Breakdown</h4></td>
@@ -101,11 +101,11 @@ else if (Model.Budgets != null && Model.Budgets.Any())
                     {
                         @if (budget.Category.IsEqualTo("Income"))
                         {
-                            <tr class="border-top border-bottom border-3 rounded-4 mt-5 border border-end-0 border border-start-0">
+                            <tr class="border-top border-bottom rounded-4 mt-5 border border-end-0 border border-start-0">
                                 <td colspan="4" class="text-center"><h4>Summary</h4></td>
                             </tr>
                         }
-                        <tr class="border-top border-bottom border-3 rounded-4">
+                        <tr class="border-top border-bottom rounded-4">
                             <td>
                                 <h6 class="fw-bold">@budget.Category</h6>
                             </td>
