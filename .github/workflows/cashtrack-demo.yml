@@ -3,6 +3,8 @@ on:
   push:
     branches:
     - main
+  schedule:
+    - cron: '0 0 * * *'
 env:
   AZURE_WEBAPP_NAME: cashtrack-demo
   AZURE_WEBAPP_PACKAGE_PATH: ./published
