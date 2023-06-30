@@ -1,6 +1,47 @@
-﻿@using CashTrack.Data.Entities
+﻿@using CashTrack.Common;
+@using CashTrack.Data.Entities
 @inject SignInManager<UserEntity> SignInManager
 
+<li class="nav-item dropdown me-4" data-bs-theme="light">
+    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="theme-menu" data-bs-toggle="dropdown" data-bs-display="static">
+        @await Html.PartialAsync("Icons", new Icons()
+        {
+        Icon = Icon.CircleHalf,
+        Color = IconColors.White,
+        Height=22,
+        Width=22,
+        Classes=""
+        })
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end list-unstyled">
+        <li class="color-theme-icon">
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light">
+                @await Html.PartialAsync("Icons", new Icons()
+                {
+                Icon = Icon.SunFill,
+                Color = IconColors.Primary,
+                Height=22,
+                Width=22,
+                Classes=""
+                })
+                <span class="ms-2">Light</span>
+            </button>
+        </li>
+        <li class="color-theme-icon">
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark">
+                @await Html.PartialAsync("Icons", new Icons()
+                {
+                Icon = Icon.MoonStarsFill,
+                Color = IconColors.Primary,
+                Height=22,
+                Width=22,
+                Classes=""
+                })
+                <span class="ms-2">Dark</span>
+            </button>
+        </li>
+    </ul>
+</li>
 <li class="text-nowrap list-unstyled d-none d-md-block my-md-2 me-md-4">
     @if (SignInManager.IsSignedIn(User))
     {

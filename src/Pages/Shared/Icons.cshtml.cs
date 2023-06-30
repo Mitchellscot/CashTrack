@@ -43,6 +43,9 @@ namespace CashTrack.Pages.Shared
         Calendar3,
         ChartLine,
         PieChart,
-        CalendarCheck
+        CalendarCheck,
+        CircleHalf,
+        SunFill,
+        MoonStarsFill
     }
 }

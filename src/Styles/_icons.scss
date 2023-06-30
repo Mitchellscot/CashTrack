@@ -28,3 +28,6 @@
 .color-on-hover:hover * {
     color: $SUCCESS_COLOR !important;
 }
+.color-theme-icon:hover > button > svg{
+    fill: $WHITE_COLOR !important;
+}
