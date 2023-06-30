@@ -114,7 +114,7 @@ public class IncomeSourceService : IIncomeSourceService
 
     public async Task<string[]> GetMatchingIncomeSourcesAsync(string name)
     {
-        return (await _sourceRepo.Find(x => x.Name.StartsWith(name) && x.SuggestOnLookup == true)).Select(x => x.Name).Take(10).ToArray();
+        return (await _sourceRepo.Find(x => x.Name.StartsWith(name, StringComparison.InvariantCultureIgnoreCase) && x.SuggestOnLookup == true)).Select(x => x.Name).Take(10).ToArray();
     }
 
     public async Task<int> UpdateIncomeSourceAsync(IncomeSource request)
