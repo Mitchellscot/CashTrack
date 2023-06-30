@@ -326,7 +326,7 @@ public class SubCategoryService : ISubCategoryService
 
     public async Task<string[]> GetMatchingSubCategoryNamesAsync(string match)
     {
-        return (await _subCategoryRepo.Find(x => x.Name.StartsWith(match, StringComparison.InvariantCultureIgnoreCase))).Select(x => x.Name).Take(10).ToArray();
+        return (await _subCategoryRepo.Find(x => x.Name.ToLower().StartsWith(match.ToLower()))).Select(x => x.Name).Take(10).ToArray();
     }
 
     public async Task<string[]> GetAllSubCategoryNames()
