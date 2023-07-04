@@ -819,14 +819,14 @@ namespace CashTrack.Services.SummaryService
         {
             var labels = Enumerable.Range(1, month).Select(i => @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(i)).ToArray();
 
-            var incomeData = incomes.GroupBy(x => x.Date.Month).OrderBy(x => x.Key).Select(x => (int)decimal.Round(x.Sum(x => x.Amount), 0)).ToArray().Accumulate();
+            var incomeData = incomes.GroupBy(x => x.Date.Month).OrderBy(x => x.Key).Select(x => (int)decimal.Round(x.Sum(x => x.Amount), 0)).ToArray();
 
-            var expenseData = expenses.GroupBy(x => x.Date.Month).OrderBy(x => x.Key).Select(x => (int)decimal.Round(x.Sum(x => x.Amount), 0)).ToArray().Accumulate();
-            var savings = incomeData.Zip(expenseData, (a, b) => (a - b)).ToArray();
+            var expenseData = expenses.GroupBy(x => x.Date.Month).OrderBy(x => x.Key).Select(x => (int)decimal.Round(x.Sum(x => x.Amount), 0)).ToArray();
+            var savings = incomeData.Zip(expenseData, (a, b) => (a - b)).ToArray().Accumulate();
             return new MonthlyYearToDate()
             {
-                IncomeDataset = incomeData,
-                ExpenseDataset = expenseData,
+                IncomeDataset = incomeData.Accumulate(),
+                ExpenseDataset = expenseData.Accumulate(),
                 SavingsDataset = savings,
                 Labels = labels
             };
