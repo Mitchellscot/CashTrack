@@ -2,7 +2,6 @@
 using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
 using CashTrack.Models.ExpenseModels;
-using CashTrack.Models.IncomeModels;
 using CashTrack.Models.IncomeSourceModels;
 using CashTrack.Models.MerchantModels;
 using CashTrack.Models.SubCategoryModels;
