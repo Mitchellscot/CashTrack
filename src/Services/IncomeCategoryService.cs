@@ -178,7 +178,7 @@ public class IncomeCategoryService : IIncomeCategoryService
 
     public async Task<string[]> GetMatchingIncomeCategoryNamesAsync(string match)
     {
-        return (await _repo.Find(x => x.InUse && x.Name.StartsWith(match, StringComparison.InvariantCultureIgnoreCase))).Select(x => x.Name).Take(10).ToArray();
+        return (await _repo.Find(x => x.InUse && x.Name.ToLower().StartsWith(match.ToLower()))).Select(x => x.Name).Take(10).ToArray();
     }
 
     public async Task<IncomeCategoryDetail> GetCategoryDetailAsync(int id)

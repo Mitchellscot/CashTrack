@@ -266,7 +266,7 @@ public class MerchantService : IMerchantService
 
     public async Task<string[]> GetMatchingMerchantsAsync(string match)
     {
-        return (await _merchantRepo.Find(x => x.Name.StartsWith(match, StringComparison.InvariantCultureIgnoreCase) && x.SuggestOnLookup == true)).Select(x => x.Name).Take(10).ToArray();
+        return (await _merchantRepo.Find(x => x.Name.ToLower().StartsWith(match.ToLower()) && x.SuggestOnLookup == true)).Select(x => x.Name).Take(10).ToArray();
     }
 
     public async Task<MerchantEntity> GetMerchantByNameAsync(string name)
