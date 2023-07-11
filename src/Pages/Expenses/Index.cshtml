@@ -44,10 +44,10 @@
                 <div class="input-group-prepend d-none d-md-block">
                     <div class="input-group-text rounded-0 rounded-start">Current</div>
                 </div>
-                <a asp-page="./Index" asp-route-query="11" asp-route-pageNumber="@Model.PageNumber" class="btn btn-secondary">Month</a>
-                <a asp-page="./Index" asp-route-query="12" asp-route-pageNumber="@Model.PageNumber" class="btn btn-secondary">Quarter</a>
-                <a asp-page="./Index" asp-route-query="13" asp-route-pageNumber="@Model.PageNumber" class="btn btn-secondary">Year</a>
-                <a asp-page="./Index" asp-route-query="14" asp-route-pageNumber="@Model.PageNumber" class="btn btn-secondary thirty-days-button">30 Days</a>
+                <a asp-page="./Index" asp-route-query="11" asp-route-pageNumber="@Model.PageNumber" class="btn btn-secondary text-dark-emphasis">Month</a>
+                <a asp-page="./Index" asp-route-query="12" asp-route-pageNumber="@Model.PageNumber" class="btn btn-secondary text-dark-emphasis">Quarter</a>
+                <a asp-page="./Index" asp-route-query="13" asp-route-pageNumber="@Model.PageNumber" class="btn btn-secondary text-dark-emphasis">Year</a>
+                <a asp-page="./Index" asp-route-query="14" asp-route-pageNumber="@Model.PageNumber" class="btn btn-secondary thirty-days-button text-dark-emphasis">30 Days</a>
             </div>
         </div>
         <div class="col-3 col-xl-1 d-none d-sm-block">
@@ -121,7 +121,7 @@
                                     @String.Format("{0:n}", expense.Amount)
                                 </td>
                                 <td>
-                                    <a class="text-black" asp-page="../Merchants/Detail" asp-route-id="@expense.MerchantId">@expense.Merchant</a>
+                                    <a class="no-hyperlink-underline" asp-page="../Merchants/Detail" asp-route-id="@expense.MerchantId"><span class="fw-bolder">@expense.Merchant</span></a>
                                 </td>
                                 <td>
                                     @expense.SubCategory
@@ -136,7 +136,7 @@
                                     {
                                         <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#refundNotes-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
-                                            <i class="bi bi-bootstrap-reboot text-primary icon-size-lg" role="img"></i>
+                                            <i class="bi bi-bootstrap-reboot icon-size-lg" role="img"></i>
                                         </button>
                                         @*Begin Refund Notes Modal*@
                                         <div class="modal fade" id="refundNotes-@expense.Id">
@@ -156,7 +156,7 @@
                                     {
                                         <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#detailModal-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
-                                            <i class="bi bi-file-earmark-check text-primary icon-size-lg" role="img"></i>
+                                            <i class="bi bi-file-earmark-check icon-size-lg" role="img"></i>
                                         </button>
                                         @*Begin Detail Modal*@
                                         <div class="modal fade" id="detailModal-@expense.Id">
@@ -173,7 +173,7 @@
                                         </button>
                                         <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#refundNotes-@expense.Id" class="icon-button pe-2 ps-0 ms-0">
-                                            <i class="bi bi-bootstrap-reboot text-primary icon-size-lg"></i>
+                                            <i class="bi bi-bootstrap-reboot icon-size-lg"></i>
                                         </button>
                                         @*Begin Refund Notes Modal*@
                                         <div class="modal fade" id="refundNotes-@expense.Id">
@@ -193,7 +193,7 @@
                                     data-bs-target="#editExpenseModal-@expense.Id"
                                     class="icon-button px-2 load-main-category-edit-modal-js">
 @*when the icon is clicked, even though the javascript is on the button itself, the data is pulled from the icon...*@
-                                        <i class="bi bi-pencil text-primary icon-size-lg" data-sub-category-id=@expense.SubCategoryId
+                                        <i class="bi bi-pencil icon-size-lg" data-sub-category-id=@expense.SubCategoryId
                                    data-id=@expense.Id></i>
                                     </button>
                                     @* Edit Expense Modal *@
@@ -232,7 +232,7 @@
                                     @*End Edit Expense Modal*@
                                     <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-@expense.Id" class="icon-button ps-2 ps-0 me-0">
-                                        <i class="bi bi-trash text-primary icon-size-lg"></i>
+                                        <i class="bi bi-trash icon-size-lg"></i>
                                     </button>
                                     @*Delete Model*@
                                     <div class="modal fade" id="deleteModal-@expense.Id">

@@ -148,7 +148,7 @@
                             <tr class="text-center">
 
                                 <td width="20%">
-                                    <a asp-page="./Detail" asp-route-id="@item.Id" class="text-black no-hyperlink-underline">@item.Name</a>
+                                    <a asp-page="./Detail" asp-route-id="@item.Id" class="no-hyperlink-underline">@item.Name</a>
                                 </td>
                                 <td width="15%">
                                     @item.Location
@@ -158,7 +158,7 @@
                                asp-route-Query="7"
                                asp-route-Q=@item.Name
                                asp-route-pageNumber="1"
-                               class="text-black no-hyperlink-underline">
+                               class="no-hyperlink-underline">
                                         @item.NumberOfExpenses
                                     </a>
                                 </td>
@@ -167,7 +167,7 @@
                                asp-route-Query="7"
                                asp-route-Q=@item.Name
                                asp-route-pageNumber="1"
-                               class="text-black no-hyperlink-underline">
+                               class="no-hyperlink-underline">
                                         @String.Format("{0:n}", item.TotalSpent)
                                     </a>
                                 </td>
@@ -178,7 +178,7 @@
                                asp-route-Query="0"
                                asp-route-Q=@item.LastPurchase.Date.ToString("yyyy-MM-dd")
                                asp-route-pageNumber="1"
-                               class="text-black no-hyperlink-underline">
+                               class="no-hyperlink-underline">
                                             @item.LastPurchase.Date.ToShortDateString()
                                         </a>
                                     }
@@ -190,7 +190,7 @@
                                 <td width="15%">
                                     <a asp-page="/Expenses/Categories/Detail"
                                asp-route-id="@item.Id"
-                               class="text-black no-hyperlink-underline">
+                               class="no-hyperlink-underline">
                                         @item.Category
                                     </a>
                                 </td>

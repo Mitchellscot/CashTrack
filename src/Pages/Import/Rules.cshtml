@@ -163,13 +163,13 @@
                                             data-bs-target="#addEditImportRuleModal-@rule.Id"
                                             class="icon-button px-2 edit-rule-button-js">
 @*when the icon is clicked, even though the javascript is on the button itself, the data is pulled from the icon...*@
-                                        <i class="bi bi-pencil text-primary action-icon"
+                                        <i class="bi bi-pencil action-icon"
                                         data-rule-type=@rule.RuleType
                                         data-transaction-type=@rule.TransactionType></i>
                                     </button>
                                         <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-@rule.Id" class="icon-button ps-2 ps-0 me-0">
-                                        <i class="bi bi-trash text-primary action-icon"></i>
+                                        <i class="bi bi-trash action-icon"></i>
                                     </button>
                                     @*Delete Model*@
                                     <div class="modal fade" id="deleteModal-@rule.Id">

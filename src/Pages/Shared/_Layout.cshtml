@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CASHTRACK @ViewData["Title"]</title>
     @await Html.PartialAsync("_Favicons")
-    <link rel="stylesheet" href="~/css/index.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" asp-append-version="false">
+    <link rel="stylesheet" href="~/css/index.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 </head>
 <body>
+    <script src="~/js/theme.js"></script>
     <header sticky="top" class="d-flex justify-content-end justify-content-md-between p-0 bg-primary">
-        <a asp-page="/Monthly" class="d-flex brand col-md-2 d-none d-md-block text-center">
+        <a asp-page="/Monthly" class="d-flex brand col-md-2 d-none d-md-block text-center no-hyperlink-underline">
             <span class="logo text-white pt-2 d-none d-xl-block">Cash Track</span>
             <img src="~/images/ct-short.png" class="d-none d-md-block d-xl-none pt-2" style="width: 90px; margin: 0 auto;"/>
         </a>
@@ -21,14 +22,14 @@
     <div class="row d-flex mx-0">
         @await Html.PartialAsync("_Sidebar")
         @await Html.PartialAsync("_OffCanvasMenu")
-        <div class="sidebar-background-color col-md-2 col-lg-2 d-md-block bg-light collapse mx-0"></div>
-        <main class="col col-md-10 d-flex flex-wrap pt-2 border border-bottom-0 rounded-top">
+        <div class="sidebar-background-color col-md-2 col-lg-2 d-md-block collapse mx-0"></div>
+        <main class="col col-md-10 d-flex flex-wrap pt-2">
             @await Html.PartialAsync("_LoadingSpinner")
             @RenderBody()
         </main>
 
     </div>
     @await RenderSectionAsync("Scripts", required: false)
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js"></script>
 </body>
 </html>
