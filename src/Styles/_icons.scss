@@ -3,7 +3,7 @@
 .action-icon {
     font-size: 1.4rem;
 }
-
+//delete all these when done changing out icons
 .icon-size-sm {
     font-size: 0.75rem;
 }
@@ -30,4 +30,7 @@
 }
 .color-theme-icon:hover > button > svg{
     fill: $WHITE_COLOR !important;
+}
+.color-svg-on-hover:hover{
+    filter: invert(53%) sepia(98%) saturate(359%) hue-rotate(118deg) brightness(93%) contrast(92%) !important;
 }

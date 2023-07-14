@@ -10,11 +10,32 @@
         color: var(--bs-body-color);
     }
 
+    .nav-btn:hover {
+        color: $SUCCESS_COLOR;
+    }
+
+    .nav-btn > h4 > svg:hover {
+        //success color
+        filter: invert(53%) sepia(98%) saturate(359%) hue-rotate(118deg) brightness(93%) contrast(92%) !important;
+    }
+
     .nav-item {
         color: var(--bs-body-color);
     }
 
-    svg:not(.white-icon) {
+    .nav-item > a:hover:not(#theme-menu) {
+        color: $SUCCESS_COLOR;
+    }
+
+    .nav-item > a > h6 > svg:hover:not(#theme-menu) {
+        filter: invert(53%) sepia(98%) saturate(359%) hue-rotate(118deg) brightness(93%) contrast(92%) !important;
+    }
+
+    .nav-link > h4 > svg:hover {
+        filter: invert(53%) sepia(98%) saturate(359%) hue-rotate(118deg) brightness(93%) contrast(92%) !important;
+    }
+
+    svg:not(.white-icon, .color-svg-on-hover) {
         filter: invert(83%) sepia(14%) saturate(144%) hue-rotate(163deg) brightness(91%) contrast(85%);
     }
 
@@ -22,6 +43,7 @@
         filter: invert(53%) sepia(98%) saturate(359%) hue-rotate(118deg) brightness(93%) contrast(92%) !important;
     }
 
-    .white-icon {
+    .link-primary {
+        color: $SUCCESS_COLOR !important;
     }
 }

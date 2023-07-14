@@ -5,8 +5,12 @@
     font-weight: bold;
     text-decoration: none !important;
 }
-.table-link{
+.table-link {
+    text-decoration: none !important;
+    color: var(--bs-body-color);
+}
+
+.table-link:hover {
     color: $SUCCESS_COLOR;
     font-weight: bold;
-    text-decoration: none !important;
 }

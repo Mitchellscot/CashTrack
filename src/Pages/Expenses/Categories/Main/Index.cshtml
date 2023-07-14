@@ -16,9 +16,6 @@
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
     <div class="row mb-1 d-flex justify-content-center justify-content-md-between">
             <form method="get" class="btn-group btn-height mb-1 col-auto">
-                <div class="input-group-prepend">
-                    <div class="input-group-text d-none d-sm-block">Time Span</div>
-                </div>
                 @foreach (var time in Model.TimeSpans)
                 {
                     <input type="radio" asp-for="@Model.TimeSpan"
@@ -28,7 +25,7 @@
                        asp-for="@Model.TimeSpan"
                        autocomplete="off"
                        value="@time">
-                    <label class="btn btn-secondary" for=@time.Replace(" ", "")>@time</label>
+                    <label class="btn btn-primary" for=@time.Replace(" ", "")>@time</label>
                 }
             </form>
             <button class="btn btn-primary import-link btn-height col-auto add-main-category-btn"

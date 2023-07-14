@@ -252,7 +252,7 @@
                         @if (@Model.IncomeResponse.TotalAmount > 0 && Model.InfoMessage == null)
                         {
                             <div class="text-center">
-                                <strong class="p-0 text-success" id="totalAmount">Total: $ @Model.IncomeResponse.TotalAmount</strong>
+                                <strong class="p-0" id="totalAmount">Total:</strong> $@String.Format("{0:n}", Model.IncomeResponse.TotalAmount)
                             </div>
                         }
                     </div>
