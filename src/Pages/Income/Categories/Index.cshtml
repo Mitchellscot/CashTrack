@@ -1,4 +1,5 @@
 ﻿@page
+@using CashTrack.Common;
 @using CashTrack.Models.Common
 @using CashTrack.Models.IncomeCategoryModels
 @using CashTrack.Pages.Shared
@@ -29,7 +30,14 @@
                                class="form-control incomecategory-autosuggest-js">
                         <button class="btn btn-secondary rounded-end"
                                 type="submit" asp-route-pageNumber="1">
-                            <i class="bi bi-search text-white mx-3 icon-size-md"></i>
+                        @await Html.PartialAsync("Icons", new Icons()
+                        {
+                            Icon = Icon.Search,
+                            Color = IconColors.White,
+                            Height=20,
+                            Width=20,
+                            Classes="mx-3"
+                        })
                         </button>
                         <input type="hidden"
                                asp-for="@Model.PageNumber" value="1" />
@@ -52,7 +60,6 @@
     {
         <div class="row mt-2">
             <div class="table-responsive">
-            <div class="table-sm">
                 <table class="table table-bordered table-sm table-hover mb-3 shadow">
                     <thead>
                         <tr class="text-center table-primary">
@@ -154,8 +161,15 @@
                                     }
                                 </td>
                                 <td>
-                                    <a asp-page="./Detail" asp-route-id="@category.Id" class="text-primary">
-                                        <i class="bi bi-zoom-in detail-zoom"></i>
+                                    <a asp-page="./Detail" asp-route-id="@category.Id">
+                                        @await Html.PartialAsync("Icons", new Icons()
+                                            {
+                                                Icon = Icon.ZoomIn,
+                                                Color = IconColors.Primary,
+                                                Height=20,
+                                                Width=20,
+                                                Classes="action-icon"
+                                            })
                                     </a>
                                 </td>
                             </tr>
@@ -184,8 +198,6 @@
                 </div>
             </div>
         </div>
-        </div>
-
     }
 </div>
 

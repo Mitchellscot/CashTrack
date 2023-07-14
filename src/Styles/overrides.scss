@@ -5,6 +5,10 @@
         background-color: var(--bs-dark-bg-subtle);
     }
 
+    .sidebar {
+        background-color: var(--bs-dark-bg-subtle);
+    }
+
     .nav-btn {
         //color: var(--bs-body-color);
         color: var(--bs-body-color);
@@ -46,4 +50,17 @@
     .link-primary {
         color: $SUCCESS_COLOR !important;
     }
+
+    .action-icon:hover {
+        stroke: $SUCCESS_COLOR;
+        stroke-width: .5;
+    }
+    //figure out what these toast messages will look like
+    .toast-body {
+        //background-color: var(--bs-dark-bg-subtle);
+        //color: $SUCCESS_COLOR !important;
+        background-color: $SUCCESS_COLOR !important;
+        color: var(--bs-dark-bg-subtle);
+    }
+
 }

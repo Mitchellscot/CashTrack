@@ -1,4 +1,5 @@
 ﻿@page
+@using CashTrack.Common;
 @using CashTrack.Models.IncomeSourceModels
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Sources.IndexModel
@@ -22,7 +23,14 @@
                     </div>
                     <input id="QueryInput" data-val="true" asp-for="@Model.SearchTerm" type="text" class="form-control source-autosuggest-js">
                     <button class="btn btn-secondary rounded-end" type="submit" asp-route-pageNumber="1">
-                        <i class="bi bi-search text-white mx-3 icon-size-md"></i>
+                        @await Html.PartialAsync("Icons", new Icons()
+                        {
+                            Icon = Icon.Search,
+                            Color = IconColors.White,
+                            Height=20,
+                            Width=20,
+                            Classes="mx-3"
+                        })
                     </button>
                     <input type="hidden" asp-for="@Model.PageNumber" value="1" />
                 </div>
@@ -68,18 +76,36 @@
                         {
                             <tr class="text-center">
                                 <td width="20%">
-                                    <a asp-page="./Detail" asp-route-id="@item.Id" class="text-decoration-none">@item.Name</a>
+                                    <a asp-page="./Detail" asp-route-id="@item.Id" class="table-link">@item.Name</a>
                                 </td>
                                 <td width="10%">
-                                    @item.Payments
+                                    <a asp-page="/Income/Index"
+                                    asp-route-Query="6"
+                                    asp-route-Q=@item.Name
+                                    asp-route-pageNumber="1"
+                                    class="table-link">
+                                        @item.Payments
+                                    </a>
                                 </td>
                                 <td width="15%">
+                                    <a asp-page="/Expenses/Index"
+                                    asp-route-Query="6"
+                                    asp-route-Q=@item.Name
+                                    asp-route-pageNumber="1"
+                                    class="table-link">
                                     @String.Format("{0:n}", item.Amount)
+                                    </a>
                                 </td>
                                 <td width="15%">
                                     @if (item.LastPayment != DateTime.MinValue)
                                     {
-                                        @item.LastPayment.Date.ToShortDateString()
+                                        <a asp-page="/Income/Index"
+                                            asp-route-Query="0"
+                                            asp-route-Q=@item.LastPayment.Date.ToString("yyyy-MM-dd")
+                                            asp-route-pageNumber="1"
+                                            class="table-link">
+                                            @item.LastPayment.Date.ToShortDateString()
+                                        </a>
                                     }
                                     else
                                     {
@@ -87,11 +113,23 @@
                                     }
                                 </td>
                                 <td width="15%">
+                                    <a class="table-link" asp-page="/Income/Index"
+                                    asp-route-Query="7"
+                                    asp-route-Q=@item.CategoryId
+                                    asp-route-pageNumber="1">
                                     @item.Category
+                                    </a>
                                 </td>
                                 <td width="5%">
                                     <a asp-page="./Detail" asp-route-id="@item.Id" class="text-primary">
-                                        <i class="bi bi-zoom-in icon-size-lg fw-bold"></i>
+                                        @await Html.PartialAsync("Icons", new Icons()
+                                            {
+                                                Icon = Icon.ZoomIn,
+                                                Color = IconColors.Primary,
+                                                Height=20,
+                                                Width=20,
+                                                Classes="action-icon"
+                                            })
                                     </a>
                                 </td>
                             </tr>

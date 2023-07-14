@@ -1,4 +1,5 @@
 ﻿@page
+@using CashTrack.Common;
 @using CashTrack.Models.Common
 @using CashTrack.Models.ImportRuleModels
 @using CashTrack.Pages.Shared
@@ -36,92 +37,140 @@
                             <tr class="text-center table-primary">
                                 <th>
                                     Rule
-                                @{
-                                    var currentFilter1 = Model.Query == 0 && Model.Q2 == true ? "text-success" : "text-white";
-                                }
                                 <a asp-page="./Rules" asp-route-Query="0" asp-route-Q2="true" class="icon-button float-end color-on-hover">
-                                    <i class="bi bi-arrow-up icon-size @currentFilter1"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowUp,
+                                        Color = Model.Query == 0 && Model.Q2 == true ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes="color-svg-on-hover"
+                                    })
                                 </a>
-                                @{
-                                    var currentFilter2 = Model.Query == 0 && Model.Q2 == false ? "text-success" : "text-white";
-                                }
                                 <a asp-page="./Rules" asp-route-Query="0" asp-route-Q2="false" class="icon-button float-end color-on-hover">
-                                    <i class="bi bi-arrow-down icon-size @currentFilter2"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowDown,
+                                        Color = Model.Query == 0 && Model.Q2 == false ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes=$"color-svg-on-hover"
+                                    })
                                 </a>
                                 </th>
                                 <th class="file-column">
                                     File
-                                @{
-                                    var currentFilter3 = Model.Query == ImportRuleOrderBy.FileType && Model.Q2 == true ? "text-success" : "text-white";
-                                }
                                 <a asp-page="./Rules" asp-route-Query="1" asp-route-Q2="true" class="icon-button float-end color-on-hover">
-                                    <i class="bi bi-arrow-up icon-size @currentFilter3"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowUp,
+                                        Color = Model.Query == ImportRuleOrderBy.FileType && Model.Q2 == true ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes="color-svg-on-hover"
+                                    })
                                 </a>
-                                @{
-                                    var currentFilter4 = Model.Query == ImportRuleOrderBy.FileType && Model.Q2 == false ? "text-success" : "text-white";
-                                }
                                 <a asp-page="./Rules" asp-route-Query="1" asp-route-Q2="false" class="icon-button float-end color-on-hover">
-                                    <i class="bi bi-arrow-down icon-size @currentFilter4"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowDown,
+                                        Color = Model.Query == ImportRuleOrderBy.FileType && Model.Q2 == false ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes=$"color-svg-on-hover"
+                                    })
                                 </a>
                                 </th>
                                 <th class="transaction-column">
                                     Transaction
-                                @{
-                                    var currentFilter5 = Model.Query == ImportRuleOrderBy.TransactionType && Model.Q2 == true ? "text-success" : "text-white";
-                                }
                                 <a asp-page="./Rules" asp-route-Query="2" asp-route-Q2="true" class="icon-button float-end color-on-hover">
-                                    <i class="bi bi-arrow-up icon-size @currentFilter5"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowUp,
+                                        Color = Model.Query == ImportRuleOrderBy.TransactionType && Model.Q2 == true ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes="color-svg-on-hover"
+                                    })
                                 </a>
-                                @{
-                                    var currentFilter6 = Model.Query == ImportRuleOrderBy.TransactionType && Model.Q2 == false ? "text-success" : "text-white";
-                                }
                                 <a asp-page="./Rules" asp-route-Query="2" asp-route-Q2="false" class="icon-button float-end color-on-hover">
-                                    <i class="bi bi-arrow-down icon-size @currentFilter6"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowDown,
+                                        Color = Model.Query == ImportRuleOrderBy.TransactionType && Model.Q2 == false ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes=$"color-svg-on-hover"
+                                    })
                                 </a>
                                 </th>
                                 <th>
                                     Rule
-                                @{
-                                    var currentFilter7 = Model.Query == ImportRuleOrderBy.Rule && Model.Q2 == true ? "text-success" : "text-white";
-                                }
                                 <a asp-page="./Rules" asp-route-Query="3" asp-route-Q2="true" class="icon-button float-end color-on-hover">
-                                    <i class="bi bi-arrow-up icon-size @currentFilter7"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowUp,
+                                        Color = Model.Query == ImportRuleOrderBy.Rule && Model.Q2 == true ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes="color-svg-on-hover"
+                                    })
                                 </a>
-                                @{
-                                    var currentFilter8 = Model.Query == ImportRuleOrderBy.Rule && Model.Q2 == false ? "text-success" : "text-white";
-                                }
                                 <a asp-page="./Rules" asp-route-Query="3" asp-route-Q2="false" class="icon-button float-end color-on-hover">
-                                    <i class="bi bi-arrow-down icon-size @currentFilter8"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowDown,
+                                        Color = Model.Query == ImportRuleOrderBy.Rule && Model.Q2 == false ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes=$"color-svg-on-hover"
+                                    })
                                 </a>
                                 </th>
                                 <th class="merchant-source-column">
                                     Merchant / Source
-                                @{
-                                    var currentFilter9 = Model.Query == ImportRuleOrderBy.MerchantSource && Model.Q2 == true ? "text-success" : "text-white";
-                                }
                                 <a asp-page="./Rules" asp-route-Query="4" asp-route-Q2="true" class="icon-button float-end color-on-hover">
-                                    <i class="bi bi-arrow-up icon-size @currentFilter9"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowUp,
+                                        Color = Model.Query == ImportRuleOrderBy.MerchantSource && Model.Q2 == true ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes="color-svg-on-hover"
+                                    })
                                 </a>
-                                @{
-                                    var currentFilter10 = Model.Query == ImportRuleOrderBy.MerchantSource && Model.Q2 == false ? "text-success" : "text-white";
-                                }
                                 <a asp-page="./Rules" asp-route-Query="4" asp-route-Q2="false" class="icon-button float-end color-on-hover">
-                                    <i class="bi bi-arrow-down icon-size @currentFilter10"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowDown,
+                                        Color = Model.Query == ImportRuleOrderBy.MerchantSource && Model.Q2 == false ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes=$"color-svg-on-hover"
+                                    })
                                 </a>
                                 </th>
                                 <th class="category-column">
                                     Category
-                                @{
-                                    var currentFilter11 = Model.Query == ImportRuleOrderBy.Category && Model.Q2 == true ? "text-success" : "text-white";
-                                }
                                 <a asp-page="./Rules" asp-route-Query="5" asp-route-Q2="true" class="icon-button float-end color-on-hover">
-                                    <i class="bi bi-arrow-up icon-size @currentFilter11"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowUp,
+                                        Color = Model.Query == ImportRuleOrderBy.Category && Model.Q2 == true ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes="color-svg-on-hover"
+                                    })
                                 </a>
-                                @{
-                                    var currentFilter12 = Model.Query == ImportRuleOrderBy.Category && Model.Q2 == false ? "text-success" : "text-white";
-                                }
                                 <a asp-page="./Rules" asp-route-Query="5" asp-route-Q2="false" class="icon-button float-end color-on-hover">
-                                    <i class="bi bi-arrow-down icon-size @currentFilter12"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowDown,
+                                        Color = Model.Query == ImportRuleOrderBy.Category && Model.Q2 == false ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes=$"color-svg-on-hover"
+                                    })
                                 </a>
                                 </th>
                                 <th>
@@ -163,13 +212,20 @@
                                             data-bs-target="#addEditImportRuleModal-@rule.Id"
                                             class="icon-button px-2 edit-rule-button-js">
 @*when the icon is clicked, even though the javascript is on the button itself, the data is pulled from the icon...*@
-                                        <i class="bi bi-pencil action-icon"
-                                        data-rule-type=@rule.RuleType
-                                        data-transaction-type=@rule.TransactionType></i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill=IconColors.Primary viewBox="0 0 16 16" class="action-icon" data-transaction-type=@rule.TransactionType data-rule-type=@rule.RuleType>
+                                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                    </svg>
                                     </button>
                                         <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-@rule.Id" class="icon-button ps-2 ps-0 me-0">
-                                        <i class="bi bi-trash action-icon"></i>
+                                            @await Html.PartialAsync("Icons", new Icons()
+                                            {
+                                                Icon = Icon.Trash,
+                                                Color = IconColors.Primary,
+                                                Height=20,
+                                                Width=20,
+                                                Classes="action-icon"
+                                            })
                                     </button>
                                     @*Delete Model*@
                                     <div class="modal fade" id="deleteModal-@rule.Id">

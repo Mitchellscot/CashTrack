@@ -202,7 +202,6 @@
                         @foreach (var item in Model.MerchantResponse.ListItems)
                         {
                             <tr class="text-center">
-
                                 <td width="20%">
                                     <a asp-page="./Detail" asp-route-id="@item.Id" class="table-link">@item.Name</a>
                                 </td>
@@ -211,19 +210,19 @@
                                 </td>
                                 <td width="10%">
                                     <a asp-page="/Expenses/Index"
-                               asp-route-Query="7"
-                               asp-route-Q=@item.Name
-                               asp-route-pageNumber="1"
-                               class="table-link">
+                                    asp-route-Query="7"
+                                    asp-route-Q=@item.Name
+                                    asp-route-pageNumber="1"
+                                    class="table-link">
                                         @item.NumberOfExpenses
                                     </a>
                                 </td>
                                 <td width="20%">
                                     <a asp-page="/Expenses/Index"
-                               asp-route-Query="7"
-                               asp-route-Q=@item.Name
-                               asp-route-pageNumber="1"
-                               class="table-link">
+                                    asp-route-Query="7"
+                                    asp-route-Q=@item.Name
+                                    asp-route-pageNumber="1"
+                                    class="table-link">
                                         @String.Format("{0:n}", item.TotalSpent)
                                     </a>
                                 </td>
@@ -231,10 +230,10 @@
                                     @if (item.LastPurchase != DateTime.MinValue)
                                     {
                                         <a asp-page="/Expenses/Index"
-                               asp-route-Query="0"
-                               asp-route-Q=@item.LastPurchase.Date.ToString("yyyy-MM-dd")
-                               asp-route-pageNumber="1"
-                               class="table-link">
+                                    asp-route-Query="0"
+                                    asp-route-Q=@item.LastPurchase.Date.ToString("yyyy-MM-dd")
+                                    asp-route-pageNumber="1"
+                                    class="table-link">
                                             @item.LastPurchase.Date.ToShortDateString()
                                         </a>
                                     }
@@ -245,8 +244,8 @@
                                 </td>
                                 <td width="15%">
                                     <a asp-page="/Expenses/Categories/Detail"
-                               asp-route-id="@item.Id"
-                               class="table-link">
+                                        asp-route-id="@item.Id"
+                                        class="table-link">
                                         @item.Category
                                     </a>
                                 </td>

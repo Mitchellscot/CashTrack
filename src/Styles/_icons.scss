@@ -3,6 +3,10 @@
 .action-icon {
     font-size: 1.4rem;
 }
+.action-icon:hover {
+    stroke: $PRIMARY_COLOR;
+    stroke-width: .5;
+}
 //delete all these when done changing out icons
 .icon-size-sm {
     font-size: 0.75rem;

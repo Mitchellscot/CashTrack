@@ -105,7 +105,8 @@ public class IncomeSourceService : IIncomeSourceService
                 Payments = results.Payments,
                 Amount = results.Amount,
                 LastPayment = results.LastPayment,
-                Category = results.MostUsedCategory
+                Category = results.MostUsedCategory,
+                CategoryId = results.MostUsedCategoryId
             };
         }).Where(x => x.Id > 0 && x.Amount > 0).OrderByDescending(x => x.LastPayment).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToArray();
 

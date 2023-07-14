@@ -37,6 +37,7 @@ public record IncomeSourceListItem
     public decimal Amount { get; set; }
     public DateTime LastPayment { get; set; }
     public string Category { get; set; }
+    public int CategoryId { get; set; }
 }
 public record IncomeSourceDetail : IncomeSource
 {

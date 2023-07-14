@@ -1,4 +1,5 @@
 ﻿@page
+@using CashTrack.Common;
 @using CashTrack.Models.ImportCsvModels
 @using CashTrack.Models.MerchantModels
 @using CashTrack.Models.SubCategoryModels
@@ -168,13 +169,27 @@
                                 <td class="mx-0 px-0 py-0 my-0">
                                     <button type="submit"
                                     class="me-2 ms-1 py-0 my-0 icon-button spin-it">
-                                        <i class="bi bi-check2-circle icon-size-xl"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.CheckCircle,
+                                        Color = IconColors.Primary,
+                                        Height=24,
+                                        Width=24,
+                                        Classes="action-icon my-2"
+                                    })
                                     </button>
                                     <button data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-@expense.Id"
                                     type="button"
                                     class="mx-0 px-0 py-0 my-0 icon-button">
-                                        <i class="bi bi-x-circle action-icon"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.XCircle,
+                                        Color = IconColors.Primary,
+                                        Height=22,
+                                        Width=22,
+                                        Classes="action-icon my-2"
+                                    })
                                     </button>
                                         @*Delete Modal*@
                                     <div class="modal fade" id="deleteModal-@expense.Id">
@@ -211,7 +226,14 @@
                                     class="ms-2 me-1 py-0 my-0 icon-button"
                                     data-bs-toggle="modal"
                                     data-bs-target="#splitExpenseModal-@expense.Id">
-                                        <i class="bi bi-arrow-left-right action-icon"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowLeftRight,
+                                        Color = IconColors.Primary,
+                                        Height=24,
+                                        Width=24,
+                                        Classes="action-icon my-2"
+                                    })
                                     </button>
                                         @*Split Expense Modal*@
                                     <div class="modal fade"

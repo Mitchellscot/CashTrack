@@ -24,7 +24,14 @@
                         </div>
                         <input id="QueryInput" data-val="true" asp-for="@Model.SearchTerm" type="text" class="form-control subcategory-autosuggest-js">
                         <button class="btn btn-secondary rounded-end" type="submit" asp-route-pageNumber="1">
-                            <i class="bi bi-search text-white mx-3 icon-size-md"></i>
+                        @await Html.PartialAsync("Icons", new Icons()
+                        {
+                        Icon = Icon.Search,
+                        Color = IconColors.White,
+                        Height=20,
+                        Width=20,
+                        Classes="mx-3"
+                        })
                         </button>
                         <input type="hidden" asp-for="@Model.PageNumber" value="1" />
                     </div>
@@ -47,7 +54,7 @@
     @if (Model.SubCategoryResponse != null && Model.SubCategoryResponse.ListItems.Count() > 0)
     {
         <div class="row mt-2">
-            <div class="table-responsive table-sm">
+            <div class="table-responsive">
                 <table class="table table-bordered table-sm table-hover mb-3 shadow">
                     <thead>
                         <tr class="text-center table-primary">
@@ -280,7 +287,7 @@
                                  }
                              </td>
                              <td>
-                                 <a asp-page="./Detail" asp-route-id="@category.Id" class="text-primary">
+                                 <a asp-page="./Detail" asp-route-id="@category.Id">
                                         @await Html.PartialAsync("Icons", new Icons()
                                             {
                                                 Icon = Icon.ZoomIn,
