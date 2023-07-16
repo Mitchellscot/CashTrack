@@ -237,5 +237,7 @@ namespace CashTrack.Models.SummaryModels
         public string SubCategoryName { get; set; }
         public decimal[] DataSet { get; set; }
         public string Color { get; set; }
+        public int Day { get; set; }
+        public decimal Amount { get; set; }
     }
 }

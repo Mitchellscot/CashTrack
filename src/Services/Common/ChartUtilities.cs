@@ -1,7 +1,6 @@
 ﻿using CashTrack.Common;
 using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
-using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.SummaryModels;
 using System;
 using System.Collections.Generic;
@@ -163,11 +162,14 @@ namespace CashTrack.Services.Common
                 var data = new DailyExpenseDataset()
                 {
                     DataSet = dataSet,
-                    SubCategoryName = category
+                    SubCategoryName = category,
+                    Day = Array.FindIndex(dataSet, x => x > 0),
+                    Amount = Array.Find(dataSet, x => x > 0)
                 };
                 expenseList.Add(data);
             }
-            var coloredExpenseList = expenseList.Select((x, index) =>
+            var orderedList = expenseList.OrderBy(x => x.Day).ThenBy(x => x.Amount).ToList();
+            var coloredExpenseList = orderedList.Select((x, index) =>
             {
                 x.Color = GetColorForDailyExpenseDataset(index);
                 return x;
@@ -178,24 +180,30 @@ namespace CashTrack.Services.Common
         {
             var colors = new[]
             {
-                DarkChartColors.RedLight,
-                DarkChartColors.OrangeLight,
-                DarkChartColors.YellowLight,
-                DarkChartColors.GreenLight,
-                DarkChartColors.BlueLight,
-                DarkChartColors.PurpleLight,
-                DarkChartColors.Red,
-                DarkChartColors.Orange,
-                DarkChartColors.Yellow,
-                DarkChartColors.Green,
-                DarkChartColors.Blue,
-                DarkChartColors.Purple,
-                DarkChartColors.RedDark,
-                DarkChartColors.OrangeDark,
-                DarkChartColors.YellowDark,
-                DarkChartColors.GreenDark,
-                DarkChartColors.BlueDark,
-                DarkChartColors.PurpleDark
+                //QualitativeColors.Orange,
+                //QualitativeColors.Magenta,
+                //QualitativeColors.Blue,
+                //QualitativeColors.DarkGreen,
+                //QualitativeColors.Teal,
+                //QualitativeColors.Purple,
+                //QualitativeColors.Red,
+                //QualitativeColors.Beige,
+                //QualitativeColors.Indigo,
+                //QualitativeColors.LightBlue,
+                //QualitativeColors.Olive,
+                //QualitativeColors.Green
+                Qualitative.Red,
+                Qualitative.Orange,
+                //Qualitative.LightOrange,
+                Qualitative.Yellow,
+                //Qualitative.LightGreen,
+                Qualitative.Green,
+                Qualitative.Blue,
+                //Qualitative.LightBlue,
+                //Qualitative.LightPurple,
+                Qualitative.Purple,
+                //Qualitative.Pink,
+                //Qualitative.Brown,
             };
 
             if (index > colors.Length - 1)
@@ -225,22 +233,22 @@ namespace CashTrack.Services.Common
         }
         public static string GetColorForExpenseDataset(int index, bool isSummary = false)
         {
-            var colors = isSummary ? new[]
+            var colors = !isSummary ? new[]
             {
-                DarkChartColors.Red,
-                DarkChartColors.Orange,
-                DarkChartColors.Yellow,
-                DarkChartColors.Green,
-                DarkChartColors.Blue,
-                DarkChartColors.Purple
+                QualitativeBrightColors.Orange,
+                QualitativeBrightColors.Yellow,
+                QualitativeBrightColors.Green,
+                QualitativeBrightColors.Blue,
+                QualitativeBrightColors.LightBlue,
+                QualitativeBrightColors.Pink,
             } : new[]
             {
-                LightChartColors.Pink,
-                LightChartColors.Orange,
-                LightChartColors.Yellow,
-                LightChartColors.Cyan,
-                LightChartColors.Azure,
-                LightChartColors.Purple
+                QualitativeNormalColors.Red,
+                QualitativeNormalColors.Yellow,
+                QualitativeNormalColors.Green,
+                QualitativeNormalColors.Blue,
+                QualitativeNormalColors.LightBlue,
+                QualitativeNormalColors.Pink
             };
 
             if (index > colors.Length - 1)

@@ -2,7 +2,6 @@ using CashTrack.Common;
 using CashTrack.Pages.Shared;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace CashTrack.Pages.Budget
@@ -74,20 +73,21 @@ namespace CashTrack.Pages.Budget
         {
             var colors = isSummary ? new[]
             {
-                DarkChartColors.Red,
-                DarkChartColors.Orange,
-                DarkChartColors.Yellow,
-                DarkChartColors.Green,
-                DarkChartColors.Blue,
-                DarkChartColors.Purple
+                QualitativeNormalColors.Red,
+                QualitativeNormalColors.Yellow,
+                QualitativeNormalColors.Green,
+                QualitativeNormalColors.Blue,
+                QualitativeNormalColors.LightBlue,
+                QualitativeNormalColors.Pink
+
             } : new[]
             {
-                LightChartColors.Pink,
-                LightChartColors.Orange,
-                LightChartColors.Yellow,
-                LightChartColors.Cyan,
-                LightChartColors.Azure,
-                LightChartColors.Purple
+                QualitativeBrightColors.Orange,
+                QualitativeBrightColors.Yellow,
+                QualitativeBrightColors.Green,
+                QualitativeBrightColors.Blue,
+                QualitativeBrightColors.LightBlue,
+                QualitativeBrightColors.Pink,
             };
             if (index > colors.Length - 1)
             {
