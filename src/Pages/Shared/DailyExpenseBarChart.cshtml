@@ -13,7 +13,6 @@
                 {
                     <text>
                     {
-                        lable: '@data.SubCategoryName',
                         data: @JsonSerializer.Serialize(@data.DataSet),
                         color: 'rgba(0, 0, 0, 0)',
                         backgroundColor: '@Html.Raw(data.Color)',
@@ -54,9 +53,15 @@
         },
     });
     function footer(tooltipItems){
-        console.log(tooltipItems)
-        const object = tooltipItems[0];
-        return `${object.dataset.lable}`
+        let sum = 0;
+        const tooltipitem = tooltipItems[0];
+        const stack = tooltipitem.parsed._stacks.y;
+        for (const [key, value] of Object.entries(stack))
+        {
+            if(!isNaN(value))
+                sum += value;
+        }
+        return 'Daily Amount: ' + sum.toFixed(2);
     };
 
 </script>
