@@ -1,7 +1,6 @@
 ﻿using CashTrack.Common;
 using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
-using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.SummaryModels;
 using System;
 using System.Collections.Generic;
@@ -159,7 +158,7 @@ namespace CashTrack.Services.Common
             int maxExpensesInADay = daysAndExpenses.Max(x => x.Amounts.Length);
 
             var expenseList = new List<DailyExpenseDataset>();
-            for (int i = 1; i < maxExpensesInADay; i++)
+            for (int i = 1; i <= maxExpensesInADay; i++)
             { 
                 var dataset = new decimal[days.Length];
                 for (int d = 1; d < days.Length; d++)
@@ -186,10 +185,17 @@ namespace CashTrack.Services.Common
             {
                 Qualitative.Red,
                 Qualitative.Orange,
+                Qualitative.LightOrange,
                 Qualitative.Yellow,
+                Qualitative.LightGreen,
+
                 Qualitative.Green,
                 Qualitative.Blue,
+                Qualitative.LightBlue,
+                Qualitative.LightPurple,
                 Qualitative.Purple,
+                Qualitative.Pink,
+                Qualitative.Brown
             };
 
             if (index > colors.Length - 1)
