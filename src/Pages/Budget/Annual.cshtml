@@ -259,7 +259,8 @@
     {
         ElementId = "subCategoryPie",
         Dataset = JsonSerializer.Serialize(Model.BudgetPageResponse.SubCategoryPercentages.Select(x => x.Value).ToArray()),
-        Title = "Sub Category Percentages"
+        Title = "Sub Category Percentages",
+        IsSummaryChart = true
     })
     }
     @if (Model.BudgetPageResponse.MainCategoryPercentages != null && !dataIsEmptyForTheYear)
@@ -268,7 +269,8 @@
     {
         ElementId = "mainCategoryPie",
         Dataset = JsonSerializer.Serialize(Model.BudgetPageResponse.MainCategoryPercentages.Select(x => x.Value).ToArray()),
-        Title = "Main Category Percentages"
+        Title = "Main Category Percentages",
+        IsSummaryChart = true
     })
     }
 }

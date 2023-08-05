@@ -86,46 +86,12 @@
     }
     public static class DailyExpenseChart
     {
-        public const string BudgetedGreen = "rgba(231, 76, 60, .7)";
-        public const string DiscretionaryGreen = "rgba(243, 156, 18, .7)";
-        public const string MonthlySavingsOrange = "rgba(52, 152, 219, .7)";
-        public const string SavingsRed = "rgba(44, 62, 88, .7)";
+        public const string Budgeted = "rgba(231, 76, 60, .7)";
+        public const string Discretionary = "rgba(243, 156, 18, .7)";
+        public const string MonthlySavings = "rgba(52, 152, 219, .7)";
+        public const string Savings = "rgba(44, 62, 88, .7)";
     }
-    public static class QualitativeColors
-    {
-        public const string Orange = "rgb(235, 172, 35, .7)";
-        public const string Magenta = "rgb(184, 0, 88, .7)";
-        public const string Blue = "rgb(0, 140, 249, .7)";
-        public const string DarkGreen = "rgb(0, 110, 0, .7)";
-        public const string Teal = "rgb(0, 187, 173, .7)";
-        public const string Purple = "rgb(209, 99, 230, .7)";
-        public const string Red = "rgb(178, 69, 2, .7)";
-        public const string Beige = "rgb(255, 146, 135, .7)";
-        public const string Indigo = "rgb(89, 84, 214, .7)";
-        public const string LightBlue = "rgb(0, 198, 248, .7)";
-        public const string Olive = "rgb(135, 133, 0, .7)";
-        public const string Green = "rgb(0, 167, 108, .7)";
-    }
-    public static class QualitativeBrightColors
-    {
-        public const string Orange = "rgba(225,86,44, .7)";
-        public const string Yellow = "rgba(239,230,69, .7)";
-        public const string Green = "rgba(0,203,133, .7)";
-        public const string Blue = "rgba(83,126,255, .7)";
-        public const string LightBlue = "rgba(0,227,255, .7)";
-        public const string Pink = "rgba(233,53,161, .7)";
-
-    }
-    public static class QualitativeNormalColors
-    {
-        public const string Red = "rgba(181,29,20, .8)";
-        public const string Yellow = "rgba(221,179,16, .8)";
-        public const string Green = "rgba(0,178,93, .8)";
-        public const string Blue = "rgba(64,83,211, .8)";
-        public const string LightBlue = "rgba(0,190,255, .8)";
-        public const string Pink = "rgba(251,73,176, .8)";
-    }
-    public static class Qualitative
+    public static class Qualitative12Set
     {
         public const string Red = "rgba(227,26,28, .7)";
         public const string Orange = "rgba(255,127,0, .7)";
@@ -140,17 +106,13 @@
         public const string Pink = "rgba(251,154,153, .7)";
         public const string Brown = "rgba(177,89,40, .7)";
     }
-    public static class Q
+    public static class Qualitative6Set
     { 
-        public const string LightBlue = "rgba(166,206,227, .8)";
-        public const string Blue = "rgba(31,120,180, .8)";
-        public const string LightGreen = "rgba(178,223,138, .8)";
-        public const string Green = "rgba(51,160,44, .8)";
-        public const string Pink = "rgba(251,154,153, .8)";
-        public const string Red = "rgba(227,26,28, .8)";
-        public const string LightOrange = "rgba(253,191,111, .8)";
-        public const string Orange = "rgba(255,127,0, .8)";
-        public const string Purple = "rgba(202,178,214, .8)";
+        public const string Red = "rgba(228,26,28, .6)";
+        public const string Blue = "rgba(55,126,184, .6)";
+        public const string Green = "rgba(77,175,74, .6)";
+        public const string Purple = "rgba(152,78,163, .6)";
+        public const string Orange = "rgba(255,127,0, .6)";
+        public const string Yellow = "rgba(255,255,51, .6)";
     }
-
 }

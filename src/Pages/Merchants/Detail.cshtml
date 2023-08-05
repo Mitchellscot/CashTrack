@@ -282,30 +282,22 @@
 })
 @if (Model.Merchant.PurchaseCategoryTotals.Count() > 1)
 {
-    @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+    @await Html.PartialAsync("CategoryPieChart", new Shared.CategoryPieChart(JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Key).ToArray()))
     {
-        ChartType = ChartType.Pie,
-        UseDefaultColor = false,
         ElementId = "categoryTotalsPie",
-        Labels =  JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Key).ToArray()),
         Dataset = JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryTotals.Select(x => x.Value).ToArray()),
         Title = "Amount By Category",
-        DisplayLabels = Model.Merchant.AnnualExpenseStatistics.Count() < 11,
-        Responsive = true
+        IsSummaryChart = true
     })
     }
     @if (Model.Merchant.PurchaseCategoryOccurances.Count() > 1)
     {
-        @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+        @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryOccurances.Select(x => x.Key).ToArray()))
         {
-            ChartType = ChartType.Donut,
-            UseDefaultColor = false,
             ElementId = "categoryOccurancesDonut",
-            Labels = JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryOccurances.Select(x => x.Key).ToArray()),
             Dataset = JsonSerializer.Serialize(Model.Merchant.PurchaseCategoryOccurances.Select(x => x.Value).ToArray()),
             Title = "Purchase Frequency By Category",
-            DisplayLabels = Model.Merchant.AnnualExpenseStatistics.Count() < 11,
-            Responsive = true
+            IsSummaryChart = true
         })
     }
 }

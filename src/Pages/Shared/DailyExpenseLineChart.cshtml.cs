@@ -13,9 +13,9 @@ namespace CashTrack.Pages.Shared
         public int ExpenseBudgetMax { get; set; }
         public int DiscretionarySpendingMax { get; set; }
         public int IncomeMax { get; set; }
-        public string BudgetedSpendingColor = DailyExpenseChart.BudgetedGreen;
-        public string DiscretionarySpendingColor = DailyExpenseChart.DiscretionaryGreen;
-        public string BudgetedIncomeColor = DailyExpenseChart.MonthlySavingsOrange;
-        public string OverIncomeMaxColor = DailyExpenseChart.SavingsRed;
+        public string BudgetedSpendingColor = DailyExpenseChart.Budgeted;
+        public string DiscretionarySpendingColor = DailyExpenseChart.Discretionary;
+        public string BudgetedIncomeColor = DailyExpenseChart.MonthlySavings;
+        public string OverIncomeMaxColor = DailyExpenseChart.Savings;
     }
 }

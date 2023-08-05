@@ -343,7 +343,7 @@ namespace CashTrack.Services.BudgetService
             }).Select(x =>
             {
                 return (Name: x.Name, Percentage: x.Amount.ToPercentage(amountToPercentBy));
-            }).Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
+            }).Where(x => x.Percentage > 0).OrderByDescending(x => x.Percentage).ToDictionary(k => k.Name, v => v.Percentage);
 
             var savingsAllocated = GetAnnualSavingsData(budgets).Sum();
 
@@ -371,7 +371,7 @@ namespace CashTrack.Services.BudgetService
             }).Select(x =>
             {
                 return (Name: x.Name, Percentage: x.Amount.ToPercentage(amountToPercentBy));
-            }).Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
+            }).Where(x => x.Percentage > 0).OrderByDescending(x => x.Percentage).ToDictionary(k => k.Name, v => v.Percentage);
 
             var savingsAllocated = GetAnnualSavingsData(budgets).Sum();
 

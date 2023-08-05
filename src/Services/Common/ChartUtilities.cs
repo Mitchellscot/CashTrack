@@ -100,7 +100,7 @@ namespace CashTrack.Services.Common
                 var data = new ExpenseDataset()
                 {
                     DataSet = dataSet,
-                    SubCategoryName = expense.Key,
+                    SubCategoryName = $"Budgeted {expense.Key}",
                     MainCategoryId = expense.MainCategoryId
                 };
                 expenseList.Add(data);
@@ -136,7 +136,7 @@ namespace CashTrack.Services.Common
                 };
                 expenseList.Add(data);
             }
-            return AssignColorsToChartData(expenseList, true);
+            return AssignColorsToChartData(expenseList);
         }
         public static List<DailyExpenseDataset> GetDailyExpenseData(ExpenseEntity[] expenses, bool isAnnual)
         {
@@ -183,19 +183,18 @@ namespace CashTrack.Services.Common
         {
             var colors = new[]
             {
-                Qualitative.Red,
-                Qualitative.Orange,
-                Qualitative.LightOrange,
-                Qualitative.Yellow,
-                Qualitative.LightGreen,
-
-                Qualitative.Green,
-                Qualitative.Blue,
-                Qualitative.LightBlue,
-                Qualitative.LightPurple,
-                Qualitative.Purple,
-                Qualitative.Pink,
-                Qualitative.Brown
+                Qualitative12Set.Red,
+                Qualitative12Set.Orange,
+                Qualitative12Set.LightOrange,
+                Qualitative12Set.Yellow,
+                Qualitative12Set.LightGreen,
+                Qualitative12Set.Green,
+                Qualitative12Set.Blue,
+                Qualitative12Set.LightBlue,
+                Qualitative12Set.LightPurple,
+                Qualitative12Set.Purple,
+                Qualitative12Set.Pink,
+                Qualitative12Set.Brown
             };
 
             if (index > colors.Length - 1)
@@ -207,7 +206,7 @@ namespace CashTrack.Services.Common
             }
             else return colors[index];
         }
-        public static List<ExpenseDataset> AssignColorsToChartData(List<ExpenseDataset> chartData, bool isSummary = false)
+        public static List<ExpenseDataset> AssignColorsToChartData(List<ExpenseDataset> chartData)
         {
             var chartDataWithColors = new List<ExpenseDataset>();
             var mainCategories = chartData.Select(x => x.MainCategoryId).Distinct().ToList();
@@ -216,31 +215,23 @@ namespace CashTrack.Services.Common
                 var matchingExpenses = chartData.Where(x => x.MainCategoryId == id);
                 var coloredData = matchingExpenses.Select((x, index) =>
                 {
-                    x.Color = GetColorForExpenseDataset(index, isSummary);
+                    x.Color = GetColorForExpenseDataset(index);
                     return x;
                 }).ToList();
                 chartDataWithColors.AddRange(coloredData);
             }
             return chartDataWithColors;
         }
-        public static string GetColorForExpenseDataset(int index, bool isSummary = false)
+        public static string GetColorForExpenseDataset(int index)
         {
-            var colors = !isSummary ? new[]
+            var colors = new[]
             {
-                QualitativeBrightColors.Orange,
-                QualitativeBrightColors.Yellow,
-                QualitativeBrightColors.Green,
-                QualitativeBrightColors.Blue,
-                QualitativeBrightColors.LightBlue,
-                QualitativeBrightColors.Pink,
-            } : new[]
-            {
-                QualitativeNormalColors.Red,
-                QualitativeNormalColors.Yellow,
-                QualitativeNormalColors.Green,
-                QualitativeNormalColors.Blue,
-                QualitativeNormalColors.LightBlue,
-                QualitativeNormalColors.Pink
+                Qualitative6Set.Red,
+                Qualitative6Set.Orange,
+                Qualitative6Set.Yellow,
+                Qualitative6Set.Green,
+                Qualitative6Set.Blue,
+                Qualitative6Set.Purple
             };
 
             if (index > colors.Length - 1)

@@ -1,4 +1,3 @@
-using CashTrack.Common;
 using CashTrack.Data.Entities;
 using CashTrack.Models.IncomeCategoryModels;
 using CashTrack.Models.MainCategoryModels;
@@ -12,7 +11,6 @@ using CashTrack.Services.IncomeReviewService;
 using CashTrack.Services.MainCategoriesService;
 using CashTrack.Services.SubCategoryService;
 using CashTrack.Services.SummaryService;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
