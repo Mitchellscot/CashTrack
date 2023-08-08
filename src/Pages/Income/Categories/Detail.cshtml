@@ -282,16 +282,12 @@
                 Title = "Income Statistics",
                 Responsive = true
             })
-            @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+            @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.IncomeCategory.SourcePurchaseTotals.Select(x => x.Key).ToArray()))
             {
-                ChartType = ChartType.Pie,
-                UseDefaultColor = false,
                 ElementId = "categoryTotalsPie",
-                Labels =  JsonSerializer.Serialize(Model.IncomeCategory.SourcePurchaseTotals.Select(x => x.Key).ToArray()),
                 Dataset = JsonSerializer.Serialize(Model.IncomeCategory.SourcePurchaseTotals.Select(x => x.Value).ToArray()),
                 Title = "Amount By Category",
-                DisplayLabels = Model.IncomeCategory.AnnualIncomeStatistics.Count() < 11,
-                Responsive = true
+                IsSummaryChart = false
         })
             @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
             {

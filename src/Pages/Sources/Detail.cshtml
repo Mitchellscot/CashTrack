@@ -312,12 +312,12 @@
 })
 }
 
-    @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.Source.PaymentCategoryTotals.Select(x => x.Key).ToArray()))
+@await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.Source.PaymentCategoryTotals.Select(x => x.Key).ToArray()))
 {
     ElementId = "categoryTotalsPie",
     Dataset = JsonSerializer.Serialize(Model.Source.PaymentCategoryTotals.Select(x => x.Value).ToArray()),
     Title = "Amount By Category",
-    IsSummaryChart = true
+    IsSummaryChart = false
 })
 
 @await Html.PartialAsync("_ChartPartial", new _ChartPartial()

@@ -42,9 +42,9 @@
                 label: 'Budgeted Savings',
                 data: @Model.BudgetedSavingsDataset,
                 color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: colorizeBudgetedSavings(),
+                backgroundColor: 'rgba(0, 0, 0, 0)',
                 borderColor: colorizeBudgetedSavings(),
-                borderWidth: 1,
+                borderWidth: 3,
                 stack: '2'
             },
         </text>
@@ -56,9 +56,9 @@
                 label: 'Budgeted Expenses',
                 data: @Model.BudgetedExpenseDataset,
                 color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: @Html.Raw(Model.BudgetedExpensesColor),
+                backgroundColor: 'rgba(0, 0, 0, 0)',
                 borderColor: @Html.Raw(Model.BudgetedExpensesColor),
-                borderWidth: 1,
+                borderWidth: 3,
                 stack: '1'
             },
         </text>
@@ -70,9 +70,9 @@
                 label: 'Budgeted Income',
                 data: @Model.BudgetedIncomeDataset,
                 color: 'rgba(0, 0, 0, 0)',
-                backgroundColor: @Html.Raw(Model.BudgetedIncomeColor),
+                backgroundColor: 'rgba(0, 0, 0, 0)',
                 borderColor: @Html.Raw(Model.BudgetedIncomeColor),
-                borderWidth: 1,
+                borderWidth: 3,
                 stack: '0'
             },
         </text>
