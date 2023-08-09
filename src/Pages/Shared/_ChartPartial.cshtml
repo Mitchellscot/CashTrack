@@ -158,39 +158,6 @@
         });
     </script>
 }
-@if (Model.ChartType == ChartType.Donut)
-{
-    <script>
-        const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
-        const @Model.ElementId = new Chart(@Model.VariableName, {
-            type: 'doughnut',
-            data: {
-                labels: @Html.Raw(@Model.Labels),
-                datasets: [{
-                    label: 'Total',
-                    data: @Model.Dataset,
-                    color: 'rgba(0, 0, 0, 0)',
-                    backgroundColor: @Html.Raw(color),
-                    borderColor: @Html.Raw(color),
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: @Model.Responsive.ToString().ToLower(),
-                plugins: {
-                    legend: {
-                        display: @Model.DisplayLabels.ToString().ToLower(),
-                        position: 'bottom',
-                    },
-                    title: {
-                        display: @titleExists.ToString().ToLower(),
-                        text: '@Model.Title'
-                    }
-                }
-            }
-        });
-    </script>
-}
 @if (Model.ChartType == ChartType.BarAndLine)
 {
     <script>

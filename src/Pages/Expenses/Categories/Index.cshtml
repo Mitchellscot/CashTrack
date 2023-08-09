@@ -1,4 +1,5 @@
 ﻿@page
+@using CashTrack.Common;
 @using CashTrack.Models.Common
 @using CashTrack.Models.SubCategoryModels
 @using CashTrack.Pages.Shared
@@ -23,14 +24,21 @@
                         </div>
                         <input id="QueryInput" data-val="true" asp-for="@Model.SearchTerm" type="text" class="form-control subcategory-autosuggest-js">
                         <button class="btn btn-secondary rounded-end" type="submit" asp-route-pageNumber="1">
-                            <i class="bi bi-search text-white mx-3 icon-size-md"></i>
+                        @await Html.PartialAsync("Icons", new Icons()
+                        {
+                        Icon = Icon.Search,
+                        Color = IconColors.White,
+                        Height=20,
+                        Width=20,
+                        Classes="mx-3"
+                        })
                         </button>
                         <input type="hidden" asp-for="@Model.PageNumber" value="1" />
                     </div>
                 </form>
             </div>
             <div class="col-sm-12 col-md-6 mb-md-0 d-flex justify-content-between justify-content-md-end">
-                <a class="btn btn-secondary btn-height rounded-start spin-it" asp-page="./Main/Index">Main Categories</a>
+                <a class="btn btn-primary btn-height rounded-start spin-it" asp-page="./Main/Index">Main Categories</a>
                 <button class="btn btn-primary float-end ms-md-2" id="addSubCategoryButton" data-bs-toggle="modal" data-bs-target="#addSubCategoryModal">Add Category</button>
             </div>
             <div class="modal fade" id="addSubCategoryModal">
@@ -46,38 +54,54 @@
     @if (Model.SubCategoryResponse != null && Model.SubCategoryResponse.ListItems.Count() > 0)
     {
         <div class="row mt-2">
-            <div class="table-responsive table-sm">
+            <div class="table-responsive">
                 <table class="table table-bordered table-sm table-hover mb-3 shadow">
                     <thead>
                         <tr class="text-center table-primary">
                             <th>
                                 Name
-                                @{
-                                    var currentFilter1 = Model.Query == 0 && Model.Q2 == true ? "text-success" : "text-white";
-                                }
                                         <a asp-page="./Index" asp-route-Query="0" asp-route-Q2="true" class="icon-button float-end color-on-hover">
-                                            <i class="bi bi-arrow-up icon-size @currentFilter1"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowUp,
+                                        Color = Model.Query == 0 && Model.Q2 == true ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes="color-svg-on-hover"
+                                    })
                                         </a>
-                                @{
-                                    var currentFilter2 = Model.Query == 0 && Model.Q2 == false ? "text-success" : "text-white";
-                                }
                                         <a asp-page="./Index" asp-route-Query="0" asp-route-Q2="false" class="icon-button float-end color-on-hover">
-                                            <i class="bi bi-arrow-down icon-size @currentFilter2"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowDown,
+                                        Color = Model.Query == 0 && Model.Q2 == false ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes=$"color-svg-on-hover"
+                                    })
                                         </a>
                                 </th>
                                 <th class="main-category-column">
                                 Main Category
-                                @{
-                                    var currentFilter3 = Model.Query == SubCategoryOrderBy.MainCategory && Model.Q2 == true ? "text-success" : "text-white";
-                                }
                                         <a asp-page="./Index" asp-route-Query="1" asp-route-Q2="true" class="icon-button float-end color-on-hover">
-                                            <i class="bi bi-arrow-up icon-size @currentFilter3"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowUp,
+                                        Color = Model.Query == SubCategoryOrderBy.MainCategory && Model.Q2 == true ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes="color-svg-on-hover"
+                                    })
                                         </a>
-                                @{
-                                    var currentFilter4 = Model.Query == SubCategoryOrderBy.MainCategory && Model.Q2 == false ? "text-success" : "text-white";
-                                }
                                         <a asp-page="./Index" asp-route-Query="1" asp-route-Q2="false" class="icon-button float-end color-on-hover">
-                                            <i class="bi bi-arrow-down icon-size @currentFilter4"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowDown,
+                                        Color = Model.Query == SubCategoryOrderBy.MainCategory && Model.Q2 == false ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes=$"color-svg-on-hover"
+                                    })
                                         </a>
                                 </th>
                                 <th class="purchases-column">
@@ -86,58 +110,96 @@
                                     var currentFilter5 = Model.Query == SubCategoryOrderBy.Purchases && Model.Q2 == true ? "text-success" : "text-white";
                                 }
                                         <a asp-page="./Index" asp-route-Query="2" asp-route-Q2="true" class="icon-button float-end color-on-hover">
-                                            <i class="bi bi-arrow-up icon-size @currentFilter5"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowUp,
+                                        Color = Model.Query == SubCategoryOrderBy.Purchases && Model.Q2 == true ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes="color-svg-on-hover"
+                                    })
                                         </a>
-                                @{
-                                    var currentFilter6 = Model.Query == SubCategoryOrderBy.Purchases && Model.Q2 == false ? "text-success" : "text-white";
-                                }
                                         <a asp-page="./Index" asp-route-Query="2" asp-route-Q2="false" class="icon-button float-end color-on-hover">
-                                            <i class="bi bi-arrow-down icon-size @currentFilter6"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowDown,
+                                        Color = Model.Query == SubCategoryOrderBy.Purchases && Model.Q2 == false ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes=$"color-svg-on-hover"
+                                    })
                                         </a>
                                 </th>
                                 <th class="amount-column">
                                 Amount
-                                @{
-                                    var currentFilter7 = Model.Query == SubCategoryOrderBy.Amount && Model.Q2 == true ? "text-success" : "text-white";
-                                }
                                         <a asp-page="./Index" asp-route-Query="3" asp-route-Q2="true" class="icon-button float-end color-on-hover">
-                                            <i class="bi bi-arrow-up icon-size @currentFilter7"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowUp,
+                                        Color = Model.Query == SubCategoryOrderBy.Amount && Model.Q2 == true ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes="color-svg-on-hover"
+                                    })
                                         </a>
                                 @{
                                     var currentFilter8 = Model.Query == SubCategoryOrderBy.Amount && Model.Q2 == false ? "text-success" : "text-white";
                                 }
                                         <a asp-page="./Index" asp-route-Query="3" asp-route-Q2="false" class="icon-button float-end color-on-hover">
-                                            <i class="bi bi-arrow-down icon-size @currentFilter8"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowDown,
+                                        Color = Model.Query == SubCategoryOrderBy.Amount && Model.Q2 == false ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes=$"color-svg-on-hover"
+                                    })
                                         </a>
                                 </th>
                                 <th class="last-purchase-column">
                                 Last Purchase
-                                @{
-                                    var currentFilter9 = Model.Query == SubCategoryOrderBy.LastPurchase && Model.Q2 == true ? "text-success" : "text-white";
-                                }
                                         <a asp-page="./Index" asp-route-Query="4" asp-route-Q2="true" class="icon-button float-end color-on-hover">
-                                            <i class="bi bi-arrow-up icon-size @currentFilter9"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowUp,
+                                        Color = Model.Query == SubCategoryOrderBy.LastPurchase && Model.Q2 == true ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes="color-svg-on-hover"
+                                    })
                                         </a>
-                                @{
-                                    var currentFilter10 = Model.Query == SubCategoryOrderBy.LastPurchase && Model.Q2 == false ? "text-success" : "text-white";
-                                }
                                         <a asp-page="./Index" asp-route-Query="4" asp-route-Q2="false" class="icon-button float-end color-on-hover">
-                                            <i class="bi bi-arrow-down icon-size @currentFilter10"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowDown,
+                                        Color = Model.Query == SubCategoryOrderBy.LastPurchase && Model.Q2 == false ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes=$"color-svg-on-hover"
+                                    })
                                         </a>
                                 </th>
                                 <th class="in-use-column">
                                 In Use
-                                @{
-                                    var currentFilter11 = Model.Query == SubCategoryOrderBy.InUse && Model.Q2 == true ? "text-success" : "text-white";
-                                }
                                         <a asp-page="./Index" asp-route-Query="5" asp-route-Q2="true" class="icon-button float-end color-on-hover">
-                                            <i class="bi bi-arrow-up icon-size @currentFilter11"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowUp,
+                                        Color = Model.Query == SubCategoryOrderBy.InUse && Model.Q2 == true ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes="color-svg-on-hover"
+                                    })
                                         </a>
-                                @{
-                                    var currentFilter12 = Model.Query == SubCategoryOrderBy.InUse && Model.Q2 == false ? "text-success" : "text-white";
-                                }
                                         <a asp-page="./Index" asp-route-Query="5" asp-route-Q2="false" class="icon-button float-end color-on-hover">
-                                            <i class="bi bi-arrow-down icon-size @currentFilter12"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.ArrowDown,
+                                        Color = Model.Query == SubCategoryOrderBy.InUse && Model.Q2 == false ? IconColors.Success : IconColors.White,
+                                        Height=19,
+                                        Width=16,
+                                        Classes=$"color-svg-on-hover"
+                                    })
                                         </a>
                                 </th>
                                 <th>
@@ -150,7 +212,7 @@
                         {
                          <tr class="text-center">
                              <td>
-                                 <a asp-page="./Detail" asp-route-id="@category.Id" class="text-black no-hyperlink-underline">@category.Name
+                                 <a asp-page="./Detail" asp-route-id="@category.Id" class="table-link">@category.Name
                                  </a>
                              </td>
                              <td>
@@ -165,7 +227,7 @@
                                             asp-route-Query="8" 
                                             asp-route-Q=@category.Id
                                             asp-route-pageNumber="1"
-                                            class="text-black no-hyperlink-underline">
+                                            class="table-link">
                                                     @category.Purchases
                                                 </a>
                                         }
@@ -184,7 +246,7 @@
                                             asp-route-Query="8" 
                                             asp-route-Q=@category.Id
                                             asp-route-pageNumber="1"
-                                            class="text-black no-hyperlink-underline">
+                                            class="table-link">
                                                 @String.Format("{0:n}", category.Amount)
                                             </a>
                                         }
@@ -203,7 +265,7 @@
                                             asp-route-Query="0" 
                                             asp-route-Q=@category.LastPurchase.Date.ToString("yyyy-MM-dd") 
                                             asp-route-pageNumber="1"
-                                            class="text-black no-hyperlink-underline">
+                                            class="table-link">
                                                         @category.LastPurchase.Date.ToShortDateString()
                                                     </a>
                                         }
@@ -225,8 +287,15 @@
                                  }
                              </td>
                              <td>
-                                 <a asp-page="./Detail" asp-route-id="@category.Id" class="text-primary">
-                                     <i class="bi bi-zoom-in detail-zoom"></i>
+                                 <a asp-page="./Detail" asp-route-id="@category.Id">
+                                        @await Html.PartialAsync("Icons", new Icons()
+                                            {
+                                                Icon = Icon.ZoomIn,
+                                                Color = IconColors.Primary,
+                                                Height=20,
+                                                Width=20,
+                                                Classes="action-icon"
+                                            })
                                      </a>
                              </td>
                          </tr>

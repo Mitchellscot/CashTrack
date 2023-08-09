@@ -1,17 +1,17 @@
-﻿@using CashTrack.Common;
-@model CashTrack.Pages.Shared.CategoryPieChart
+﻿@model CashTrack.Pages.Shared.DonutChart
 @{
+    var titleExists = string.IsNullOrEmpty(Model.Title);
 }
     <script>
         const @Model.VariableName = document.getElementById(@Json.Serialize(@Model.ElementId)).getContext('2d');
         const @Model.ElementId = new Chart(@Model.VariableName, {
-            type: 'pie',
+            type: 'doughnut',
             data: {
                 labels: @Html.Raw(@Model.Labels),
                 datasets: [{
                     label: 'Total',
                     data: @Model.Dataset,
-                    color: '@ThemeColors.Black',
+                    color: 'rgba(0, 0, 0, 0)',
                     backgroundColor: @Html.Raw(Model.Colors),
                     borderColor: @Html.Raw(Model.Colors),
                     borderWidth: 1
@@ -21,14 +21,14 @@
                 responsive: true,
                 plugins: {
                     legend: {
-                        display: false,
+                        display: @Model.DisplayLabels.ToString().ToLower(),
                         position: 'bottom',
                     },
                     title: {
-                        display: true,
+                        display: @titleExists.ToString().ToLower(),
                         text: '@Model.Title'
                     }
                 }
             }
         });
-    </script>
+</script>

@@ -234,8 +234,8 @@ namespace CashTrack.Models.SummaryModels
     }
     public class DailyExpenseDataset
     {
-        public string SubCategoryName { get; set; }
         public decimal[] DataSet { get; set; }
         public string Color { get; set; }
+        public int Day { get; set; }
     }
 }

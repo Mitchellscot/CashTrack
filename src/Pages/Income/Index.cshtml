@@ -1,4 +1,5 @@
 ﻿@page
+@using CashTrack.Common;
 @using CashTrack.Models.Common
 @using CashTrack.Models.IncomeCategoryModels;
 @using CashTrack.Models.IncomeModels
@@ -32,7 +33,14 @@
                     </select>
                     <input id="qInput" data-val="true" asp-for="@Model.Q" type="Model.InputType" class="form-control w-50 text-center">
                     <button class="btn btn-secondary rounded-end" type="submit" asp-route-PageNumber="1">
-                        <i class="bi bi-search text-white mx-3 icon-size-md"></i>
+                        @await Html.PartialAsync("Icons", new Icons()
+                        {
+                            Icon = Icon.Search,
+                            Color = IconColors.White,
+                            Height=20,
+                            Width=20,
+                        Classes="mx-3"
+                        })
                     </button>
                     <input type="hidden" asp-for="@Model.PageNumber" value="1" />
                 </div>
@@ -40,13 +48,10 @@
         </div>
         <div class="col-xl-3 col-6 px-xl-0 d-none d-sm-block">
             <div class="btn-group" role="group">
-                <div class="input-group-prepend">
-                    <div class="input-group-text rounded-0 rounded-start">Current</div>
-                </div>
-                <a asp-page="./Index" asp-route-Query="8" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary">Month</a>
-                <a asp-page="./Index" asp-route-Query="9" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary">Quarter</a>
-                <a asp-page="./Index" asp-route-Query="10" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary">Year</a>
-                <a asp-page="./Index" asp-route-Query="11" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-secondary thirty-days-button">30 Days</a>
+                <a asp-page="./Index" asp-route-Query="11" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-primary thirty-days-button">30 Days</a>
+                <a asp-page="./Index" asp-route-Query="8" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-primary">Month</a>
+                <a asp-page="./Index" asp-route-Query="9" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-primary">Quarter</a>
+                <a asp-page="./Index" asp-route-Query="10" asp-route-pageNumber="@Model.PageNumber" type="button" class="btn btn-primary">Year</a>
             </div>
         </div>
         <div class="col-3 col-xl-1 d-none d-sm-block">
@@ -107,24 +112,44 @@
                         {
                             <tr class="text-center">
                                 <td>
+                                    <a asp-page="/Income/Index"
+                                        asp-route-Query="0"
+                                        asp-route-Q=@income.Date.Date.ToString("yyyy-MM-dd")
+                                        asp-route-pageNumber="1"
+                                        class="table-link">
                                     @income.Date.Date.ToShortDateString()
+                                    </a>
                                 </td>
                                 <td>
+                                    <a asp-page="/Income/Index"
+                                        asp-route-Query="4"
+                                        asp-route-Q=@income.Amount
+                                        asp-route-pageNumber="1"
+                                        class="table-link">
                                     @String.Format("{0:n}", income.Amount)
-
+                                    </a>
                                 </td>
                                 <td>
-                                    <a asp-page="../Sources/Detail" asp-route-id="@income.SourceId" class="text-black">@income.Source</a>
+                                    <a asp-page="../Sources/Detail" asp-route-id="@income.SourceId" class="table-link">@income.Source</a>
                                 </td>
                                 <td>
+                                    <a asp-page="/Income/Index" asp-route-Query="7" asp-route-Q=@income.CategoryId asp-route-pageNumber="1" class="table-link">
                                     @income.Category
+                                    </a>
                                 </td>
                                 <td>
                                     @if (!string.IsNullOrEmpty(income.RefundNotes) && !string.IsNullOrEmpty(income.Notes))
                                     {
                                         <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#refundNotes-@income.Id" class="pe-2 ps-0 ms-0 icon-button">
-                                            <i class="bi bi-bootstrap-reboot text-primary icon-size-lg"></i>
+                                            @await Html.PartialAsync("Icons", new Icons()
+                                            {
+                                                Icon = Icon.Reboot,
+                                                Color = IconColors.Primary,
+                                                Height=20,
+                                                Width=20,
+                                                Classes="action-icon"
+                                            })
                                         </button>
                                         @*Begin Refund Notes Modal*@
                                         <div class="modal fade" id="refundNotes-@income.Id">
@@ -136,14 +161,28 @@
                                     else if (string.IsNullOrEmpty(income.RefundNotes))
                                     {
                                         <button type="button" data-bs-toggle="modal" disabled class="pe-2 ps-0 ms-0 icon-button">
-                                            <i class="bi bi-file-earmark-check text-white visibility-hidden icon-size-lg"></i>
+                                            @await Html.PartialAsync("Icons", new Icons()
+                                            {
+                                                Icon = Icon.Reboot,
+                                                Color = IconColors.Primary,
+                                                Height=20,
+                                                Width=20,
+                                                Classes="visibility-hidden"
+                                            })
                                         </button>
                                     }
                                     @if (!string.IsNullOrEmpty(income.Notes))
                                     {
                                         <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#detailModal-@income.Id" class="pe-2 ps-0 ms-0 icon-button">
-                                            <i class="bi bi-file-earmark-check text-primary icon-size-lg"></i>
+                                            @await Html.PartialAsync("Icons", new Icons()
+                                            {
+                                                Icon = Icon.FileEarmarkCheck,
+                                                Color = IconColors.Primary,
+                                                Height=20,
+                                                Width=20,
+                                                Classes="action-icon"
+                                            })
                                         </button>
                                         @*Begin Detail Modal*@
                                         <div class="modal fade" id="detailModal-@income.Id">
@@ -155,11 +194,25 @@
                                     else if (string.IsNullOrEmpty(income.Notes) && !string.IsNullOrEmpty(income.RefundNotes))
                                     {
                                         <button type="button" data-bs-toggle="modal" disabled class="pe-2 ps-0 ms-0 icon-button">
-                                            <i class="bi bi-file-earmark-check text-white visibility-hidden icon-size-lg"></i>
+                                            @await Html.PartialAsync("Icons", new Icons()
+                                            {
+                                                Icon = Icon.FileEarmarkCheck,
+                                                Color = IconColors.Primary,
+                                                Height=20,
+                                                Width=20,
+                                                Classes="action-icon"
+                                            })
                                         </button>
                                         <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#refundNotes-@income.Id" class="pe-2 ps-0 ms-0 icon-button">
-                                            <i class="bi bi-bootstrap-reboot text-primary icon-size-lg"></i>
+                                            @await Html.PartialAsync("Icons", new Icons()
+                                            {
+                                                Icon = Icon.Reboot,
+                                                Color = IconColors.Primary,
+                                                Height=20,
+                                                Width=20,
+                                                Classes="action-icon"
+                                            })
                                         </button>
                                         @*Begin Refund Notes Modal*@
                                         <div class="modal fade" id="refundNotes-@income.Id">
@@ -172,12 +225,26 @@
                                     {
                                         <button type="button" data-bs-toggle="modal" disabled
                                     data-bs-target="#detailModal-@income.Id" class="pe-2 ps-0 ms-0 icon-button">
-                                            <i class="bi bi-file-earmark-check text-white icon-size-lg visibility-hidden"></i>
+                                            @await Html.PartialAsync("Icons", new Icons()
+                                            {
+                                                Icon = Icon.FileEarmarkCheck,
+                                                Color = IconColors.Primary,
+                                                Height=20,
+                                                Width=20,
+                                                Classes="visibility-hidden"
+                                            })
                                         </button>
                                     }
                                     <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#editIncomeModal-@income.Id" id="editIncomeButton-@income.Id" class="px-2 icon-button">
-                                        <i class="bi bi-pencil text-primary icon-size-lg"></i>
+                                            @await Html.PartialAsync("Icons", new Icons()
+                                            {
+                                                Icon = Icon.Pencil,
+                                                Color = IconColors.Primary,
+                                                Height=20,
+                                                Width=20,
+                                                Classes="action-icon"
+                                            })
                                     </button>
                                     @* Edit Income Modal *@
                                     <div class="modal fade" id="editIncomeModal-@income.Id">
@@ -202,7 +269,14 @@
 
                                     <button type="button" data-bs-toggle="modal"
                                     data-bs-target="#deleteModal-@income.Id" class="ps-2 ps-0 me-0 icon-button">
-                                        <i class="bi bi-trash text-primary icon-size-lg"></i>
+                                            @await Html.PartialAsync("Icons", new Icons()
+                                            {
+                                                Icon = Icon.Trash,
+                                                Color = IconColors.Primary,
+                                                Height=20,
+                                                Width=20,
+                                                Classes="action-icon"
+                                            })
                                     </button>
                                     @*Delete Model*@
                                     <div class="modal fade" id="deleteModal-@income.Id">
@@ -252,7 +326,7 @@
                         @if (@Model.IncomeResponse.TotalAmount > 0 && Model.InfoMessage == null)
                         {
                             <div class="text-center">
-                                <strong class="p-0 text-success" id="totalAmount">Total: $ @Model.IncomeResponse.TotalAmount</strong>
+                                <strong class="p-0" id="totalAmount">Total:</strong> $@String.Format("{0:n}", Model.IncomeResponse.TotalAmount)
                             </div>
                         }
                     </div>

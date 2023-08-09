@@ -79,39 +79,39 @@
                 <ul class="list-group text-center shadow">
                     <li class="list-group-item d-flex justify-content-between">
                         <span >Month: &nbsp;</span>
-                        <span class="fw-bold text-primary">@Model.SubCategory.ExpenseTotals.TotalSpentThisMonth</span>
+                        <span class="fw-bold">@Model.SubCategory.ExpenseTotals.TotalSpentThisMonth</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span >Year: &nbsp;</span>
-                        <span class="fw-bold text-primary responsive-text">@Model.SubCategory.ExpenseTotals.TotalSpentThisYear</span>
+                        <span class="fw-bold responsive-text">@Model.SubCategory.ExpenseTotals.TotalSpentThisYear</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span >Total: &nbsp;</span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @String.Format("{0:n}", Model.SubCategory.ExpenseTotals.TotalSpentAllTime)
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span >Min: &nbsp;</span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @String.Format("{0:n}", Model.SubCategory.ExpenseTotals.Min)
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span >Max: &nbsp;</span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @String.Format("{0:n}", Model.SubCategory.ExpenseTotals.Max)
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span >Average: &nbsp;</span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @String.Format("{0:n}", Model.SubCategory.ExpenseTotals.Average)
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span >Count: &nbsp;</span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @Model.SubCategory.ExpenseTotals.Count
                         </span>
                     </li>
@@ -312,30 +312,23 @@
             }
             @if (Model.SubCategory.MerchantPurchaseTotals.Count() > 1)
             {
-                @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+                @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SubCategory.MerchantPurchaseTotals.Select(x => x.Key).ToArray()))
             {
-                ChartType = ChartType.Pie,
-                UseDefaultColor = false,
                 ElementId = "categoryTotalsPie",
-                Labels =  JsonSerializer.Serialize(Model.SubCategory.MerchantPurchaseTotals.Select(x => x.Key).ToArray()),
+
                 Dataset = JsonSerializer.Serialize(Model.SubCategory.MerchantPurchaseTotals.Select(x => x.Value).ToArray()),
                 Title = "Amount By Category",
-                DisplayLabels = Model.SubCategory.AnnualExpenseStatistics.Count() < 11,
-                Responsive = true
+                IsSummaryChart = true
             })
             }
             @if (Model.SubCategory.MerchantPurchaseOccurances.Count() > 1)
             {
-                @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+                @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.SubCategory.MerchantPurchaseOccurances.Select(x => x.Key).ToArray()))
             {
-                ChartType = ChartType.Donut,
-                UseDefaultColor = false,
                 ElementId = "categoryOccurancesDonut",
-                Labels = JsonSerializer.Serialize(Model.SubCategory.MerchantPurchaseOccurances.Select(x => x.Key).ToArray()),
                 Dataset = JsonSerializer.Serialize(Model.SubCategory.MerchantPurchaseOccurances.Select(x => x.Value).ToArray()),
                 Title = "Purchase Frequency By Category",
-                DisplayLabels = Model.SubCategory.AnnualExpenseStatistics.Count() < 11,
-                Responsive = true
+                IsSummaryChart = true
         })
         }
     }

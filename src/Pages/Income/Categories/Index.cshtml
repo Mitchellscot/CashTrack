@@ -1,4 +1,5 @@
 ﻿@page
+@using CashTrack.Common;
 @using CashTrack.Models.Common
 @using CashTrack.Models.IncomeCategoryModels
 @using CashTrack.Pages.Shared
@@ -29,7 +30,14 @@
                                class="form-control incomecategory-autosuggest-js">
                         <button class="btn btn-secondary rounded-end"
                                 type="submit" asp-route-pageNumber="1">
-                            <i class="bi bi-search text-white mx-3 icon-size-md"></i>
+                        @await Html.PartialAsync("Icons", new Icons()
+                        {
+                            Icon = Icon.Search,
+                            Color = IconColors.White,
+                            Height=20,
+                            Width=20,
+                            Classes="mx-3"
+                        })
                         </button>
                         <input type="hidden"
                                asp-for="@Model.PageNumber" value="1" />
@@ -52,7 +60,6 @@
     {
         <div class="row mt-2">
             <div class="table-responsive">
-            <div class="table-sm">
                 <table class="table table-bordered table-sm table-hover mb-3 shadow">
                     <thead>
                         <tr class="text-center table-primary">
@@ -82,7 +89,7 @@
                             <tr class="text-center">
                                 <td>
                                     <a asp-page="./Detail" asp-route-id="@category.Id"
-                               class="text-black no-hyperlink-underline">
+                               class="table-link">
                                         @category.Name
                                     </a>
                                 </td>
@@ -92,10 +99,10 @@
                                         if (displayPayments)
                                         {
                                             <a asp-page="/Income/Index"
-                               asp-route-Query="7"
-                               asp-route-Q=@category.Id
-                               asp-route-pageNumber="1"
-                               class="text-black no-hyperlink-underline">
+                                                asp-route-Query="7"
+                                                asp-route-Q=@category.Id
+                                                asp-route-pageNumber="1"
+                                                class="table-link">
                                                 @category.Payments
                                             </a>
                                         }
@@ -114,7 +121,7 @@
                                asp-route-Query="7"
                                asp-route-Q=@category.Id
                                asp-route-pageNumber="1"
-                               class="text-black no-hyperlink-underline">
+                               class="table-link">
                                                 @String.Format("{0:n}", category.Amount)
                                             </a>
                                         }
@@ -133,7 +140,7 @@
                                asp-route-Query="0"
                                asp-route-Q=@category.LastPayment.Date.ToString("yyyy-MM-dd")
                                asp-route-pageNumber="1"
-                               class="text-black no-hyperlink-underline">
+                               class="table-link">
                                                 @category.LastPayment.Date.ToShortDateString()
                                             </a>
                                         }
@@ -154,8 +161,15 @@
                                     }
                                 </td>
                                 <td>
-                                    <a asp-page="./Detail" asp-route-id="@category.Id" class="text-primary">
-                                        <i class="bi bi-zoom-in detail-zoom"></i>
+                                    <a asp-page="./Detail" asp-route-id="@category.Id">
+                                        @await Html.PartialAsync("Icons", new Icons()
+                                            {
+                                                Icon = Icon.ZoomIn,
+                                                Color = IconColors.Primary,
+                                                Height=20,
+                                                Width=20,
+                                                Classes="action-icon"
+                                            })
                                     </a>
                                 </td>
                             </tr>
@@ -184,8 +198,6 @@
                 </div>
             </div>
         </div>
-        </div>
-
     }
 </div>
 

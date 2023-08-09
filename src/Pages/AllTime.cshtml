@@ -35,7 +35,7 @@
             </h3>
         </div>
         <div class="d-flex flex-column flex-sm-row col-sm-auto justify-content-sm-end mb-2 dropdown-center">
-            <button class="btn btn-secondary btn-height my-2 my-sm-0 me-sm-2 btn-text-overflow" type="button" data-bs-toggle="modal" data-bs-target="#expenseStats">View Details</button>
+            <button class="btn btn-primary btn-height my-2 my-sm-0 me-sm-2 btn-text-overflow" type="button" data-bs-toggle="modal" data-bs-target="#expenseStats">View Details</button>
             <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
             <ul class="dropdown-menu">
                 <li>
@@ -133,7 +133,7 @@
                         <span>
                             Earned: &nbsp;
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.Earned)
                         </span>
                     </li>
@@ -141,7 +141,7 @@
                         <span>
                             Spent:
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.Spent)
                         </span>
                     </li>
@@ -149,7 +149,7 @@
                         <span>
                             Saved:
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.Saved)
                         </span>
                     </li>
@@ -165,7 +165,7 @@
                         <span>
                             Avg Yearly Savings:
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @String.Format("{0:n}", Model.SummaryResponse.SummaryTotals.AverageSavedPerYear)
                         </span>
                     </li>
@@ -173,7 +173,7 @@
                         <span>
                             Expense Growth:
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @Model.SummaryResponse.SummaryTotals.ExpenseGrowthPerYear &#37;
                         </span>
                     </li>
@@ -181,7 +181,7 @@
                         <span>
                             Income Growth:
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @Model.SummaryResponse.SummaryTotals.IncomeGrowthPerYear &#37;
                         </span>
                     </li>

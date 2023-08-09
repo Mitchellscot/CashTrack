@@ -98,7 +98,7 @@
             </div>
         </form>
         <div class="col-6 col-sm-8 col-lg-9 col-xl-10 mt-2 d-flex justify-content-end">
-            <button class="btn btn-secondary text-wrap import-link btn-height" data-bs-toggle="modal" data-bs-target="#budgetStats">View Details</button>
+            <button class="btn btn-primary text-wrap import-link btn-height" data-bs-toggle="modal" data-bs-target="#budgetStats">View Details</button>
         </div>
     </div>
     @if (dataIsEmptyForTheYear)
@@ -152,7 +152,7 @@
                         <span class="">
                             Income: &nbsp;
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.IncomeAmount)
                         </span>
                     </li>
@@ -160,7 +160,7 @@
                         <span class="">
                             Expenses:
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.ExpensesAmount)
                         </span>
                     </li>
@@ -168,7 +168,7 @@
                         <span class="">
                             Needs:
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.NeedsAmount)
                         </span>
                     </li>
@@ -176,7 +176,7 @@
                         <span class="">
                             Wants:
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.WantsAmount)
                         </span>
                     </li>
@@ -184,7 +184,7 @@
                         <span class="">
                             Savings:
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.SavingsAmount)
                         </span>
                     </li>
@@ -192,7 +192,7 @@
                         <span class="">
                             Unallocated:
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @String.Format("{0:n}", Model.BudgetPageResponse.AnnualSummary.UnallocatedAmount)
                         </span>
                     </li>
@@ -259,7 +259,8 @@
     {
         ElementId = "subCategoryPie",
         Dataset = JsonSerializer.Serialize(Model.BudgetPageResponse.SubCategoryPercentages.Select(x => x.Value).ToArray()),
-        Title = "Sub Category Percentages"
+        Title = "Sub Category Percentages",
+        IsSummaryChart = true
     })
     }
     @if (Model.BudgetPageResponse.MainCategoryPercentages != null && !dataIsEmptyForTheYear)
@@ -268,7 +269,8 @@
     {
         ElementId = "mainCategoryPie",
         Dataset = JsonSerializer.Serialize(Model.BudgetPageResponse.MainCategoryPercentages.Select(x => x.Value).ToArray()),
-        Title = "Main Category Percentages"
+        Title = "Main Category Percentages",
+        IsSummaryChart = true
     })
     }
 }

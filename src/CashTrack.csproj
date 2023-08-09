@@ -59,6 +59,7 @@
 		<None Remove="Scripts\Models\CategoryAverages.ts" />
 		<None Remove="Scripts\Settings\settings.ts" />
 		<None Remove="Scripts\SubCategories\subCategoryDetail.ts" />
+		<None Remove="Scripts\Theme\theme.ts" />
 		<None Remove="Scripts\Utility\budget-income-switch.ts" />
 		<None Remove="Scripts\Utility\budget-timespan-select.ts" />
 		<None Remove="Scripts\Utility\budget-type-switch.ts" />
@@ -102,6 +103,7 @@
 		<TypeScriptCompile Include="Scripts\Sources\sources.ts" />
 		<TypeScriptCompile Include="Scripts\Sources\sourceDetail.ts" />
 		<TypeScriptCompile Include="Scripts\SubCategories\subCategoryDetail.ts" />
+		<TypeScriptCompile Include="Scripts\Theme\theme.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\budget-income-switch.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\budget-timespan-select.ts" />
 		<TypeScriptCompile Include="Scripts\Utility\budget-type-switch.ts" />

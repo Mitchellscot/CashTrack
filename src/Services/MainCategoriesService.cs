@@ -183,12 +183,18 @@ namespace CashTrack.Services.MainCategoriesService
         {
             var colors = new[]
             {
-                DarkChartColors.Red,
-                DarkChartColors.Orange,
-                DarkChartColors.Yellow,
-                DarkChartColors.Green,
-                DarkChartColors.Blue,
-                DarkChartColors.Purple
+                Qualitative12Set.Red,
+                Qualitative12Set.Orange,
+                Qualitative12Set.LightOrange,
+                Qualitative12Set.Yellow,
+                Qualitative12Set.LightGreen,
+                Qualitative12Set.Green,
+                Qualitative12Set.Blue,
+                Qualitative12Set.LightBlue,
+                Qualitative12Set.LightPurple,
+                Qualitative12Set.Purple,
+                Qualitative12Set.Pink,
+                Qualitative12Set.Brown
             };
             if (index > colors.Length - 1)
             {
@@ -209,7 +215,7 @@ namespace CashTrack.Services.MainCategoriesService
                 .Count();
 
                 return (Name: x.Name, Count: totalOfSubCategory);
-            }).Where(x => x.Count > 0).ToDictionary(k => k.Name, v => v.Count);
+            }).Where(x => x.Count > 0).OrderByDescending(x => x.Count).ToDictionary(k => k.Name, v => v.Count);
         }
         private Dictionary<string, int> GetSubCategoryPercentages(SubCategoryEntity[] subCategories, Expression<Func<ExpenseEntity, bool>> predicate, decimal overallTotal)
         {
@@ -221,7 +227,7 @@ namespace CashTrack.Services.MainCategoriesService
                 .Sum(x => x.Amount);
 
                 return (Name: x.Name, Amount: totalAmountofSubCategory);
-            }).ToDictionary(k => k.Name, v => v.Amount);
+            }).OrderByDescending(x => x.Amount).ToDictionary(k => k.Name, v => v.Amount);
             return amounts.Select(x =>
             {
                 var percentageOfTotalForCategory =
@@ -237,7 +243,7 @@ namespace CashTrack.Services.MainCategoriesService
                 .AsQueryable()
                 .Where(predicate)
                 .Sum(x => x.Amount));
-            }).ToDictionary(k => k.Name, v => v.Amount);
+            }).OrderByDescending(x => x.Amount).ToDictionary(k => k.Name, v => v.Amount);
             var total = mainCategoryAmounts.Values.Sum();
             return mainCategoryAmounts.Where(x => x.Value > 0).Select(x =>
             {
@@ -251,7 +257,7 @@ namespace CashTrack.Services.MainCategoriesService
             {
                 var subCategoriesByMainCategory = subCategories.Where(x => x.MainCategoryId == g.Key).ToList();
 
-                var amounts = subCategoriesByMainCategory.Select(x => (Name: x.Name, Amount: x.Expenses.Sum(x => x.Amount))).ToDictionary(k => k.Name, v => v.Amount);
+                var amounts = subCategoriesByMainCategory.Select(x => (Name: x.Name, Amount: x.Expenses.Sum(x => x.Amount))).OrderByDescending(x => x.Amount).ToDictionary(k => k.Name, v => v.Amount);
 
                 var mainCategoryTotal = (int)decimal.Round(amounts.Values.Sum(), 0);
 

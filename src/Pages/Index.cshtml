@@ -69,7 +69,7 @@
                 </div>
             </form>
             <div class="d-flex justify-content-sm-end flex-column flex-sm-row mb-2 col-lg-auto dropdown-center">
-                <button class="btn btn-secondary btn-height my-2 my-sm-0 me-sm-2 btn-text-overflow" type="button" data-bs-toggle="modal" data-bs-target="#expenseStats">View Details</button>
+                <button class="btn btn-primary btn-height my-2 my-sm-0 me-sm-2 btn-text-overflow" type="button" data-bs-toggle="modal" data-bs-target="#expenseStats">View Details</button>
 
                 <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
 
@@ -171,7 +171,7 @@
                         <span>
                             Income: &nbsp;
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.RealizedIncome)
                             @if (Model.SummaryResponse.MonthlySummary.BudgetedIncome != 0)
                             {
@@ -185,7 +185,7 @@
                         <span>
                             Expenses:
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold   responsive-text">
                             @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.RealizedExpenses)
                             @if (Model.SummaryResponse.MonthlySummary.BudgetedExpenses != 0)
                             {
@@ -199,7 +199,7 @@
                         <span>
                             Savings Goal:
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold  responsive-text">
                             @Decimal.Round(Model.SummaryResponse.MonthlySummary.RealizedSavings, 0)
                             @if (Model.SummaryResponse.MonthlySummary.BudgetedSavings != 0)
                             {
@@ -230,7 +230,7 @@
                         }
                         else
                         {
-                            <span class="fw-bold text-primary responsive-text">
+                            <span class="fw-bold responsive-text">
                                 @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.EstimatedSavings)
                             </span>
                         }
@@ -240,7 +240,7 @@
                         <span>
                             Unspent:
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @String.Format("{0:n}", Model.SummaryResponse.MonthlySummary.Unspent)
                         </span>
                     </li>
@@ -248,7 +248,7 @@
                         <span>
                             Budget Variance:
                         </span>
-                        <span class="fw-bold text-primary responsive-text">
+                        <span class="fw-bold responsive-text">
                             @Model.SummaryResponse.MonthlySummary.BudgetVariance.ToString("P", CultureInfo.InvariantCulture)
                         </span>
                     </li>

@@ -1,0 +1,66 @@
+﻿@import "../node_modules/bootstrap/scss/bootstrap";
+@import 'variables.scss';
+@include color-mode(dark) {
+    .sidebar-background-color {
+        background-color: var(--bs-dark-bg-subtle);
+    }
+
+    .sidebar {
+        background-color: var(--bs-dark-bg-subtle);
+    }
+
+    .nav-btn {
+        //color: var(--bs-body-color);
+        color: var(--bs-body-color);
+    }
+
+    .nav-btn:hover {
+        color: $SUCCESS_COLOR;
+    }
+
+    .nav-btn > h4 > svg:hover {
+        //success color
+        filter: invert(53%) sepia(98%) saturate(359%) hue-rotate(118deg) brightness(93%) contrast(92%) !important;
+    }
+
+    .nav-item {
+        color: var(--bs-body-color);
+    }
+
+    .nav-item > a:hover:not(#theme-menu) {
+        color: $SUCCESS_COLOR;
+    }
+
+    .nav-item > a > h6 > svg:hover:not(#theme-menu) {
+        filter: invert(53%) sepia(98%) saturate(359%) hue-rotate(118deg) brightness(93%) contrast(92%) !important;
+    }
+
+    .nav-link > h4 > svg:hover {
+        filter: invert(53%) sepia(98%) saturate(359%) hue-rotate(118deg) brightness(93%) contrast(92%) !important;
+    }
+
+    svg:not(.white-icon, .color-svg-on-hover) {
+        filter: invert(83%) sepia(14%) saturate(144%) hue-rotate(163deg) brightness(91%) contrast(85%);
+    }
+
+    .action-icon {
+        filter: invert(53%) sepia(98%) saturate(359%) hue-rotate(118deg) brightness(93%) contrast(92%) !important;
+    }
+
+    .link-primary {
+        color: $SUCCESS_COLOR !important;
+    }
+
+    .action-icon:hover {
+        stroke: $SUCCESS_COLOR;
+        stroke-width: .5;
+    }
+    //figure out what these toast messages will look like
+    .toast-body {
+        //background-color: var(--bs-dark-bg-subtle);
+        //color: $SUCCESS_COLOR !important;
+        background-color: $SUCCESS_COLOR !important;
+        color: var(--bs-dark-bg-subtle);
+    }
+
+}

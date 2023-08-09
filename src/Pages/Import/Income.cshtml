@@ -1,4 +1,5 @@
 ﻿@page
+@using CashTrack.Common;
 @using CashTrack.Models.ImportCsvModels
 @using CashTrack.Models.IncomeCategoryModels;
 @using CashTrack.Models.IncomeSourceModels
@@ -174,14 +175,28 @@
                                     <button 
                                         type="submit" 
                                         class="me-2 ms-1 py-0 my-0 icon-button">
-                                    <i class="bi bi-check2-circle text-primary icon-size-xl"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.CheckCircle,
+                                        Color = IconColors.Primary,
+                                        Height=24,
+                                        Width=24,
+                                        Classes="action-icon my-2"
+                                    })
                                 </button>
                                 <button
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal-@income.Id"
                                 type="button" 
                                 class="mx-0 px-0 py-0 my-0 icon-button">
-                                <i class="bi bi-x-circle text-primary action-icon"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.XCircle,
+                                        Color = IconColors.Primary,
+                                        Height=22,
+                                        Width=22,
+                                        Classes="action-icon my-2"
+                                    })
                             </button>
                             @*Delete Modal*@
                    <div 
@@ -222,7 +237,14 @@
                        class="ms-2 me-1 py-0 my-0 icon-button" 
                        data-bs-toggle="modal" 
                        data-bs-target="#refundModal-@income.Id">
-                       <i class="bi bi-bootstrap-reboot text-primary action-icon"></i>
+                                    @await Html.PartialAsync("Icons", new Icons()
+                                    {
+                                        Icon = Icon.Reboot,
+                                        Color = IconColors.Primary,
+                                        Height=24,
+                                        Width=24,
+                                        Classes="action-icon my-2"
+                                    })
                    </button>
                    @*Refund Modal*@
                    <div class="modal fade" 

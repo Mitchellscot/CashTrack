@@ -47,7 +47,7 @@
                 </div>
             </form>
             <div class="d-flex justify-content-sm-end flex-column flex-sm-row mb-2 col-lg-auto dropdown-center">
-                <button class="btn btn-secondary btn-height my-2 my-sm-0 me-sm-2 btn-text-overflow" type="button" data-bs-toggle="modal" data-bs-target="#expenseStats">View Details</button>
+                <button class="btn btn-primary btn-height my-2 my-sm-0 me-sm-2 btn-text-overflow" type="button" data-bs-toggle="modal" data-bs-target="#expenseStats">View Details</button>
                 <button class="btn btn-primary dropdown-toggle btn-height" type="button" data-bs-toggle="dropdown">Add</button>
                 <ul class="dropdown-menu">
                     <li>
@@ -146,7 +146,7 @@
                             <span>
                                 Earned: &nbsp;
                             </span>
-                            <span class="fw-bold text-primary responsive-text">
+                            <span class="fw-bold responsive-text">
                                 @String.Format("{0:n}", Model.SummaryResponse.AnnualSummary.Earned)
                             </span>
                         </li>
@@ -154,7 +154,7 @@
                             <span>
                                 Spent:
                             </span>
-                            <span class="fw-bold text-primary responsive-text">
+                            <span class="fw-bold responsive-text">
                                 @String.Format("{0:n}", Model.SummaryResponse.AnnualSummary.Spent)
                             </span>
                         </li>
@@ -162,7 +162,7 @@
                             <span>
                                 Saved:
                             </span>
-                            <span class="fw-bold text-primary responsive-text">
+                            <span class="fw-bold responsive-text">
                                 @String.Format("{0:n}", Model.SummaryResponse.AnnualSummary.Saved)
                             </span>
                         </li>
@@ -178,7 +178,7 @@
                             }
                             else
                             {
-                                <span class="fw-bold text-primary responsive-text">
+                                <span class="fw-bold responsive-text">
                                     @String.Format("{0:n}", Model.SummaryResponse.AnnualSummary.SavingsGoalProgress) &#37;
                                 </span>
                             }
@@ -189,7 +189,7 @@
                             <span>
                                 Monthly Savings to Meet Goal:
                             </span>
-                            <span class="fw-bold text-primary responsive-text">
+                            <span class="fw-bold responsive-text">
                                 @String.Format("{0:n}", Model.SummaryResponse.AnnualSummary.SuggestedMonthlySavingsToMeetGoal)
                             </span>
                         }
@@ -198,7 +198,7 @@
                             <span>
                                 Average Savings:
                             </span>
-                            <span class="fw-bold text-primary responsive-text">
+                            <span class="fw-bold responsive-text">
                                 @String.Format("{0:n}", Model.SummaryResponse.AnnualSummary.AveragedSavedPerMonth)
                             </span>
                         }
@@ -207,7 +207,7 @@
                             <span>
                                 Budget Variance:
                             </span>
-                            <span class="fw-bold text-primary responsive-text">
+                            <span class="fw-bold responsive-text">
                                 @Model.SummaryResponse.AnnualSummary.BudgetVariance.ToString("P", CultureInfo.InvariantCulture)
                             </span>
                         </li>

@@ -1,7 +1,6 @@
 ﻿using CashTrack.Common;
 using CashTrack.Data.Entities;
 using CashTrack.Models.BudgetModels;
-using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.SummaryModels;
 using System;
 using System.Collections.Generic;
@@ -101,7 +100,7 @@ namespace CashTrack.Services.Common
                 var data = new ExpenseDataset()
                 {
                     DataSet = dataSet,
-                    SubCategoryName = expense.Key,
+                    SubCategoryName = $"Budgeted {expense.Key}",
                     MainCategoryId = expense.MainCategoryId
                 };
                 expenseList.Add(data);
@@ -137,7 +136,7 @@ namespace CashTrack.Services.Common
                 };
                 expenseList.Add(data);
             }
-            return AssignColorsToChartData(expenseList, true);
+            return AssignColorsToChartData(expenseList);
         }
         public static List<DailyExpenseDataset> GetDailyExpenseData(ExpenseEntity[] expenses, bool isAnnual)
         {
@@ -146,56 +145,56 @@ namespace CashTrack.Services.Common
 
             var month = expenses.OrderBy(x => x.Date).Select(x => x.Date.Month).FirstOrDefault();
             var year = expenses.FirstOrDefault().Date.Year;
-            var labels = isAnnual ? Enumerable.Range(1, DateTime.IsLeapYear(year) ? 366 : 365).ToArray() : Enumerable.Range(1, DateTime.DaysInMonth(year, month)).ToArray();
+            var days = isAnnual ? Enumerable.Range(1, DateTime.IsLeapYear(year) ? 366 : 365).ToArray() : Enumerable.Range(1, DateTime.DaysInMonth(year, month)).ToArray();
 
-            var amountsAndDatesByCategory = expenses.Where(x => x.Amount > 0 && !x.ExcludeFromStatistics)
-                .Select(x => (Category: x.Category.Name, x.Amount, x.Date.Day)).OrderBy(x => x.Category).ToLookup(x => x.Category);
-            var categories = amountsAndDatesByCategory.Select(x => x.Key).ToList();
+            var daysAndExpenses = expenses.Where(x => x.Amount > 0 && !x.ExcludeFromStatistics)
+                .GroupBy(x => x.Date.Day).Select(x => (Day: x.Key, Amounts: x.OrderBy(x => x.Amount).Select(x => x.Amount).ToArray()));
+
+            var listOfDaysAndAmounts = new List<(int Day, decimal[] Amounts)>();
+
+            Array.ForEach(days, x => listOfDaysAndAmounts.Add(
+                (Day: x, daysAndExpenses.FirstOrDefault(y => y.Day == x).Amounts)));
+
+            int maxExpensesInADay = daysAndExpenses.Max(x => x.Amounts.Length);
+
             var expenseList = new List<DailyExpenseDataset>();
-            foreach (var category in categories)
-            {
-                var dataSet = new decimal[labels.Length];
-                foreach (var grouping in amountsAndDatesByCategory[category])
-                {
-                    var dailyAmount = dataSet[grouping.Day - 1];
-                    dataSet[grouping.Day - 1] = dailyAmount + grouping.Amount;
+            for (int i = 1; i <= maxExpensesInADay; i++)
+            { 
+                var dataset = new decimal[days.Length];
+                for (int d = 1; d < days.Length; d++)
+                { 
+                    var daysExpenses = listOfDaysAndAmounts.FirstOrDefault(x => x.Day == d).Amounts;
+
+                        if (daysExpenses is not null && i <= daysExpenses.Length)
+                            dataset[d - 1] = daysExpenses[i - 1];
+                        else
+                            dataset[d - 1] = 0;
                 }
-                var data = new DailyExpenseDataset()
+                expenseList.Add(new DailyExpenseDataset() 
                 {
-                    DataSet = dataSet,
-                    SubCategoryName = category
-                };
-                expenseList.Add(data);
+                    DataSet = dataset,
+                    Day = i,
+                    Color = GetColorForDailyExpenseDataset(i -1)
+                });
             }
-            var coloredExpenseList = expenseList.Select((x, index) =>
-            {
-                x.Color = GetColorForDailyExpenseDataset(index);
-                return x;
-            }).ToList();
-            return coloredExpenseList;
+            return expenseList;
         }
         public static string GetColorForDailyExpenseDataset(int index)
         {
             var colors = new[]
             {
-                DarkChartColors.RedLight,
-                DarkChartColors.OrangeLight,
-                DarkChartColors.YellowLight,
-                DarkChartColors.GreenLight,
-                DarkChartColors.BlueLight,
-                DarkChartColors.PurpleLight,
-                DarkChartColors.Red,
-                DarkChartColors.Orange,
-                DarkChartColors.Yellow,
-                DarkChartColors.Green,
-                DarkChartColors.Blue,
-                DarkChartColors.Purple,
-                DarkChartColors.RedDark,
-                DarkChartColors.OrangeDark,
-                DarkChartColors.YellowDark,
-                DarkChartColors.GreenDark,
-                DarkChartColors.BlueDark,
-                DarkChartColors.PurpleDark
+                Qualitative12Set.Red,
+                Qualitative12Set.Orange,
+                Qualitative12Set.LightOrange,
+                Qualitative12Set.Yellow,
+                Qualitative12Set.LightGreen,
+                Qualitative12Set.Green,
+                Qualitative12Set.Blue,
+                Qualitative12Set.LightBlue,
+                Qualitative12Set.LightPurple,
+                Qualitative12Set.Purple,
+                Qualitative12Set.Pink,
+                Qualitative12Set.Brown
             };
 
             if (index > colors.Length - 1)
@@ -207,7 +206,7 @@ namespace CashTrack.Services.Common
             }
             else return colors[index];
         }
-        public static List<ExpenseDataset> AssignColorsToChartData(List<ExpenseDataset> chartData, bool isSummary = false)
+        public static List<ExpenseDataset> AssignColorsToChartData(List<ExpenseDataset> chartData)
         {
             var chartDataWithColors = new List<ExpenseDataset>();
             var mainCategories = chartData.Select(x => x.MainCategoryId).Distinct().ToList();
@@ -216,31 +215,23 @@ namespace CashTrack.Services.Common
                 var matchingExpenses = chartData.Where(x => x.MainCategoryId == id);
                 var coloredData = matchingExpenses.Select((x, index) =>
                 {
-                    x.Color = GetColorForExpenseDataset(index, isSummary);
+                    x.Color = GetColorForExpenseDataset(index);
                     return x;
                 }).ToList();
                 chartDataWithColors.AddRange(coloredData);
             }
             return chartDataWithColors;
         }
-        public static string GetColorForExpenseDataset(int index, bool isSummary = false)
+        public static string GetColorForExpenseDataset(int index)
         {
-            var colors = isSummary ? new[]
+            var colors = new[]
             {
-                DarkChartColors.Red,
-                DarkChartColors.Orange,
-                DarkChartColors.Yellow,
-                DarkChartColors.Green,
-                DarkChartColors.Blue,
-                DarkChartColors.Purple
-            } : new[]
-            {
-                LightChartColors.Pink,
-                LightChartColors.Orange,
-                LightChartColors.Yellow,
-                LightChartColors.Cyan,
-                LightChartColors.Azure,
-                LightChartColors.Purple
+                Qualitative6Set.Red,
+                Qualitative6Set.Orange,
+                Qualitative6Set.Yellow,
+                Qualitative6Set.Green,
+                Qualitative6Set.Blue,
+                Qualitative6Set.Purple
             };
 
             if (index > colors.Length - 1)

@@ -748,7 +748,7 @@ namespace CashTrack.Services.SummaryService
 
             var expensePercentages = expenses.Where(x => !x.ExcludeFromStatistics).OrderBy(x => x.Category.MainCategoryId).GroupBy(x => x.Category.MainCategory.Name).Select(x => (Name: x.Key, Amount: x.Sum(x => x.Amount))).Select(x =>
                 (x.Name, Percentage: x.Amount.ToDecimalPercentage(amountToPercentBy)))
-                .Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
+                .Where(x => x.Percentage > 0).OrderByDescending(x => x.Percentage).ToDictionary(k => k.Name, v => v.Percentage);
 
 
             var savingsPercentage = income > expenseAmount ? (income - expenseAmount).ToPercentage(income) : 0;
@@ -767,7 +767,7 @@ namespace CashTrack.Services.SummaryService
             var amountToPercentBy = expenseAmount > income ? (int)decimal.Round(expenseAmount, 0) : income;
             var expensePercentages = expenses.OrderBy(x => x.Category.MainCategoryId).Where(x => !x.ExcludeFromStatistics).GroupBy(x => x.Category.Name).Select(x => (Name: x.Key, Amount: x.Sum(x => x.Amount)))
                 .Select(x => (x.Name, Percentage: x.Amount.ToPercentage(amountToPercentBy)))
-                .Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
+                .Where(x => x.Percentage > 0).OrderByDescending(x => x.Percentage).ToDictionary(k => k.Name, v => v.Percentage);
 
             var savingsPercentage = income > expenseAmount ? (income - expenseAmount).ToPercentage(income) : 0;
 
@@ -786,7 +786,7 @@ namespace CashTrack.Services.SummaryService
 
             var expensePercentages = expenses.Where(x => !x.ExcludeFromStatistics && x.MerchantId != null).OrderBy(x => x.Merchant.Name).GroupBy(x => x.Merchant.Name).Select(x => (Name: x.Key, Amount: x.Sum(x => x.Amount))).Select(x =>
                 (x.Name, Percentage: x.Amount.ToPercentage(amountToPercentBy)))
-                .Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
+                .Where(x => x.Percentage > 0).OrderByDescending(x => x.Percentage).ToDictionary(k => k.Name, v => v.Percentage);
 
             var expenseTotalsWithMerchantsAssigned = expensePercentages.Sum(x => x.Value);
 
@@ -804,7 +804,7 @@ namespace CashTrack.Services.SummaryService
 
             var incomePercentages = income.Where(x => !x.IsRefund && x.Category != null).OrderBy(x => x.Category.Name).GroupBy(x => x.Category.Name).Select(x => (Name: x.Key, Amount: x.Sum(x => x.Amount))).Select(x =>
                 (x.Name, Percentage: x.Amount.ToDecimalPercentage(incomeAmount)))
-                .Where(x => x.Percentage > 0).ToDictionary(k => k.Name, v => v.Percentage);
+                .Where(x => x.Percentage > 0).OrderByDescending(x => x.Percentage).ToDictionary(k => k.Name, v => v.Percentage);
 
             var incomeWithCategories = incomePercentages.Sum(x => x.Value);
 

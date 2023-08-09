@@ -1,4 +1,5 @@
 ﻿@page "{Id}"
+@using CashTrack.Common;
 @using CashTrack.Pages.Shared
 @model CashTrack.Pages.Incomes.RefundModel
 @{
@@ -38,7 +39,14 @@
                     </div>
                     <input id="queryInput" data-interval="true" asp-for="@Model.Query" type="date" class="form-control text-center" />
                     <button class="btn btn-secondary" type="submit">
-                        <i class="bi bi-search text-white mx-3 icon-size-md"></i>
+                        @await Html.PartialAsync("Icons", new Icons()
+                        {
+                            Icon = Icon.Search,
+                            Color = IconColors.White,
+                            Height=20,
+                            Width=20,
+                            Classes="mx-3"
+                        })
                     </button>
                 </div>
             </div>
@@ -161,7 +169,7 @@
                                         @expense.Notes
                                 </td>
                                 <td>
-                                    <button class="btn btn-outline-primary" type="submit">Select</button>
+                                    <button class="btn btn-outline-success" type="submit">Select</button>
                                 </td>
                                 </form>
                             </tr>
@@ -245,7 +253,7 @@
                                 </td>
                                 <td>
                                     <input type="hidden" asp-for="@Model.Query" />
-                                    <button name="SelectedId" value="@expense.Id" type="submit" class="btn btn-outline-primary"
+                                    <button name="SelectedId" value="@expense.Id" type="submit" class="btn btn-outline-warning"
                                     asp-page-handler="RemoveExpense">
                                         Remove
                                     </button>

@@ -1,20 +1,19 @@
-using CashTrack.Common;
-using CashTrack.Pages.Shared;
+﻿using CashTrack.Common;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
 namespace CashTrack.Pages.Shared
 {
-    public class CategoryPieChart : ChartBase
+    public class DonutChart : ChartBase
     {
-        public CategoryPieChart(string labels) : base()
+        public DonutChart(string labels) : base()
         {
-            Labels = labels;
+             Labels = labels;
         }
         public new string Colors => GetColors();
-        public bool IsSummaryChart { get; set; } = false;
-
+        public bool TwelveColors { get; set; } = false;
+        public bool DisplayLabels { get; set; }
         public new string GetColors()
         {
             const string Unallocated = "Unallocated";
@@ -28,7 +27,7 @@ namespace CashTrack.Pages.Shared
                 {
                     if (i == labelsArray.Length - 1)
                         colorStack.Push(ThemeColors.Primary);
-                    else colorStack.Push(GetColorsForExpenses(i, this.IsSummaryChart));
+                    else colorStack.Push(GetColorsForExpenses(i, this.TwelveColors));
                 }
             }
             else if (labelsArray.Any(x => x == Unallocated) && labelsArray.Any(x => x == Savings))
@@ -39,7 +38,7 @@ namespace CashTrack.Pages.Shared
                         colorStack.Push(CategoryPieChart.SavingsColor);
                     else if (i == labelsArray.Length - 1)
                         colorStack.Push(CategoryPieChart.UnallocatedColor);
-                    else colorStack.Push(GetColorsForExpenses(i, this.IsSummaryChart));
+                    else colorStack.Push(GetColorsForExpenses(i, this.TwelveColors));
                 }
             }
             else if (labelsArray.Any(x => x != Unallocated) && labelsArray.Any(x => x == Savings))
@@ -47,8 +46,8 @@ namespace CashTrack.Pages.Shared
                 for (int i = 0; i <= labelsArray.Length; i++)
                 {
                     if (i == labelsArray.Length - 1)
-                        colorStack.Push(this.IsSummaryChart ? ThemeColors.InfoDark : CategoryPieChart.SavingsColor);
-                    else colorStack.Push(GetColorsForExpenses(i, this.IsSummaryChart));
+                        colorStack.Push(this.TwelveColors ? ThemeColors.InfoDark : CategoryPieChart.SavingsColor);
+                    else colorStack.Push(GetColorsForExpenses(i, this.TwelveColors));
                 }
             }
             else if (labelsArray.Any(x => x == Unallocated) && labelsArray.Any(x => x != Savings))
@@ -57,21 +56,21 @@ namespace CashTrack.Pages.Shared
                 {
                     if (i == labelsArray.Length - 1)
                         colorStack.Push(CategoryPieChart.UnallocatedColor);
-                    else colorStack.Push(GetColorsForExpenses(i, this.IsSummaryChart));
+                    else colorStack.Push(GetColorsForExpenses(i, this.TwelveColors));
                 }
             }
             else
             {
                 for (int i = 0; i <= labelsArray.Length; i++)
                 {
-                    colorStack.Push(GetColorsForExpenses(i, this.IsSummaryChart));
+                    colorStack.Push(GetColorsForExpenses(i, this.TwelveColors));
                 }
             }
             return JsonSerializer.Serialize(colorStack.ToArray().Reverse());
         }
-        private string GetColorsForExpenses(int index, bool isSummary)
+        private string GetColorsForExpenses(int index, bool twelveColors)
         {
-            var colors = isSummary ? new[]
+            var colors = twelveColors ? new[]
             {
                 Qualitative12Set.Red,
                 Qualitative12Set.Orange,

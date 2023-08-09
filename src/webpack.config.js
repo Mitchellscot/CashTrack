@@ -28,6 +28,7 @@ const config = {
 		incomeCategoryDetail: './Scripts/IncomeCategories/incomeCategoryDetail.ts',
 		mainCategories: './Scripts/MainCategories/mainCategories.ts',
 		budget: './Scripts/Budget/budget.ts',
+		theme: './Scripts/Theme/theme.ts'
 	},
 	output: {
 		filename: '[name].js',

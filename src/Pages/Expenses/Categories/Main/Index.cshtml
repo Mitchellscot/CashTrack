@@ -16,9 +16,6 @@
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
     <div class="row mb-1 d-flex justify-content-center justify-content-md-between">
             <form method="get" class="btn-group btn-height mb-1 col-auto">
-                <div class="input-group-prepend">
-                    <div class="input-group-text d-none d-sm-block">Time Span</div>
-                </div>
                 @foreach (var time in Model.TimeSpans)
                 {
                     <input type="radio" asp-for="@Model.TimeSpan"
@@ -28,7 +25,7 @@
                        asp-for="@Model.TimeSpan"
                        autocomplete="off"
                        value="@time">
-                    <label class="btn btn-secondary" for=@time.Replace(" ", "")>@time</label>
+                    <label class="btn btn-primary" for=@time.Replace(" ", "")>@time</label>
                 }
             </form>
             <button class="btn btn-primary import-link btn-height col-auto add-main-category-btn"
@@ -163,64 +160,43 @@
     DisplayLabels = false,
     Responsive = true
     })
-        @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+        @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.MainCategoryResponse.MainCategoryPercentages.Keys))
     {
-    ChartType = ChartType.Pie,
-    UseDefaultColor = false,
-    ElementId = "mainCategoryPercentagesChart",
-    Labels = JsonSerializer.Serialize(Model.MainCategoryResponse.MainCategoryPercentages.Keys),
-    Dataset = JsonSerializer.Serialize(Model.MainCategoryResponse.MainCategoryPercentages.Values),
-    Title = "Main Category Percentages",
-    DisplayLabels = false,
-    Responsive = true
+        ElementId = "mainCategoryPercentagesChart",
+        Dataset = JsonSerializer.Serialize(Model.MainCategoryResponse.MainCategoryPercentages.Values),
+        Title = "Main Category Percentages",
+        IsSummaryChart = true
     })
-        @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+        @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.MainCategoryResponse.CategoryPurchaseOccurances.Keys))
     {
-    ChartType = ChartType.Donut,
-    UseDefaultColor = false,
-    ElementId = "subCategoryPurchaseOccurancesChart",
-    Labels = JsonSerializer.Serialize(Model.MainCategoryResponse.CategoryPurchaseOccurances.Keys),
-    Dataset = JsonSerializer.Serialize(Model.MainCategoryResponse.CategoryPurchaseOccurances.Values),
-    Title = "Sub Category Purchases",
-    DisplayLabels = false,
-    Responsive = true
+        ElementId = "subCategoryPurchaseOccurancesChart",
+        Dataset = JsonSerializer.Serialize(Model.MainCategoryResponse.CategoryPurchaseOccurances.Values),
+        Title = "Sub Category Purchases",
+        IsSummaryChart = true
     })
-        @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+        @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.MainCategoryResponse.SubCategoryPercentages.Keys))
     {
-    ChartType = ChartType.Pie,
-    UseDefaultColor = false,
-    ElementId = "subCategoryPercentagesChart",
-    Labels = JsonSerializer.Serialize(Model.MainCategoryResponse.SubCategoryPercentages.Keys),
-    Dataset = JsonSerializer.Serialize(Model.MainCategoryResponse.SubCategoryPercentages.Values),
-    Title = "Sub Category Percentages",
-    DisplayLabels = false,
-    Responsive = true
+        ElementId = "subCategoryPercentagesChart",
+        Dataset = JsonSerializer.Serialize(Model.MainCategoryResponse.SubCategoryPercentages.Values),
+        Title = "Sub Category Percentages",
+        IsSummaryChart = true
     })
-        @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+        @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(Model.MainCategoryResponse.SavingsPercentages.Keys))
     {
-    ChartType = ChartType.Pie,
-    UseDefaultColor = false,
-    ElementId = "savingsPercentagesChart",
-    Labels = JsonSerializer.Serialize(Model.MainCategoryResponse.SavingsPercentages.Keys),
-    Dataset = JsonSerializer.Serialize(Model.MainCategoryResponse.SavingsPercentages.Values),
-    Title = "Percentage Saved",
-    DisplayLabels = false,
-    Responsive = true
+        ElementId = "savingsPercentagesChart",
+        Dataset = JsonSerializer.Serialize(Model.MainCategoryResponse.SavingsPercentages.Values),
+        Title = "Percentage Saved",
+        IsSummaryChart = true
     })
 
         @foreach (var category in Model.MainCategoryResponse.MainCategories)
         {
-            @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
-    {
-    ChartType = ChartType.Pie,
-    UseDefaultColor = false,
-    ElementId = $"{category.Name}Chart",
-    Labels = JsonSerializer.Serialize(category.SubCategoryExpenses.Keys),
-    Dataset = JsonSerializer.Serialize(category.SubCategoryExpenses.Values),
-    Title = "",
-    DisplayLabels = false,
-    Responsive = true
-    })
-        }
-    }
+            @await Html.PartialAsync("CategoryPieChart", new CategoryPieChart(JsonSerializer.Serialize(category.SubCategoryExpenses.Keys))
+        {
+            ElementId = $"{category.Name}Chart",
+            Dataset = JsonSerializer.Serialize(category.SubCategoryExpenses.Values),
+            Title = "",
+        })
+     }
+}
 
