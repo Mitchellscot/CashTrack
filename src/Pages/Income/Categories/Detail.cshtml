@@ -289,15 +289,11 @@
                 Title = "Amount By Category",
                 IsSummaryChart = false
         })
-            @await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+            @await Html.PartialAsync("DonutChart", new DonutChart(JsonSerializer.Serialize(Model.IncomeCategory.SourcePurchaseOccurances.Select(x => x.Key).ToArray()))
             {
-                ChartType = ChartType.Donut,
-                UseDefaultColor = false,
                 ElementId = "categoryOccurancesDonut",
-                Labels = JsonSerializer.Serialize(Model.IncomeCategory.SourcePurchaseOccurances.Select(x => x.Key).ToArray()),
                 Dataset = JsonSerializer.Serialize(Model.IncomeCategory.SourcePurchaseOccurances.Select(x => x.Value).ToArray()),
                 Title = "Category Frequency",
                 DisplayLabels = Model.IncomeCategory.AnnualIncomeStatistics.Count() < 11,
-                Responsive = true
         })
     }

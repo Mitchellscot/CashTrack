@@ -320,14 +320,10 @@
     IsSummaryChart = false
 })
 
-@await Html.PartialAsync("_ChartPartial", new _ChartPartial()
+@await Html.PartialAsync("DonutChart", new DonutChart(JsonSerializer.Serialize(Model.Source.PaymentCategoryOcurances.Select(x => x.Key).ToArray()))
 {
-    ChartType = ChartType.Donut,
-    UseDefaultColor = false,
     ElementId = "categoryOccurancesDonut",
-    Labels = JsonSerializer.Serialize(Model.Source.PaymentCategoryOcurances.Select(x => x.Key).ToArray()),
     Dataset = JsonSerializer.Serialize(Model.Source.PaymentCategoryOcurances.Select(x => x.Value).ToArray()),
-    Title = "Category Frequency",
-    Responsive = true
+    Title = "Category Frequency"
 })
 }
