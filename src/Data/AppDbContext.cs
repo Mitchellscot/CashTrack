@@ -27,6 +27,7 @@ namespace CashTrack.Data
         public DbSet<ExpenseReviewEntity> ExpensesToReview { get; set; }
         public DbSet<IncomeReviewEntity> IncomeToReview { get; set; }
         public DbSet<ImportRuleEntity> ImportRules { get; set; }
+        public DbSet<ImportProfileEntity> ImportProfiles { get; set; }
         private string _args { get; set; }
         private readonly string _env;
         private const string SQLite = "Microsoft.EntityFrameworkCore.Sqlite";
@@ -251,6 +252,7 @@ namespace CashTrack.Data
                 mb.Entity<MainCategoryEntity>().HasData(CsvParser.ProcessMainCategoryFile(Path.Combine(csvFileDirectory, "MainCategories.csv")));
                 mb.Entity<IncomeSourceEntity>().HasData(CsvParser.ProcessIncomeSourceFile(Path.Combine(csvFileDirectory, "IncomeSources.csv")));
                 mb.Entity<ImportRuleEntity>().HasData(CsvParser.ProcessImportRuleFile(Path.Combine(csvFileDirectory, "ImportRules.csv")));
+                mb.Entity<ImportProfileEntity>().HasData(CsvParser.ProcessImportProfileFile(Path.Combine(csvFileDirectory, "ImportProfiles.csv")));
                 var incomeCategories = CsvParser.ProcessIncomeCategoryFile(Path.Combine(csvFileDirectory, "IncomeCategories.csv"));
                 mb.Entity<IncomeCategoryEntity>().HasData(incomeCategories);
                 var incomes = GenerateData.Income(incomeCategories);
@@ -303,6 +305,7 @@ namespace CashTrack.Data
                 mb.Entity<IncomeSourceEntity>().HasData(CsvParser.ProcessIncomeSourceFile(Path.Combine(csvFileDirectory, "IncomeSources.csv")));
                 mb.Entity<IncomeEntity>().HasData(CsvParser.ProcessIncomeFile(Path.Combine(csvFileDirectory, "Income.csv")));
                 mb.Entity<ImportRuleEntity>().HasData(CsvParser.ProcessImportRuleFile(Path.Combine(csvFileDirectory, "ImportRules.csv")));
+                mb.Entity<ImportProfileEntity>().HasData(CsvParser.ProcessImportProfileFile(Path.Combine(csvFileDirectory, "ImportProfiles.csv")));
                 mb.Entity<BudgetEntity>().HasData(CsvParser.ProcessBudgetFile(Path.Combine(csvFileDirectory, "Budgets.csv")));
             }
         }

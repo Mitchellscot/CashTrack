@@ -113,6 +113,17 @@ namespace CashTrack.Data.CsvFiles
             public int? MerchantSourceId { get; set; }
             public int? CategoryId { get; set; }
         }
+        public class CsvImportProfile
+        { 
+            public int Id { get; set; }
+            public string? Name { get; set; }
+            public string? DateColumnName { get; set; }
+            public string? AmountColumnName { get; set; }
+            public string? NotesColumnName { get; set; }
+            public string? IncomeColumnName { get; set; }
+            public bool? ContainsNegativeValue { get; set; }
+            public TransactionType? NegativeValueTransactionType { get; set; }
+        }
         public class CsvBudget
         {
             public int Id { get; set; }

@@ -149,14 +149,14 @@ namespace CashTrack.Services.ImportService
         internal IEnumerable<ImportTransaction> GetTransactionsFromFile(string filePath, CsvFileType fileType, ImportRuleEntity[] rules)
         {
             var bankFilterRules = rules.Where(x =>
-            x.FileType == CsvFileType.Bank &&
-            x.RuleType == RuleType.Filter).ToList();
+                x.FileType == CsvFileType.Bank &&
+                x.RuleType == RuleType.Filter).ToList();
             var creditFilterRules = rules.Where(x =>
-            x.FileType == CsvFileType.Credit &&
-            x.RuleType == RuleType.Filter).ToList();
+                x.FileType == CsvFileType.Credit &&
+                x.RuleType == RuleType.Filter).ToList();
             var otherFilterRules = rules.Where(x =>
-            x.FileType == CsvFileType.Other &&
-            x.RuleType == RuleType.Filter).ToList();
+                x.FileType == CsvFileType.Other &&
+                x.RuleType == RuleType.Filter).ToList();
             using var reader = new StreamReader(filePath);
             var bankImports = new List<BankImport>();
             var creditImports = new List<CreditImport>();

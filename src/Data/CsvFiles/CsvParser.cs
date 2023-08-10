@@ -50,6 +50,11 @@ namespace CashTrack.Data.CsvFiles
             var reader = new CsvUtility<CsvModels.CsvImportRule>();
             return reader.GetEntitiesFromCSV(path).ToList();
         }
+        public static List<CsvModels.CsvImportProfile> ProcessImportProfileFile(string path)
+        {
+            var reader = new CsvUtility<CsvModels.CsvImportProfile>();
+            return reader.GetEntitiesFromCSV(path).ToList();
+        }
         public static List<CsvModels.CsvBudget> ProcessBudgetFile(string path)
         {
             var reader = new CsvUtility<CsvModels.CsvBudget>();
