@@ -118,7 +118,7 @@ namespace CashTrack.Data.CsvFiles
             public int Id { get; set; }
             public string? Name { get; set; }
             public string? DateColumnName { get; set; }
-            public string? AmountColumnName { get; set; }
+            public string? ExpenseColumnName { get; set; }
             public string? NotesColumnName { get; set; }
             public string? IncomeColumnName { get; set; }
             public bool? ContainsNegativeValue { get; set; }

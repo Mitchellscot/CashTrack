@@ -10,12 +10,15 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using Microsoft.AspNetCore.Hosting;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+
+/// <summary>
+/// This service class imports transactions and handles methods from ImportProfileRepository
+/// </summary>
 
 namespace CashTrack.Services.ImportService
 {
@@ -161,6 +164,18 @@ namespace CashTrack.Services.ImportService
             var bankImports = new List<BankImport>();
             var creditImports = new List<CreditImport>();
             var otherImports = new List<OtherImport>();
+
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                var records = csv.GetRecords<dynamic>();
+                foreach (var record in records)
+                {
+                    string amountColumnName = "Amount";
+                    var x = record.GetProperty(amountColumnName);
+                    var value = x.GetValue(record, null);
+                    var z = value;
+                }   
+            }
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 if (fileType == CsvFileType.Bank)

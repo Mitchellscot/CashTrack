@@ -43,6 +43,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.IO;
+using CashTrack.Repositories.ImportRepository;
 
 namespace CashTrack
 {
@@ -130,6 +131,7 @@ namespace CashTrack
             services.AddScoped<IIncomeSourceRepository, IncomeSourceRepository>();
             services.AddScoped<IIncomeRepository, IncomeRepository>();
             services.AddScoped<IImportRulesRepository, ImportRulesRepository>();
+            services.AddScoped<IImportProfileRepository, ImportProfileRepository>();
             services.AddScoped<IIncomeReviewRepository, IncomeReviewRepository>();
             services.AddScoped<IExpenseReviewRepository, ExpenseReviewRepository>();
             services.AddScoped<IExportRepository, ExportRepository>();

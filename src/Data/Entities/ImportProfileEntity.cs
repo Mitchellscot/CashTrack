@@ -14,7 +14,7 @@ namespace CashTrack.Data.Entities
         [Required]
         public string? DateColumnName { get; set; }
         [Required]
-        public string? AmountColumnName { get; set; }
+        public string? ExpenseColumnName { get; set; }
         [Required]
         public string? NotesColumnName { get; set; }
         //some banks have a seperate column for income
