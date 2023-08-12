@@ -171,10 +171,10 @@ namespace CashTrack.Services.ImportService
                 foreach (var record in records)
                 {
                     string amountColumnName = "Amount";
-                    var x = record.GetProperty(amountColumnName);
-                    var value = x.GetValue(record, null);
-                    var z = value;
-                }   
+                    IDictionary<string, object> propertyValues = (IDictionary<string, object>)record;
+                    var amount = propertyValues[amountColumnName];
+                    var x = amount;
+                }
             }
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
