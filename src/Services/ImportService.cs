@@ -180,8 +180,8 @@ namespace CashTrack.Services.ImportService
             {
                 if (fileType == CsvFileType.Bank)
                 {
-                    csv.Context.RegisterClassMap<BankTransactionMap>();
-                    var csvResult = csv.GetRecords<BankImport>().ToList();
+
+                    var csvResult = csv.GetRecords<dynamic>();
                     foreach (var line in csvResult)
                     {
                         var rule = bankFilterRules.FirstOrDefault(x => line.Notes.ToLower().Contains(x.Rule.ToLower()));
@@ -191,49 +191,12 @@ namespace CashTrack.Services.ImportService
                         }
                     }
                 }
-                else if (fileType == CsvFileType.Credit)
-                {
-                    csv.Context.RegisterClassMap<CreditTransactionMap>();
-                    var csvResult = csv.GetRecords<CreditImport>().ToList();
-                    foreach (var item in csvResult)
-                    {
-                        if (item.Credit > 0)
-                        {
-                            item.Amount = item.Credit.Value;
-                            item.IsIncome = true;
-                        }
-                        if (item.Debit > 0)
-                        {
-                            item.Amount = item.Debit.Value;
-                            item.IsIncome = false;
-                        }
-                        var rule = creditFilterRules.FirstOrDefault(x => item.Notes.ToLower().Contains(x.Rule.ToLower()));
-                        if (rule == null)
-                        {
-                            creditImports.Add(item);
-                        }
-                    }
-                }
-                else if (fileType == CsvFileType.Other)
-                {
-                    csv.Context.RegisterClassMap<OtherTransactionMap>();
-                    var csvResult = csv.GetRecords<OtherImport>().ToList();
-                    foreach (var line in csvResult)
-                    {
-                        var rule = otherFilterRules.FirstOrDefault(x => line.Notes.ToLower().Contains(x.Rule.ToLower()));
-                        if (rule == null)
-                        {
-                            otherImports.Add(line);
-                        }
-                    }
-                }
             }
             IEnumerable<ImportTransaction> imports = bankImports.Any() ? bankImports :
                 creditImports.Any() ? creditImports : otherImports.Any() ? otherImports : new List<ImportTransaction>();
 
             File.Delete(filePath);
             return imports;
-
         }
 
         internal IEnumerable<ImportTransaction> SetImportRules(IEnumerable<ImportTransaction> imports, ImportRuleEntity[] rules)
@@ -272,35 +235,6 @@ namespace CashTrack.Services.ImportService
             setImports.AddRange(incomeImports);
             setImports.AddRange(expenseImports);
             return setImports;
-        }
-    }
-    public sealed class BankTransactionMap : ClassMap<BankImport>
-    {
-        public BankTransactionMap()
-        {
-            Map(x => x.Date).Name("Posting Date");
-            Map(x => x.Amount).Name("Amount");
-            Map(x => x.Notes).Name("Description");
-        }
-    }
-    public sealed class CreditTransactionMap : ClassMap<CreditImport>
-    {
-        public CreditTransactionMap()
-        {
-            Map(x => x.Date).Name("Date");
-            Map(x => x.Credit).Name("Credit").Optional();
-            Map(x => x.Debit).Name("Debit").Optional();
-            Map(x => x.Notes).Name("Description");
-        }
-    }
-    public sealed class OtherTransactionMap : ClassMap<OtherImport>
-    {
-        public OtherTransactionMap()
-        {
-            Map(x => x.Date).Name("Date");
-            Map(x => x.Amount).Name("Amount");
-            Map(x => x.Notes).Name("Notes");
-            Map(x => x.IsIncome).Name("Income");
         }
     }
 }
