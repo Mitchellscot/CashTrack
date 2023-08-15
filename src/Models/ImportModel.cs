@@ -20,7 +20,6 @@ namespace CashTrack.Models.ImportCsvModels
             get => _amount;
             set
             {
-                IsIncome = value > 0;
                 _amount = Decimal.Round(Math.Abs(value), 2);
             }
         }

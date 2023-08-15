@@ -6,12 +6,14 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CashTrack.Repositories.ImportRepository;
 
 public interface IImportProfileRepository : IRepository<ImportProfileEntity>
 {
+    Task<string[]> GetProfileNames();
 }
 public class ImportProfileRepository : IImportProfileRepository
 {
@@ -93,6 +95,18 @@ public class ImportProfileRepository : IImportProfileRepository
             .CountAsync();
         }
         catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<string[]> GetProfileNames()
+    {
+        try
+        {
+            return await _ctx.ImportProfiles.Select(x => x.Name).ToArrayAsync();
+        }
+        catch(Exception) 
         {
             throw;
         }

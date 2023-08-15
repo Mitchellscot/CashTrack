@@ -13,6 +13,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using Microsoft.AspNetCore.Hosting;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -160,27 +161,56 @@ namespace CashTrack.Services.ImportService
 
         internal async Task<IEnumerable<ImportTransaction>> GetTransactionsFromFileAsync(string filePath, string fileType, ImportRuleEntity[] rules)
         {
-            var profile = await _profileRepo.Find(x => x.Name.IsEqualTo(fileType)) ?? throw new ImportProfileNotFoundException();
+            var profile = (await _profileRepo.Find(x => x.Name == fileType)).FirstOrDefault() ?? throw new ImportProfileNotFoundException();
 
             var filterRules = rules.Where(x =>
                 x.FileType.IsEqualTo(fileType) &&
                 x.RuleType == RuleType.Filter).ToList();
 
             using var reader = new StreamReader(filePath);
-
+            ICollection<ImportTransaction> imports = new List<ImportTransaction>();
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 var records = csv.GetRecords<dynamic>();
                 foreach (var record in records)
                 {
-                    string amountColumnName = "Amount";
                     IDictionary<string, object> propertyValues = (IDictionary<string, object>)record;
-                    var amount = propertyValues[amountColumnName];
-                    var x = amount;
+                    var date = DateTime.MinValue;
+                    if (propertyValues[profile.DateColumnName] is not null)
+                    {
+                        var parseDate = DateTime.TryParse(propertyValues[profile.DateColumnName] as string, out date);
+                        if (!parseDate)
+                            throw new ArgumentException($"Expected the date column name to be {profile.DateColumnName} but was that columnn was not found");
+                    }
+                    var notes = propertyValues[profile.NotesColumnName];
+                    if(notes is not null)
+                        notes = notes.ToString().Replace("\"", "");
+
+                    var parsedExpense = decimal.TryParse(propertyValues[profile.ExpenseColumnName] as string, out decimal expense);
+                    bool isIncome = false;
+                    var income = 0m;
+                    if (!string.IsNullOrEmpty(profile.IncomeColumnName) && propertyValues[profile.IncomeColumnName] is not null)
+                    {
+                        bool parsedIncome = decimal.TryParse(propertyValues[profile.IncomeColumnName] as string, out income);
+                        if (parsedIncome)
+                            isIncome = true;
+                    }
+
+
+                    if (profile.ContainsNegativeValue.Value == true && profile.NegativeValueTransactionType == TransactionType.Expense)
+                        expense = Math.Abs(expense);
+
+                    if(profile.ContainsNegativeValue.Value == true && profile.NegativeValueTransactionType == TransactionType.Income && string.IsNullOrEmpty(profile.IncomeColumnName))
+                        income = Math.Abs(expense);
+                    imports.Add(new ImportTransaction()
+                    {
+                        Date = date,
+                        IsIncome = isIncome,
+                        Amount = isIncome && income > 0 ? income : expense,
+                        Notes = notes.ToString()
+                    });
                 }
             }
-            IEnumerable<ImportTransaction> imports = new List<ImportTransaction>();
-
             File.Delete(filePath);
             return imports;
         }
