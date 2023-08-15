@@ -4,7 +4,7 @@
     var addOrEdit = Model.IsEdit ? "Edit" : "Add";
     var dataId = Model.Id.HasValue ? Model.Id.Value : 0;
     var formId = Model.IsEdit ? $"addEditImportRuleModalForm-{dataId}" : "addEditImportRuleModalForm";
-    }
+ }
 
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -75,16 +75,16 @@
                                 File Type
                             </div>
                         <div class="row row-cols-auto">
-                            @foreach (var fileType in System.Enum.GetValues(typeof(CsvFileType)))
+                            @foreach (var fileType in Model.FileTypes)
                             {
                                 <div class="form-check col mx-3">
                                     <label class="form-check-label" asp-for="FileType">@fileType.ToString()</label>
                                     <input type="radio"
-                                       id=@($"FileType-ImportRule-{(int)fileType}")
+                                       id=@($"FileType-ImportRule-{fileType}")
                                        class="form-check-input"
                                        asp-for="FileType"
-                                       value=@((int)fileType)
-                                       checked="@((int)fileType == (int)Model.FileType)" />
+                                       value=@(fileType)
+                                       checked="@(fileType == Model.FileType)" />
                                 </div>
                             }
                         </div>

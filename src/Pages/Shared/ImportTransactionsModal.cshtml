@@ -28,12 +28,12 @@
                             </div>
                         </div>
                         <div class="col-auto col-lg-5 align-self-end border rounded py-1">
-                            @foreach (var fileType in Enum.GetValues(typeof(CsvFileType)))
+                            @foreach (var fileType in Model.FileTypes)
                             {
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio"
-                                    id=@($"FileType-ImportTransactions-{(int)fileType}")
-                                       asp-for="FileType" value="@(fileType)" checked="@(fileType.ToString() == CsvFileType.Bank.ToString())" />
+                                    id=@($"FileType-ImportTransactions-{fileType}")
+                                       asp-for="FileType" value="@(fileType)" checked="@(fileType == Model.FileTypes[0])" />
                                     <label class="form-check-label" asp-for="@Model.FileType">
                                         @fileType
                                     </label>

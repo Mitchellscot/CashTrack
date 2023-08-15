@@ -1,8 +1,11 @@
-﻿using CashTrack.Data.Entities;
+﻿using CashTrack.Common.Exceptions;
+using CashTrack.Common.Extensions;
+using CashTrack.Data.Entities;
 using CashTrack.Models.ImportCsvModels;
 using CashTrack.Models.ImportRuleModels;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.ExpenseReviewRepository;
+using CashTrack.Repositories.ImportRepository;
 using CashTrack.Repositories.ImportRuleRepository;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.IncomeReviewRepository;
@@ -34,7 +37,8 @@ namespace CashTrack.Services.ImportService
         private readonly IWebHostEnvironment _env;
         private readonly IImportRulesRepository _rulesRepo;
         private readonly IExpenseReviewRepository _expenseReviewRepo;
-        public ImportService(IIncomeReviewRepository incomeReviewRepo, IExpenseRepository expenseRepo, IIncomeRepository incomeRepo, IWebHostEnvironment env, IImportRulesRepository rulesRepo, IExpenseReviewRepository expenseReviewRepo)
+        private readonly IImportProfileRepository _profileRepo;
+        public ImportService(IIncomeReviewRepository incomeReviewRepo, IExpenseRepository expenseRepo, IIncomeRepository incomeRepo, IWebHostEnvironment env, IImportRulesRepository rulesRepo, IExpenseReviewRepository expenseReviewRepo, IImportProfileRepository profileRepo)
         {
             _incomeReviewRepo = incomeReviewRepo;
             _expenseReviewRepo = expenseReviewRepo;
@@ -42,6 +46,7 @@ namespace CashTrack.Services.ImportService
             _incomeRepo = incomeRepo;
             _env = env;
             _rulesRepo = rulesRepo;
+            _profileRepo = profileRepo;
         }
         public async Task<string> ImportTransactions(ImportModel request)
         {
@@ -55,7 +60,11 @@ namespace CashTrack.Services.ImportService
             var rules = await _rulesRepo.Find(x => true);
             try
             {
-                imports = GetTransactionsFromFile(filePath, request.FileType, rules);
+                imports = await GetTransactionsFromFileAsync(filePath, request.FileType, rules);
+            }
+            catch (ImportProfileNotFoundException)
+            {
+                return "Unable to find an import file profile associated with this file type.";
             }
             catch (HeaderValidationException)
             {
@@ -149,21 +158,15 @@ namespace CashTrack.Services.ImportService
             return importsNotInDatabase;
         }
 
-        internal IEnumerable<ImportTransaction> GetTransactionsFromFile(string filePath, CsvFileType fileType, ImportRuleEntity[] rules)
+        internal async Task<IEnumerable<ImportTransaction>> GetTransactionsFromFileAsync(string filePath, string fileType, ImportRuleEntity[] rules)
         {
-            var bankFilterRules = rules.Where(x =>
-                x.FileType == CsvFileType.Bank &&
+            var profile = await _profileRepo.Find(x => x.Name.IsEqualTo(fileType)) ?? throw new ImportProfileNotFoundException();
+
+            var filterRules = rules.Where(x =>
+                x.FileType.IsEqualTo(fileType) &&
                 x.RuleType == RuleType.Filter).ToList();
-            var creditFilterRules = rules.Where(x =>
-                x.FileType == CsvFileType.Credit &&
-                x.RuleType == RuleType.Filter).ToList();
-            var otherFilterRules = rules.Where(x =>
-                x.FileType == CsvFileType.Other &&
-                x.RuleType == RuleType.Filter).ToList();
+
             using var reader = new StreamReader(filePath);
-            var bankImports = new List<BankImport>();
-            var creditImports = new List<CreditImport>();
-            var otherImports = new List<OtherImport>();
 
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
@@ -176,24 +179,7 @@ namespace CashTrack.Services.ImportService
                     var x = amount;
                 }
             }
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-                if (fileType == CsvFileType.Bank)
-                {
-
-                    var csvResult = csv.GetRecords<dynamic>();
-                    foreach (var line in csvResult)
-                    {
-                        var rule = bankFilterRules.FirstOrDefault(x => line.Notes.ToLower().Contains(x.Rule.ToLower()));
-                        if (rule == null)
-                        {
-                            bankImports.Add(line);
-                        }
-                    }
-                }
-            }
-            IEnumerable<ImportTransaction> imports = bankImports.Any() ? bankImports :
-                creditImports.Any() ? creditImports : otherImports.Any() ? otherImports : new List<ImportTransaction>();
+            IEnumerable<ImportTransaction> imports = new List<ImportTransaction>();
 
             File.Delete(filePath);
             return imports;

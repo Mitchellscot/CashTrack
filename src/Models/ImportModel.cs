@@ -1,16 +1,16 @@
 ﻿using CashTrack.Models.Common;
-using CashTrack.Models.ImportRuleModels;
 using Microsoft.AspNetCore.Http;
-using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 
 namespace CashTrack.Models.ImportCsvModels
 {
     public class ImportModel
     {
         public IFormFile File { get; set; }
-        public CsvFileType FileType { get; set; }
+        public string FileType { get; set; }
         public string ReturnUrl { get; set; }
+        public List<string> FileTypes { get; set; }
     }
     public class ImportTransaction : Transaction
     {
@@ -33,34 +33,5 @@ namespace CashTrack.Models.ImportCsvModels
             get => _notes;
             set => _notes = !string.IsNullOrEmpty(value) ? value.ToLower() : "";
         }
-    }
-    public class BankImport : ImportTransaction
-    {
-
-    }
-    public class CreditImport : ImportTransaction
-    {
-        private decimal? _debit;
-        private decimal? _credit;
-        public decimal? Debit
-        {
-            get => _debit;
-            set
-            {
-                _debit = value.HasValue ? Decimal.Round(Math.Abs(value.Value), 2) : null;
-            }
-        }
-        public decimal? Credit
-        {
-            get => _credit;
-            set
-            {
-
-                _credit = value.HasValue ? Decimal.Round(Math.Abs(value.Value), 2) : null;
-            }
-        }
-    }
-    public class OtherImport : ImportTransaction
-    {
     }
 }

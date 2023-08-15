@@ -268,7 +268,7 @@
                                         Id = rule.Id,
                                         RuleType = Enum.Parse<RuleType>(rule.RuleType, true),
                                         TransactionType = Enum.Parse<TransactionType>(rule.TransactionType, true),
-                                        FileType = Enum.Parse<CsvFileType>(rule.FileType, true),
+                                        FileType = rule.FileType,
                                         Rule = rule.Rule,
                                         CategoryId = rule.CategoryId?? null,
                                         MerchantSourceId = rule.MerchantSourceId?? null,

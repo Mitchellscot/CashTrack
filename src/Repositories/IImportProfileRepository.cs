@@ -16,9 +16,9 @@ public interface IImportProfileRepository : IRepository<ImportProfileEntity>
 public class ImportProfileRepository : IImportProfileRepository
 {
     private readonly AppDbContext _ctx;
-    public ImportProfileRepository()
+    public ImportProfileRepository(AppDbContext ctx)
     {
-        _ctx = new AppDbContext();
+        _ctx = ctx;
     }
 
     public async Task<int> Create(ImportProfileEntity entity)

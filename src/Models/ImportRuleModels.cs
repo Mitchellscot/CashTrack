@@ -14,12 +14,6 @@ namespace CashTrack.Models.ImportRuleModels
         Assignment,
         Filter
     }
-    public enum CsvFileType
-    {
-        Bank,
-        Credit,
-        Other
-    }
     public class ImportRuleRequest : TransactionRequest
     {
         public ImportRuleOrderBy OrderBy { get; set; }
@@ -45,7 +39,7 @@ namespace CashTrack.Models.ImportRuleModels
     {
         public int? Id { get; set; }
         public RuleType RuleType { get; set; }
-        public CsvFileType FileType { get; set; }
+        public string FileType { get; set; }
         public TransactionType TransactionType { get; set; }
         public string Rule { get; set; }
         public int? MerchantSourceId { get; set; }
@@ -55,6 +49,7 @@ namespace CashTrack.Models.ImportRuleModels
     {
         public bool IsEdit { get; set; }
         public string Returnurl { get; set; }
+        public List<string> FileTypes { get; set; }
         public SelectList SubCategoryList { get; set; }
         public SelectList IncomeCategoryList { get; set; }
         public SelectList MerchantList { get; set; }

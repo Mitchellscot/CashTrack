@@ -51,7 +51,7 @@ namespace CashTrack.Tests.Services
 
                 var newRule = new AddEditImportRule()
                 {
-                    FileType = (int)CsvFileType.Bank,
+                    FileType = "Bank",
                     RuleType = (int)RuleType.Assignment,
                     TransactionType = (int)TransactionType.Expense,
                     Rule = "blah blah",
@@ -78,7 +78,7 @@ namespace CashTrack.Tests.Services
                 var newRule = new AddEditImportRule()
                 {
                     Id = 1,
-                    FileType = (int)CsvFileType.Bank,
+                    FileType = "Bank",   
                     RuleType = (int)RuleType.Assignment,
                     TransactionType = (int)TransactionType.Expense,
                     Rule = "blah blah",
@@ -105,7 +105,7 @@ namespace CashTrack.Tests.Services
                 var newRule = new AddEditImportRule()
                 {
                     Id = 1,
-                    FileType = CsvFileType.Bank,
+                    FileType = "Bank",
                     RuleType = RuleType.Filter,
                     TransactionType = (int)TransactionType.Expense,
                     Rule = "blah blah",
@@ -133,7 +133,7 @@ namespace CashTrack.Tests.Services
 
                 var newRule = new AddEditImportRule()
                 {
-                    FileType = CsvFileType.Bank,
+                    FileType = "Bank",
                     RuleType = RuleType.Filter,
                     TransactionType = (int)TransactionType.Expense,
                     Rule = "blah blah",
