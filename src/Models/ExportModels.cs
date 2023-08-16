@@ -1,4 +1,5 @@
 ﻿using CashTrack.Models.BudgetModels;
+using CashTrack.Models.Common;
 using CashTrack.Models.ImportRuleModels;
 
 namespace CashTrack.Models.ExportModels;

@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using CashTrack.Models.Common;
 using CashTrack.Models.ImportRuleModels;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

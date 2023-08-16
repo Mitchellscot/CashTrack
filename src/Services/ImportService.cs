@@ -1,7 +1,7 @@
 ﻿using CashTrack.Common.Exceptions;
 using CashTrack.Common.Extensions;
 using CashTrack.Data.Entities;
-using CashTrack.Models.ExpenseModels;
+using CashTrack.Models.Common;
 using CashTrack.Models.ImportCsvModels;
 using CashTrack.Models.ImportRuleModels;
 using CashTrack.Repositories.ExpenseRepository;
@@ -11,8 +11,6 @@ using CashTrack.Repositories.ImportRuleRepository;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.IncomeReviewRepository;
 using CsvHelper;
-using CsvHelper.Configuration;
-using CsvHelper.TypeConversion;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
@@ -20,10 +18,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-
-/// <summary>
-/// This service class imports transactions and handles methods from ImportProfileRepository
-/// </summary>
 
 namespace CashTrack.Services.ImportService
 {
@@ -198,9 +192,8 @@ namespace CashTrack.Services.ImportService
                     }
                     var parsedAmount = decimal.TryParse(csv.GetField<string>(profile.ExpenseColumnName), out decimal amount);
                     if (!parsedAmount)
-                    {
                         throw new ArgumentException($"Unable to determine the amount from a row in column named: {profile.ExpenseColumnName}");
-                    }
+                    
 
                     var isIncome = false;
                     if (profile.ContainsNegativeValue.Value == true &&

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using CashTrack.Data.Entities.Common;
 using CashTrack.Models.BudgetModels;
+using CashTrack.Models.Common;
 using CashTrack.Models.ImportRuleModels;
 using System;
 

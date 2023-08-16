@@ -4,11 +4,6 @@ using System.Collections.Generic;
 
 namespace CashTrack.Models.ImportRuleModels
 {
-    public enum TransactionType
-    {
-        Expense,
-        Income
-    }
     public enum RuleType
     {
         Assignment,
