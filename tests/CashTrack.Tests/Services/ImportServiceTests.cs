@@ -227,7 +227,7 @@ namespace CashTrack.Tests.Services
                 var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
 
                 var result = await importService.ImportTransactions(request);
-                result.ShouldBe("Please inspect the csv file for the correct headers.");
+                result.ShouldBe("No transactions imported - Unable to determine the amount from a row in column named: Debit");
             }
         }
         [Fact]
@@ -275,7 +275,7 @@ namespace CashTrack.Tests.Services
                 var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
 
                 var result = await importService.ImportTransactions(request);
-                result.ShouldBe("No transactions imported - is the file formatted properly?");
+                result.ShouldBe("No transactions imported - Unable to determine the amount from a row in column named: Amount");
             }
         }
         [Fact]
@@ -299,7 +299,7 @@ namespace CashTrack.Tests.Services
                 var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
 
                 var result = await importService.ImportTransactions(request);
-                result.ShouldBe("No transactions imported - is the file formatted properly?");
+                result.ShouldBe("No transactions imported - Unable to determine the amount from a row in column named: Debit");
             }
         }
         [Fact]

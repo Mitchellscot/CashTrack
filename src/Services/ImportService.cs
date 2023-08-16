@@ -1,6 +1,7 @@
 ﻿using CashTrack.Common.Exceptions;
 using CashTrack.Common.Extensions;
 using CashTrack.Data.Entities;
+using CashTrack.Models.ExpenseModels;
 using CashTrack.Models.ImportCsvModels;
 using CashTrack.Models.ImportRuleModels;
 using CashTrack.Repositories.ExpenseRepository;
@@ -67,22 +68,21 @@ namespace CashTrack.Services.ImportService
             {
                 return "Unable to find an import file profile associated with this file type.";
             }
-            catch (HeaderValidationException)
+            catch (CsvHelper.MissingFieldException ex)
             {
                 File.Delete(filePath);
                 return "Please inspect the csv file for the correct headers.";
             }
-            catch (TypeConverterException)
+            catch (ArgumentException ex)
             {
                 File.Delete(filePath);
-                return "No transactions imported - is the file formatted properly?";
+                return $"No transactions imported - {ex.Message}";
             }
             if (!imports.Any())
             {
                 File.Delete(filePath);
                 return "No transactions imported";
             }
-
 
             IEnumerable<ImportTransaction> filteredImports = await FilterTransactionsInDatabase(imports);
 
@@ -171,44 +171,57 @@ namespace CashTrack.Services.ImportService
             ICollection<ImportTransaction> imports = new List<ImportTransaction>();
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
-                var records = csv.GetRecords<dynamic>();
-                foreach (var record in records)
+                csv.Read();
+                csv.ReadHeader();
+                while (csv.Read())
                 {
-                    IDictionary<string, object> propertyValues = (IDictionary<string, object>)record;
-                    var date = DateTime.MinValue;
-                    if (propertyValues[profile.DateColumnName] is not null)
-                    {
-                        var parseDate = DateTime.TryParse(propertyValues[profile.DateColumnName] as string, out date);
-                        if (!parseDate)
-                            throw new ArgumentException($"Expected the date column name to be {profile.DateColumnName} but was that columnn was not found");
-                    }
-                    var notes = propertyValues[profile.NotesColumnName];
-                    if(notes is not null)
-                        notes = notes.ToString().Replace("\"", "");
+                    var notes = csv.GetField<string>(profile.NotesColumnName);
+                    var rule = filterRules.FirstOrDefault(x => notes.ToLower().Contains(x.Rule.ToLower()));
+                    if (rule is not null)
+                        continue;
 
-                    var parsedExpense = decimal.TryParse(propertyValues[profile.ExpenseColumnName] as string, out decimal expense);
-                    bool isIncome = false;
-                    var income = 0m;
-                    if (!string.IsNullOrEmpty(profile.IncomeColumnName) && propertyValues[profile.IncomeColumnName] is not null)
+                    if (!string.IsNullOrEmpty(profile.IncomeColumnName))
                     {
-                        bool parsedIncome = decimal.TryParse(propertyValues[profile.IncomeColumnName] as string, out income);
+                        var parsedIncome = decimal.TryParse(csv.GetField<string>(profile.IncomeColumnName), out decimal income);
                         if (parsedIncome)
-                            isIncome = true;
+                        {
+                            var incomeTransaction = new ImportTransaction()
+                            {
+                                Date = csv.GetField<DateTime>(profile.DateColumnName),
+                                Amount = income,
+                                IsIncome = true,
+                                Notes = notes
+                            };
+                            imports.Add(incomeTransaction);
+                            continue;
+                        }
+                    }
+                    var parsedAmount = decimal.TryParse(csv.GetField<string>(profile.ExpenseColumnName), out decimal amount);
+                    if (!parsedAmount)
+                    {
+                        throw new ArgumentException($"Unable to determine the amount from a row in column named: {profile.ExpenseColumnName}");
                     }
 
-
-                    if (profile.ContainsNegativeValue.Value == true && profile.NegativeValueTransactionType == TransactionType.Expense)
-                        expense = Math.Abs(expense);
-
-                    if(profile.ContainsNegativeValue.Value == true && profile.NegativeValueTransactionType == TransactionType.Income && string.IsNullOrEmpty(profile.IncomeColumnName))
-                        income = Math.Abs(expense);
-                    imports.Add(new ImportTransaction()
+                    var isIncome = false;
+                    if (profile.ContainsNegativeValue.Value == true &&
+                        profile.NegativeValueTransactionType == TransactionType.Expense)
                     {
-                        Date = date,
-                        IsIncome = isIncome,
-                        Amount = isIncome && income > 0 ? income : expense,
-                        Notes = notes.ToString()
-                    });
+                        isIncome = amount > 0;
+                    }
+                    else if (profile.ContainsNegativeValue.Value == true &&
+                        profile.NegativeValueTransactionType == TransactionType.Income)
+                    {
+                        isIncome = amount < 0;
+                    }
+
+                    var transaction = new ImportTransaction()
+                    {
+                        Date = csv.GetField<DateTime>(profile.DateColumnName),
+                        Amount = amount,
+                        IsIncome = isIncome, 
+                        Notes = notes
+                    };
+                    imports.Add(transaction);
                 }
             }
             File.Delete(filePath);
@@ -221,7 +234,11 @@ namespace CashTrack.Services.ImportService
             var expenseRules = rules.Where(x => x.TransactionType == TransactionType.Expense && x.RuleType == RuleType.Assignment).ToList();
             foreach (var import in expenseImports)
             {
-                var rule = expenseRules.FirstOrDefault(x => import.Notes.ToLower().Contains(x.Rule.ToLower()));
+                var notes = import.Notes.ToLower();
+                if (string.IsNullOrEmpty(notes))
+                    continue;
+
+                var rule = expenseRules.FirstOrDefault(x => notes.Contains(x.Rule.ToLower()));
 
                 if (rule != null && rule.MerchantSourceId.HasValue)
                 {
@@ -236,7 +253,11 @@ namespace CashTrack.Services.ImportService
             var incomeRules = rules.Where(x => x.TransactionType == TransactionType.Income && x.RuleType == RuleType.Assignment).ToList();
             foreach (var import in incomeImports)
             {
-                var rule = incomeRules.FirstOrDefault(x => import.Notes.ToLower().Contains(x.Rule.ToLower()));
+                var notes = import.Notes.ToLower();
+                if (string.IsNullOrEmpty(notes))
+                    continue;
+
+                var rule = incomeRules.FirstOrDefault(x => notes.Contains(x.Rule.ToLower()));
 
                 if (rule != null && rule.MerchantSourceId.HasValue)
                 {
