@@ -62,7 +62,7 @@ namespace CashTrack.Services.ImportService
             {
                 return "Unable to find an import file profile associated with this file type.";
             }
-            catch (CsvHelper.MissingFieldException ex)
+            catch (CsvHelper.MissingFieldException)
             {
                 File.Delete(filePath);
                 return "Please inspect the csv file for the correct headers.";

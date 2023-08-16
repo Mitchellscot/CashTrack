@@ -74,7 +74,7 @@ namespace CashTrack.Pages.Import
                 ModelState.AddModelError("", ex.Message);
                 return await PrepareAndRenderPage();
             }
-            return LocalRedirect(ImportRule.Returnurl);
+            return LocalRedirect(ImportRule.ReturnUrl);
         }
         public async Task<IActionResult> OnPostDelete(int ruleId, int Query, string q2, int pageNumber)
         {

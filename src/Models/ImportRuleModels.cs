@@ -43,7 +43,7 @@ namespace CashTrack.Models.ImportRuleModels
     public class AddEditImportRuleModal : AddEditImportRule
     {
         public bool IsEdit { get; set; }
-        public string Returnurl { get; set; }
+        public string ReturnUrl { get; set; }
         public List<string> FileTypes { get; set; }
         public SelectList SubCategoryList { get; set; }
         public SelectList IncomeCategoryList { get; set; }

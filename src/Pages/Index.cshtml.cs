@@ -6,6 +6,7 @@ using CashTrack.Models.SummaryModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.ExpenseReviewService;
 using CashTrack.Services.ExpenseService;
+using CashTrack.Services.ImportProfileService;
 using CashTrack.Services.IncomeCategoryService;
 using CashTrack.Services.IncomeReviewService;
 using CashTrack.Services.MainCategoriesService;
@@ -35,6 +36,7 @@ namespace CashTrack.Pages
         private readonly SignInManager<UserEntity> _signInManager;
         private readonly ILogger<IndexModel> _logger;
         private readonly UserManager<UserEntity> _userManager;
+        private readonly IImportProfileService _profileService;
 
         public int ReviewAmount { get; set; }
         [BindProperty(SupportsGet = true)]
@@ -60,7 +62,8 @@ namespace CashTrack.Pages
         public SubCategoryDropdownSelection[] SubCategoryList { get; set; }
         public MainCategoryDropdownSelection[] MainCategoryList { get; set; }
         public IncomeCategoryDropdownSelection[] IncomeCategoryList { get; set; }
-        public IndexModel(IExpenseService expenseService, IExpenseReviewService expenseReviewService, IIncomeReviewService incomeReviewService, ISummaryService summaryService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoryService, IIncomeCategoryService incomeCategoryService, SignInManager<UserEntity> signInManager, ILogger<IndexModel> logger, UserManager<UserEntity> userManager)
+        public List<string> FileTypes { get; set; }
+        public IndexModel(IExpenseService expenseService, IExpenseReviewService expenseReviewService, IIncomeReviewService incomeReviewService, ISummaryService summaryService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoryService, IIncomeCategoryService incomeCategoryService, SignInManager<UserEntity> signInManager, ILogger<IndexModel> logger, UserManager<UserEntity> userManager, IImportProfileService profileService)
         {
             _summaryService = summaryService;
             _expenseService = expenseService;
@@ -72,6 +75,7 @@ namespace CashTrack.Pages
             _signInManager = signInManager;
             _logger = logger;
             _userManager = userManager;
+            _profileService = profileService;
         }
 
         public async Task<IActionResult> OnGet()
@@ -96,6 +100,7 @@ namespace CashTrack.Pages
             MainCategoryList = await _mainCategoryService.GetMainCategoriesForDropdownListAsync();
             SummaryResponse = await _summaryService.GetMonthlySummaryAsync(new MonthlySummaryRequest() { Year = this.Year, Month = this.Month, UserId = 1 });
             YearSelectList = new SelectList(await _expenseService.GetAnnualSummaryYearsAsync());
+            FileTypes = await _profileService.GetImportProfileNames();
             return Page();
         }
     }

@@ -2,12 +2,16 @@ using CashTrack.Common;
 using CashTrack.Models.Common;
 using CashTrack.Models.UserModels;
 using CashTrack.Pages.Shared;
+using CashTrack.Services;
 using CashTrack.Services.ExportService;
+using CashTrack.Services.ImportProfileService;
 using CashTrack.Services.UserService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Settings
@@ -16,12 +20,14 @@ namespace CashTrack.Pages.Settings
     {
         private readonly IExportService _exportService;
         private readonly IUserService _userService;
+        private readonly IImportProfileService _profileService;
         private IWebHostEnvironment _env;
-        public Index(IExportService exportService, IUserService userService, IWebHostEnvironment env)
+        public Index(IExportService exportService, IUserService userService, IWebHostEnvironment env, IImportProfileService profileService)
         {
             _env = env;
             _exportService = exportService;
             _userService = userService;
+            _profileService = profileService;
         }
 
         public SelectList ExportOptions { get; set; }
@@ -35,12 +41,14 @@ namespace CashTrack.Pages.Settings
         public decimal DefaultTax { get; set; }
         [BindProperty]
         public decimal NewTax { get; set; }
+        public List<string> FileTypes { get; set; }
 
         public async Task<IActionResult> OnGet()
         {
-
+            var profiles = await _profileService.GetImportProfilesAsync();
             ExportOptions = new SelectList(ExportFileOptions.GetAll, "Key", "Value");
             DefaultTax = await _userService.GetDefaultTax(User.Identity.Name ?? "demo");
+            FileTypes = profiles.Select(x => x.Name).ToList();
             return Page();
         }
         public async Task<IActionResult> OnPostChangePassword()

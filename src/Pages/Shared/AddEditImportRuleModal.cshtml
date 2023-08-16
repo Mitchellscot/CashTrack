@@ -30,7 +30,7 @@
                         <input asp-for="@Model.Id" type="hidden" />
                     }
                     <input asp-for="@Model.IsEdit" type="hidden" />
-                    <input asp-for="@Model.Returnurl" type="hidden" />
+                    <input asp-for="@Model.ReturnUrl" type="hidden" />
                 <div class="row row-cols-3 justify-content-center mb-3">
                         <div class="col">
                             <div class="text-center fw-bold">
@@ -79,13 +79,13 @@
                             @foreach (var fileType in Model.FileTypes)
                             {
                                 <div class="form-check col mx-3">
-                                    <label class="form-check-label" asp-for="FileType">@fileType.ToString()</label>
+                                    <label class="form-check-label" asp-for="FileType">@fileType</label>
                                     <input type="radio"
                                        id=@($"FileType-ImportRule-{fileType}")
                                        class="form-check-input"
                                        asp-for="FileType"
                                        value=@(fileType)
-                                       checked="@(fileType == Model.FileType)" />
+                                       checked="@(fileType == Model.FileTypes[0])" />
                                 </div>
                             }
                         </div>
