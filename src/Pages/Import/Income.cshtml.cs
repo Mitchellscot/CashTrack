@@ -2,6 +2,7 @@ using CashTrack.Common.Extensions;
 using CashTrack.Models.IncomeCategoryModels;
 using CashTrack.Models.IncomeReviewModels;
 using CashTrack.Pages.Shared;
+using CashTrack.Services.ImportProfileService;
 using CashTrack.Services.IncomeCategoryService;
 using CashTrack.Services.IncomeReviewService;
 using CashTrack.Services.IncomeService;
@@ -9,6 +10,7 @@ using CashTrack.Services.IncomeSourceService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,13 +22,15 @@ namespace CashTrack.Pages.Import
         private readonly IIncomeSourceService _incomeSourceService;
         private readonly IIncomeCategoryService _incomeCategoryService;
         private readonly IIncomeService _incomeService;
+        private readonly IImportProfileService _profileService;
 
-        public IncomeModel(IIncomeReviewService incomeReviewService, IIncomeSourceService incomeSourceService, IIncomeCategoryService incomeCategoryService, IIncomeService incomeService)
+        public IncomeModel(IIncomeReviewService incomeReviewService, IIncomeSourceService incomeSourceService, IIncomeCategoryService incomeCategoryService, IIncomeService incomeService, IImportProfileService profileService)
         {
             _incomeReviewService = incomeReviewService;
             _incomeSourceService = incomeSourceService;
             _incomeCategoryService = incomeCategoryService;
             _incomeService = incomeService;
+            _profileService = profileService;
         }
         public IncomeReviewResponse IncomeReviewResponse { get; set; }
         [BindProperty(SupportsGet = true)]
@@ -38,6 +42,7 @@ namespace CashTrack.Pages.Import
         public int SelectedIncomeId { get; set; }
         [BindProperty]
         public bool IsRefund { get; set; }
+        public List<string> FileTypes { get; set; }
         public async Task<IActionResult> OnGet()
         {
             await PrepareData();
@@ -94,7 +99,7 @@ namespace CashTrack.Pages.Import
         {
             CategoryList = await _incomeCategoryService.GetIncomeCategoryDropdownListAsync();
             PageNumber = IncomeReviewResponse != null ? IncomeReviewResponse.PageNumber : PageNumber == 0 ? 1 : PageNumber;
-
+            FileTypes = await _profileService.GetImportProfileNames();
             IncomeReviewResponse = await _incomeReviewService.GetIncomeReviewsAsync(new IncomeReviewRequest() { PageNumber = PageNumber });
         }
     }

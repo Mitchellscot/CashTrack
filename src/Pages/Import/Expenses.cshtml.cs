@@ -6,17 +6,17 @@ using CashTrack.Models.SubCategoryModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.ExpenseReviewService;
 using CashTrack.Services.ExpenseService;
+using CashTrack.Services.ImportProfileService;
 using CashTrack.Services.ImportService;
 using CashTrack.Services.MainCategoriesService;
 using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
 using CashTrack.Services.UserService;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Import
@@ -30,8 +30,9 @@ namespace CashTrack.Pages.Import
         private readonly IImportService _importService;
         private readonly IMainCategoriesService _mainCategoryService;
         private readonly IUserService _userService;
+        private readonly IImportProfileService _profileService;
 
-        public ExpensesModel(IExpenseReviewService expenseReviewService, ISubCategoryService subCategoryService, IExpenseService expenseService, IMerchantService merchantService, IImportService importService, IMainCategoriesService mainCategoryService, IUserService userService)
+        public ExpensesModel(IExpenseReviewService expenseReviewService, ISubCategoryService subCategoryService, IExpenseService expenseService, IMerchantService merchantService, IImportService importService, IMainCategoriesService mainCategoryService, IUserService userService, IImportProfileService profileService)
         {
             _merchantService = merchantService;
             _expenseService = expenseService;
@@ -40,6 +41,7 @@ namespace CashTrack.Pages.Import
             _importService = importService;
             _mainCategoryService = mainCategoryService;
             _userService = userService;
+            _profileService = profileService;
         }
         public ExpenseReviewResponse ExpenseReviewResponse { get; set; }
         [BindProperty(SupportsGet = true)]
@@ -52,6 +54,7 @@ namespace CashTrack.Pages.Import
 
         [BindProperty]
         public ImportModel Import { get; set; }
+        public List<string> FileTypes { get; set; }
         public MainCategoryDropdownSelection[] MainCategoryList { get; set; }
         public async Task<IActionResult> OnGet(int pageNumber)
         {
@@ -64,9 +67,7 @@ namespace CashTrack.Pages.Import
                 ModelState.AddModelError("", "Please choose a csv file and try again.");
                 return await PrepareAndRenderPage();
             }
-            //For Bank and file types I have hardcoded objects to match the csv files and use a library just to make the process quicker, however it's tightly coupled to my bank and credit card file formats.
-            //If for any reason I wanted to import a csv file from another institution I have a third option, but the csv
-            //file has to be in a specific format.
+
             if (string.IsNullOrEmpty(Import.File.ContentType) || Import.File.ContentType != "text/csv")
             {
                 ModelState.AddModelError("", "File must be a CSV file.");
@@ -160,7 +161,7 @@ namespace CashTrack.Pages.Import
             MainCategoryList = await _mainCategoryService.GetMainCategoriesForDropdownListAsync();
             CategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
             PageNumber = ExpenseReviewResponse != null ? ExpenseReviewResponse.PageNumber : PageNumber == 0 ? 1 : PageNumber;
-
+            FileTypes = await _profileService.GetImportProfileNames();
             ExpenseReviewResponse = await _expenseReviewService.GetExpenseReviewsAsync(new ExpenseReviewRequest() { PageNumber = PageNumber });
             return Page();
         }
