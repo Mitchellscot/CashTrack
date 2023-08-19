@@ -25,7 +25,7 @@
             <button class="btn btn-primary float-end" id="addImportRuleButton" data-bs-toggle="modal" data-bs-target="#addImportRuleModal">Add Import Rule</button>
         </div>
         <div class="modal fade" id="addImportRuleModal">
-        @await Html.PartialAsync("AddEditImportRuleModal", new AddEditImportRuleModal() { ReturnUrl = "~/Import/Rules", IsEdit = false })
+        @await Html.PartialAsync("AddEditImportRuleModal", new AddEditImportRuleModal() { ReturnUrl = "~/Import/Rules", IsEdit = false, FileTypes = Model.FileTypes })
         </div>
         </div>
         @if (Model.RuleRespose != null && Model.RuleRespose.ListItems.Count() > 0)

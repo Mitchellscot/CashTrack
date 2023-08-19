@@ -12,6 +12,7 @@ namespace CashTrack.Models.ImportProfileModels
         public string IncomeColumn { get; set; }
         public bool ContainsNegativeValue { get; set; }
         public TransactionType NegativeValueTransactionType { get; set; }
+        public TransactionType DefaultTransactionType { get; set; }
     }
     public class AddEditImportProfile
     {
@@ -23,6 +24,7 @@ namespace CashTrack.Models.ImportProfileModels
         public string IncomeColumn { get; set; }
         public bool ContainsNegativeValue { get; set; }
         public TransactionType NegativeValueTransactionType { get; set; }
+        public TransactionType DefaultTransactionType { get; set; }
     }
     public class AddEditImportProfileModal : AddEditImportProfile
     {

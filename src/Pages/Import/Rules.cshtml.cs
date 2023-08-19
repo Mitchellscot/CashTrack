@@ -5,6 +5,7 @@ using CashTrack.Models.IncomeSourceModels;
 using CashTrack.Models.MerchantModels;
 using CashTrack.Models.SubCategoryModels;
 using CashTrack.Pages.Shared;
+using CashTrack.Services.ImportProfileService;
 using CashTrack.Services.ImportRulesService;
 using CashTrack.Services.IncomeCategoryService;
 using CashTrack.Services.IncomeSourceService;
@@ -12,6 +13,7 @@ using CashTrack.Services.MerchantService;
 using CashTrack.Services.SubCategoryService;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CashTrack.Pages.Import
@@ -23,19 +25,22 @@ namespace CashTrack.Pages.Import
         private readonly IIncomeSourceService _sourceService;
         private readonly ISubCategoryService _subCategoryService;
         private readonly IIncomeCategoryService _incomeCategoryService;
+        private readonly IImportProfileService _profileService;
 
-        public RulesModel(IImportRulesService service, IMerchantService merchantService, IIncomeSourceService sourceService, ISubCategoryService subCategoryService, IIncomeCategoryService incomeCategoryService)
+        public RulesModel(IImportRulesService service, IMerchantService merchantService, IIncomeSourceService sourceService, ISubCategoryService subCategoryService, IIncomeCategoryService incomeCategoryService, IImportProfileService profileService)
         {
             _service = service;
             _merchantService = merchantService;
             _sourceService = sourceService;
             _subCategoryService = subCategoryService;
             _incomeCategoryService = incomeCategoryService;
+            _profileService = profileService;
         }
         public SubCategoryDropdownSelection[] SubCategoryList { get; set; }
         public IncomeCategoryDropdownSelection[] IncomeCategoryList { get; set; }
         public MerchantDropdownSelection[] MerchantList { get; set; }
         public SourceDropdownSelection[] SourceList { get; set; }
+        public List<string> FileTypes { get; set; }
         [BindProperty(SupportsGet = true)]
         public ImportRuleOrderBy Query { get; set; }
         [BindProperty(SupportsGet = true)]
@@ -101,6 +106,7 @@ namespace CashTrack.Pages.Import
             IncomeCategoryList = await _incomeCategoryService.GetIncomeCategoryDropdownListAsync();
             MerchantList = await _merchantService.GetMerchantDropdownListAsync();
             SourceList = await _sourceService.GetSourceDropdownListAsync();
+            FileTypes = await _profileService.GetImportProfileNames();
 
             return Page();
         }

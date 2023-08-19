@@ -1,5 +1,6 @@
 using CashTrack.Common;
 using CashTrack.Models.Common;
+using CashTrack.Models.ImportProfileModels;
 using CashTrack.Models.UserModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.ExportService;
@@ -41,13 +42,18 @@ namespace CashTrack.Pages.Settings
         [BindProperty]
         public decimal NewTax { get; set; }
         public List<string> FileTypes { get; set; }
+        public List<ImportProfileListItem> Profiles { get; set; }
 
         public async Task<IActionResult> OnGet()
         {
             var profiles = await _profileService.GetImportProfilesAsync();
+            if (profiles != null)
+            {
+                Profiles = profiles;
+                FileTypes = profiles.Select(x => x.Name).ToList();
+            }
             ExportOptions = new SelectList(ExportFileOptions.GetAll, "Key", "Value");
             DefaultTax = await _userService.GetDefaultTax(User.Identity.Name ?? "demo");
-            FileTypes = profiles.Select(x => x.Name).ToList();
             return Page();
         }
         public async Task<IActionResult> OnPostChangePassword()

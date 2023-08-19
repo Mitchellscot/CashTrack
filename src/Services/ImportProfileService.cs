@@ -46,7 +46,8 @@ namespace CashTrack.Services.ImportProfileService
                 NotesColumnName = request.NotesColumn,
                 IncomeColumnName = request.IncomeColumn,
                 ContainsNegativeValue = request.ContainsNegativeValue,
-                NegativeValueTransactionType = request.NegativeValueTransactionType
+                NegativeValueTransactionType = request.NegativeValueTransactionType,
+                DefaultTransactionType = request.DefaultTransactionType
             };
             return await _repo.Create(profile);
             
@@ -75,7 +76,8 @@ namespace CashTrack.Services.ImportProfileService
                 NotesColumn = x.NotesColumnName,
                 IncomeColumn = x.IncomeColumnName,
                 ContainsNegativeValue = x.ContainsNegativeValue ?? false,
-                NegativeValueTransactionType = x.NegativeValueTransactionType ?? TransactionType.Expense
+                NegativeValueTransactionType = x.NegativeValueTransactionType ?? TransactionType.Expense,
+                DefaultTransactionType = x.DefaultTransactionType ?? TransactionType.Expense
             }).ToList();
         }
 
@@ -94,6 +96,7 @@ namespace CashTrack.Services.ImportProfileService
             profile.IncomeColumnName = request.IncomeColumn;
             profile.ContainsNegativeValue = request.ContainsNegativeValue;
             profile.NegativeValueTransactionType = request.NegativeValueTransactionType;
+            profile.DefaultTransactionType = request.DefaultTransactionType;
             return await _repo.Update(profile);
         }
     }

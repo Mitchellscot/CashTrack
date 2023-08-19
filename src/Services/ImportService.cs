@@ -194,7 +194,6 @@ namespace CashTrack.Services.ImportService
                     if (!parsedAmount)
                         throw new ArgumentException($"Unable to determine the amount from a row in column named: {profile.ExpenseColumnName}");
                     
-
                     var isIncome = false;
                     if (profile.ContainsNegativeValue.Value == true &&
                         profile.NegativeValueTransactionType == TransactionType.Expense)
@@ -205,6 +204,10 @@ namespace CashTrack.Services.ImportService
                         profile.NegativeValueTransactionType == TransactionType.Income)
                     {
                         isIncome = amount < 0;
+                    }
+                    else if (profile.ContainsNegativeValue.Value == false && profile.DefaultTransactionType == TransactionType.Income)
+                    {
+                        isIncome = true;
                     }
 
                     var transaction = new ImportTransaction()

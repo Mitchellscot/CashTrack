@@ -124,6 +124,7 @@ namespace CashTrack.Data.CsvFiles
             public string? IncomeColumnName { get; set; }
             public bool? ContainsNegativeValue { get; set; }
             public TransactionType? NegativeValueTransactionType { get; set; }
+            public TransactionType? DefaultTransactionType { get; set; }
         }
         public class CsvBudget
         {

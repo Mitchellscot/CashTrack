@@ -1,0 +1,331 @@
+﻿@using CashTrack.Models.Common;
+@model CashTrack.Models.ImportProfileModels.ImportProfileListItem
+@{
+    var notes = new[] { "Costco Food Court", "Amazon", "In N Out" };
+}
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title w-100">@Model.Name Import Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                </button>
+            </div>
+            <div class="modal-body px-5">
+                <h5 class="my-3 text-center">CSV Files imported under this profile must appear in the following way</h5>
+            <ul class="mb-4">
+                    @if (!string.IsNullOrEmpty(Model.IncomeColumn))
+                    {
+                    <li>
+                        There must be four column headers named <strong>@Model.DateColumn</strong>, <strong>@Model.AmountColumn</strong>, <strong>@Model.IncomeColumn</strong>, and <strong>@Model.NotesColumn</strong>.
+                        </li>
+                        <li>The amount can be blank in either <strong>@Model.AmountColumn</strong> column or the the <strong>@Model.IncomeColumn</strong> column, but not in both. Those values can be with or without decimals. All negative values will be converted to positive values.
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            There must be three column headers named <strong>@Model.DateColumn</strong>, <strong>@Model.AmountColumn</strong>, and <strong>@Model.NotesColumn</strong>.
+                        </li>
+                    }
+                    @if (string.IsNullOrEmpty(Model.IncomeColumn) &&
+                         Model.ContainsNegativeValue &&
+                         Model.NegativeValueTransactionType == TransactionType.Expense)
+                    {
+                        <li>
+                            If there are positive values in the <strong>@Model.AmountColumn</strong> column, they will be processed as income transactions.
+                        </li>
+                        <li>
+                            The <strong>@Model.AmountColumn</strong> column cannot be blank and can be with or without decimals. All negative values will be converted to positive values.
+                        </li>
+                    }
+                    else if (string.IsNullOrEmpty(Model.IncomeColumn) &&
+                    Model.ContainsNegativeValue &&
+                    Model.NegativeValueTransactionType == TransactionType.Income)
+                    {
+                        <li>
+                            If there are negative values in the <strong>@Model.AmountColumn</strong> column, they will be processed as income transactions.
+                        </li>
+                        <li>
+                            The <strong>@Model.AmountColumn</strong> column cannot be blank and can be with or without decimals. All negative values will be converted to positive values.
+                        </li>
+                    }
+                    else if (string.IsNullOrEmpty(Model.IncomeColumn) && Model.ContainsNegativeValue == false && Model.DefaultTransactionType == TransactionType.Income)
+                    {
+                        <li>
+                        The <strong>@Model.AmountColumn</strong> column cannot be blank and can be with or without decimals. All values will be counted as <strong>income</strong>.
+                        </li>
+                    }
+                    else if(string.IsNullOrEmpty(Model.IncomeColumn))
+                    {
+                        <li>
+                        The <strong>@Model.AmountColumn</strong> column cannot be blank and can be with or without decimals. All values will be counted as <strong>expenses</strong>.
+                        </li>
+                    }
+                    <li>@Model.DateColumn column cannot be blank.</li>
+                    <li>@Model.NotesColumn column can be blank. Associate with an import rule for any given value to automatically process your transactions.
+                    </li>
+                    <li>
+                        <strong>All other columns, if any, will be ignored.</strong>
+                    </li>
+                </ul>
+                <p>Example:</p>
+                @if (!string.IsNullOrEmpty(Model.IncomeColumn))
+                {
+                    <table class="table table-borderless border border-3 rounded-4 text-center">
+                        <tr class="border">
+                            <th class="border">
+                                @Model.DateColumn
+                            </th>
+                            <th class="border">
+                                @Model.AmountColumn
+                            </th>
+                            <th class="border">
+                                @Model.IncomeColumn
+                            </th>
+                            <th class="border">
+                                @Model.NotesColumn
+                            </th>
+                        </tr>
+                        <tr class="border">
+                            <td class="border">
+                                @DateTime.Now.AddDays(-1 * new Random().Next(1, 30)).ToString("MM/dd/yyyy")
+                            </td>
+                            <td class="border">
+                                @Math.Round(new Random().NextDouble() * 100, 2).ToString()
+                            </td>
+                            <td class="border">
+                            </td>
+                            <td class="border">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border">
+                                @DateTime.Now.AddDays(-1 * new Random().Next(1, 30)).ToString("MM/dd/yyyy")
+                            </td>
+                            <td class="border">
+                                @Math.Round(new Random().NextDouble() * 100, 2).ToString()
+                            </td>
+                            <td class="border">
+                            </td>
+                            <td class="border">
+                            @notes[new Random().Next(0, notes.Length - 1)]
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border">
+                                @DateTime.Now.AddDays(-1 * new Random().Next(1, 30)).ToString("MM/dd/yyyy")
+                            </td>
+                            <td class="border">
+                            </td>
+                            <td class="border">
+                                @Math.Round(new Random().NextDouble() * 1000, 2).ToString()
+                            </td>
+                            <td class="border">
+                                Paycheck
+                            </td>
+                        </tr>
+                    </table>
+                }
+                else if (string.IsNullOrEmpty(Model.IncomeColumn) &&
+                Model.ContainsNegativeValue &&
+                Model.NegativeValueTransactionType == TransactionType.Expense)
+                {
+                    <table class="table table-borderless border border-3 rounded-4 text-center">
+                        <tr class="border">
+                            <th class="border">
+                                @Model.DateColumn
+                            </th>
+                            <th class="border">
+                                @Model.AmountColumn
+                            </th>
+                            <th class="border">
+                                @Model.NotesColumn
+                            </th>
+                        </tr>
+                        <tr class="border">
+                            <td class="border">
+                                @DateTime.Now.AddDays(-1 * new Random().Next(1, 30)).ToString("MM/dd/yyyy")
+                            </td>
+                            <td class="border">
+                                @Math.Round(new Random().NextDouble() * -100, 2).ToString()
+                            </td>
+                            <td class="border">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border">
+                                @DateTime.Now.AddDays(-1 * new Random().Next(1, 30)).ToString("MM/dd/yyyy")
+                            </td>
+                            <td class="border">
+                                @Math.Round(new Random().NextDouble() * -100, 2).ToString()
+                            </td>
+                            <td class="border">
+                                @notes[new Random().Next(0, notes.Length - 1)]
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border">
+                                @DateTime.Now.AddDays(1 * new Random().Next(1, 30)).ToString("MM/dd/yyyy")
+                            </td>
+                            <td class="border">
+                                @Math.Round(new Random().NextDouble() * 100, 2).ToString()
+                            </td>
+                            <td class="border">
+                                Paycheck
+                            </td>
+                        </tr>
+                    </table>
+                }
+                else if (string.IsNullOrEmpty(Model.IncomeColumn) &&
+                Model.ContainsNegativeValue &&
+                Model.NegativeValueTransactionType == TransactionType.Income)
+                {
+                    <table class="table table-borderless border border-3 rounded-4 text-center">
+                        <tr class="border">
+                            <th class="border">
+                                @Model.DateColumn
+                            </th>
+                            <th class="border">
+                                @Model.AmountColumn
+                            </th>
+                            <th class="border">
+                                @Model.NotesColumn
+                            </th>
+                        </tr>
+                        <tr class="border">
+                            <td class="border">
+                                @DateTime.Now.AddDays(1 * new Random().Next(1, 30)).ToString("MM/dd/yyyy")
+                            </td>
+                            <td class="border">
+                                @Math.Round(new Random().NextDouble() * 100, 2).ToString()
+                            </td>
+                            <td class="border">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border">
+                                @DateTime.Now.AddDays(1 * new Random().Next(1, 30)).ToString("MM/dd/yyyy")
+                            </td>
+                            <td class="border">
+                                @Math.Round(new Random().NextDouble() * 100, 2).ToString()
+                            </td>
+                            <td class="border">
+                                @notes[new Random().Next(0, notes.Length - 1)]
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border">
+                                @DateTime.Now.AddDays(-1 * new Random().Next(1, 30)).ToString("MM/dd/yyyy")
+                            </td>
+                            <td class="border">
+                                @Math.Round(new Random().NextDouble() * -100, 2).ToString()
+                            </td>
+                            <td class="border">
+                                Refund
+                            </td>
+                        </tr>
+                    </table>
+                }
+                else if (string.IsNullOrEmpty(Model.IncomeColumn) &&
+                !Model.ContainsNegativeValue && Model.DefaultTransactionType == TransactionType.Income)
+                {
+                    <table class="table table-borderless border border-3 rounded-4 text-center">
+                        <tr class="border">
+                            <th class="border">
+                                @Model.DateColumn
+                            </th>
+                            <th class="border">
+                                @Model.AmountColumn
+                            </th>
+                            <th class="border">
+                                @Model.NotesColumn
+                            </th>
+                        </tr>
+                        <tr class="border">
+                            <td class="border">
+                                @DateTime.Now.AddDays(1 * new Random().Next(1, 30)).ToString("MM/dd/yyyy")
+                            </td>
+                            <td class="border">
+                                @Math.Round(new Random().NextDouble() * 100, 2).ToString()
+                            </td>
+                            <td class="border">
+                                Paycheck
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border">
+                                @DateTime.Now.AddDays(1 * new Random().Next(1, 30)).ToString("MM/dd/yyyy")
+                            </td>
+                            <td class="border">
+                                @Math.Round(new Random().NextDouble() * 100, 2).ToString()
+                            </td>
+                            <td class="border">
+                                @notes[new Random().Next(0, notes.Length - 1)] Refund
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border">
+                                @DateTime.Now.AddDays(1 * new Random().Next(1, 30)).ToString("MM/dd/yyyy")
+                            </td>
+                            <td class="border">
+                                @Math.Round(new Random().NextDouble() * 100, 2).ToString()
+                            </td>
+                            <td class="border">
+                            </td>
+                        </tr>
+                    </table>
+                }
+                else
+                {
+                    <table class="table table-borderless border border-3 rounded-4 text-center">
+                        <tr class="border">
+                            <th class="border">
+                                @Model.DateColumn
+                            </th>
+                            <th class="border">
+                                @Model.AmountColumn
+                            </th>
+                            <th class="border">
+                                @Model.NotesColumn
+                            </th>
+                        </tr>
+                        <tr class="border">
+                            <td class="border">
+                                @DateTime.Now.AddDays(1 * new Random().Next(1, 30)).ToString("MM/dd/yyyy")
+                            </td>
+                            <td class="border">
+                                @Math.Round(new Random().NextDouble() * 100, 2).ToString()
+                            </td>
+                            <td class="border">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border">
+                                @DateTime.Now.AddDays(1 * new Random().Next(1, 30)).ToString("MM/dd/yyyy")
+                            </td>
+                            <td class="border">
+                                @Math.Round(new Random().NextDouble() * 100, 2).ToString()
+                            </td>
+                            <td class="border">
+                                @notes[new Random().Next(0, notes.Length - 1)] Refund
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border">
+                                @DateTime.Now.AddDays(1 * new Random().Next(1, 30)).ToString("MM/dd/yyyy")
+                            </td>
+                            <td class="border">
+                                @Math.Round(new Random().NextDouble() * 100, 2).ToString()
+                            </td>
+                            <td class="border">
+                            </td>
+                        </tr>
+                    </table>
+                }
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>

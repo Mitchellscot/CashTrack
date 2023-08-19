@@ -563,7 +563,7 @@ namespace CashTrack.Data
                             expenses.Add(GetExpense(min, max, new DateTime(TwoYearsAgo, rando.Next(1, 12), rando.Next(1, 28)), categoryId, merchantIds, "", 0, rando, true));
                             expenses.Add(GetExpense(min, max, new DateTime(TwoYearsAgo, rando.Next(1, 12), rando.Next(1, 28)), categoryId, merchantIds, "", 0, rando, true));
                             expenses.Add(GetExpense(min, max, new DateTime(LastYear, rando.Next(1, 12), rando.Next(1, 28)), categoryId, merchantIds, "", 0, rando, true));
-                            expenses.Add(GetExpense(min, max, new DateTime(CurrentYear, rando.Next(1, CurrentMonth), rando.Next(1, CurrentDay)), category: categoryId, merchantIds: merchantIds, "bored game", 0, rando));
+                            expenses.Add(GetExpense(min, max, new DateTime(CurrentYear, rando.Next(1, CurrentMonth), rando.Next(1, CurrentDay)), category: categoryId, merchantIds: merchantIds, "board game", 0, rando));
                         }
                         break;
                     case "Gifts":

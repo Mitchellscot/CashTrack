@@ -43,7 +43,8 @@ namespace CashTrack.Tests.Services
                     NotesColumn = "Notes",
                     IncomeColumn = "Income",
                     ContainsNegativeValue = false,
-                    NegativeValueTransactionType = 0
+                    NegativeValueTransactionType = 0,
+                    DefaultTransactionType = 0
                 };
                 var result = await service.CreateImportProfileAsync(newProfile);
                 var verfiyResult = await repo.FindById(result);
@@ -67,7 +68,8 @@ namespace CashTrack.Tests.Services
                     NotesColumn = "Notes",
                     IncomeColumn = "Income",
                     ContainsNegativeValue = false,
-                    NegativeValueTransactionType = 0
+                    NegativeValueTransactionType = 0,
+                    DefaultTransactionType = 0
                 };
                 var createResult = await service.CreateImportProfileAsync(newProfile);
                 var verfiyCreateResult = await repo.FindById(createResult);
@@ -80,7 +82,8 @@ namespace CashTrack.Tests.Services
                     NotesColumn = verfiyCreateResult.NotesColumnName,
                     IncomeColumn = verfiyCreateResult.IncomeColumnName,
                     ContainsNegativeValue = verfiyCreateResult.ContainsNegativeValue ?? false,
-                    NegativeValueTransactionType = verfiyCreateResult.NegativeValueTransactionType ?? 0
+                    NegativeValueTransactionType = verfiyCreateResult.NegativeValueTransactionType ?? 0,
+                    DefaultTransactionType = verfiyCreateResult.NegativeValueTransactionType ?? 0
                 };
                 var result = await service.UpdateImportProfileAsync(editedProfile);
                 var verfiyResult = await repo.FindById(result);
@@ -111,7 +114,8 @@ namespace CashTrack.Tests.Services
                     NotesColumn = "test",
                     IncomeColumn = "test",
                     ContainsNegativeValue = false,
-                    NegativeValueTransactionType = 0
+                    NegativeValueTransactionType = 0,
+                    DefaultTransactionType = 0
                 };
                 await Task.Run(() => Should.Throw<ImportProfileNotFoundException>(async () => await service.UpdateImportProfileAsync(Profile)));
             }

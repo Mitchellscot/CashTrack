@@ -1,6 +1,5 @@
 ﻿#nullable enable
 using CashTrack.Models.Common;
-using CashTrack.Models.ImportRuleModels;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -23,5 +22,8 @@ namespace CashTrack.Data.Entities
         //some credit cards indicate a negative value for income
         public bool? ContainsNegativeValue { get; set; }
         public TransactionType? NegativeValueTransactionType { get; set; }
+        //if there are no negative values and there is only one amount column
+        //we need a way to determine if the amount is income or expense
+        public TransactionType? DefaultTransactionType { get; set; }
     }
 }
