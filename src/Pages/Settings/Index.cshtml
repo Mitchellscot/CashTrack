@@ -104,11 +104,14 @@
         <div class="col-md-3 col-6 card">
             @if (Model.Profiles is not null && Model.Profiles.Any())
             {
-                <h5 class="text-center">Import Profiles</h5>
+                <h5 class="text-center">
+                    Import Profiles <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-modal">Add</button>
+                    </h5>
                 <ul class="list-group list-group-flush">
                     @foreach (var profile in Model.Profiles)
                     {
                         <li class="list-group-item d-flex justify-content-between"><span>@profile.Name</span>
+                            <span>
                             <button type="button" data-bs-toggle="modal" data-bs-target="#importProfileModal-@profile.Id" class="icon-button pe-2 ps-0 ms-0">
                             @await Html.PartialAsync("Icons", new Icons()
                             {
@@ -119,6 +122,7 @@
                                 Classes="icon-size-lg action-icon"
                             })
                             </button>
+                            </span>
                         <div class="modal fade" id="importProfileModal-@profile.Id">
                             @await Html.PartialAsync("ImportProfileModal", profile)
                         </div>
@@ -147,6 +151,21 @@
     </div>
 </div>
 
+<div class="modal fade" id="add-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title w-100">Add Import Profile</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal">
+            </button>
+            </div>
+        <div class="modal-body px-5">
+            <div id="add-profile-modal"></div>
+        </div>
+    </div>
+</div>
+</div>
+
 <div class="modal fade" id="importCsvModal">
     @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Import/Expenses", FileTypes = Model.FileTypes })
 </div>
@@ -155,4 +174,5 @@
 </div>
 @section Scripts {
     <script src="~/js/settings.js"></script>
+    <script src="~/js/addProfile.js"></script>
 }
