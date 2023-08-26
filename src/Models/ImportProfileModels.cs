@@ -26,9 +26,4 @@ namespace CashTrack.Models.ImportProfileModels
         public TransactionType NegativeValueTransactionType { get; set; }
         public TransactionType DefaultTransactionType { get; set; }
     }
-    public class AddEditImportProfileModal : AddEditImportProfile
-    {
-        public bool IsEdit { get; set; }
-        public string ReturnUrl { get; set; }
-    }
 }

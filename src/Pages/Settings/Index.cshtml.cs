@@ -41,6 +41,8 @@ namespace CashTrack.Pages.Settings
         public decimal DefaultTax { get; set; }
         [BindProperty]
         public decimal NewTax { get; set; }
+        [BindProperty]
+        public AddEditImportProfile AddEditImportProfile { get; set; }
         public List<string> FileTypes { get; set; }
         public List<ImportProfileListItem> Profiles { get; set; }
 
@@ -55,6 +57,17 @@ namespace CashTrack.Pages.Settings
             ExportOptions = new SelectList(ExportFileOptions.GetAll, "Key", "Value");
             DefaultTax = await _userService.GetDefaultTax(User.Identity.Name ?? "demo");
             return Page();
+        }
+        public async Task<IActionResult> OnPostAddProfile(AddEditImportProfile profile)
+        { 
+            var createProfile = await _profileService.CreateImportProfileAsync(profile);
+            if (createProfile == 0)
+            {
+                ModelState.AddModelError("", "There was an error creating your profile. Try again.");
+                return Page();
+            }
+            SuccessMessage = "Successfully Added an import profile!";
+            return LocalRedirect("/Settings");
         }
         public async Task<IActionResult> OnPostChangePassword()
         {
