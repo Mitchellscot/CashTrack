@@ -14,6 +14,10 @@ function AddProfileModal() {
 		const el = document.getElementById(`q${question}`);
 		el?.classList.remove('visibility-hidden');
 	}
+	const showIncomeOnlyNext = (question: Number) => {
+		const el = document.getElementById(`q${question}`);
+		el?.classList.remove('visibility-hidden');
+	}
 
 	return (
 		<div className="container">
@@ -29,13 +33,13 @@ function AddProfileModal() {
 				</label>
 				<input onChange={() => showNext(3)} type="text" className="form-control" name="AddEditImportProfile.NotesColumn" />
 			</div>
-			<div className="row d-flex justify-content-center visibility-hidden" id="q3" onChange={() => showNext(4)}>
+			<div className="row d-flex justify-content-center visibility-hidden" id="q3" >
 				<span className="lead mb-2">
 					Does your file contain Income, Expenses, or both?
 				</span>
 				<div className="row mb-2">
 					<div className="form-check d-flex justify-content-center col">
-						<input className="form-check-input mx-3 lead" type="radio" id="firstQ" name="transaction-type" />
+						<input className="form-check-input mx-3 lead" type="radio" id="firstQ" name="transaction-type" onChange={() => showNext(4)} />
 						<label className="form-check-label lead" htmlFor="firstQ">
 							Both
 						</label>
@@ -47,7 +51,7 @@ function AddProfileModal() {
 						</label>
 					</div>
 					<div className="form-check d-flex justify-content-center col">
-						<input className="form-check-input mx-3 lead" type="radio" name="transaction-type" id="thirdQ" />
+						<input className="form-check-input mx-3 lead" type="radio" name="transaction-type" id="thirdQ" onChange={() => showIncomeOnlyNext(4)} />
 						<label className="form-check-label lead" htmlFor="thirdQ">
 							Income Only
 						</label>
