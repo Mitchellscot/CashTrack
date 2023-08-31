@@ -12,6 +12,7 @@ function AddProfileModal() {
 	const EXPENSE_ONLY = 'expenses-only';
 	const INCOME_ONLY = 'income-only';
 	const allQuestions = ['q2', 'q3', 'q4', 'q5', 'q6', 'q7']
+	const DISPLAY_NONE = 'display-none';
 	let [showIncomeInput, setShowIncomeInput] = useState(false);
 	let [amountColumnName, setAmountColumnName] = useState('Expenses');
 
@@ -19,30 +20,23 @@ function AddProfileModal() {
 		allQuestions.forEach(x => {
 			const el = document.getElementById(x) as HTMLInputElement;
 			el.value = '';
-			el.classList.add('display-none');
+			el.classList.add(DISPLAY_NONE);
 		});
 	}
-
 	const showNext = (question: Number) => {
 		const el = document.getElementById(`q${question}`);
-		el?.classList.remove('display-none');
-	}
-	const hideQuestion = (question: Number) => {
-		const el = document.getElementById(`q${question}`) as HTMLInputElement;
-		el?.classList.remove('d-flex');
-		el?.classList.add('display-none');
+		el?.classList.remove(DISPLAY_NONE);
 	}
 	const handleContainsNegativevalue = (answer: Boolean) => {
 		const input = document.getElementById(`AddEditImportProfile.ContainsNegativeValue`) as HTMLInputElement;
 		const nextQuestionId = answer === true ? `q3` : `q4`;
 		const nextQuestion = document.getElementById(nextQuestionId);
 		if (answer)
-
-			nextQuestion?.classList.remove('display-none');
+			nextQuestion?.classList.remove(DISPLAY_NONE);
 		else
 		{
 			const hideThisInput = document.getElementById('q3') as HTMLInputElement;
-			hideThisInput.classList.add('display-none')
+			hideThisInput.classList.add(DISPLAY_NONE)
 		}
 	}
 	const handleTransactionQuestion = (answer: string) => {
@@ -105,7 +99,6 @@ function AddProfileModal() {
 						</div>
 					</div>
 				</div>
-
 				<div className="row display-none" id="q2">
 					<span className="mb-2">
 						Does your file contain negative values that indicate whether it's an expense or income?
