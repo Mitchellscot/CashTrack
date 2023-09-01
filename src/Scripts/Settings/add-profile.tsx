@@ -27,34 +27,75 @@ function AddProfileModal() {
 		const el = document.getElementById(`q${question}`);
 		el?.classList.remove(DISPLAY_NONE);
 	}
-	const handleContainsNegativevalue = (answer: Boolean) => {
+	const handleContainsNegativevalue = (answer: Boolean | null) => {
+		if (Boolean(answer) == undefined)
+			return;
+
 		const input = document.getElementById(`AddEditImportProfile.ContainsNegativeValue`) as HTMLInputElement;
-		const nextQuestionId = answer === true ? `q3` : `q4`;
+		input.value = Boolean(answer).toString();
+		const nextQuestionId = answer ? `q3` : !answer && showIncomeInput ? `q4` : `q5`;
 		const nextQuestion = document.getElementById(nextQuestionId);
-		if (answer)
+		if (answer) {
 			nextQuestion?.classList.remove(DISPLAY_NONE);
-		else
-		{
+			allQuestions.filter(i => i != 'q2' && i != 'q3').forEach(i => document.getElementById(i)?.classList.add(DISPLAY_NONE))
+		}
+		else {
 			const hideThisInput = document.getElementById('q3') as HTMLInputElement;
 			hideThisInput.classList.add(DISPLAY_NONE)
+			nextQuestion?.classList.remove(DISPLAY_NONE);
 		}
 	}
+	const handleNegativeValueTransactionType = (answer: string | null) => {
+		if (answer === undefined || answer === null)
+			return;
+		const input = document.getElementById(`AddEditImportProfile.NegativeValueTransactionType`) as HTMLInputElement;
+		input.value = answer;
+		const nextQuestionId = `q5`;
+		const nextQuestion = document.getElementById(nextQuestionId);
+		nextQuestion?.classList.remove(DISPLAY_NONE);
+	}
+	const resetForm = () => {
+		const containsNegativeValueInput = document.getElementById(`AddEditImportProfile.ContainsNegativeValue`) as HTMLInputElement;
+		containsNegativeValueInput.value = '';
+		const radioButton1 = document.getElementById('negativeQuestion1') as HTMLInputElement;
+		const radioButton2 = document.getElementById('negativeQuestion2') as HTMLInputElement;
+		radioButton1.checked = false;
+		radioButton2.checked = false;
+		const negativeValueInput = document.getElementById(`AddEditImportProfile.NegativeValueTransactionType`) as HTMLInputElement;
+		negativeValueInput.value = '';
+		const radioButton3 = document.getElementById('negativeValueQuestion1') as HTMLInputElement;
+		const radioButton4 = document.getElementById('negativeValueQuestion2') as HTMLInputElement;
+		radioButton3.checked = false;
+		radioButton4.checked = false;
+		const incomeColumn = document.getElementById(`AddEditImportProfile.IncomeColumn`) as HTMLInputElement;
+		incomeColumn.value = '';
+		const amountColumn = document.getElementById(`AddEditImportProfile.AmountColumn`) as HTMLInputElement;
+		amountColumn.value = '';
+		const dateColumn = document.getElementById(`AddEditImportProfile.DateColumn`) as HTMLInputElement;
+		dateColumn.value = '';
+		const notesColumn = document.getElementById(`AddEditImportProfile.NotesColumn`) as HTMLInputElement;
+		notesColumn.value = '';
+	}
+
 	const handleTransactionQuestion = (answer: string) => {
 		switch (answer)
 		{
 			case BOTH:
+				resetForm()
 				setShowIncomeInput(true);
 				setAmountColumnName('Expenses');
 				hideAllQuestions();
 				showNext(4);
 				break;
 			case EXPENSE_ONLY:
+				resetForm()
 				setShowIncomeInput(false);
 				setAmountColumnName('Expenses');
 				hideAllQuestions();
 				showNext(2);
 				break;
 			case INCOME_ONLY:
+				resetForm()
 				setShowIncomeInput(false);
 				setAmountColumnName('Income');
 				hideAllQuestions();
@@ -64,10 +105,14 @@ function AddProfileModal() {
 				break;
 		}
 	}
+	const enableSave = () => {
+		const button = document.getElementById('profile-save');
+		button?.removeAttribute('disabled');
+	}
 
 	return (
 		<div className="container">
-			<form method="post" action='/settings?handler=addProfile' id="addProfileForm">
+			<form method="post" action='/settings?handler=addprofile' id="addProfileForm">
 				<input type="hidden" name="AddEditImportProfile.ContainsNegativeValue" id="AddEditImportProfile.ContainsNegativeValue" value="false" />
 				<input type="hidden" name="AddEditImportProfile.NegativeValueTransactionType" id="AddEditImportProfile.NegativeValueTransactionType" value="0" />
 				<input type="hidden" name="AddEditImportProfile.DefaultTransactionType" id="AddEditImportProfile.DefaultTransactionType" value="0" />
@@ -105,13 +150,13 @@ function AddProfileModal() {
 					</span>
 					<div className="row mb-2">
 						<div className="form-check  col">
-							<input className="form-check-input mx-3" type="radio" name="containsNegativeValue" onChange={() => handleContainsNegativevalue(true)} />
+							<input className="form-check-input mx-3" type="radio" name="containsNegativeValue" id="negativeQuestion1" onChange={() => handleContainsNegativevalue(true)} />
 							<label className="form-check-label" htmlFor="firstQ">
 								Yes
 							</label>
 						</div>
 						<div className="form-check col">
-							<input className="form-check-input mx-3" type="radio" name="containsNegativeValue" onChange={() => handleContainsNegativevalue(false)} />
+							<input className="form-check-input mx-3" type="radio" name="containsNegativeValue" id="negativeQuestion2"  onChange={() => handleContainsNegativevalue(false)} />
 							<label className="form-check-label" htmlFor="secondQ">
 								No
 							</label>
@@ -125,13 +170,13 @@ function AddProfileModal() {
 					</span>
 					<div className="row mb-2">
 						<div className="form-check  col">
-							<input className="form-check-input mx-3 lead" type="radio" name="AddEditImportProfile.NegativeValueTransactionType" id="firstQ" value="0" />
+							<input className="form-check-input mx-3 lead" type="radio" name="AddEditImportProfile.NegativeValueTransactionType" id="negativeValueQuestion1" value="0" onChange={() => handleNegativeValueTransactionType('expenses')} />
 							<label className="form-check-label lead" htmlFor="firstQ">
 								Expenses are negative
 							</label>
 						</div>
 						<div className="form-check col">
-							<input className="form-check-input mx-3 lead" type="radio" name="AddEditImportProfile.NegativeValueTransactionType" id="secondQ" value="1" />
+							<input className="form-check-input mx-3 lead" type="radio" name="AddEditImportProfile.NegativeValueTransactionType" id="negativeValueQuestion2" value="1" onChange={() => handleNegativeValueTransactionType('income')} />
 							<label className="form-check-label lead" htmlFor="secondQ">
 								Income is negative
 							</label>
@@ -142,25 +187,34 @@ function AddProfileModal() {
 					<label htmlFor="" className="form-label lead">
 						Income Column Name (required)
 					</label>
-					<input type="text" className="form-control" name="AddEditImportProfile.IncomeColumn" onChange={() => showNext(5)} />
+					<input type="text" className="form-control" name="AddEditImportProfile.IncomeColumn"
+						id="AddEditImportProfile.IncomeColumn"
+						onChange={() => showNext(5)} />
 				</div>
 				<div className="row mb-2 display-none" id="q5">
 					<label htmlFor="" className="form-label lead">
 						{amountColumnName} Column Name (required)
 					</label>
-					<input type="text" className="form-control" name="AddEditImportProfile.AmountColumn" onChange={() => showNext(6)} />
+					<input type="text" className="form-control" name="AddEditImportProfile.AmountColumn"
+						id="AddEditImportProfile.AmountColumn"
+						onChange={() => showNext(6)} />
 				</div>
 				<div className="row mb-2 display-none" id="q6">
 					<label htmlFor="" className="form-label lead">
 						Date Column Name (required)
 					</label>
-					<input onChange={() => showNext(7)} type="text" className="form-control" name="AddEditImportProfile.DateColumn" />
+					<input onChange={() => showNext(7)} type="text" className="form-control" name="AddEditImportProfile.DateColumn" id="AddEditImportProfile.DateColumn" />
 				</div>
 				<div className="row mb-2 display-none" id="q7">
 					<label htmlFor="" className="form-label lead">
 						Transaction Notes Column Name (required)
 					</label>
-					<input type="text" className="form-control" name="AddEditImportProfile.NotesColumn" />
+					<input type="text" className="form-control" name="AddEditImportProfile.NotesColumn"
+						onChange={enableSave} id="AddEditImportProfile.NotesColumn" />
+				</div>
+				<div className="modal-footer d-flex justify-content-between display-none" id="q8">
+					<button type="button" className="btn btn-secondary close-modal" data-bs-dismiss="modal">Close</button>
+					<button type="submit" disabled className="btn btn-primary spin-it" id="profile-save">Save</button>
 				</div>
 			</form>
 		</div>
