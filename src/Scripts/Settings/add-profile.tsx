@@ -127,21 +127,21 @@ function AddProfileModal() {
 					</span>
 					<div className="row mb-2">
 					<div className="form-check col">
-						<input className="form-check-input mx-3" type="radio" id="both" name="transaction-type"
-								onChange={() => handleTransactionQuestion(BOTH)} />
+						<input className="form-check-input mx-3" type="radio" id="both" name="TransactionType"
+							onChange={() => handleTransactionQuestion(BOTH)} value={BOTH} />
 							<label className="form-check-label text-center" htmlFor="both">
 								Two Columns
 							</label>
 						</div>
-						<div className="form-check col">
-						<input className="form-check-input mx-3" type="radio" name="transaction-type" id="expenses-only" onChange={() => handleTransactionQuestion(EXPENSE_ONLY)} />
+					<div className="form-check col">
+						<input className="form-check-input mx-3" type="radio" name="TransactionType" id="expenses-only" onChange={() => handleTransactionQuestion(EXPENSE_ONLY)} value={EXPENSE_ONLY} />
 							<label className="form-check-label text-center" htmlFor="expenses-only">
 								One (Expenses)
 							</label>
 						</div>
 						<div className="form-check col">
-						<input className="form-check-input mx-3" type="radio" id="thirdQ" name="transaction-type"
-								onChange={() => handleTransactionQuestion(INCOME_ONLY)} />
+						<input className="form-check-input mx-3" type="radio" id="thirdQ" name="TransactionType"
+							onChange={() => handleTransactionQuestion(INCOME_ONLY)} value={INCOME_ONLY} />
 							<label className="form-check-label text-center" htmlFor="thirdQ">
 								One (Income)
 							</label>

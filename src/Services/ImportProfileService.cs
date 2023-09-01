@@ -2,6 +2,7 @@
 using CashTrack.Data.Entities;
 using CashTrack.Models.Common;
 using CashTrack.Models.ImportProfileModels;
+using CashTrack.Pages.Settings;
 using CashTrack.Repositories.ImportRepository;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,7 @@ namespace CashTrack.Services.ImportProfileService
     public interface IImportProfileService
     {
         Task<List<ImportProfileListItem>> GetImportProfilesAsync();
-        Task<int> CreateImportProfileAsync(AddImportProfile request);
-        Task<int> UpdateImportProfileAsync(AddImportProfile request);
+        Task<int> CreateImportProfileAsync(AddProfileModal request);
         Task<bool> DeleteImportProfileAsync(int id);
         Task<List<string>> GetImportProfileNames();
     }
@@ -23,7 +23,7 @@ namespace CashTrack.Services.ImportProfileService
         private readonly IImportProfileRepository _repo;
         public ImportProfileService(IImportProfileRepository repo) => _repo = repo;
 
-        public async Task<int> CreateImportProfileAsync(AddImportProfile request)
+        public async Task<int> CreateImportProfileAsync(AddProfileModal request)
         {
             if (string.IsNullOrEmpty(request.Name))
                 throw new ArgumentException("Import Profile must have a name.");
@@ -38,16 +38,21 @@ namespace CashTrack.Services.ImportProfileService
             if (names.Contains(request.Name))
                 throw new DuplicateNameException($"There is already an import profile named {request.Name} - please chose another name.");
 
+            var parseNegativeValue = bool.TryParse(request.ContainsNegativeValue, out bool containsNegativeValue);
+            var negativeValueTransactionType = request.NegativeValueTransactionType.StartsWith('i') ? TransactionType.Income : TransactionType.Expense;
+            var defaultTransactionType = request.DefaultTransactionType is not null && request.DefaultTransactionType.StartsWith('i') ? TransactionType.Income : TransactionType.Expense;
+            var incomeColumnName = request.TransactionType is not null && request.TransactionType.Equals("both", System.StringComparison.InvariantCultureIgnoreCase) ? request.IncomeColumn : string.Empty;
+
             var profile = new ImportProfileEntity()
             {
                 Name = request.Name,
                 DateColumnName = request.DateColumn,
                 ExpenseColumnName = request.AmountColumn,
                 NotesColumnName = request.NotesColumn,
-                IncomeColumnName = request.IncomeColumn,
-                ContainsNegativeValue = request.ContainsNegativeValue,
-                NegativeValueTransactionType = request.NegativeValueTransactionType,
-                DefaultTransactionType = request.DefaultTransactionType
+                IncomeColumnName = incomeColumnName,
+                ContainsNegativeValue = parseNegativeValue && containsNegativeValue,
+                NegativeValueTransactionType = negativeValueTransactionType,
+                DefaultTransactionType = defaultTransactionType
             };
             return await _repo.Create(profile);
             
@@ -79,25 +84,6 @@ namespace CashTrack.Services.ImportProfileService
                 NegativeValueTransactionType = x.NegativeValueTransactionType ?? TransactionType.Expense,
                 DefaultTransactionType = x.DefaultTransactionType ?? TransactionType.Expense
             }).ToList();
-        }
-
-        public async Task<int> UpdateImportProfileAsync(AddImportProfile request)
-        {
-            if(!request.Id.HasValue)
-                throw new ArgumentException("Unable to find the import profile to update, the ID is missing.");
-            var profile = await _repo.FindById(request.Id.Value);
-            if(profile == null)
-                throw new ImportProfileNotFoundException($"No import Profile found with an Id of{request.Id}");
-            
-            profile.Name = request.Name;
-            profile.DateColumnName = request.DateColumn;
-            profile.ExpenseColumnName = request.AmountColumn;
-            profile.NotesColumnName = request.NotesColumn;
-            profile.IncomeColumnName = request.IncomeColumn;
-            profile.ContainsNegativeValue = request.ContainsNegativeValue;
-            profile.NegativeValueTransactionType = request.NegativeValueTransactionType;
-            profile.DefaultTransactionType = request.DefaultTransactionType;
-            return await _repo.Update(profile);
         }
     }
 }

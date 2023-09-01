@@ -35,59 +35,20 @@ namespace CashTrack.Tests.Services
                 var repo = new ImportProfileRepository(db);
                 var service = new ImportProfileService(repo);
 
-                var newProfile = new AddEditImportProfile()
+                var newProfile = new AddProfileModal()
                 {
                     Name = "Test",
                     AmountColumn = "Amount",
                     DateColumn = "Date",
                     NotesColumn = "Notes",
                     IncomeColumn = "Income",
-                    ContainsNegativeValue = false,
-                    NegativeValueTransactionType = 0,
-                    DefaultTransactionType = 0
+                    ContainsNegativeValue = "false",
+                    NegativeValueTransactionType = "expenses",
+                    DefaultTransactionType = "expenses"
                 };
                 var result = await service.CreateImportProfileAsync(newProfile);
                 var verfiyResult = await repo.FindById(result);
                 verfiyResult.Name.ShouldBe("Test");
-            }
-        }
-        [Fact]
-        public async Task Update_Import_Profile()
-        {
-            using (var db = new AppDbContextFactory().CreateDbContext())
-            {
-                var repo = new ImportProfileRepository(db);
-                var service = new ImportProfileService(repo);
-
-                var newProfile = new AddEditImportProfile()
-                {
-                    Id = 1,
-                    Name = "Test",
-                    AmountColumn = "Amount",
-                    DateColumn = "Date",
-                    NotesColumn = "Notes",
-                    IncomeColumn = "Income",
-                    ContainsNegativeValue = false,
-                    NegativeValueTransactionType = 0,
-                    DefaultTransactionType = 0
-                };
-                var createResult = await service.CreateImportProfileAsync(newProfile);
-                var verfiyCreateResult = await repo.FindById(createResult);
-                var editedProfile = new AddEditImportProfile()
-                {
-                    Id = verfiyCreateResult.Id,
-                    Name = "Test2",
-                    AmountColumn = verfiyCreateResult.ExpenseColumnName,
-                    DateColumn = verfiyCreateResult.DateColumnName,
-                    NotesColumn = verfiyCreateResult.NotesColumnName,
-                    IncomeColumn = verfiyCreateResult.IncomeColumnName,
-                    ContainsNegativeValue = verfiyCreateResult.ContainsNegativeValue ?? false,
-                    NegativeValueTransactionType = verfiyCreateResult.NegativeValueTransactionType ?? 0,
-                    DefaultTransactionType = verfiyCreateResult.NegativeValueTransactionType ?? 0
-                };
-                var result = await service.UpdateImportProfileAsync(editedProfile);
-                var verfiyResult = await repo.FindById(result);
-                verfiyResult.Name.ShouldBe("Test2");
             }
         }
         [Fact]
@@ -97,27 +58,6 @@ namespace CashTrack.Tests.Services
             {
                 var service = GetService(db);
                 await Task.Run(() => Should.Throw<ImportProfileNotFoundException>(async () => await service.DeleteImportProfileAsync(int.MaxValue)));
-            }
-        }
-        [Fact]
-        public async Task Update_Profile_Throws_With_Invalid_Id()
-        {
-            using (var db = new AppDbContextFactory().CreateDbContext())
-            {
-                var service = GetService(db);
-                var Profile = new AddEditImportProfile()
-                { 
-                    Id = int.MaxValue,
-                    Name = "test",
-                    AmountColumn = "test",
-                    DateColumn = "test",
-                    NotesColumn = "test",
-                    IncomeColumn = "test",
-                    ContainsNegativeValue = false,
-                    NegativeValueTransactionType = 0,
-                    DefaultTransactionType = 0
-                };
-                await Task.Run(() => Should.Throw<ImportProfileNotFoundException>(async () => await service.UpdateImportProfileAsync(Profile)));
             }
         }
         private ImportProfileService GetService(AppDbContext db)
