@@ -42,7 +42,7 @@ namespace CashTrack.Pages.Settings
         [BindProperty]
         public decimal NewTax { get; set; }
         [BindProperty]
-        public AddEditImportProfile AddEditImportProfile { get; set; }
+        public AddProfileModal AddProfileModal { get; set; }
         public List<string> FileTypes { get; set; }
         public List<ImportProfileListItem> Profiles { get; set; }
 
@@ -58,15 +58,44 @@ namespace CashTrack.Pages.Settings
             DefaultTax = await _userService.GetDefaultTax(User.Identity.Name ?? "demo");
             return Page();
         }
-        public async Task<IActionResult> OnPostAddProfile(AddEditImportProfile profile)
-        { 
-            var createProfile = await _profileService.CreateImportProfileAsync(profile);
+        public async Task<IActionResult> OnPostAddProfile(AddProfileModal profile)
+        {
+            bool.TryParse(profile.ContainsNegativeValue, out bool containsNegativeValue);
+            var dto = new AddImportProfile()
+            {
+                Name = profile.Name,
+                AmountColumn = profile.AmountColumn,
+                DateColumn = profile.DateColumn,
+                NotesColumn = profile.NotesColumn,
+                ContainsNegativeValue = containsNegativeValue,
+                NegativeValueTransactionType = TransactionType.Expense, //parse this once you see how it comes in
+                IncomeColumn = profile.IncomeColumn,
+                DefaultTransactionType = TransactionType.Income //parse this
+
+            };
+            var createProfile = await _profileService.CreateImportProfileAsync(dto);
             if (createProfile == 0)
             {
                 ModelState.AddModelError("", "There was an error creating your profile. Try again.");
                 return Page();
             }
             SuccessMessage = "Successfully Added an import profile!";
+            return LocalRedirect("/Settings");
+        }
+        public async Task<IActionResult> OnPostDeleteProfile(int id)
+        { 
+            if(id < 1)
+            {
+                ModelState.AddModelError("", "There was an error deleting your profile. Try again.");
+                return Page();
+            }
+            var deleteProfile = await _profileService.DeleteImportProfileAsync(id);
+            if (!deleteProfile)
+            {
+                ModelState.AddModelError("", "There was an error deleting your profile. Try again.");
+                return Page();
+            }
+            SuccessMessage = "Successfully deleted an import profile!";
             return LocalRedirect("/Settings");
         }
         public async Task<IActionResult> OnPostChangePassword()
@@ -166,5 +195,17 @@ namespace CashTrack.Pages.Settings
             }
             else return false;
         }
+    }
+    public class AddProfileModal
+    { 
+        public string? ContainsNegativeValue { get; set; }
+        public string? NegativeValueTransactionType { get; set; }
+        public string? DefaultTransactionType { get; set; }
+        public string? IncomeColumn { get; set; }
+        public string? AmountColumn { get; set; }
+        public string? DateColumn { get; set; }
+        public string? NotesColumn { get; set; }
+        public string? Name { get; set; }
+
     }
 }

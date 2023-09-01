@@ -14,7 +14,7 @@ namespace CashTrack.Models.ImportProfileModels
         public TransactionType NegativeValueTransactionType { get; set; }
         public TransactionType DefaultTransactionType { get; set; }
     }
-    public class AddEditImportProfile
+    public class AddImportProfile
     {
         public int? Id { get; set; }
         public string Name { get; set; }

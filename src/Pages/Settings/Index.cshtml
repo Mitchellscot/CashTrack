@@ -122,13 +122,49 @@
                                 Classes="icon-size-lg action-icon"
                             })
                             </button>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal-@profile.Id" class="icon-button pe-2 ps-0 ms-0">
+                                @await Html.PartialAsync("Icons", new Icons()
+                                {
+                                    Icon = Icon.Trash,
+                                    Color = IconColors.Primary,
+                                    Height=22,
+                                    Width=22,
+                                    Classes="icon-size-lg action-icon"
+                                })
+                            </button>
                             </span>
                         <div class="modal fade" id="importProfileModal-@profile.Id">
                             @await Html.PartialAsync("ImportProfileModal", profile)
                         </div>
-@*                        <a asp-page-handler="DeleteProfile" asp-route-id="@profile.Id" class="btn btn-danger btn-sm float-end">Delete</a>
-                        <a asp-page-handler="EditProfile" asp-route-id="@profile.Id" class="btn btn-primary btn-sm float-end me-2">Edit</a>*@
-                        </li>
+                        @*Delete modal *@
+                        <div class="modal fade" id="deleteModal-@profile.Id">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header text-center">
+                                        <h5 class="modal-title text-center">
+                                            <strong>Are you sure you want to Delete this Profile?</strong>
+                                            </h5>
+                                            <button 
+                                                type="button" 
+                                                class="btn-close"
+                                                data-bs-dismiss="modal">
+                                            </button>
+                                    </div>
+                                    <div class="modal-footer d-flex justify-content-evenly">
+                                        <button type="button" 
+                                                class="btn btn-secondary" 
+                                                data-bs-dismiss="modal">
+                                                Cancel
+                                        </button>
+                                        <form method="post" asp-page="./Index" asp-page-handler="DeleteProfile" asp-route-Id="@profile.Id">
+                                            <button type="submit" class="btn btn-danger">DELETE</button>
+                                        </form>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           @* End delete modal *@
+                       </li>
                 }
             </ul>
             }
@@ -160,7 +196,12 @@
             </button>
             </div>
         <div class="modal-body px-5">
-            <div id="add-profile-modal"></div>
+            <form method="post" asp-page-handler="addprofile" id="addProfileForm">
+				<input type="hidden" asp-for="@Model.AddProfileModal.ContainsNegativeValue" value="false"/>
+				<input type="hidden" asp-for="@Model.AddProfileModal.NegativeValueTransactionType" value="0" />
+				<input type="hidden" asp-for="@Model.AddProfileModal.DefaultTransactionType" value="0"/>
+                <div id="add-profile-modal" class="container"></div>
+            </form>
         </div>
     </div>
 </div>

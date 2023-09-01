@@ -13,8 +13,8 @@ namespace CashTrack.Services.ImportProfileService
     public interface IImportProfileService
     {
         Task<List<ImportProfileListItem>> GetImportProfilesAsync();
-        Task<int> CreateImportProfileAsync(AddEditImportProfile request);
-        Task<int> UpdateImportProfileAsync(AddEditImportProfile request);
+        Task<int> CreateImportProfileAsync(AddImportProfile request);
+        Task<int> UpdateImportProfileAsync(AddImportProfile request);
         Task<bool> DeleteImportProfileAsync(int id);
         Task<List<string>> GetImportProfileNames();
     }
@@ -23,7 +23,7 @@ namespace CashTrack.Services.ImportProfileService
         private readonly IImportProfileRepository _repo;
         public ImportProfileService(IImportProfileRepository repo) => _repo = repo;
 
-        public async Task<int> CreateImportProfileAsync(AddEditImportProfile request)
+        public async Task<int> CreateImportProfileAsync(AddImportProfile request)
         {
             if (string.IsNullOrEmpty(request.Name))
                 throw new ArgumentException("Import Profile must have a name.");
@@ -81,7 +81,7 @@ namespace CashTrack.Services.ImportProfileService
             }).ToList();
         }
 
-        public async Task<int> UpdateImportProfileAsync(AddEditImportProfile request)
+        public async Task<int> UpdateImportProfileAsync(AddImportProfile request)
         {
             if(!request.Id.HasValue)
                 throw new ArgumentException("Unable to find the import profile to update, the ID is missing.");
