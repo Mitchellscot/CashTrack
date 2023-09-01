@@ -13,6 +13,8 @@ function AddProfileModal() {
 	const INCOME_ONLY = 'income-only';
 	const allQuestions = ['q2', 'q3', 'q4', 'q5', 'q6', 'q7']
 	const DISPLAY_NONE = 'display-none';
+	const EXPENSES = 'expenses';
+	const INCOME = 'income';
 	let [showIncomeInput, setShowIncomeInput] = useState(false);
 	let [amountColumnName, setAmountColumnName] = useState('Expenses');
 
@@ -30,7 +32,6 @@ function AddProfileModal() {
 	const handleContainsNegativevalue = (answer: Boolean | null) => {
 		if (Boolean(answer) == undefined)
 			return;
-
 		const input = document.getElementById(`AddProfileModal_ContainsNegativeValue`) as HTMLInputElement;
 		input.value = Boolean(answer).toString();
 		const nextQuestionId = answer ? `q3` : !answer && showIncomeInput ? `q4` : `q5`;
@@ -56,13 +57,13 @@ function AddProfileModal() {
 	}
 	const resetForm = () => {
 		const containsNegativeValueInput = document.getElementById(`AddProfileModal_ContainsNegativeValue`) as HTMLInputElement;
-		containsNegativeValueInput.value = '';
+		containsNegativeValueInput.value = 'false';
 		const radioButton1 = document.getElementById('negativeQuestion1') as HTMLInputElement;
 		const radioButton2 = document.getElementById('negativeQuestion2') as HTMLInputElement;
 		radioButton1.checked = false;
 		radioButton2.checked = false;
 		const negativeValueInput = document.getElementById(`AddProfileModal_NegativeValueTransactionType`) as HTMLInputElement;
-		negativeValueInput.value = '';
+		negativeValueInput.value = EXPENSES;
 		const radioButton3 = document.getElementById('negativeValueQuestion1') as HTMLInputElement;
 		const radioButton4 = document.getElementById('negativeValueQuestion2') as HTMLInputElement;
 		radioButton3.checked = false;
@@ -95,6 +96,8 @@ function AddProfileModal() {
 				setAmountColumnName('Expenses');
 				hideAllQuestions();
 				showNext(2);
+				let expensesDefault = document.getElementById("AddProfileModal_DefaultTransactionType") as HTMLInputElement;
+				expensesDefault.value = EXPENSES;
 				break;
 			case INCOME_ONLY:
 				resetForm()
@@ -102,8 +105,8 @@ function AddProfileModal() {
 				setAmountColumnName('Income');
 				hideAllQuestions();
 				showNext(2);
-				const input = document.getElementById("AddProfileModal_DefaultTransactionType") as HTMLInputElement;
-				input.value = '1';
+				let incomeDefault = document.getElementById("AddProfileModal_DefaultTransactionType") as HTMLInputElement;
+				incomeDefault.value = INCOME;
 				break;
 		}
 	}
@@ -115,26 +118,29 @@ function AddProfileModal() {
 
 	return (
 		<>
+			<input type="hidden" name="ContainsNegativeValue" id="AddProfileModal_ContainsNegativeValue" />
+			<input type="hidden" name="NegativeValueTransactionType" id="AddProfileModal_NegativeValueTransactionType" />
+			<input type="hidden" name="DefaultTransactionType" id="AddProfileModal_DefaultTransactionType" />
 				<div className="row" id="q1" >
 					<span className="lead mb-2">
 						Does your file contain seperate columns for income and expenses?
 					</span>
 					<div className="row mb-2">
 					<div className="form-check col">
-						<input className="form-check-input mx-3" type="radio" id="both" radioGroup="transaction-type"
+						<input className="form-check-input mx-3" type="radio" id="both" name="transaction-type"
 								onChange={() => handleTransactionQuestion(BOTH)} />
 							<label className="form-check-label text-center" htmlFor="both">
 								Two Columns
 							</label>
 						</div>
 						<div className="form-check col">
-						<input className="form-check-input mx-3" type="radio" radioGroup="transaction-type" id="expenses-only" onChange={() => handleTransactionQuestion(EXPENSE_ONLY)} />
+						<input className="form-check-input mx-3" type="radio" name="transaction-type" id="expenses-only" onChange={() => handleTransactionQuestion(EXPENSE_ONLY)} />
 							<label className="form-check-label text-center" htmlFor="expenses-only">
 								One (Expenses)
 							</label>
 						</div>
 						<div className="form-check col">
-						<input className="form-check-input mx-3" type="radio" id="thirdQ" radioGroup="transaction-type"
+						<input className="form-check-input mx-3" type="radio" id="thirdQ" name="transaction-type"
 								onChange={() => handleTransactionQuestion(INCOME_ONLY)} />
 							<label className="form-check-label text-center" htmlFor="thirdQ">
 								One (Income)
@@ -148,13 +154,13 @@ function AddProfileModal() {
 					</span>
 					<div className="row mb-2">
 						<div className="form-check  col">
-							<input className="form-check-input mx-3" type="radio" radioGroup="negative-value" id="negativeQuestion1" onChange={() => handleContainsNegativevalue(true)} />
+							<input className="form-check-input mx-3" type="radio" name="negative-value" id="negativeQuestion1" onChange={() => handleContainsNegativevalue(true)} />
 							<label className="form-check-label" htmlFor="firstQ">
 								Yes
 							</label>
 						</div>
 						<div className="form-check col">
-						<input className="form-check-input mx-3" type="radio" radioGroup="negative-value" id="negativeQuestion2"  onChange={() => handleContainsNegativevalue(false)} />
+						<input className="form-check-input mx-3" type="radio" name="negative-value" id="negativeQuestion2"  onChange={() => handleContainsNegativevalue(false)} />
 							<label className="form-check-label" htmlFor="secondQ">
 								No
 							</label>
@@ -167,14 +173,14 @@ function AddProfileModal() {
 						What does a negative value indicate? (required)
 					</span>
 					<div className="row mb-2">
-						<div className="form-check  col">
-							<input className="form-check-input mx-3 lead" type="radio" id="negativeValueQuestion1" value="0" onChange={() => handleNegativeValueTransactionType('expenses')} />
+					<div className="form-check  col">
+						<input className="form-check-input mx-3 lead" type="radio" name="negativeValue" id="negativeValueQuestion1" value="0" onChange={() => handleNegativeValueTransactionType(EXPENSES)} />
 							<label className="form-check-label lead" htmlFor="firstQ">
 								Expenses are negative
 							</label>
 						</div>
 						<div className="form-check col">
-							<input className="form-check-input mx-3 lead" type="radio" id="negativeValueQuestion2" value="1" onChange={() => handleNegativeValueTransactionType('income')} />
+						<input className="form-check-input mx-3 lead" type="radio" name="negativeValue"  id="negativeValueQuestion2" value="1" onChange={() => handleNegativeValueTransactionType(INCOME)} />
 							<label className="form-check-label lead" htmlFor="secondQ">
 								Income is negative
 							</label>
@@ -210,7 +216,7 @@ function AddProfileModal() {
 					<input type="text" className="form-control" name="NotesColumn"
 					onChange={() => showNext(8)} id="AddProfileModal_NotesColumn" />
 			</div>
-			<div className="row mb-2 display-none" id="q8">
+			<div className="row mb-3 display-none" id="q8">
 				<label htmlFor="" className="form-label lead">
 					Please give this profile a name (required. example: bank, credit, etc.)
 				</label>
