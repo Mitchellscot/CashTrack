@@ -29,7 +29,7 @@ const config = {
 		mainCategories: './Scripts/MainCategories/mainCategories.ts',
 		budget: './Scripts/Budget/budget.ts',
 		theme: './Scripts/Theme/theme.ts',
-		addProfile: './Scripts/settings/add-profile.tsx'
+		addProfile: './Scripts/Settings/add-profile.tsx'
 	},
 	output: {
 		filename: '[name].js',
