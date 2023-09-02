@@ -4,21 +4,10 @@ using System.Collections.Generic;
 
 namespace CashTrack.Models.ImportRuleModels
 {
-    public enum TransactionType
-    {
-        Expense,
-        Income
-    }
     public enum RuleType
     {
         Assignment,
         Filter
-    }
-    public enum CsvFileType
-    {
-        Bank,
-        Credit,
-        Other
     }
     public class ImportRuleRequest : TransactionRequest
     {
@@ -45,7 +34,7 @@ namespace CashTrack.Models.ImportRuleModels
     {
         public int? Id { get; set; }
         public RuleType RuleType { get; set; }
-        public CsvFileType FileType { get; set; }
+        public string FileType { get; set; }
         public TransactionType TransactionType { get; set; }
         public string Rule { get; set; }
         public int? MerchantSourceId { get; set; }
@@ -54,7 +43,8 @@ namespace CashTrack.Models.ImportRuleModels
     public class AddEditImportRuleModal : AddEditImportRule
     {
         public bool IsEdit { get; set; }
-        public string Returnurl { get; set; }
+        public string ReturnUrl { get; set; }
+        public List<string> FileTypes { get; set; }
         public SelectList SubCategoryList { get; set; }
         public SelectList IncomeCategoryList { get; set; }
         public SelectList MerchantList { get; set; }

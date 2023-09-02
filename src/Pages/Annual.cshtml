@@ -529,7 +529,7 @@
 @*End Add Income Category Modal*@
 @*Import Transactions Modal*@
 <div class="modal fade" id="importCsvModal">
-    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Annual" })
+    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "~/Annual", FileTypes = Model.FileTypes })
 </div>
 @*End Import Transactions Modal*@
 @section Scripts {

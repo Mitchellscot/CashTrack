@@ -28,7 +28,8 @@ const config = {
 		incomeCategoryDetail: './Scripts/IncomeCategories/incomeCategoryDetail.ts',
 		mainCategories: './Scripts/MainCategories/mainCategories.ts',
 		budget: './Scripts/Budget/budget.ts',
-		theme: './Scripts/Theme/theme.ts'
+		theme: './Scripts/Theme/theme.ts',
+		addProfile: './Scripts/Settings/add-profile.tsx'
 	},
 	output: {
 		filename: '[name].js',
@@ -40,7 +41,7 @@ const config = {
 			$: 'jquery',
 		}),
 		new ESLintPlugin({
-			extensions: ['.ts'],
+			extensions: ['.ts', '.tsx'],
 			exclude: 'node_modules',
 			context: './Scripts',
 
@@ -51,7 +52,7 @@ const config = {
 			{
 				test: /\.(ts|tsx)$/i,
 				loader: 'ts-loader',
-				exclude: ['/node_modules/'],
+				exclude: ['/node_modules/']
 			},
 		],
 	},

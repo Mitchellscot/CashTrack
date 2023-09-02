@@ -1,14 +1,16 @@
-﻿using CashTrack.Data.Entities;
+﻿using CashTrack.Common.Exceptions;
+using CashTrack.Common.Extensions;
+using CashTrack.Data.Entities;
+using CashTrack.Models.Common;
 using CashTrack.Models.ImportCsvModels;
 using CashTrack.Models.ImportRuleModels;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.ExpenseReviewRepository;
+using CashTrack.Repositories.ImportRepository;
 using CashTrack.Repositories.ImportRuleRepository;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.IncomeReviewRepository;
 using CsvHelper;
-using CsvHelper.Configuration;
-using CsvHelper.TypeConversion;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
@@ -31,7 +33,8 @@ namespace CashTrack.Services.ImportService
         private readonly IWebHostEnvironment _env;
         private readonly IImportRulesRepository _rulesRepo;
         private readonly IExpenseReviewRepository _expenseReviewRepo;
-        public ImportService(IIncomeReviewRepository incomeReviewRepo, IExpenseRepository expenseRepo, IIncomeRepository incomeRepo, IWebHostEnvironment env, IImportRulesRepository rulesRepo, IExpenseReviewRepository expenseReviewRepo)
+        private readonly IImportProfileRepository _profileRepo;
+        public ImportService(IIncomeReviewRepository incomeReviewRepo, IExpenseRepository expenseRepo, IIncomeRepository incomeRepo, IWebHostEnvironment env, IImportRulesRepository rulesRepo, IExpenseReviewRepository expenseReviewRepo, IImportProfileRepository profileRepo)
         {
             _incomeReviewRepo = incomeReviewRepo;
             _expenseReviewRepo = expenseReviewRepo;
@@ -39,6 +42,7 @@ namespace CashTrack.Services.ImportService
             _incomeRepo = incomeRepo;
             _env = env;
             _rulesRepo = rulesRepo;
+            _profileRepo = profileRepo;
         }
         public async Task<string> ImportTransactions(ImportModel request)
         {
@@ -52,24 +56,27 @@ namespace CashTrack.Services.ImportService
             var rules = await _rulesRepo.Find(x => true);
             try
             {
-                imports = GetTransactionsFromFile(filePath, request.FileType, rules);
+                imports = await GetTransactionsFromFileAsync(filePath, request.FileType, rules);
             }
-            catch (HeaderValidationException)
+            catch (ImportProfileNotFoundException)
+            {
+                return "Unable to find an import file profile associated with this file type.";
+            }
+            catch (CsvHelper.MissingFieldException)
             {
                 File.Delete(filePath);
                 return "Please inspect the csv file for the correct headers.";
             }
-            catch (TypeConverterException)
+            catch (ArgumentException ex)
             {
                 File.Delete(filePath);
-                return "No transactions imported - is the file formatted properly?";
+                return $"No transactions imported - {ex.Message}";
             }
             if (!imports.Any())
             {
                 File.Delete(filePath);
                 return "No transactions imported";
             }
-
 
             IEnumerable<ImportTransaction> filteredImports = await FilterTransactionsInDatabase(imports);
 
@@ -146,79 +153,75 @@ namespace CashTrack.Services.ImportService
             return importsNotInDatabase;
         }
 
-        internal IEnumerable<ImportTransaction> GetTransactionsFromFile(string filePath, CsvFileType fileType, ImportRuleEntity[] rules)
+        internal async Task<IEnumerable<ImportTransaction>> GetTransactionsFromFileAsync(string filePath, string fileType, ImportRuleEntity[] rules)
         {
-            var bankFilterRules = rules.Where(x =>
-            x.FileType == CsvFileType.Bank &&
-            x.RuleType == RuleType.Filter).ToList();
-            var creditFilterRules = rules.Where(x =>
-            x.FileType == CsvFileType.Credit &&
-            x.RuleType == RuleType.Filter).ToList();
-            var otherFilterRules = rules.Where(x =>
-            x.FileType == CsvFileType.Other &&
-            x.RuleType == RuleType.Filter).ToList();
+            var profile = (await _profileRepo.Find(x => x.Name == fileType)).FirstOrDefault() ?? throw new ImportProfileNotFoundException();
+
+            var filterRules = rules.Where(x =>
+                x.FileType.IsEqualTo(fileType) &&
+                x.RuleType == RuleType.Filter).ToList();
+
             using var reader = new StreamReader(filePath);
-            var bankImports = new List<BankImport>();
-            var creditImports = new List<CreditImport>();
-            var otherImports = new List<OtherImport>();
+            ICollection<ImportTransaction> imports = new List<ImportTransaction>();
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
-                if (fileType == CsvFileType.Bank)
+                csv.Read();
+                csv.ReadHeader();
+                while (csv.Read())
                 {
-                    csv.Context.RegisterClassMap<BankTransactionMap>();
-                    var csvResult = csv.GetRecords<BankImport>().ToList();
-                    foreach (var line in csvResult)
+                    var notes = csv.GetField<string>(profile.NotesColumnName);
+                    var rule = filterRules.FirstOrDefault(x => notes.ToLower().Contains(x.Rule.ToLower()));
+                    if (rule is not null)
+                        continue;
+
+                    if (!string.IsNullOrEmpty(profile.IncomeColumnName))
                     {
-                        var rule = bankFilterRules.FirstOrDefault(x => line.Notes.ToLower().Contains(x.Rule.ToLower()));
-                        if (rule == null)
+                        var parsedIncome = decimal.TryParse(csv.GetField<string>(profile.IncomeColumnName), out decimal income);
+                        if (parsedIncome)
                         {
-                            bankImports.Add(line);
+                            var incomeTransaction = new ImportTransaction()
+                            {
+                                Date = csv.GetField<DateTime>(profile.DateColumnName),
+                                Amount = income,
+                                IsIncome = true,
+                                Notes = notes
+                            };
+                            imports.Add(incomeTransaction);
+                            continue;
                         }
                     }
-                }
-                else if (fileType == CsvFileType.Credit)
-                {
-                    csv.Context.RegisterClassMap<CreditTransactionMap>();
-                    var csvResult = csv.GetRecords<CreditImport>().ToList();
-                    foreach (var item in csvResult)
+                    var parsedAmount = decimal.TryParse(csv.GetField<string>(profile.ExpenseColumnName), out decimal amount);
+                    if (!parsedAmount)
+                        throw new ArgumentException($"Unable to determine the amount from a row in column named: {profile.ExpenseColumnName}");
+                    
+                    var isIncome = false;
+                    if (profile.ContainsNegativeValue.Value == true &&
+                        profile.NegativeValueTransactionType == TransactionType.Expense)
                     {
-                        if (item.Credit > 0)
-                        {
-                            item.Amount = item.Credit.Value;
-                            item.IsIncome = true;
-                        }
-                        if (item.Debit > 0)
-                        {
-                            item.Amount = item.Debit.Value;
-                            item.IsIncome = false;
-                        }
-                        var rule = creditFilterRules.FirstOrDefault(x => item.Notes.ToLower().Contains(x.Rule.ToLower()));
-                        if (rule == null)
-                        {
-                            creditImports.Add(item);
-                        }
+                        isIncome = amount > 0;
                     }
-                }
-                else if (fileType == CsvFileType.Other)
-                {
-                    csv.Context.RegisterClassMap<OtherTransactionMap>();
-                    var csvResult = csv.GetRecords<OtherImport>().ToList();
-                    foreach (var line in csvResult)
+                    else if (profile.ContainsNegativeValue.Value == true &&
+                        profile.NegativeValueTransactionType == TransactionType.Income)
                     {
-                        var rule = otherFilterRules.FirstOrDefault(x => line.Notes.ToLower().Contains(x.Rule.ToLower()));
-                        if (rule == null)
-                        {
-                            otherImports.Add(line);
-                        }
+                        isIncome = amount < 0;
                     }
+                    else if (profile.ContainsNegativeValue.Value == false && profile.DefaultTransactionType == TransactionType.Income)
+                    {
+                        isIncome = true;
+                    }
+
+                    var transaction = new ImportTransaction()
+                    {
+                        Date = csv.GetField<DateTime>(profile.DateColumnName),
+                        Amount = amount,
+                        IsIncome = isIncome, 
+                        Notes = notes
+                    };
+                    imports.Add(transaction);
                 }
             }
-            IEnumerable<ImportTransaction> imports = bankImports.Any() ? bankImports :
-                creditImports.Any() ? creditImports : otherImports.Any() ? otherImports : new List<ImportTransaction>();
-
             File.Delete(filePath);
             return imports;
-
         }
 
         internal IEnumerable<ImportTransaction> SetImportRules(IEnumerable<ImportTransaction> imports, ImportRuleEntity[] rules)
@@ -227,7 +230,11 @@ namespace CashTrack.Services.ImportService
             var expenseRules = rules.Where(x => x.TransactionType == TransactionType.Expense && x.RuleType == RuleType.Assignment).ToList();
             foreach (var import in expenseImports)
             {
-                var rule = expenseRules.FirstOrDefault(x => import.Notes.ToLower().Contains(x.Rule.ToLower()));
+                var notes = import.Notes.ToLower();
+                if (string.IsNullOrEmpty(notes))
+                    continue;
+
+                var rule = expenseRules.FirstOrDefault(x => notes.Contains(x.Rule.ToLower()));
 
                 if (rule != null && rule.MerchantSourceId.HasValue)
                 {
@@ -242,7 +249,11 @@ namespace CashTrack.Services.ImportService
             var incomeRules = rules.Where(x => x.TransactionType == TransactionType.Income && x.RuleType == RuleType.Assignment).ToList();
             foreach (var import in incomeImports)
             {
-                var rule = incomeRules.FirstOrDefault(x => import.Notes.ToLower().Contains(x.Rule.ToLower()));
+                var notes = import.Notes.ToLower();
+                if (string.IsNullOrEmpty(notes))
+                    continue;
+
+                var rule = incomeRules.FirstOrDefault(x => notes.Contains(x.Rule.ToLower()));
 
                 if (rule != null && rule.MerchantSourceId.HasValue)
                 {
@@ -257,35 +268,6 @@ namespace CashTrack.Services.ImportService
             setImports.AddRange(incomeImports);
             setImports.AddRange(expenseImports);
             return setImports;
-        }
-    }
-    public sealed class BankTransactionMap : ClassMap<BankImport>
-    {
-        public BankTransactionMap()
-        {
-            Map(x => x.Date).Name("Posting Date");
-            Map(x => x.Amount).Name("Amount");
-            Map(x => x.Notes).Name("Description");
-        }
-    }
-    public sealed class CreditTransactionMap : ClassMap<CreditImport>
-    {
-        public CreditTransactionMap()
-        {
-            Map(x => x.Date).Name("Date");
-            Map(x => x.Credit).Name("Credit").Optional();
-            Map(x => x.Debit).Name("Debit").Optional();
-            Map(x => x.Notes).Name("Description");
-        }
-    }
-    public sealed class OtherTransactionMap : ClassMap<OtherImport>
-    {
-        public OtherTransactionMap()
-        {
-            Map(x => x.Date).Name("Date");
-            Map(x => x.Amount).Name("Amount");
-            Map(x => x.Notes).Name("Notes");
-            Map(x => x.IsIncome).Name("Income");
         }
     }
 }

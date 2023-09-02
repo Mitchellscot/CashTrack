@@ -1,10 +1,11 @@
-﻿@using CashTrack.Models.ImportRuleModels
+﻿@using CashTrack.Models.Common;
+@using CashTrack.Models.ImportRuleModels
 @model CashTrack.Models.ImportRuleModels.AddEditImportRuleModal
 @{
     var addOrEdit = Model.IsEdit ? "Edit" : "Add";
     var dataId = Model.Id.HasValue ? Model.Id.Value : 0;
     var formId = Model.IsEdit ? $"addEditImportRuleModalForm-{dataId}" : "addEditImportRuleModalForm";
-    }
+ }
 
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -29,7 +30,7 @@
                         <input asp-for="@Model.Id" type="hidden" />
                     }
                     <input asp-for="@Model.IsEdit" type="hidden" />
-                    <input asp-for="@Model.Returnurl" type="hidden" />
+                    <input asp-for="@Model.ReturnUrl" type="hidden" />
                 <div class="row row-cols-3 justify-content-center mb-3">
                         <div class="col">
                             <div class="text-center fw-bold">
@@ -75,17 +76,24 @@
                                 File Type
                             </div>
                         <div class="row row-cols-auto">
-                            @foreach (var fileType in System.Enum.GetValues(typeof(CsvFileType)))
+                            @if (Model.FileTypes.Count > 0)
                             {
-                                <div class="form-check col mx-3">
-                                    <label class="form-check-label" asp-for="FileType">@fileType.ToString()</label>
-                                    <input type="radio"
-                                       id=@($"FileType-ImportRule-{(int)fileType}")
-                                       class="form-check-input"
-                                       asp-for="FileType"
-                                       value=@((int)fileType)
-                                       checked="@((int)fileType == (int)Model.FileType)" />
-                                </div>
+                                @foreach (var fileType in Model.FileTypes)
+                                {
+                                    <div class="form-check col mx-3">
+                                        <label class="form-check-label" asp-for="FileType">@fileType</label>
+                                        <input type="radio"
+                                        id=@($"FileType-ImportRule-{fileType}")
+                                        class="form-check-input"
+                                        asp-for="FileType"
+                                        value=@(fileType)
+                                        checked="@(fileType == Model.FileTypes[0])" />
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="text-warning text-center">Go to the settings page to add an Import Profile</div>
                             }
                         </div>
                         </div>
@@ -172,9 +180,16 @@
                 data-rule-type=@Model.RuleType
                 data-transaction-type=@Model.TransactionType
             >Close</button>
-            <form>
-                <button type="submit" class="btn btn-primary spin-it" form=@formId>Save</button>
-            </form>
+            @if (Model.FileTypes.Count > 0)
+            {
+                <form>
+                    <button type="submit" class="btn btn-primary spin-it" form=@formId>Save</button>
+                </form>
+            }
+            else
+            {
+                <button type="submit" class="btn btn-primary" disabled>Save</button>
+            }
         </div>
     </div>
 </div>

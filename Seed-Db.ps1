@@ -2,9 +2,14 @@
 Get-ChildItem  ./src/Data/Migrations -Recurse | Remove-Item
 #Remove the old database
 $dbPath = "./src/wwwroot/data/cashtrack.db*"
+$secondDbPath = "./src/Data/CashTrack.db*"
 if(Test-Path $dbPath){
     Write-Host "Removing old SQLite Database"
     Get-ChildItem $dbPath | Remove-Item
+}
+else{
+    Write-Host "Removing old SQLite Database"
+    Get-ChildItem $secondDbPath | Remove-Item
 }
 #Create new EF Migration files
 Write-Host "Creating new Migration Files" 

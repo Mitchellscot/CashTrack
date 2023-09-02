@@ -15,26 +15,25 @@
 		<NoWarn>1701,1702,80001;</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="12.0.0" />
+		<PackageReference Include="AutoMapper" Version="12.0.1" />
 		<PackageReference Include="CsvHelper" Version="30.0.1" />
-		<PackageReference Include="FluentValidation" Version="11.4.0" />
-		<PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.1">
+		<PackageReference Include="FluentValidation" Version="11.6.0" />
+		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.1" />
-		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.1">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.10" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="Migrations\**" />
@@ -57,6 +56,7 @@
 		<None Remove="Scripts\IncomeCategories\incomeCategoryDetail.ts" />
 		<None Remove="Scripts\MainCategories\mainCategories.ts" />
 		<None Remove="Scripts\Models\CategoryAverages.ts" />
+		<None Remove="Scripts\Settings\add-profile.tsx" />
 		<None Remove="Scripts\Settings\settings.ts" />
 		<None Remove="Scripts\SubCategories\subCategoryDetail.ts" />
 		<None Remove="Scripts\Theme\theme.ts" />
@@ -99,6 +99,7 @@
 		<TypeScriptCompile Include="Scripts\Merchants\merchantDetail.ts" />
 		<TypeScriptCompile Include="Scripts\Merchants\merchants.ts" />
 		<TypeScriptCompile Include="Scripts\Models\CategoryAverages.ts" />
+		<TypeScriptCompile Include="Scripts\Settings\add-profile.tsx" />
 		<TypeScriptCompile Include="Scripts\Settings\settings.ts" />
 		<TypeScriptCompile Include="Scripts\Sources\sources.ts" />
 		<TypeScriptCompile Include="Scripts\Sources\sourceDetail.ts" />

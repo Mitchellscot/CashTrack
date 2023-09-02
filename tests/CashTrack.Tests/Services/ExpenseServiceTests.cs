@@ -234,8 +234,8 @@ namespace CashTrack.Tests.Services
         public async Task Get_Expenses_Current_Year()
         {
             var rando = new Random();
-            var currentYear = DateTime.UtcNow.Year;
-            var testDate = new DateTime(currentYear, rando.Next(1, DateTime.UtcNow.Month), rando.Next(2, DateTime.UtcNow.Day)).AddDays(-1);
+            var currentYear = DateTime.Now.Year;
+            var testDate = new DateTime(currentYear, rando.Next(1, DateTime.Now.Month), rando.Next(1, DateTime.Now.Day));
             var expense = new Expense()
             {
                 Amount = 4.24M,

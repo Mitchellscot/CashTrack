@@ -1,4 +1,5 @@
 ﻿using CashTrack.Models.BudgetModels;
+using CashTrack.Models.Common;
 using CashTrack.Models.ImportRuleModels;
 
 namespace CashTrack.Models.ExportModels;
@@ -18,7 +19,7 @@ public record ExpenseExport(string Id, string MerchantId, string RefundNotes, st
     : TransactionExport(Id, Date, Amount, CategoryId, Notes);
 public record IncomeExport(string Id, string Date, string Amount, string CategoryId, string SourceId, string Notes, string IsRefund, string RefundNotes)
     : TransactionExport(Id, Date, Amount, CategoryId, Notes);
-public record ImportRuleExport(string Id, RuleType RuleType, CsvFileType FileType, TransactionType TransactionType, string Rule, string MerchantSourceId, string CategoryId);
+public record ImportRuleExport(string Id, RuleType RuleType, string FileType, TransactionType TransactionType, string Rule, string MerchantSourceId, string CategoryId);
 public record ReadableBudgetExport(string Month, string Year, string Amount, string SubCategory, string MainCategory, BudgetType BudgetType);
 public record ReadableExpenseExport(string Date, string Amount, string Category, string Merchant, string Notes);
 public record ReadableIncomeExport(string Date, string Amount, string Category, string Source, string Notes, string IsRefund);
@@ -31,7 +32,7 @@ public class ReadableImportRuleExport
 {
     public string Id { get; set; }
     public RuleType RuleType { get; set; }
-    public CsvFileType FileType { get; set; }
+    public string FileType { get; set; }
     public TransactionType TransactionType { get; set; }
     public string Rule { get; set; }
     public string MerchantSource { get; set; }

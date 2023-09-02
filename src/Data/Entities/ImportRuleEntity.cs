@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using CashTrack.Models.Common;
 using CashTrack.Models.ImportRuleModels;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -21,7 +22,7 @@ namespace CashTrack.Data.Entities
         [Required]
         public TransactionType TransactionType { get; set; }
         [Required]
-        public CsvFileType FileType { get; set; }
+        public string? FileType { get; set; }
         [Required]
         public string? Rule { get; set; }
         public int? MerchantSourceId { get; set; }

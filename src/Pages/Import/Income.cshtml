@@ -65,7 +65,7 @@
                       </ul>
                       <div class="modal fade" id="importCsvModal">
                           @await Html.PartialAsync("ImportTransactionsModal", 
-                          new ImportModel() { ReturnUrl = "/Import/Income" })
+                          new ImportModel() { ReturnUrl = "/Import/Income", FileTypes = Model.FileTypes })
                   </div>
                   <div class="modal fade" id="addSourceModal">
                       @await Html.PartialAsync("AddEditIncomeSourceModal", 

@@ -9,6 +9,7 @@
     "sourceMap": true,
     "strict": true,
     "moduleResolution": "Node",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "jsx": "react"
   }
 }

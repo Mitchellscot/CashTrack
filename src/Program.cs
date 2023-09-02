@@ -38,11 +38,10 @@ using CashTrack.Services.BudgetService;
 using CashTrack.Services.SummaryService;
 using CashTrack.Common.Middleware;
 using Microsoft.AspNetCore.HttpOverrides;
-using System.Net;
-using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 using System.IO;
+using CashTrack.Repositories.ImportRepository;
+using CashTrack.Services.ImportProfileService;
 
 namespace CashTrack
 {
@@ -130,6 +129,7 @@ namespace CashTrack
             services.AddScoped<IIncomeSourceRepository, IncomeSourceRepository>();
             services.AddScoped<IIncomeRepository, IncomeRepository>();
             services.AddScoped<IImportRulesRepository, ImportRulesRepository>();
+            services.AddScoped<IImportProfileRepository, ImportProfileRepository>();
             services.AddScoped<IIncomeReviewRepository, IncomeReviewRepository>();
             services.AddScoped<IExpenseReviewRepository, ExpenseReviewRepository>();
             services.AddScoped<IExportRepository, ExportRepository>();
@@ -145,6 +145,7 @@ namespace CashTrack
             services.AddScoped<IIncomeService, IncomeService>();
             services.AddScoped<IImportService, ImportService>();
             services.AddScoped<IImportRulesService, ImportRulesService>();
+            services.AddScoped<IImportProfileService, ImportProfileService>();
             services.AddScoped<IExpenseReviewService, ExpenseReviewService>();
             services.AddScoped<IIncomeReviewService, IncomeReviewService>();
             services.AddScoped<IExportService, ExportService>();

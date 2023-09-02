@@ -1,5 +1,6 @@
 ﻿using CashTrack.Data;
 using CashTrack.Data.Entities;
+using CashTrack.Models.Common;
 using CashTrack.Models.ExportModels;
 using CashTrack.Models.ImportRuleModels;
 using Microsoft.EntityFrameworkCore;

@@ -72,7 +72,7 @@
         </li>
     </ul>
     <div class="modal fade" id="importCsvModal">
-        @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Import/Expenses" })
+        @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Import/Expenses", FileTypes = Model.FileTypes })
     </div>
     <div class="modal fade" id="addMerchantModal">
         @await Html.PartialAsync("AddEditMerchantModal", new AddEditMerchantModal() { ReturnUrl = "/Import/Expenses", SuggestOnLookup = true, IsEdit = false })

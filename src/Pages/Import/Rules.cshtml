@@ -25,7 +25,7 @@
             <button class="btn btn-primary float-end" id="addImportRuleButton" data-bs-toggle="modal" data-bs-target="#addImportRuleModal">Add Import Rule</button>
         </div>
         <div class="modal fade" id="addImportRuleModal">
-        @await Html.PartialAsync("AddEditImportRuleModal", new AddEditImportRuleModal() { Returnurl = "~/Import/Rules", IsEdit = false })
+        @await Html.PartialAsync("AddEditImportRuleModal", new AddEditImportRuleModal() { ReturnUrl = "~/Import/Rules", IsEdit = false, FileTypes = Model.FileTypes })
         </div>
         </div>
         @if (Model.RuleRespose != null && Model.RuleRespose.ListItems.Count() > 0)
@@ -268,7 +268,8 @@
                                         Id = rule.Id,
                                         RuleType = Enum.Parse<RuleType>(rule.RuleType, true),
                                         TransactionType = Enum.Parse<TransactionType>(rule.TransactionType, true),
-                                        FileType = Enum.Parse<CsvFileType>(rule.FileType, true),
+                                        FileType = rule.FileType,
+                                        FileTypes = Model.FileTypes,
                                         Rule = rule.Rule,
                                         CategoryId = rule.CategoryId?? null,
                                         MerchantSourceId = rule.MerchantSourceId?? null,
@@ -276,7 +277,7 @@
                                         SubCategoryList = new SelectList(Model.SubCategoryList, "Id", "Category", rule.CategoryId?? null),
                                         MerchantList = new SelectList(Model.MerchantList, "Id", "Name", rule.MerchantSourceId?? null),
                         SourceList = new SelectList(Model.SourceList, "Id", "Name", rule.MerchantSourceId?? null),
-                                        Returnurl = "~/Import/Rules", 
+                                        ReturnUrl = "~/Import/Rules", 
                                         IsEdit = true })
                                 </div>
                             }

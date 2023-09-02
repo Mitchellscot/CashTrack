@@ -44,7 +44,7 @@ namespace CashTrack.Services.ImportRulesService
         {
             var rule = new ImportRuleEntity()
             {
-                FileType = (CsvFileType)request.FileType,
+                FileType = request.FileType,
                 TransactionType = (TransactionType)request.TransactionType,
                 RuleType = (RuleType)request.RuleType,
                 Rule = request.Rule,
@@ -154,7 +154,7 @@ namespace CashTrack.Services.ImportRulesService
                 throw new ImportRuleNotFoundException($"No Import Rule found with an Id of {request.Id.Value}");
 
             rule.Id = request.Id.Value;
-            rule.FileType = (CsvFileType)request.FileType;
+            rule.FileType = request.FileType;
             rule.TransactionType = (TransactionType)request.TransactionType;
             rule.RuleType = (RuleType)request.RuleType;
             rule.Rule = request.Rule;

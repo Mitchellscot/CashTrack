@@ -4,6 +4,7 @@ using CashTrack.Models.SubCategoryModels;
 using CashTrack.Models.SummaryModels;
 using CashTrack.Pages.Shared;
 using CashTrack.Services.ExpenseService;
+using CashTrack.Services.ImportProfileService;
 using CashTrack.Services.IncomeCategoryService;
 using CashTrack.Services.MainCategoriesService;
 using CashTrack.Services.SubCategoryService;
@@ -11,6 +12,7 @@ using CashTrack.Services.SummaryService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -24,6 +26,7 @@ namespace CashTrack.Pages
         private readonly ISubCategoryService _subCategoryService;
         private readonly IMainCategoriesService _mainCategoryService;
         private readonly IIncomeCategoryService _incomeCategoryService;
+        private readonly IImportProfileService _profileService;
 
         [BindProperty(SupportsGet = true)]
         public int Year { get; set; } = DateTime.Now.Year;
@@ -32,13 +35,15 @@ namespace CashTrack.Pages
         public SubCategoryDropdownSelection[] SubCategoryList { get; set; }
         public MainCategoryDropdownSelection[] MainCategoryList { get; set; }
         public IncomeCategoryDropdownSelection[] IncomeCategoryList { get; set; }
-        public Annual(IExpenseService expenseService, ISummaryService summaryService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoriesService, IIncomeCategoryService incomeCategoryService)
+        public List<string> FileTypes { get; set; }
+        public Annual(IExpenseService expenseService, ISummaryService summaryService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoriesService, IIncomeCategoryService incomeCategoryService, IImportProfileService profileService)
         {
             _summaryService = summaryService;
             _expenseService = expenseService;
             _subCategoryService = subCategoryService;
             _mainCategoryService = mainCategoriesService;
             _incomeCategoryService = incomeCategoryService;
+            _profileService = profileService;
         }
         public async Task<IActionResult> OnGet()
         {
@@ -57,6 +62,7 @@ namespace CashTrack.Pages
             SummaryResponse = await _summaryService.GetAnnualSummaryAsync(new AnnualSummaryRequest() 
             { Year = this.Year, UserId = id });
             YearSelectList = new SelectList(await _expenseService.GetAnnualSummaryYearsAsync());
+            FileTypes = await _profileService.GetImportProfileNames();
             return Page();
         }
     }

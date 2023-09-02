@@ -1,4 +1,5 @@
 ﻿@page
+@using CashTrack.Common;
 @using CashTrack.Models.ImportCsvModels
 @using CashTrack.Models.ImportRuleModels;
 @using CashTrack.Pages.Shared;
@@ -16,62 +17,63 @@
     new _MessagePartial() {MessageType = MessageType.Danger, Show = !ViewData.ModelState.IsValid })
 
     <h1>Settings</h1>
-    <div class="my-3 border rounded border-2 px-5 pt-2 pb-5 shadow">
-        <form asp-page-handler="ChangeUsername" method="post" class="row d-flex justify-content-around align-content-center">
-        <div class="form-group col-md-3 col-6">
+    <div class="my-3 border rounded border-2 px-3 px-md-5 py-2 shadow">
+        <form asp-page-handler="ChangeUsername" method="post" class="d-flex justify-content-around align-content-center flex-column flex-md-row">
+        <div class="form-group col-md-3 col px-md-2">
             <label asp-for="ChangeUsername.NewUsername" class="form-label mt-4">New Username</label>
             <input asp-for="ChangeUsername.NewUsername" type="text" class="form-control" id="newUsernameInput">
         </div>
-        <div class="form-group col-md-3 col-6">
+            <div class="form-group col-md-3 col px-md-2">
             <label asp-for="ChangeUsername.ConfirmUsername" class="form-label mt-4">Confirm Username</label>
             <input asp-for="ChangeUsername.ConfirmUsername" type="text" class="form-control" id="confirmUsernameInput">
         </div>
-        <div class="form-group col-md-3 col-6">
+            <div class="form-group col-md-3 col px-md-2">
             <label asp-for="ChangeUsername.Password" class="form-label mt-4">Current Password</label>
             <input asp-for="ChangeUsername.Password" type="password" class="form-control" id="confirmUsernamePassword" placeholder="* * * * * *">
         </div>
-        <div class="col-6 col-md-3 d-flex align-content-center">
-            <button class="btn btn-primary btn-height align-self-end spin-it" type="submit">Change Username</button>
+            <div class="col col-md-3 d-flex align-content-center justify-content-center my-3 my-md-0">
+            <button class="btn btn-primary align-self-end spin-it" type="submit">Change Username</button>
         </div>
+        <hr class="d-block d-md-none mt-2 mb-4" />
     </form>
-        <form asp-page-handler="ChangePassword" method="post" class="row d-flex justify-content-around align-content-center">
-        <div class="form-group col-md-3 col-6">
+        <form asp-page-handler="ChangePassword" method="post" class="d-flex justify-content-around align-content-center flex-column flex-md-row">
+            <div class="form-group col-md-3 col px-md-2">
             <label asp-for="ChangePassword.OldPassword" class="form-label mt-2">Old Password</label>
-            <input asp-for="ChangePassword.OldPassword" type="password" class="form-control" id="oldPasswordInput" placeholder="* * * * * *">
+                <input asp-for="ChangePassword.OldPassword" type="password" class="form-control mb-4 mb-md-0" id="oldPasswordInput" placeholder="* * * * * *">
         </div>
-        <div class="form-group col-md-3 col-6">
+            <div class="form-group col-md-3 col px-md-2">
             <label asp-for="ChangePassword.NewPassword" class="form-label mt-2">New Password</label>
-            <input asp-for="ChangePassword.NewPassword" type="password" class="form-control" id="newPasswordInput" placeholder="* * * * * *">
+            <input asp-for="ChangePassword.NewPassword" type="password" class="form-control mb-4 mb-md-0" id="newPasswordInput" placeholder="* * * * * *">
         </div>
-        <div class="form-group col-md-3 col-6">
+            <div class="form-group col-md-3 col px-md-2">
             <label asp-for="ChangePassword.ConfirmPassword" class="form-label mt-2">Confirm Password</label>
-            <input asp-for="ChangePassword.ConfirmPassword" type="password" class="form-control" id="confirmPasswordInput" placeholder="* * * * * *">
+                <input asp-for="ChangePassword.ConfirmPassword" type="password" class="form-control" id="confirmPasswordInput" placeholder="* * * * * *">
         </div>
-        <div class="col-6 col-md-3 d-flex align-content-center">
-            <button class="btn btn-primary btn-height align-self-end spin-it" type="submit">Change Password</button>
+            <div class="col col-md-3 d-flex align-content-center justify-content-center my-3 my-md-0">
+            <button class="btn btn-primary align-self-end spin-it" type="submit">Change Password</button>
         </div>
     </form>
-        <form asp-page-handler="ChangeDefaultTax" method="post" class="row d-flex justify-content-around align-content-center">
-            <div class="form-group col-md-3 col-6">
+        <hr class="d-block d-md-none mt-2 mb-4" />
+        <form asp-page-handler="ChangeDefaultTax" method="post" class="d-flex flex-column flex-md-row justify-content-around align-content-center mb-3">
+            <div class="form-group col-md-3 col px-md-2">
                 <label asp-for="DefaultTax" class="form-label mt-2">Current Default Tax</label>
                 <input class="form-control" asp-for="DefaultTax" type="number" disabled />
             </div>
-            <div class="form-group col-md-3 col-6">
+            <div class="form-group col-md-3 col px-md-2">
                 <label asp-for="NewTax" class="form-label mt-2">Update Tax</label>
                 <input class="form-control" asp-for="NewTax" type="number" novalidate step="0.0000001"/>
             </div>
-            <div class="col-6 col-md-3 d-flex align-items-end text-center">
+            <div class="col col-md-3 d-flex align-items-end text-center px-md-2">
                 <span class="align-content-center card border-light d-md-block d-none">Default tax is used when splitting transactions.</span>
             </div>
-            <div class="col-6 col-md-3 d-flex align-content-center pt-2 pt-md-0">
-                <button class="btn btn-primary btn-height align-self-end spin-it" type="submit">Change Default Tax</button>
+            <div class="col col-md-3 d-flex align-content-center pt-2 pt-md-0 justify-content-center my-3">
+                <button class="btn btn-primary align-self-end spin-it" type="submit">Change Default Tax</button>
             </div>
-
     </form>
     </div>
     <h2>Export</h2>
-    <form class="row my-3 border rounded border-2 shadow" method="post">
-        <div class="col-6 col-sm-5 p-sm-5 p-3 d-flex justify-content-start">
+    <form class="d-flex flex-column flex-md-row my-3 border rounded border-2 shadow" method="post">
+        <div class="col col-md-5 p-md-5 p-3 d-flex justify-content-start">
             <div class="input-group">
                 <div class="input-group-prepend d-none d-lg-block">
                     <div class="input-group-text rounded-0 rounded-start">Data</div>
@@ -80,7 +82,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-6 col-sm-4 d-flex justify-content-center">
+        <div class="col col-md-4 d-flex justify-content-center mb-3 mb-md-0">
             <div class="form-check me-3 d-flex align-items-center">
                 <input class="form-check-input me-2" id="ExportAsReadable-false" type="radio" asp-for="ExportAsReadable" value="false">
                 <label asp-for="ExportAsReadable" id="ExportAsReadable-false" class="form-check-label">Raw</label>
@@ -90,7 +92,7 @@
                 <label asp-for="ExportAsReadable" id="ExportAsReadable-true" class="form-check-label">Readable</label>
             </div>
         </div>
-        <div class="col-12 col-sm-2 pb-3 pb-sm-0 d-flex justify-content-center">
+        <div class="col col-md-2 pb-3 pb-md-0 d-flex justify-content-center">
             <button class="btn btn-primary btn-height align-self-center" type="submit" asp-page-handler="Export">
                 Export Data
             </button>
@@ -99,115 +101,124 @@
 
     <h2>Import</h2>
 
-    <div class="row my-3 border rounded border-2 py-5 px-3 d-flex justify-content-around shadow">
-        <div class="col-md-3 col-6 py-md-0 py-2">
-            <button class="btn btn-primary btn-height" type="button" id="importCSVButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">
-                Import From CSV
-            </button>
+    <div class="container my-3 border rounded border-2 p-3 px-md-5 py-2 shadow">
+        <div class="row py-3">
+        <div class="col-md-6 col-12 card mb-3 mb-md-0">
+            <div class="d-flex justify-content-evenly my-2">
+                <span>&nbsp;</span>
+                <h4>Import Profiles</h4>
+                <a class="link-primary text-decoration-underline h5" href="#" data-bs-toggle="modal" data-bs-target="#add-modal">Add</a>
+            </div>
+            @if (Model.Profiles is not null && Model.Profiles.Any())
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var profile in Model.Profiles)
+                    {
+                        <li class="list-group-item d-flex justify-content-between"><span>@profile.Name</span>
+                            <span>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#importProfileModal-@profile.Id" class="icon-button pe-2 ps-0 ms-0">
+                            @await Html.PartialAsync("Icons", new Icons()
+                            {
+                                Icon = Icon.ZoomIn,
+                                Color = IconColors.Primary,
+                                Height=22,
+                                Width=22,
+                                Classes="icon-size-lg action-icon"
+                            })
+                            </button>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal-@profile.Id" class="icon-button pe-2 ps-0 ms-0">
+                                @await Html.PartialAsync("Icons", new Icons()
+                                {
+                                    Icon = Icon.Trash,
+                                    Color = IconColors.Primary,
+                                    Height=22,
+                                    Width=22,
+                                    Classes="icon-size-lg action-icon"
+                                })
+                            </button>
+                            </span>
+                        <div class="modal fade" id="importProfileModal-@profile.Id">
+                            @await Html.PartialAsync("ImportProfileModal", profile)
+                        </div>
+                        @*Delete modal *@
+                        <div class="modal fade" id="deleteModal-@profile.Id">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header text-center">
+                                        <h5 class="modal-title text-center">
+                                            <strong>Are you sure you want to Delete this Profile?</strong>
+                                            </h5>
+                                            <button 
+                                                type="button" 
+                                                class="btn-close"
+                                                data-bs-dismiss="modal">
+                                            </button>
+                                    </div>
+                                    <div class="modal-footer d-flex justify-content-evenly">
+                                        <button type="button" 
+                                                class="btn btn-secondary" 
+                                                data-bs-dismiss="modal">
+                                                Cancel
+                                        </button>
+                                        <form method="post" asp-page="./Index" asp-page-handler="DeleteProfile" asp-route-Id="@profile.Id">
+                                            <button type="submit" class="btn btn-danger">DELETE</button>
+                                        </form>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           @* End delete modal *@
+                       </li>
+                }
+            </ul>
+            }
+            else
+            {
+                <div class="text-center text-warning">Click the "Add" button above to create an import profile. Import profiles are descriptions of how your bank or credit card CSV export files are formatted.</div>
+            }
         </div>
-        <div class="col-md-3 col-6 py-md-0 py-2">
-            <button class="btn btn-primary btn-height" type="button" id="imporCustomCSVtButton" data-bs-toggle="modal" data-bs-target="#customCsvHeaderModal">
-                Custom CSV Headers
-            </button>
+        <div class="col-md-6 col-12 py-md-0 py-2 d-md-flex justify-content-md-start flex-md-column d-grid gap-2 mx-auto">
+            <div class="mb-md-1 d-grid gap-2 mx-auto d-md-block mx-md-0">
+                <button class="btn btn-primary btn-height " type="button" id="importCSVButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">
+                    Import CSV
+                </button>
+            </div>
+            <div class="mb-md-1 d-grid gap-2 mx-auto d-md-block mx-md-0">
+                <button class="btn btn-primary btn-height" id="addImportRuleButton" data-bs-toggle="modal" data-bs-target="#addImportRuleModal">Add Import Rule</button>
+            </div>
+            <div class="mb-md-1 d-grid gap-2 mx-auto d-md-block mx-md-0">
+                <a asp-page="/Import/Rules" class="btn btn-primary btn-height spin-it">Import Rules</a>
+            </div>
         </div>
-        <div class="col-md-3 col-6 py-md-0 py-2">
-            <button class="btn btn-primary btn-height" id="addImportRuleButton" data-bs-toggle="modal" data-bs-target="#addImportRuleModal">Add Import Rule</button>
-        </div>
-        <div class="col-md-3 col-6 py-md-0 py-2">
-            <a asp-page="/Import/Rules" class="btn btn-primary btn-height spin-it">Import Rules</a>
         </div>
     </div>
 </div>
-
-<div class="modal fade" id="customCsvHeaderModal">
+@* Add Profile Modal *@
+<div class="modal fade" id="add-modal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header text-center">
-                <h5 class="modal-title w-100">Custom CSV Import</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal">
-                </button>
+                <h3 class="modal-title w-100">Add Import Profile</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal">
+            </button>
             </div>
-            <div class="modal-body px-5">
-                <h5 class="py-3 text-center">Format your custom CSV in the following way</h5>
-                <ul>
-                    <li>You must have four column headers named <strong>Date</strong>, <strong>Amount</strong>, <strong>Notes</strong>, and <strong>Income</strong>.</li>
-                    <li>The amount cannot be blank and can be with or without decimals. All negative numbers will be converted to positive numbers.</li>
-                    <li>Date cannot be blank.</li>
-                    <li>Notes can be blank. Associate with an import rule for faster processing.</li>
-                    <li>if Income is blank, it will be assumed to be an espense. In order to specify that it is income, include the word <strong>true</strong> in the column.</li>
-                </ul>
-
-                <p>Example:</p>
-                <table class="table table-borderless border border-3 rounded-4 text-center">
-                    <tr class="border">
-                        <th class="border">
-                            Date
-                        </th>
-                        <th class="border">
-                            Amount
-                        </th>
-                        <th class="border">
-                            Notes
-                        </th>
-                        <th class="border">
-                            Income
-                        </th>
-                    </tr>
-                    <tr class="border">
-                        <td class="border">
-                            12/8/2022
-                        </td>
-                        <td class="border">
-                            100
-                        </td>
-                        <td class="border">
-                        </td>
-                        <td class="border">
-                            true
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="border">
-                            12/8/2022
-                        </td>
-                        <td class="border">
-                            1.61
-                        </td>
-                        <td class="border">
-                            Costco Food Court
-                        </td>
-                        <td class="border">
-                            false
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="border">
-                            12/8/2022
-                        </td>
-                        <td class="border">
-                            24
-                        </td>
-                        <td class="border">
-                        </td>
-                        <td class="border">
-                        </td>
-                    </tr>
-                </table>
-                <h5 class="pt-3 text-center">Select "other" when uploading the csv file.</h5>
-            </div>
-            <div class="modal-footer d-flex justify-content-center">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-            </div>
+        <div class="modal-body px-5">
+            <form method="post" asp-page-handler="addprofile" id="addProfileForm">
+                <div id="add-profile-modal" class="container"></div>
+            </form>
         </div>
     </div>
 </div>
+</div>
+@* End Add Profile Modal *@
 
 <div class="modal fade" id="importCsvModal">
-    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Import/Expenses" })
+    @await Html.PartialAsync("ImportTransactionsModal", new ImportModel() { ReturnUrl = "/Import/Expenses", FileTypes = Model.FileTypes })
 </div>
 <div class="modal fade" id="addImportRuleModal">
-    @await Html.PartialAsync("AddEditImportRuleModal", new AddEditImportRuleModal() { Returnurl = "/Settings", IsEdit = false })
+    @await Html.PartialAsync("AddEditImportRuleModal", new AddEditImportRuleModal() { ReturnUrl = "/Settings", IsEdit = false, FileTypes = Model.FileTypes })
 </div>
 @section Scripts {
     <script src="~/js/settings.js"></script>
+    <script src="~/js/addProfile.js"></script>
 }

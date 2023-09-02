@@ -6,6 +6,7 @@ using CashTrack.Models.ImportCsvModels;
 using CashTrack.Models.ImportRuleModels;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.ExpenseReviewRepository;
+using CashTrack.Repositories.ImportRepository;
 using CashTrack.Repositories.ImportRuleRepository;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.IncomeReviewRepository;
@@ -36,7 +37,7 @@ namespace CashTrack.Tests.Services
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-bank-import", "test-bank-import.csv"),
-                FileType = CsvFileType.Bank,
+                FileType = "Bank",
                 ReturnUrl = "/"
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
@@ -46,7 +47,8 @@ namespace CashTrack.Tests.Services
                 var incomeRepo = new IncomeRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
                 var rulesRepo = new ImportRulesRepository(db);
-                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+                var profileRepo = new ImportProfileRepository(db);
+                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
 
                 var result = await importService.ImportTransactions(request);
                 result.ShouldBe("Added 6 Expenses And Added 1 Income");
@@ -71,7 +73,7 @@ namespace CashTrack.Tests.Services
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-credit-import", "test-credit-import.csv"),
-                FileType = CsvFileType.Credit,
+                FileType = "Credit",
                 ReturnUrl = "/"
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
@@ -81,7 +83,8 @@ namespace CashTrack.Tests.Services
                 var incomeRepo = new IncomeRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
                 var rulesRepo = new ImportRulesRepository(db);
-                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+                var profileRepo = new ImportProfileRepository(db);
+                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
 
                 var result = await importService.ImportTransactions(request);
                 result.ShouldBe("Added 6 Expenses And Added 1 Income");
@@ -108,7 +111,7 @@ namespace CashTrack.Tests.Services
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-bank-import", "test-bank-import.csv"),
-                FileType = CsvFileType.Bank,
+                FileType = "Bank",
                 ReturnUrl = "/"
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
@@ -118,7 +121,8 @@ namespace CashTrack.Tests.Services
                 var incomeRepo = new IncomeRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
                 var rulesRepo = new ImportRulesRepository(db);
-                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+                var profileRepo = new ImportProfileRepository(db);
+                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
 
                 var result = await importService.ImportTransactions(request);
                 result.ShouldBe("Added 6 Expenses And Added 1 Income");
@@ -134,7 +138,7 @@ namespace CashTrack.Tests.Services
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-credit-import", "test-credit-import.csv"),
-                FileType = CsvFileType.Credit,
+                FileType = "Credit",
                 ReturnUrl = "/"
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
@@ -144,7 +148,8 @@ namespace CashTrack.Tests.Services
                 var incomeRepo = new IncomeRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
                 var rulesRepo = new ImportRulesRepository(db);
-                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+                var profileRepo = new ImportProfileRepository(db);
+                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
 
                 var result = await importService.ImportTransactions(request);
                 result.ShouldBe("Added 6 Expenses And Added 1 Income");
@@ -160,7 +165,7 @@ namespace CashTrack.Tests.Services
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "empty-test-bank-import", "empty-test-bank-import.csv"),
-                FileType = CsvFileType.Bank,
+                FileType = "Bank",
                 ReturnUrl = "/"
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
@@ -170,7 +175,8 @@ namespace CashTrack.Tests.Services
                 var incomeRepo = new IncomeRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
                 var rulesRepo = new ImportRulesRepository(db);
-                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+                var profileRepo = new ImportProfileRepository(db);
+                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
 
                 var result = await importService.ImportTransactions(request);
                 result.ShouldBe("No transactions imported");
@@ -183,7 +189,7 @@ namespace CashTrack.Tests.Services
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "empty-test-credit-import", "empty-test-credit-import.csv"),
-                FileType = CsvFileType.Credit,
+                FileType = "Credit",
                 ReturnUrl = "/"
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
@@ -193,7 +199,8 @@ namespace CashTrack.Tests.Services
                 var incomeRepo = new IncomeRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
                 var rulesRepo = new ImportRulesRepository(db);
-                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+                var profileRepo = new ImportProfileRepository(db);
+                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
 
                 var result = await importService.ImportTransactions(request);
                 result.ShouldBe("No transactions imported");
@@ -206,7 +213,7 @@ namespace CashTrack.Tests.Services
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-credit-import-bad-headers", "test-credit-import-bad-headers.csv"),
-                FileType = CsvFileType.Credit,
+                FileType = "Credit",
                 ReturnUrl = "/"
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
@@ -216,10 +223,11 @@ namespace CashTrack.Tests.Services
                 var incomeRepo = new IncomeRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
                 var rulesRepo = new ImportRulesRepository(db);
-                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+                var profileRepo = new ImportProfileRepository(db);
+                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
 
                 var result = await importService.ImportTransactions(request);
-                result.ShouldBe("Please inspect the csv file for the correct headers.");
+                result.ShouldBe("No transactions imported - Unable to determine the amount from a row in column named: Debit");
             }
         }
         [Fact]
@@ -229,7 +237,7 @@ namespace CashTrack.Tests.Services
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-bank-import-bad-headers", "test-bank-import-bad-headers.csv"),
-                FileType = CsvFileType.Bank,
+                FileType = "Bank",
                 ReturnUrl = "/"
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
@@ -239,7 +247,8 @@ namespace CashTrack.Tests.Services
                 var incomeRepo = new IncomeRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
                 var rulesRepo = new ImportRulesRepository(db);
-                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+                var profileRepo = new ImportProfileRepository(db);
+                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
 
                 var result = await importService.ImportTransactions(request);
                 result.ShouldBe("Please inspect the csv file for the correct headers.");
@@ -252,7 +261,7 @@ namespace CashTrack.Tests.Services
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-bank-import-bad-formatting", "test-bank-import-bad-formatting.csv"),
-                FileType = CsvFileType.Bank,
+                FileType = "Bank",
                 ReturnUrl = "/"
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
@@ -262,10 +271,11 @@ namespace CashTrack.Tests.Services
                 var incomeRepo = new IncomeRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
                 var rulesRepo = new ImportRulesRepository(db);
-                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+                var profileRepo = new ImportProfileRepository(db);
+                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
 
                 var result = await importService.ImportTransactions(request);
-                result.ShouldBe("No transactions imported - is the file formatted properly?");
+                result.ShouldBe("No transactions imported - Unable to determine the amount from a row in column named: Amount");
             }
         }
         [Fact]
@@ -275,7 +285,7 @@ namespace CashTrack.Tests.Services
             var request = new ImportModel()
             {
                 File = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "test-credit-import-bad-formatting", "test-credit-import-bad-formatting.csv"),
-                FileType = CsvFileType.Credit,
+                FileType = "Credit",
                 ReturnUrl = "/"
             };
             using (var db = new AppDbContextFactory().CreateDbContext())
@@ -285,10 +295,11 @@ namespace CashTrack.Tests.Services
                 var incomeRepo = new IncomeRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
                 var rulesRepo = new ImportRulesRepository(db);
-                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+                var profileRepo = new ImportProfileRepository(db);
+                var importService = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
 
                 var result = await importService.ImportTransactions(request);
-                result.ShouldBe("No transactions imported - is the file formatted properly?");
+                result.ShouldBe("No transactions imported - Unable to determine the amount from a row in column named: Debit");
             }
         }
         [Fact]
@@ -302,9 +313,10 @@ namespace CashTrack.Tests.Services
                 var incomeRepo = new IncomeRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
                 var rulesRepo = new ImportRulesRepository(db);
-                var service = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
-                var rules = await rulesRepo.Find(x => x.FileType == CsvFileType.Bank);
-                var result = service.GetTransactionsFromFile(newFilePath, CsvFileType.Bank, rules).ToList();
+                var profileRepo = new ImportProfileRepository(db);
+                var service = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
+                var rules = await rulesRepo.Find(x => x.FileType == "Bank");
+                var result = await service.GetTransactionsFromFileAsync(newFilePath, "Bank", rules);
                 result.Count().ShouldBe(9);
             }
         }
@@ -319,9 +331,10 @@ namespace CashTrack.Tests.Services
                 var incomeRepo = new IncomeRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
                 var rulesRepo = new ImportRulesRepository(db);
-                var service = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
-                var rules = await rulesRepo.Find(x => x.FileType == CsvFileType.Credit);
-                var result = service.GetTransactionsFromFile(newFilePath, CsvFileType.Credit, rules).ToList();
+                var profileRepo = new ImportProfileRepository(db);
+                var service = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
+                var rules = await rulesRepo.Find(x => x.FileType == "Credit");
+                var result = await service.GetTransactionsFromFileAsync(newFilePath, "Credit", rules);
                 result.Count().ShouldBe(7);
             }
         }
@@ -381,7 +394,8 @@ namespace CashTrack.Tests.Services
                 var incomeRepo = new IncomeRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
                 var rulesRepo = new ImportRulesRepository(db);
-                var service = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+                var profileRepo = new ImportProfileRepository(db);
+                var service = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
 
                 await incomeReviewRepo.Create(new IncomeReviewEntity()
                 {
@@ -426,7 +440,8 @@ namespace CashTrack.Tests.Services
                 var incomeRepo = new IncomeRepository(db);
                 var expenseRepo = new ExpenseRepository(db);
                 var rulesRepo = new ImportRulesRepository(db);
-                var service = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+                var profileRepo = new ImportProfileRepository(db);
+                var service = new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
                 var rules = await rulesRepo.Find(x => true);
                 var imports = new List<ImportTransaction>()
                 {
@@ -487,7 +502,8 @@ namespace CashTrack.Tests.Services
             var incomeRepo = new IncomeRepository(db);
             var expenseRepo = new ExpenseRepository(db);
             var rulesRepo = new ImportRulesRepository(db);
-            return new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo);
+            var profileRepo = new ImportProfileRepository(db);
+            return new ImportService(incomeReviewRepo, expenseRepo, incomeRepo, new TestWebHostEnvironment(), rulesRepo, expenseReviewRepo, profileRepo);
         }
     }
 }
