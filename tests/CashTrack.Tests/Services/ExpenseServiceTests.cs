@@ -177,7 +177,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Get_Expenses_Current_Month()
         {
-            var testDate = DateTime.Today;
+            var testDate = DateTime.Today.AddDays(-1);
             var expense = new Expense()
             {
                 Amount = 4.24M,
