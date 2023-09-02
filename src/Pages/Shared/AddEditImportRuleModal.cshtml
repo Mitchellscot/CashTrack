@@ -76,17 +76,24 @@
                                 File Type
                             </div>
                         <div class="row row-cols-auto">
-                            @foreach (var fileType in Model.FileTypes)
+                            @if (Model.FileTypes.Count > 0)
                             {
-                                <div class="form-check col mx-3">
-                                    <label class="form-check-label" asp-for="FileType">@fileType</label>
-                                    <input type="radio"
-                                       id=@($"FileType-ImportRule-{fileType}")
-                                       class="form-check-input"
-                                       asp-for="FileType"
-                                       value=@(fileType)
-                                       checked="@(fileType == Model.FileTypes[0])" />
-                                </div>
+                                @foreach (var fileType in Model.FileTypes)
+                                {
+                                    <div class="form-check col mx-3">
+                                        <label class="form-check-label" asp-for="FileType">@fileType</label>
+                                        <input type="radio"
+                                        id=@($"FileType-ImportRule-{fileType}")
+                                        class="form-check-input"
+                                        asp-for="FileType"
+                                        value=@(fileType)
+                                        checked="@(fileType == Model.FileTypes[0])" />
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="text-warning text-center">Go to the settings page to add an Import Profile</div>
                             }
                         </div>
                         </div>
@@ -173,9 +180,16 @@
                 data-rule-type=@Model.RuleType
                 data-transaction-type=@Model.TransactionType
             >Close</button>
-            <form>
-                <button type="submit" class="btn btn-primary spin-it" form=@formId>Save</button>
-            </form>
+            @if (Model.FileTypes.Count > 0)
+            {
+                <form>
+                    <button type="submit" class="btn btn-primary spin-it" form=@formId>Save</button>
+                </form>
+            }
+            else
+            {
+                <button type="submit" class="btn btn-primary" disabled>Save</button>
+            }
         </div>
     </div>
 </div>

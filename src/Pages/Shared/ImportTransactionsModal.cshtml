@@ -27,28 +27,44 @@
                                        class="form-control" id="importCsvUploadInput">
                             </div>
                         </div>
-                        <div class="col-auto col-lg-5 align-self-end border rounded py-1">
-                            @foreach (var fileType in Model.FileTypes)
-                            {
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio"
-                                    id=@($"FileType-ImportTransactions-{fileType}")
-                                       asp-for="FileType" value="@(fileType)" checked="@(fileType == Model.FileTypes[0])" />
-                                    <label class="form-check-label" asp-for="@Model.FileType">
-                                        @fileType
-                                    </label>
-                                </div>
-                            }
-                        </div>
+                        @if (Model.FileTypes.Count > 0)
+                        {
+                            <div class="col-auto col-lg-5 align-self-end border rounded py-1">
+                                @foreach (var fileType in Model.FileTypes)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio"
+                                               id=@($"FileType-ImportTransactions-{fileType}")
+                                               asp-for="FileType" value="@(fileType)" checked="@(fileType == Model.FileTypes[0])" />
+                                        <label class="form-check-label" asp-for="@Model.FileType">
+                                            @fileType
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-auto col-lg-5 align-self-end border rounded py-1 text-warning">
+                                Go the the Import section of the Settings page and add an Import profile.
+                            </div>
+                        }
                     </div>
                 </form>
             </div>
         </div>
         <div class="modal-footer d-flex justify-content-evenly">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <form>
-                <button type="submit" class="btn btn-primary spin-it" form="ImportCsvForm">Upload</button>
-            </form>
+            @if (Model.FileTypes.Count > 0)
+            {
+                <form>
+                    <button type="submit" class="btn btn-primary spin-it" form="ImportCsvForm">Upload</button>
+                </form>
+            }
+            else
+            {
+                <button type="submit" disabled class="btn btn-primary">Upload</button>
+            }
         </div>
     </div>
 </div> 

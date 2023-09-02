@@ -100,15 +100,15 @@
 
     <h2>Import</h2>
 
-    <div class="row my-3 border rounded border-2 py-5 px-3 d-flex justify-content-around shadow">
-        <div class="col-md-6 col-12 card">
+    <div class="row my-3 border rounded border-2 p-3 shadow">
+        <div class="col-md-6 col-12 card mb-3 mb-md-0">
+            <div class="d-flex justify-content-evenly my-2">
+                <span>&nbsp;</span>
+                <h4>Import Profiles</h4>
+                <a class="link-primary text-decoration-underline h5" href="#" data-bs-toggle="modal" data-bs-target="#add-modal">Add</a>
+            </div>
             @if (Model.Profiles is not null && Model.Profiles.Any())
             {
-                <div class="d-flex justify-content-evenly my-2">
-                    <span>&nbsp;</span>
-                    <h4 >Import Profiles</h4>
-                    <a class="link-primary text-decoration-underline h5" href="#" data-bs-toggle="modal" data-bs-target="#add-modal">Add</a>
-                </div>
                 <ul class="list-group list-group-flush">
                     @foreach (var profile in Model.Profiles)
                     {
@@ -172,15 +172,21 @@
             }
             else
             {
-                <div class="text-center text-bg-warning">Do something when there aren't any import profiles'</div>
+                <div class="text-center text-warning">Click the "Add" button above to create an import profile. Import profiles are descriptions of how your bank or credit card CSV export files are formatted.</div>
             }
         </div>
-        <div class="col-md-6 col-12 py-md-0 py-2 d-flex flex-column flex-md-row">
-            <button class="btn btn-primary btn-height" type="button" id="importCSVButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">
-                Import From CSV
-            </button>
-            <button class="btn btn-primary btn-height" id="addImportRuleButton" data-bs-toggle="modal" data-bs-target="#addImportRuleModal">Add Import Rule</button>
-            <a asp-page="/Import/Rules" class="btn btn-primary btn-height spin-it">Import Rules</a>
+        <div class="col-md-6 col-12 py-md-0 py-2 d-md-flex justify-content-md-start flex-md-column d-grid gap-2 mx-auto">
+            <div class="mb-md-1 d-grid gap-2 mx-auto d-md-block mx-md-0">
+                <button class="btn btn-primary btn-height " type="button" id="importCSVButton" data-bs-toggle="modal" data-bs-target="#importCsvModal">
+                    Import CSV
+                </button>
+            </div>
+            <div class="mb-md-1 d-grid gap-2 mx-auto d-md-block mx-md-0">
+                <button class="btn btn-primary btn-height" id="addImportRuleButton" data-bs-toggle="modal" data-bs-target="#addImportRuleModal">Add Import Rule</button>
+            </div>
+            <div class="mb-md-1 d-grid gap-2 mx-auto d-md-block mx-md-0">
+                <a asp-page="/Import/Rules" class="btn btn-primary btn-height spin-it">Import Rules</a>
+            </div>
         </div>
     </div>
 </div>
