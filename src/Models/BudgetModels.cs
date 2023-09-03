@@ -8,6 +8,7 @@ namespace CashTrack.Models.BudgetModels
 {
     public class BudgetListRequest : PaginationRequest
     {
+        public bool CurrentYearOnly { get; set; }
         public bool Reversed { get; set; }
         public BudgetOrderBy Order { get; set; }
     }

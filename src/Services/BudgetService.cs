@@ -11,6 +11,7 @@ using CashTrack.Services.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace CashTrack.Services.BudgetService
@@ -140,7 +141,8 @@ namespace CashTrack.Services.BudgetService
         public async Task<BudgetListResponse> GetBudgetListAsync(BudgetListRequest request)
         {
             var budgetListItems = await ParseBudgetListQuery(request);
-            var count = await _budgetRepo.GetCount(x => true);
+            Expression<Func<BudgetEntity, bool>> predicate = request.CurrentYearOnly ? x => x.Year == DateTime.Now.Year : x => true;
+            var count = await _budgetRepo.GetCount(predicate);
             return new BudgetListResponse(request.PageNumber, request.PageSize, count, budgetListItems);
         }
         public async Task<CategoryAveragesAndTotals> GetCategoryAveragesAndTotalsAsync(int subCategoryId)
@@ -473,45 +475,46 @@ namespace CashTrack.Services.BudgetService
         private async Task<List<BudgetListItem>> ParseBudgetListQuery(BudgetListRequest request)
         {
             var budgetListItems = new List<BudgetEntity>();
+            Expression<Func<BudgetEntity, bool>> predicate = request.CurrentYearOnly ? x => x.Year == DateTime.Now.Year : x => true;
             switch (request.Order)
             {
                 case BudgetOrderBy.Year:
-                    var allBudgetsByYear = await _budgetRepo.Find(x => true);
+                    var allBudgetsByYear = await _budgetRepo.Find(predicate);
 
                     budgetListItems = request.Reversed ?
                         allBudgetsByYear.OrderBy(x => x.Year).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
                         allBudgetsByYear.OrderByDescending(x => x.Year).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
                     break;
                 case BudgetOrderBy.Month:
-                    var allBudgetsByMonth = await _budgetRepo.Find(x => true);
+                    var allBudgetsByMonth = await _budgetRepo.Find(predicate);
                     var budgetsByMonth = _mapper.Map<List<BudgetListItem>>(allBudgetsByMonth);
                     budgetsByMonth = request.Reversed ?
                         budgetsByMonth.OrderByDescending(x => x.Month).ThenByDescending(x => x.SubCategory).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
                         budgetsByMonth.OrderBy(x => x.Month).ThenBy(x => x.SubCategory).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
                     return budgetsByMonth;
                 case BudgetOrderBy.Amount:
-                    var allBudgetsByAmount = await _budgetRepo.Find(x => true);
+                    var allBudgetsByAmount = await _budgetRepo.Find(predicate);
 
                     budgetListItems = request.Reversed ?
                         allBudgetsByAmount.OrderByDescending(x => x.Amount).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
                         allBudgetsByAmount.OrderBy(x => x.Amount).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
                     break;
                 case BudgetOrderBy.SubCategory:
-                    var allBudgetsBySubCategory = (await _budgetRepo.Find(x => true)).ToList();
+                    var allBudgetsBySubCategory = (await _budgetRepo.Find(predicate)).ToList();
                     var budgetsBySub = _mapper.Map<List<BudgetListItem>>(allBudgetsBySubCategory);
                     budgetsBySub = request.Reversed ?
                         budgetsBySub.OrderByDescending(x => x.SubCategory).ThenByDescending(x => x.MainCategory).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
                         budgetsBySub.OrderBy(x => x.SubCategory).ThenBy(x => x.MainCategory).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
                     return budgetsBySub;
                 case BudgetOrderBy.MainCategory:
-                    var allBudgetsByMainCategory = (await _budgetRepo.Find(x => true)).ToList();
+                    var allBudgetsByMainCategory = (await _budgetRepo.Find(predicate)).ToList();
                     var budgetsByMain = _mapper.Map<List<BudgetListItem>>(allBudgetsByMainCategory);
                     budgetsByMain = request.Reversed ?
                         budgetsByMain.OrderByDescending(x => x.MainCategory).ThenByDescending(x => x.SubCategory).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
                         budgetsByMain.OrderBy(x => x.MainCategory).ThenBy(x => x.SubCategory).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
                     return budgetsByMain;
                 case BudgetOrderBy.Type:
-                    var allBudgetsByType = await _budgetRepo.Find(x => true);
+                    var allBudgetsByType = await _budgetRepo.Find(predicate);
 
                     budgetListItems = request.Reversed ?
                         allBudgetsByType.OrderByDescending(x => x.BudgetType).Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList() :
