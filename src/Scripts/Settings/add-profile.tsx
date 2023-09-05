@@ -129,39 +129,39 @@ function AddProfileModal() {
 					<div className="form-check col">
 						<input className="form-check-input mx-3" type="radio" id="both" name="TransactionType"
 							onChange={() => handleTransactionQuestion(BOTH)} value={BOTH} />
-							<label className="form-check-label text-center" htmlFor="both">
+						<label className="form-check-label text-center lead" htmlFor="both">
 								Two Columns
 							</label>
 						</div>
 					<div className="form-check col">
 						<input className="form-check-input mx-3" type="radio" name="TransactionType" id="expenses-only" onChange={() => handleTransactionQuestion(EXPENSE_ONLY)} value={EXPENSE_ONLY} />
-							<label className="form-check-label text-center" htmlFor="expenses-only">
+						<label className="form-check-label text-center lead" htmlFor="expenses-only">
 								One (Expenses)
 							</label>
 						</div>
 						<div className="form-check col">
 						<input className="form-check-input mx-3" type="radio" id="thirdQ" name="TransactionType"
 							onChange={() => handleTransactionQuestion(INCOME_ONLY)} value={INCOME_ONLY} />
-							<label className="form-check-label text-center" htmlFor="thirdQ">
+						<label className="form-check-label text-center lead" htmlFor="thirdQ">
 								One (Income)
 							</label>
 						</div>
 					</div>
 				</div>
 				<div className="row display-none" id="q2">
-					<span className="mb-2">
+				<span className="mb-2 lead">
 						Does your file contain negative values that indicate whether it's an expense or income?
 					</span>
 					<div className="row mb-2">
 						<div className="form-check  col">
-							<input className="form-check-input mx-3" type="radio" name="negative-value" id="negativeQuestion1" onChange={() => handleContainsNegativevalue(true)} />
-							<label className="form-check-label" htmlFor="firstQ">
+						<input className="form-check-input mx-3 lead" type="radio" name="negative-value" id="negativeQuestion1" onChange={() => handleContainsNegativevalue(true)} />
+						<label className="form-check-label lead" htmlFor="firstQ">
 								Yes
 							</label>
 						</div>
 						<div className="form-check col">
-						<input className="form-check-input mx-3" type="radio" name="negative-value" id="negativeQuestion2"  onChange={() => handleContainsNegativevalue(false)} />
-							<label className="form-check-label" htmlFor="secondQ">
+						<input className="form-check-input mx-3 lead" type="radio" name="negative-value" id="negativeQuestion2"  onChange={() => handleContainsNegativevalue(false)} />
+						<label className="form-check-label lead" htmlFor="secondQ">
 								No
 							</label>
 						</div>
