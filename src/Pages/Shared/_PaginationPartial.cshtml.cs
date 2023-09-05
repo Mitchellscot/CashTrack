@@ -9,6 +9,7 @@ namespace CashTrack.Pages.Shared
         public int Query { get; set; }
         public string q { get; set; }
         public string q2 { get; set; }
+        public string q3 { get; set; } = null;
         public bool IsExpensePage { get; set; }
     }
 }

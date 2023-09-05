@@ -73,6 +73,21 @@ namespace CashTrack.Tests.Services
             response.TotalCount.ShouldBeGreaterThan(1);
             response.TotalPages.ShouldBeGreaterThan(1);
         }
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        public async Task Can_Get_Budget_List_Page_CurrentYear(int orderBy)
+        {
+            //there are none in test data for the current year...
+            var response = await _service.GetBudgetListAsync(new BudgetListRequest() { Order = (BudgetOrderBy)orderBy, Reversed = false, PageNumber = 1, PageSize = 25, CurrentYearOnly=true });
+            response.ListItems.ShouldBeEmpty();
+            response.TotalCount.ShouldBe(0);
+            response.TotalPages.ShouldBe(0);
+        }
         //[Fact(Skip = "Data is in the year 1999")]
         //public async Task Can_Get_Category_Averages_And_Totals()
         //{

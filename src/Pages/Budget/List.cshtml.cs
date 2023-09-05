@@ -30,6 +30,8 @@ namespace CashTrack.Pages.Budget
         public bool Q2 { get; set; }
         [BindProperty]
         public int BudgetId { get; set; }
+        [BindProperty(SupportsGet =true)]
+        public bool Q3 { get; set; }
         public SelectList MainCategoryList { get; set; }
         public ListModel(IBudgetService budgetService, ISubCategoryService subCategoryService, IMainCategoriesService mainCategoryService) => (_budgetService, _subCategoryService, _mainCategoryService) = (budgetService, subCategoryService, mainCategoryService);
 
@@ -97,6 +99,7 @@ namespace CashTrack.Pages.Budget
             CategoryList = await _subCategoryService.GetSubCategoryDropdownListAsync();
             BudgetListResponse = await _budgetService.GetBudgetListAsync(new BudgetListRequest()
             {
+                CurrentYearOnly = this.Q3,
                 Reversed = Q2,
                 Order = Query,
                 PageNumber = this.PageNumber
