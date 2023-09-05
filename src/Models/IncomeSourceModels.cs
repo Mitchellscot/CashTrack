@@ -28,6 +28,7 @@ public record AddEditIncomeSourceModal : IncomeSource
 {
     public string ReturnUrl { get; set; }
     public bool IsEdit { get; set; }
+    public List<string> States { get; set; }
 }
 public record IncomeSourceListItem
 {

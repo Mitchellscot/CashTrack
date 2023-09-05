@@ -1,4 +1,5 @@
-﻿@model CashTrack.Models.MerchantModels.AddEditMerchantModal
+﻿@using CashTrack.Common;
+@model CashTrack.Models.MerchantModels.AddEditMerchantModal
 @{
 }
 <div class="modal-dialog modal-lg">
@@ -55,13 +56,16 @@
                             <label class="visually-hidden" asp-for="@Model.State">State</label>
                             <div class="input-group">
                                 <div class="input-group-text">State</div>
-                                @{
-                                    var states = new List<string> { "MN", "CA", "VA", "Various" };
-                                    var dropdownList = new SelectList(states);
-                                }
-                                <select data-val="true" asp-for=@Model.State asp-items="dropdownList" data-width="100%" class="form-control" id="addEditMerchantState">
+                                <environment names="@CashTrackEnv.Production, @CashTrackEnv.Electron">
+                                    <select data-val="true" asp-for=@Model.State asp-items="@new SelectList(StateCodes.GetStateCodes())" data-width="100%" class="form-control" id="addEditMerchantState">
                                     <option value="" selected disabled hidden></option>
-                                </select>
+                                    </select>
+                                </environment>
+                                <environment names="@CashTrackEnv.Development, @CashTrackEnv.Docker, @CashTrackEnv.Test">
+                                    <select data-val="true" asp-for=@Model.State asp-items="@new SelectList(StateCodes.GetMyStateCodes())" data-width="100%" class="form-control" id="addEditMerchantState">
+                                        <option value="" selected disabled hidden></option>
+                                    </select>
+                                    </environment>
                                 <span asp-validation-for="@Model.State"></span>
                             </div>
                         </div>

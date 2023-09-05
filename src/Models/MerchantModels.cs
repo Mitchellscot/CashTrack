@@ -29,6 +29,7 @@ public record AddEditMerchantModal : Merchant
 {
     public bool IsEdit { get; set; }
     public string ReturnUrl { get; set; }
+    public List<string> States { get; set; }
 }
 public record MerchantListItem
 {
