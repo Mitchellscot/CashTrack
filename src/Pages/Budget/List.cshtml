@@ -107,7 +107,7 @@
                         <tr class="text-center table-primary">
                             <th class="year-column">
                                 Year
-                                <a asp-page="./List" asp-route-Query="0" asp-route-Q2="true" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
+                                <a asp-page="./List" asp-route-Query="0" asp-route-Q2="true" asp-route-Q3="@Model.Q3" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
                                     @await Html.PartialAsync("Icons", new Icons()
                                     {
                                         Icon = Icon.ArrowUp,
@@ -117,7 +117,7 @@
                                         Classes="color-svg-on-hover"
                                     })
                                 </a>
-                                <a asp-page="./List" asp-route-Query="0" asp-route-Q2="false" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
+                                <a asp-page="./List" asp-route-Query="0" asp-route-Q2="false" asp-route-Q3="@Model.Q3" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
                                     @await Html.PartialAsync("Icons", new Icons()
                                     {
                                         Icon = Icon.ArrowDown,
@@ -130,7 +130,7 @@
                             </th>
                             <th class="month-column">
                                 Month
-                                <a asp-page="./List" asp-route-Query="1" asp-route-Q2="true" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
+                                <a asp-page="./List" asp-route-Query="1" asp-route-Q2="true" asp-route-Q3="@Model.Q3" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
                                     @await Html.PartialAsync("Icons", new Icons()
                                     {
                                         Icon = Icon.ArrowUp,
@@ -140,7 +140,7 @@
                                         Classes=$"color-svg-on-hover"
                                     })
                                 </a>
-                                <a asp-page="./List" asp-route-Query="1" asp-route-Q2="false" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
+                                <a asp-page="./List" asp-route-Query="1" asp-route-Q2="false" asp-route-Q3="@Model.Q3" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
                                     @await Html.PartialAsync("Icons", new Icons()
                                     {
                                         Icon = Icon.ArrowDown,
@@ -153,7 +153,7 @@
                             </th>
                             <th class="amount-column">
                                 Amount
-                                <a asp-page="./List" asp-route-Query="2" asp-route-Q2="true" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
+                                <a asp-page="./List" asp-route-Query="2" asp-route-Q2="true" asp-route-Q3="@Model.Q3" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
                                     @await Html.PartialAsync("Icons", new Icons()
                                     {
                                         Icon = Icon.ArrowUp,
@@ -163,7 +163,7 @@
                                         Classes=$"color-svg-on-hover"
                                     })
                                 </a>
-                                <a asp-page="./List" asp-route-Query="2" asp-route-Q2="false" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
+                                <a asp-page="./List" asp-route-Query="2" asp-route-Q2="false" asp-route-Q3="@Model.Q3" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
                                     @await Html.PartialAsync("Icons", new Icons()
                                     {
                                         Icon = Icon.ArrowDown,
@@ -176,7 +176,7 @@
                             </th>
                             <th class="category-column">
                                 SubCategory
-                                <a asp-page="./List" asp-route-Query="3" asp-route-Q2="true" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
+                                <a asp-page="./List" asp-route-Query="3" asp-route-Q2="true" asp-route-Q3="@Model.Q3" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
                                     @await Html.PartialAsync("Icons", new Icons()
                                     {
                                         Icon = Icon.ArrowUp,
@@ -186,7 +186,7 @@
                                         Classes="color-svg-on-hover"
                                     })
                                 </a>
-                                <a asp-page="./List" asp-route-Query="3" asp-route-Q2="false" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
+                                <a asp-page="./List" asp-route-Query="3" asp-route-Q2="false" asp-route-Q3="@Model.Q3" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
                                     @await Html.PartialAsync("Icons", new Icons()
                                     {
                                         Icon = Icon.ArrowDown,
@@ -199,7 +199,7 @@
                             </th>
                             <th class="main-category-column">
                                 MainCategory
-                                <a asp-page="./List" asp-route-Query="4" asp-route-Q2="true" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
+                                <a asp-page="./List" asp-route-Query="4" asp-route-Q2="true" asp-route-Q3="@Model.Q3" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
                                     @await Html.PartialAsync("Icons", new Icons()
                                     {
                                         Icon = Icon.ArrowUp,
@@ -209,7 +209,7 @@
                                         Classes="color-svg-on-hover"
                                     })
                                 </a>
-                                <a asp-page="./List" asp-route-Query="4" asp-route-Q2="false" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
+                                <a asp-page="./List" asp-route-Query="4" asp-route-Q2="false" asp-route-Q3="@Model.Q3" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
                                     @await Html.PartialAsync("Icons", new Icons()
                                     {
                                         Icon = Icon.ArrowDown,
@@ -222,7 +222,7 @@
                             </th>
                             <th class="type-column">
                                 Type
-                                <a asp-page="./List" asp-route-Query="5" asp-route-Q2="true" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
+                                <a asp-page="./List" asp-route-Query="5" asp-route-Q2="true" asp-route-Q3="@Model.Q3" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
                                     @await Html.PartialAsync("Icons", new Icons()
                                     {
                                         Icon = Icon.ArrowUp,
@@ -232,7 +232,7 @@
                                         Classes="color-svg-on-hover"
                                     })
                                 </a>
-                                <a asp-page="./List" asp-route-Query="5" asp-route-Q2="false" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
+                                <a asp-page="./List" asp-route-Query="5" asp-route-Q2="false" asp-route-Q3="@Model.Q3" asp-route-PageNumber="@Model.PageNumber" class="icon-button float-end color-on-hover">
                                     @await Html.PartialAsync("Icons", new Icons()
                                     {
                                         Icon = Icon.ArrowDown,
@@ -340,6 +340,7 @@
                                                   asp-route-budgetId="@budget.Id"
                                                   asp-route-query="@Model.Query"
                                                   asp-route-q2="@Model.Q2"
+                                                  asp-route-Q3="@Model.Q3"
                                                   asp-route-pageNumber="@Model.PageNumber">
                                                         <button type="submit" class="btn btn-danger">DELETE</button>
                                                     </form>
@@ -362,20 +363,21 @@
                         }
                     </div>
                     <div class="col-8 col-lg-7 col-xl-8 mx-auto d-flex justify-content-end pe-lg-4 pe-xl-5">
-                        <div class="form-check form-check-reverse form-switch">
-                            <a asp-page="/Budget/List" asp-route-currentyear=@(!Model.CurrentYear)>
+                        <form method="get" action="/Budget/List" class="form-check form-switch form-check-reverse">
+                            
                             <label class="form-check-label" for="flexSwitchCheckChecked">Hide Previous Years
-                                @if (Model.CurrentYear)
+                                @if (Model.Q3)
                                 {
-                                    <input class="form-check-input" type="checkbox" checked onClick={window.location="/List?currentYear=false"}/>
+                                    <input type="hidden" name="q3" value="false" />
+                                    <input class="form-check-input" type="checkbox" checked onchange="this.form.submit()" />
                                 }
                                 else
                                 {
-                                    <input class="form-check-input" type="checkbox" />
+                                    <input type="hidden" name="q3" value="true" />
+                                    <input class="form-check-input" type="checkbox" onchange="this.form.submit()" />
                                 }
                                 </label>
-                            </a>
-                        </div>
+                        </form>
                     </div>
                     <div class="col col-lg-3 col-xl-2 my-0 py-0 gy-0">
                         @await Html.PartialAsync("_PaginationPartial",
@@ -385,7 +387,8 @@
                         PageNumber = Model.BudgetListResponse.PageNumber,
                         TotalPages = Model.BudgetListResponse.TotalPages,
                         Query = (int)Model.Query,
-                        q2 = Model.Q2.ToString()
+                        q2 = Model.Q2.ToString(),
+                        q3 = Model.Q3.ToString(),
                         })
                     </div>
                 </div>
