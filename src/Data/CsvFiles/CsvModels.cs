@@ -85,8 +85,8 @@ namespace CashTrack.Data.CsvFiles
                 }
             }
             public decimal Amount { get; set; }
-            public int CategoryId { get; set; }
-            public int SourceId { get; set; }
+            public int? CategoryId { get; set; }
+            public int? SourceId { get; set; }
             public string? Notes { get; set; }
             public bool IsRefund { get; set; }
             public string? RefundNotes { get; set; }
