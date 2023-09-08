@@ -21,7 +21,6 @@ namespace CashTrack.Data
         public DbSet<MainCategoryEntity> MainCategories { get; set; }
         public DbSet<SubCategoryEntity> SubCategories { get; set; }
         public DbSet<MerchantEntity> Merchants { get; set; }
-        public DbSet<TagEntity> Tags { get; set; }
         public DbSet<IncomeSourceEntity> IncomeSources { get; set; }
         public DbSet<IncomeCategoryEntity> IncomeCategories { get; set; }
         public DbSet<ExpenseReviewEntity> ExpensesToReview { get; set; }
@@ -68,17 +67,6 @@ namespace CashTrack.Data
     {
         public static void Initialize(this ModelBuilder mb, string env, string args)
         {
-            mb.Entity<ExpenseTags>().HasKey(et => new { et.ExpenseId, et.TagId });
-
-            mb.Entity<ExpenseTags>()
-                .HasOne(et => et.Expense)
-                .WithMany(e => e.ExpenseTags)
-                .HasForeignKey(et => et.ExpenseId);
-            mb.Entity<ExpenseTags>()
-                .HasOne(et => et.Tag)
-                .WithMany(e => e.ExpenseTags)
-                .HasForeignKey(et => et.TagId);
-
             mb.Entity<UserEntity>().ToTable("Users");
             mb.Entity<IdentityUserClaim<int>>().ToTable("UsersClaims");
             mb.Entity<IdentityUserToken<int>>().ToTable("UsersTokens");

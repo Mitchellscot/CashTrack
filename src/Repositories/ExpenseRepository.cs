@@ -31,8 +31,6 @@ public class ExpenseRepository : IExpenseRepository
         try
         {
             return await _ctx.Expenses
-                .Include(x => x.ExpenseTags)
-                .ThenInclude(x => x.Tag)
                 .Include(x => x.Merchant)
                 .Include(x => x.Category)
                 .ThenInclude(x => x.MainCategory)
@@ -49,8 +47,6 @@ public class ExpenseRepository : IExpenseRepository
         try
         {
             var expense = await _ctx.Expenses
-                .Include(x => x.ExpenseTags)
-                .ThenInclude(x => x.Tag)
                 .Include(x => x.Merchant)
                 .Include(x => x.Category)
                 .ThenInclude(x => x.MainCategory)
@@ -71,8 +67,6 @@ public class ExpenseRepository : IExpenseRepository
         {
             var expenses = await _ctx.Expenses
                     .Where(predicate)
-                    .Include(x => x.ExpenseTags)
-                    .ThenInclude(x => x.Tag)
                     .Include(x => x.Merchant)
                     .Include(x => x.Category)
                     .ThenInclude(x => x.MainCategory)

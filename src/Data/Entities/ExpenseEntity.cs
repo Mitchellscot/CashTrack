@@ -17,6 +17,5 @@ namespace CashTrack.Data.Entities
         public SubCategoryEntity? Category { get; set; }
         public bool ExcludeFromStatistics { get; set; }
         public string? RefundNotes { get; set; }
-        public ICollection<ExpenseTags>? ExpenseTags { get; set; }
     }
 }

@@ -15,8 +15,7 @@ namespace CashTrack.Models.Common
             { 6, "Notes" },
             { 7, "Merchant" },
             { 8, "Sub Category" },
-            { 9, "Main Category" },
-            { 10, "Tag" }
+            { 9, "Main Category" }
         };
     }
 }

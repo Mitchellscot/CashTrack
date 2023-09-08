@@ -114,27 +114,22 @@ namespace CashTrack.Pages.Expenses
                 ExpenseResponse = await _expenseService.GetExpensesByMainCategoryAsync(new ExpenseRequest() { Query = q, PageNumber = pageNumber });
                 return await PrepareAndRenderPage(this.Query);
             }
-            if (query == 10 && q != null)
-            {
-                ModelState.AddModelError("", "Not Implemented Yet");
-                return await PrepareAndRenderPage(this.Query);
-            }
-            if (query == 11)
+            if (query == 10)
             {
                 ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.CurrentMonth, PageNumber = pageNumber });
                 return await PrepareAndRenderPage(this.Query);
             }
-            if (query == 12)
+            if (query == 11)
             {
                 ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.CurrentQuarter, PageNumber = pageNumber });
                 return await PrepareAndRenderPage(this.Query);
             }
-            if (query == 13)
+            if (query == 12)
             {
                 ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.CurrentYear, PageNumber = pageNumber });
                 return await PrepareAndRenderPage(this.Query);
             }
-            if (query == 14)
+            if (query == 13)
             {
                 ExpenseResponse = await _expenseService.GetExpensesAsync(new ExpenseRequest() { DateOptions = DateOptions.Last30Days, PageNumber = pageNumber });
                 return await PrepareAndRenderPage(this.Query);

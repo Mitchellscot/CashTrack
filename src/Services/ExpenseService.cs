@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
-using CashTrack.Common;
 using CashTrack.Common.Exceptions;
 using CashTrack.Common.Extensions;
 using CashTrack.Data.Entities;
-using CashTrack.Models.Common;
 using CashTrack.Models.ExpenseModels;
-using CashTrack.Models.TagModels;
 using CashTrack.Repositories.ExpenseRepository;
 using CashTrack.Repositories.IncomeRepository;
 using CashTrack.Repositories.MerchantRepository;
@@ -133,8 +130,7 @@ public class ExpenseService : IExpenseService
             CategoryId = request.SubCategoryId,
             ExcludeFromStatistics = request.ExcludeFromStatistics,
             Notes = request.Notes,
-            MerchantId = merchantId > 0 ? merchantId : null,
-            //add expense_tags in the future
+            MerchantId = merchantId > 0 ? merchantId : null
         };
 
         return await _expenseRepo.Create(expenseEntity);
@@ -152,7 +148,6 @@ public class ExpenseService : IExpenseService
             //when spliting an expense, default is to not exclude from statistics
             //since that is only used in massive purchases (cars, mortgage down payments, etc.)
             ExcludeFromStatistics = false
-            //TODO: add a way to add and delete tags here
         };
         return await _expenseRepo.Create(expenseEntity);
     }
@@ -182,9 +177,6 @@ public class ExpenseService : IExpenseService
 
         if (request.Merchant != null)
             currentExpense.MerchantId = (await _merchantRepo.Find(x => x.Name == request.Merchant)).FirstOrDefault().Id;
-
-        //TODO: Setup up tags in the future
-        //currentExpense.ExpenseTags
 
         return await _expenseRepo.Update(currentExpense);
     }
@@ -280,8 +272,6 @@ public class ExpenseMapperProfile : Profile
             .ForMember(e => e.SubCategoryId, o => o.MapFrom(src => src.Category.Id))
             .ForMember(e => e.MainCategory, o => o.MapFrom(src => src.Category.MainCategory.Name))
             .ForMember(e => e.ExcludeFromStatistics, o => o.MapFrom(src => src.ExcludeFromStatistics))
-            .ForMember(e => e.RefundNotes, o => o.MapFrom(src => src.RefundNotes))
-            .ForMember(e => e.Tags, o => o.MapFrom(
-                src => src.ExpenseTags.Select(a => new TagModel() { Id = a.TagId, TagName = a.Tag.Name })));
+            .ForMember(e => e.RefundNotes, o => o.MapFrom(src => src.RefundNotes));
     }
 }
