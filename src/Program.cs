@@ -42,13 +42,17 @@ using Microsoft.Extensions.Logging;
 using System.IO;
 using CashTrack.Repositories.ImportRepository;
 using CashTrack.Services.ImportProfileService;
+using ElectronNET.API;
+using Microsoft.Extensions.Hosting;
+using System.Threading.Tasks;
+using ElectronNET.API.Entities;
 
 namespace CashTrack
 {
     public class Program
     {
         private static string _env { get; set; }
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
             _env = builder.Environment.EnvironmentName;
@@ -57,22 +61,29 @@ namespace CashTrack
             ConfigureServices(builder, connectionString);
             ConfigureAppServices(builder.Services);
 
+
+            builder.WebHost.UseElectron(args);
+            builder.Services.AddElectron();
+
+
             var app = builder.Build();
+
             ConfigureMiddleware(app);
-            if (IsProduction())
+            if (IsProduction() && !HybridSupport.IsElectronActive)
                 ConfigureProductionEndpoints(app);
             else
                 ConfigureEndpoints(app);
 
-            if (UseHttp())
-                app.Urls.Add("http://*:5000");
 
             app.Logger.LogInformation($"Using environment: {_env}");
             app.Logger.LogInformation($"Listening on {string.Join(", ", app.Urls)}");
-            if(!IsProduction())
-                app.Logger.LogInformation($"Using Connection string {connectionString}");
 
-            app.Run();
+            await app.StartAsync();
+            await Electron.WindowManager.CreateWindowAsync();
+
+            app.WaitForShutdown();
+
+
         }
         private static string ConfigureConfiguration(WebApplicationBuilder app)
         {
@@ -195,5 +206,7 @@ namespace CashTrack
             => _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase);
         private static bool IsDocker()
             => _env.Equals(CashTrackEnv.Docker, StringComparison.CurrentCultureIgnoreCase);
+        private static bool IsElectron()
+            => _env.Equals(CashTrackEnv.Electron, StringComparison.CurrentCultureIgnoreCase);
     }
 }

@@ -1,158 +1,167 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
-		<IsPackable>false</IsPackable>
-		<NoLogo>true</NoLogo>
-		<LangVersion>latest</LangVersion>
-		<UserSecretsId>eb60d0d3-72b8-4c85-a8a9-ab136dc652dc</UserSecretsId>
-		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-		<DockerfileContext>.</DockerfileContext>
-	</PropertyGroup>
-	<ItemGroup>
-		<InternalsVisibleTo Include="$(AssemblyName).Tests" />
-	</ItemGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<NoWarn>1701,1702,80001;</NoWarn>
-	</PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="12.0.1" />
-		<PackageReference Include="CsvHelper" Version="30.0.1" />
-		<PackageReference Include="FluentValidation" Version="11.6.0" />
-		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.10" />
-		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
-	</ItemGroup>
-	<ItemGroup>
-		<Compile Remove="Migrations\**" />
-		<EmbeddedResource Remove="Migrations\**" />
-		<None Remove="Migrations\**" />
-	</ItemGroup>
-	<ItemGroup>
-		<Content Remove=".prettierrc.json" />
-		<Content Remove="tsconfig.json" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Remove=".eslintrc.js" />
-		<None Remove=".prettierIgnore" />
-		<None Remove="jest.config.js" />
-		<None Remove="Scripts\Budget\budget.ts" />
-		<None Remove="Scripts\Home\alltime.ts" />
-		<None Remove="Scripts\Home\annual.ts" />
-		<None Remove="Scripts\Import\rules.ts" />
-		<None Remove="Scripts\IncomeCategories\incomeCategories.ts" />
-		<None Remove="Scripts\IncomeCategories\incomeCategoryDetail.ts" />
-		<None Remove="Scripts\MainCategories\mainCategories.ts" />
-		<None Remove="Scripts\Models\CategoryAverages.ts" />
-		<None Remove="Scripts\Settings\add-profile.tsx" />
-		<None Remove="Scripts\Settings\settings.ts" />
-		<None Remove="Scripts\SubCategories\subCategoryDetail.ts" />
-		<None Remove="Scripts\Theme\theme.ts" />
-		<None Remove="Scripts\Utility\budget-income-switch.ts" />
-		<None Remove="Scripts\Utility\budget-timespan-select.ts" />
-		<None Remove="Scripts\Utility\budget-type-switch.ts" />
-		<None Remove="Scripts\Utility\force-refund.ts" />
-		<None Remove="Scripts\Utility\format-amount.ts" />
-		<None Remove="Scripts\Utility\handle-expense-dropdown.ts" />
-		<None Remove="Scripts\Utility\importrule-modal.ts" />
-		<None Remove="Scripts\Utility\income-category-autocomplete.ts" />
-		<None Remove="Scripts\Utility\initialize-tooltips.ts" />
-		<None Remove="Scripts\Utility\load-main-category.ts" />
-		<None Remove="Scripts\Utility\loadBudgetStatistics.ts" />
-		<None Remove="Scripts\Utility\merchant-autocomplete.ts" />
-		<None Remove="Scripts\Utility\online-merchant.ts" />
-		<None Remove="Scripts\Utility\online-source.ts" />
-		<None Remove="Scripts\Utility\query-params.ts" />
-		<None Remove="Scripts\Utility\refund-calculations.ts" />
-		<None Remove="Scripts\Utility\show-modal.ts" />
-		<None Remove="Scripts\Utility\source-autocomplete.ts" />
-		<None Remove="Scripts\Utility\split-calculations.ts" />
-		<None Remove="Scripts\Utility\subcategory-autocomplete.ts" />
-		<None Remove="Scripts\_tests\budget-income-switch.test.ts" />
-		<None Remove="Scripts\_tests\budget-type-switch.test.ts" />
-		<None Remove="Scripts\_tests\format-amount.test.ts" />
-	</ItemGroup>
-	<ItemGroup>
-		<TypeScriptCompile Include="Scripts\Budget\budget.ts" />
-		<TypeScriptCompile Include="Scripts\Expenses\expenses.ts" />
-		<TypeScriptCompile Include="Scripts\Expenses\split.ts" />
-		<TypeScriptCompile Include="Scripts\Home\annual.ts" />
-		<TypeScriptCompile Include="Scripts\Home\alltime.ts" />
-		<TypeScriptCompile Include="Scripts\Import\rules.ts" />
-		<TypeScriptCompile Include="Scripts\IncomeCategories\incomeCategories.ts" />
-		<TypeScriptCompile Include="Scripts\IncomeCategories\incomeCategoryDetail.ts" />
-		<TypeScriptCompile Include="Scripts\Income\income.ts" />
-		<TypeScriptCompile Include="Scripts\Income\refund.ts" />
-		<TypeScriptCompile Include="Scripts\MainCategories\mainCategories.ts" />
-		<TypeScriptCompile Include="Scripts\Merchants\merchantDetail.ts" />
-		<TypeScriptCompile Include="Scripts\Merchants\merchants.ts" />
-		<TypeScriptCompile Include="Scripts\Models\CategoryAverages.ts" />
-		<TypeScriptCompile Include="Scripts\Settings\add-profile.tsx" />
-		<TypeScriptCompile Include="Scripts\Settings\settings.ts" />
-		<TypeScriptCompile Include="Scripts\Sources\sources.ts" />
-		<TypeScriptCompile Include="Scripts\Sources\sourceDetail.ts" />
-		<TypeScriptCompile Include="Scripts\SubCategories\subCategoryDetail.ts" />
-		<TypeScriptCompile Include="Scripts\Theme\theme.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\budget-income-switch.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\budget-timespan-select.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\budget-type-switch.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\show-modal.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\force-refund.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\format-amount.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\handle-expense-dropdown.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\importrule-modal.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\income-category-autocomplete.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\initialize-tooltips.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\load-main-category.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\loadBudgetStatistics.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\merchant-autocomplete.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\online-merchant.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\online-source.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\query-params.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\refund-calculations.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\source-autocomplete.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\split-calculations.ts" />
-		<TypeScriptCompile Include="Scripts\Utility\subcategory-autocomplete.ts" />
-		<TypeScriptCompile Include="Scripts\_tests\budget-income-switch.test.ts" />
-		<TypeScriptCompile Include="Scripts\_tests\budget-type-switch.test.ts" />
-		<TypeScriptCompile Include="Scripts\_tests\format-amount.test.ts" />
-	</ItemGroup>
-	<ItemGroup>
-		<Folder Include="Data\Migrations\" />
-		<Folder Include="Properties\ServiceDependencies\" />
-		<Folder Include="wwwroot\css\" />
-		<Folder Include="wwwroot\js\" />
-		<Folder Include="wwwroot\data\" />
-	</ItemGroup>
-	<ProjectExtensions>
-		<VisualStudio>
-			<UserProperties />
-		</VisualStudio>
-	</ProjectExtensions>
-	<Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
-		<PropertyGroup>
-			<RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
-		</PropertyGroup>
-		<Exec Command="npm install" Condition="'$(RestorePackagesWithLockFile)' != 'true'" />
-		<Touch Files="node_modules/.install-stamp" AlwaysCreate="true" />
-	</Target>
-
-	<Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" Condition="'$(Configuration)'=='Release'" BeforeTargets="BeforeBuild">
-		<Exec Command="npm run build" />
-	</Target>
-	<Target Name="NpmRunDev" DependsOnTargets="NpmInstall" Condition="'$(Configuration)'=='Debug'" BeforeTargets="BeforeBuild">
-		<Exec Command="npm run dev" />
-	</Target>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <NoLogo>true</NoLogo>
+    <LangVersion>latest</LangVersion>
+    <UserSecretsId>eb60d0d3-72b8-4c85-a8a9-ab136dc652dc</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>.</DockerfileContext>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="$(AssemblyName).Tests" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701,1702,80001;</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="CsvHelper" Version="30.0.1" />
+    <PackageReference Include="ElectronNET.API" Version="23.6.1" />
+    <PackageReference Include="FluentValidation" Version="11.7.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.21" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.21" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.21">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.21" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.21" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.21" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.21">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="SocketIOClient" Version="3.1.1" />
+    <PackageReference Include="SocketIOClient.Newtonsoft.Json" Version="3.0.7" />
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Migrations\**" />
+    <EmbeddedResource Remove="Migrations\**" />
+    <None Remove="Migrations\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove=".prettierrc.json" />
+    <Content Remove="tsconfig.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove=".eslintrc.js" />
+    <None Remove=".prettierIgnore" />
+    <None Remove="jest.config.js" />
+    <None Remove="Scripts\Budget\budget.ts" />
+    <None Remove="Scripts\Home\alltime.ts" />
+    <None Remove="Scripts\Home\annual.ts" />
+    <None Remove="Scripts\Import\rules.ts" />
+    <None Remove="Scripts\IncomeCategories\incomeCategories.ts" />
+    <None Remove="Scripts\IncomeCategories\incomeCategoryDetail.ts" />
+    <None Remove="Scripts\MainCategories\mainCategories.ts" />
+    <None Remove="Scripts\Models\CategoryAverages.ts" />
+    <None Remove="Scripts\Settings\add-profile.tsx" />
+    <None Remove="Scripts\Settings\settings.ts" />
+    <None Remove="Scripts\SubCategories\subCategoryDetail.ts" />
+    <None Remove="Scripts\Theme\theme.ts" />
+    <None Remove="Scripts\Utility\budget-income-switch.ts" />
+    <None Remove="Scripts\Utility\budget-timespan-select.ts" />
+    <None Remove="Scripts\Utility\budget-type-switch.ts" />
+    <None Remove="Scripts\Utility\force-refund.ts" />
+    <None Remove="Scripts\Utility\format-amount.ts" />
+    <None Remove="Scripts\Utility\handle-expense-dropdown.ts" />
+    <None Remove="Scripts\Utility\importrule-modal.ts" />
+    <None Remove="Scripts\Utility\income-category-autocomplete.ts" />
+    <None Remove="Scripts\Utility\initialize-tooltips.ts" />
+    <None Remove="Scripts\Utility\load-main-category.ts" />
+    <None Remove="Scripts\Utility\loadBudgetStatistics.ts" />
+    <None Remove="Scripts\Utility\merchant-autocomplete.ts" />
+    <None Remove="Scripts\Utility\online-merchant.ts" />
+    <None Remove="Scripts\Utility\online-source.ts" />
+    <None Remove="Scripts\Utility\query-params.ts" />
+    <None Remove="Scripts\Utility\refund-calculations.ts" />
+    <None Remove="Scripts\Utility\show-modal.ts" />
+    <None Remove="Scripts\Utility\source-autocomplete.ts" />
+    <None Remove="Scripts\Utility\split-calculations.ts" />
+    <None Remove="Scripts\Utility\subcategory-autocomplete.ts" />
+    <None Remove="Scripts\_tests\budget-income-switch.test.ts" />
+    <None Remove="Scripts\_tests\budget-type-switch.test.ts" />
+    <None Remove="Scripts\_tests\format-amount.test.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Scripts\Budget\budget.ts" />
+    <TypeScriptCompile Include="Scripts\Expenses\expenses.ts" />
+    <TypeScriptCompile Include="Scripts\Expenses\split.ts" />
+    <TypeScriptCompile Include="Scripts\Home\annual.ts" />
+    <TypeScriptCompile Include="Scripts\Home\alltime.ts" />
+    <TypeScriptCompile Include="Scripts\Import\rules.ts" />
+    <TypeScriptCompile Include="Scripts\IncomeCategories\incomeCategories.ts" />
+    <TypeScriptCompile Include="Scripts\IncomeCategories\incomeCategoryDetail.ts" />
+    <TypeScriptCompile Include="Scripts\Income\income.ts" />
+    <TypeScriptCompile Include="Scripts\Income\refund.ts" />
+    <TypeScriptCompile Include="Scripts\MainCategories\mainCategories.ts" />
+    <TypeScriptCompile Include="Scripts\Merchants\merchantDetail.ts" />
+    <TypeScriptCompile Include="Scripts\Merchants\merchants.ts" />
+    <TypeScriptCompile Include="Scripts\Models\CategoryAverages.ts" />
+    <TypeScriptCompile Include="Scripts\Settings\add-profile.tsx" />
+    <TypeScriptCompile Include="Scripts\Settings\settings.ts" />
+    <TypeScriptCompile Include="Scripts\Sources\sources.ts" />
+    <TypeScriptCompile Include="Scripts\Sources\sourceDetail.ts" />
+    <TypeScriptCompile Include="Scripts\SubCategories\subCategoryDetail.ts" />
+    <TypeScriptCompile Include="Scripts\Theme\theme.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\budget-income-switch.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\budget-timespan-select.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\budget-type-switch.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\show-modal.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\force-refund.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\format-amount.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\handle-expense-dropdown.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\importrule-modal.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\income-category-autocomplete.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\initialize-tooltips.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\load-main-category.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\loadBudgetStatistics.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\merchant-autocomplete.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\online-merchant.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\online-source.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\query-params.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\refund-calculations.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\source-autocomplete.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\split-calculations.ts" />
+    <TypeScriptCompile Include="Scripts\Utility\subcategory-autocomplete.ts" />
+    <TypeScriptCompile Include="Scripts\_tests\budget-income-switch.test.ts" />
+    <TypeScriptCompile Include="Scripts\_tests\budget-type-switch.test.ts" />
+    <TypeScriptCompile Include="Scripts\_tests\format-amount.test.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\Migrations\" />
+    <Folder Include="Properties\ServiceDependencies\" />
+    <Folder Include="wwwroot\css\" />
+    <Folder Include="wwwroot\js\" />
+    <Folder Include="wwwroot\data\" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties />
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
+    <PropertyGroup>
+      <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
+    </PropertyGroup>
+    <Exec Command="npm install" Condition="'$(RestorePackagesWithLockFile)' != 'true'" />
+    <Touch Files="node_modules/.install-stamp" AlwaysCreate="true" />
+  </Target>
+  <Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" Condition="'$(Configuration)'=='Release'" BeforeTargets="BeforeBuild">
+    <Exec Command="npm run build" />
+  </Target>
+  <Target Name="NpmRunDev" DependsOnTargets="NpmInstall" Condition="'$(Configuration)'=='Debug'" BeforeTargets="BeforeBuild">
+    <Exec Command="npm run dev" />
+  </Target>
+  <ItemGroup>
+    <Content Update="electron.manifest.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
