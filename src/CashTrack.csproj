@@ -3,7 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <NoLogo>true</NoLogo>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <UserSecretsId>eb60d0d3-72b8-4c85-a8a9-ab136dc652dc</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>
@@ -35,10 +35,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="SocketIOClient" Version="3.1.1" />
-    <PackageReference Include="SocketIOClient.Newtonsoft.Json" Version="3.0.7" />
-    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Migrations\**" />

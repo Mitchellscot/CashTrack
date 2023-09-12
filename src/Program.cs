@@ -69,10 +69,8 @@ namespace CashTrack
             var app = builder.Build();
 
             ConfigureMiddleware(app);
-            if (IsProduction() && !HybridSupport.IsElectronActive)
-                ConfigureProductionEndpoints(app);
-            else
-                ConfigureEndpoints(app);
+
+            ConfigureEndpoints(app);
 
 
             app.Logger.LogInformation($"Using environment: {_env}");
@@ -82,7 +80,6 @@ namespace CashTrack
             await Electron.WindowManager.CreateWindowAsync();
 
             app.WaitForShutdown();
-
 
         }
         private static string ConfigureConfiguration(WebApplicationBuilder app)
