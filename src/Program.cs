@@ -61,26 +61,56 @@ namespace CashTrack
             ConfigureServices(builder, connectionString);
             ConfigureAppServices(builder.Services);
 
-
-            builder.WebHost.UseElectron(args);
-            builder.Services.AddElectron();
-
+            if (IsElectron())
+            {
+                builder.WebHost.UseElectron(args);
+                builder.Services.AddElectron();
+            }
 
             var app = builder.Build();
 
             ConfigureMiddleware(app);
-
-            ConfigureEndpoints(app);
+            if (IsProduction())
+                ConfigureProductionEndpoints(app);
+            else
+                ConfigureEndpoints(app);
 
 
             app.Logger.LogInformation($"Using environment: {_env}");
             app.Logger.LogInformation($"Listening on {string.Join(", ", app.Urls)}");
 
-            await app.StartAsync();
-            await Electron.WindowManager.CreateWindowAsync();
-
-            app.WaitForShutdown();
-
+            if (IsElectron())
+            {
+                await app.StartAsync();
+                var window = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
+                {
+                    Width = 1400,
+                    Height = 895,
+                    Center = true,
+                    MinWidth = 375,
+                    MinHeight = 1400,
+                    MaxHeight = 1400,
+                    MaxWidth = 1500,
+                    Title = "CashTrack",
+                    Icon = Path.Join(Directory.GetCurrentDirectory(), "wwwroot", "favicon", "favicon.ico"),
+                    AutoHideMenuBar = true,
+                    BackgroundColor = "#2b3c4c",
+                    TitleBarStyle = TitleBarStyle.customButtonsOnHover,
+                    WebPreferences = new WebPreferences()
+                    {
+                        DevTools = true
+                    }
+                });
+                window.OnClosed += () =>
+                {
+                    Electron.App.Quit();
+                };
+                await window.WebContents.Session.ClearCacheAsync();
+                window.OnReadyToShow += () => window.Show();
+                app.WaitForShutdown();
+            }
+            else
+                app.Run();
         }
         private static string ConfigureConfiguration(WebApplicationBuilder app)
         {
