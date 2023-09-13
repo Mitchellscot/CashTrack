@@ -1,35 +1,39 @@
 {
   "executable": "CashTrack",
   "splashscreen": {
-    "imageFile": ""
+    "imageFile": "wwwroot/images/cash-track-readme.png"
   },
   "name": "CashTrack",
-  "author": "",
+  "author": "Mitchell Scott",
   "singleInstance": false,
   "environment": "Electron",
   "build": {
     "appId": "com.CashTrack.app",
     "productName": "CashTrack",
-    "copyright": "Copyright © 2020",
+    "copyright": "Copyright © 2023",
     "buildVersion": "1.0.0",
     "compression": "maximum",
-    "directories": {
-      "output": "../../../bin/Desktop"
+    "win": {
+      "icon": "src/wwwroot/favicon/favicon.ico",
+      "buildResources": "wwwroot"
     },
-    "extraResources": [
-      {
-        "from": "./bin",
-        "to": "bin",
-        "filter": [ "**/*" ]
-      }
-    ],
-    "files": [
-      {
-        "from": "./ElectronHostHook/node_modules",
-        "to": "ElectronHostHook/node_modules",
-        "filter": [ "**/*" ]
+      "directories": {
+        "output": "../../../bin/Desktop"
       },
-      "**/*"
-    ]
+      "extraResources": [
+        {
+          "from": "./bin",
+          "to": "bin",
+          "filter": [ "**/*" ]
+        }
+      ],
+      "files": [
+        {
+          "from": "./ElectronHostHook/node_modules",
+          "to": "ElectronHostHook/node_modules",
+          "filter": [ "**/*" ]
+        },
+        "**/*"
+      ]
+    }
   }
-}
