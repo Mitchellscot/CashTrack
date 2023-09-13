@@ -82,31 +82,7 @@ namespace CashTrack
             if (IsElectron())
             {
                 await app.StartAsync();
-                var window = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
-                {
-                    Width = 1400,
-                    Height = 895,
-                    Center = true,
-                    MinWidth = 375,
-                    MinHeight = 1400,
-                    MaxHeight = 1400,
-                    MaxWidth = 1500,
-                    Title = "CashTrack",
-                    Icon = Path.Join(Directory.GetCurrentDirectory(), "wwwroot", "favicon", "favicon.ico"),
-                    AutoHideMenuBar = true,
-                    BackgroundColor = "#2b3c4c",
-                    TitleBarStyle = TitleBarStyle.customButtonsOnHover,
-                    WebPreferences = new WebPreferences()
-                    {
-                        DevTools = true
-                    }
-                });
-                window.OnClosed += () =>
-                {
-                    Electron.App.Quit();
-                };
-                await window.WebContents.Session.ClearCacheAsync();
-                window.OnReadyToShow += () => window.Show();
+                BootstrapElectron();
                 app.WaitForShutdown();
             }
             else
@@ -225,6 +201,51 @@ namespace CashTrack
         {
             app.MapRazorPages();
             app.MapControllers();
+        }
+        private static async void BootstrapElectron()
+        {
+            var window = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions()
+            {
+                Width = 1400,
+                Height = 895,
+                Center = true,
+                MinWidth = 375,
+                MinHeight = 375,
+                Title = "CashTrack",
+                Icon = Path.Join(Directory.GetCurrentDirectory(), "wwwroot", "favicon", "favicon.ico"),
+                AutoHideMenuBar = true,
+                BackgroundColor = "#2b3c4c",
+                TitleBarStyle = TitleBarStyle.customButtonsOnHover,
+                WebPreferences = new WebPreferences()
+                {
+                    DevTools = true
+                }
+            });
+            window.OnClosed += () =>
+            {
+                Electron.App.Quit();
+            };
+            window.WebContents.OnCrashed += async (e) =>
+            {
+                var options = new MessageBoxOptions("CashTrack has crashed.")
+                {
+                    Type = MessageBoxType.info,
+                    Title = "Renderer Process Crashed",
+                    Buttons = new string[] { "Reload", "Close" }
+                };
+                var result = await Electron.Dialog.ShowMessageBoxAsync(options);
+
+                if (result.Response == 0)
+                {
+                    window.Reload();
+                }
+                else
+                {
+                    window.Close();
+                }
+            };
+            await window.WebContents.Session.ClearCacheAsync();
+            window.OnReadyToShow += () => window.Show();
         }
 
         private static bool UseHttp()
