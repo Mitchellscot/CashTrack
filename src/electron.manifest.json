@@ -14,8 +14,7 @@
     "buildVersion": "1.0.0",
     "compression": "maximum",
     "win": {
-      "icon": "src/wwwroot/favicon/favicon.ico",
-      "buildResources": "wwwroot"
+      "icon": "src/wwwroot/favicon/favicon.ico"
     },
       "directories": {
         "output": "../../../bin/Desktop"
