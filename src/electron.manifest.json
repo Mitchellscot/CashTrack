@@ -1,7 +1,7 @@
 {
   "executable": "CashTrack",
   "splashscreen": {
-    "imageFile": "wwwroot/images/cash-track-readme.png"
+    "imageFile": "wwwroot/images/cash-track-splash.png"
   },
   "name": "CashTrack",
   "author": "Mitchell Scott",
