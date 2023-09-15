@@ -77,7 +77,6 @@ namespace CashTrack
 
 
             app.Logger.LogInformation($"Using environment: {_env}");
-            app.Logger.LogInformation($"Listening on {string.Join(", ", app.Urls)}");
 
             if (IsElectron())
             {
