@@ -91,7 +91,7 @@ namespace CashTrack
         {
             app.Services.Configure<AppSettingsOptions>(app.Configuration.GetSection(AppSettingsOptions.AppSettings));
 
-            return IsProduction() ? $"Data Source={Path.Join(Directory.GetCurrentDirectory(), app.Configuration[$"AppSettings:ConnectionStrings:{_env}"])}" : $"Data Source={Path.Join(Directory.GetCurrentDirectory(), "Data", app.Configuration[$"AppSettings:ConnectionStrings:{_env}"])}";
+            return IsProduction() || IsElectron() ? $"Data Source={Path.Join(Directory.GetCurrentDirectory(), app.Configuration[$"AppSettings:ConnectionStrings:{_env}"])}" : $"Data Source={Path.Join(Directory.GetCurrentDirectory(), "Data", app.Configuration[$"AppSettings:ConnectionStrings:{_env}"])}";
         }
 
         private static void ConfigureServices(WebApplicationBuilder app, string connectionString)

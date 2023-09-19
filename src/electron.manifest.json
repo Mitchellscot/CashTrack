@@ -14,7 +14,7 @@
     "buildVersion": "1.0.0",
     "compression": "maximum",
     "win": {
-      "icon": "src/wwwroot/favicon/favicon.ico"
+      "icon": "../../../wwwroot/images/icon.png"
     },
       "directories": {
         "output": "../../../bin/Desktop"
@@ -23,6 +23,11 @@
         {
           "from": "./bin",
           "to": "bin",
+          "filter": [ "**/*" ]
+        },
+        {
+          "from": "../../../Data/cashtrack.db",
+          "to": "bin/Data/cashtrack.db",
           "filter": [ "**/*" ]
         }
       ],
