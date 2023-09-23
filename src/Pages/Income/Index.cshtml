@@ -31,7 +31,7 @@
                     </select>
                     <select id="categorySelect" data-width="100%" class="form-select text-center display-none" asp-for="@Model.Q">
                     </select>
-                    <input id="qInput" data-val="true" asp-for="@Model.Q" type="Model.InputType" class="form-control w-50 text-center">
+                    <input id="qInput" data-val="true" asp-for="@Model.Q" type="Model.InputType" class="form-control w-50">
                     <button class="btn btn-secondary rounded-end" type="submit" asp-route-PageNumber="1">
                         @await Html.PartialAsync("Icons", new Icons()
                         {
