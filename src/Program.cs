@@ -74,7 +74,7 @@ namespace CashTrack
             ConfigureMiddleware(app);
 
             if (IsProduction())
-                ConfigureEndpoints(app);
+                ConfigureProductionEndpoints(app);
             else
                 ConfigureEndpoints(app);
 
