@@ -2,6 +2,7 @@ const path = require('path');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const webpack = require('webpack');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 
 const config = {
 	entry: {
@@ -29,7 +30,12 @@ const config = {
 		mainCategories: './Scripts/MainCategories/mainCategories.ts',
 		budget: './Scripts/Budget/budget.ts',
 		theme: './Scripts/Theme/theme.ts',
-		addProfile: './Scripts/Settings/add-profile.tsx'
+		addProfile: './Scripts/Settings/add-profile.tsx',
+		charts: './node_modules/chart.js/dist/chart.umd.js',
+		jQuery: './node_modules/jquery/dist/jquery.js',
+		jqueryVal: './node_modules/jquery-validation/dist/jquery.validate.js',
+		jqueryValUnob: './node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js',
+		autocomplete: './node_modules/jquery-ui/ui/widgets/autocomplete.js',
 	},
 	output: {
 		filename: '[name].js',
@@ -70,7 +76,17 @@ module.exports = (env, argv) => {
 	}
 
 	if (argv.mode === 'production') {
-		//I don't know... uglify or something?
+		config.optimization = {
+			minimize: true,
+			minimizer: [(compiler) => {
+				new TerserPlugin({
+					parallel: true,
+					terserOptions: {
+						compress: true
+					}
+				}).apply(compiler)
+			}]
+		}
 	}
 	config.cache = argv.env.WEBPACK_WATCH ? {type: 'memory'} : {type: 'filesystem'};
 

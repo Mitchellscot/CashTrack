@@ -48,16 +48,19 @@ using System.Threading.Tasks;
 using ElectronNET.API.Entities;
 using System.Linq;
 using System.Diagnostics;
+using Microsoft.Extensions.FileProviders;
 
 namespace CashTrack
 {
     public class Program
     {
         private static string _env { get; set; }
+        private static string _rootPath { get; set; }
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
             _env = builder.Environment.EnvironmentName;
+            _rootPath = builder.Environment.ContentRootPath;
 
             var connectionString = ConfigureConfiguration(builder);
             ConfigureServices(builder, connectionString);

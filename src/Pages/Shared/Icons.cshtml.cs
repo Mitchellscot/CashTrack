@@ -40,12 +40,14 @@ namespace CashTrack.Pages.Shared
         Gear,
         BarChartFill,
         BarChart,
+        BarChartLine,
         Calendar3,
         ChartLine,
         PieChart,
         CalendarCheck,
         CircleHalf,
         SunFill,
-        MoonStarsFill
+        MoonStarsFill,
+        List
     }
 }

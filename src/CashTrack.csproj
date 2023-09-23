@@ -139,7 +139,6 @@
     <Folder Include="Properties\ServiceDependencies\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\js\" />
-    <Folder Include="wwwroot\data\" />
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>

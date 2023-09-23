@@ -228,8 +228,8 @@
         Budgets = Model.BudgetPageResponse.BudgetBreakdown
     })
 @section Scripts {
-    <script src="~/js/budget.js" asp-append-version="true"></script>
-    <script asp-append-version="true" src="https://cdn.jsdelivr.net/npm/chart.js@4.1.1/dist/chart.umd.js"></script>
+    <script src="~/js/budget.js"></script>
+    <script src="~/js/charts.js"></script>
     @if(!dataIsEmptyForTheYear)
     {
     @await Html.PartialAsync("AnnualBudgetChart", new AnnualBudgetChart()

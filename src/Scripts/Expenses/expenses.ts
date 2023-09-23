@@ -4,8 +4,6 @@ import {
 	formatInputsOnSelectListChange,
 	formatInputsOnPageLoad,
 } from '../Utility/handle-expense-dropdown';
-import 'jquery-validation';
-import 'jquery-validation-unobtrusive';
 import {
 	loadMainCategoryOnSubCategorySelect,
 	loadMainCategoryOnEditModalLoad,
