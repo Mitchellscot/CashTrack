@@ -231,8 +231,8 @@
         Budgets = Model.BudgetPageResponse.BudgetBreakdown
     })
 @section Scripts {
-    <script src="~/js/budget.js" asp-append-version="true"></script>
-    <script asp-append-version="false" src="~/js/charts.js"></script>
+    <script src="~/js/budget.js"></script>
+    <script src="~/js/charts.js"></script>
     @if (!dataIsEmptyForTheMonth)
     {
         @await Html.PartialAsync("MonthlyBudgetChart", new MonthlyBudgetChart()
