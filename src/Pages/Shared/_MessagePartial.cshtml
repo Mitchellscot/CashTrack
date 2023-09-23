@@ -1,4 +1,5 @@
-﻿@model CashTrack.Pages.Shared._MessagePartial
+﻿@using CashTrack.Common;
+@model CashTrack.Pages.Shared._MessagePartial
 @{
     var cssClass = Model.MessageType switch
     {
@@ -16,10 +17,10 @@
     };
     var icon = Model.MessageType switch
     {
-        MessageType.Info => "bi-info-circle",
-        MessageType.Success => "bi-hand-thumbs-up",
-        MessageType.Danger => "bi-exclamation-circle",
-        _ => "info-circle"
+        MessageType.Info => Icon.InfoCircle,
+        MessageType.Success => Icon.HandThumbsUp,
+        MessageType.Danger => Icon.ExclamationCircle,
+        _ => Icon.InfoCircle
     };
 }
 <div class="main-container">
@@ -27,7 +28,14 @@
         @if (Model.MessageType == MessageType.Danger)
         {
             <div class="toast-body d-flex justify-content-between align-items-center text-center">
-                <i class="bi @icon text-white mx-3 icon-size-xl" role="img"></i>
+                @await Html.PartialAsync("Icons", new Icons()
+                {
+                    Icon = icon,
+                    Color = IconColors.White,
+                    Classes = "mx-3 white-icon",
+                    Width = 24,
+                    Height = 36
+                })
                 <div asp-validation-summary="All"></div>
                 <button type="button" class="btn-lg btn-close btn-close-white mx-3" data-bs-dismiss="toast"></button>
             </div>
@@ -35,7 +43,14 @@
         else
         {
             <div class="toast-body d-flex justify-content-between align-items-center text-center">
-                <i class="bi @icon text-white mx-3 icon-size-xl" role="img"></i>
+                @await Html.PartialAsync("Icons", new Icons()
+                {
+                    Icon = icon,
+                    Color = IconColors.White,
+                    Classes = "mx-3 white-icon",
+                    Width = 24,
+                    Height = 36
+                })
                 @Model.Message
                 <button type="button" class="btn-lg btn-close btn-close-white mx-3" data-bs-dismiss="toast"></button>
             </div>
