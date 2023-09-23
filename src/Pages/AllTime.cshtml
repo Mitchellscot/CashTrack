@@ -550,7 +550,7 @@
 })
 
 @section Scripts {
-    <script asp-append-version="true" src="https://cdn.jsdelivr.net/npm/chart.js@4.1.1/dist/chart.umd.js"></script>
+    <script asp-append-version="false" src="~/js/charts.js"></script>
     @if (incomeORExpenseDataIsPresent)
     {
         @await Html.PartialAsync("OverallSummaryChart", new OverallSummaryChart()

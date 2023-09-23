@@ -1,6 +1,4 @@
 import {autoSuggestIncomeSourceNames} from '../Utility/source-autocomplete';
-import 'jquery-validation';
-import 'jquery-validation-unobtrusive';
 import {
 	formatInputOnPageLoad,
 	formatInputOnSelectListChange,
