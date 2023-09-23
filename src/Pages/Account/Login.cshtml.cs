@@ -24,8 +24,9 @@ namespace CashTrack.Pages
         public async Task<IActionResult> OnGet()
         {
             var user = await _userManager.FindByNameAsync("Cash");
-            if (user is not null && user.LastImport == DateTime.MinValue)
-                DisplayWelcomeMessage = true;
+            if (user is not null)
+                DisplayWelcomeMessage = user.FirstName.ToLower().Contains("new");
+            
             return Page();
         }
 
@@ -41,8 +42,9 @@ namespace CashTrack.Pages
             var result = await _signInManager.PasswordSignInAsync(LoginRequest.UserName, LoginRequest.Password, true, false);
             if (result.Succeeded)
             {
+                var displayChangeCredsMessage = user.FirstName.ToLower().Contains("new");
                 _logger.LogInformation($"{LoginRequest.UserName} has logged in at {DateTime.Now} CST Time from {HttpContext.Connection.RemoteIpAddress}");
-                return LocalRedirect("~/");
+                return LocalRedirect($"~/?changecreds={displayChangeCredsMessage}");
             }
             else
             {
@@ -54,7 +56,7 @@ namespace CashTrack.Pages
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation($"{LoginRequest.UserName} has logged out at {DateTime.Now} CST Time from {HttpContext.Request.Host.Host}");
-            return RedirectToPage("/Monthly");
+            return RedirectToPage("/");
         }
     }
 }
