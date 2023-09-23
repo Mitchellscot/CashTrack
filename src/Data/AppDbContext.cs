@@ -79,11 +79,10 @@ namespace CashTrack.Data
             {
                 //seed basic data
                 var rando = new Random();
-                var userId = rando.Next(1, int.MaxValue);
                 var passwordHasher = new PasswordHasher<UserEntity>();
                 var seededUser = new UserEntity()
                 {
-                    Id = userId,
+                    Id = 1,
                     UserName = "cash",
                     FirstName = "New User",
                     LastName = "",
@@ -99,7 +98,7 @@ namespace CashTrack.Data
                 var claim = new IdentityUserClaim<int>()
                 {
                     Id = 1,
-                    UserId = userId,
+                    UserId = 1,
                     ClaimType = ClaimTypes.NameIdentifier,
                     ClaimValue = "cash",
                 };

@@ -43,6 +43,8 @@ namespace CashTrack.Pages
         public int Year { get; set; } = DateTime.Now.Year;
         [BindProperty(SupportsGet = true)]
         public int Month { get; set; } = DateTime.Now.Month;
+        [BindProperty(SupportsGet = true)]
+        public bool ChangeCreds { get; set; } = false;
         public SelectList YearSelectList { get; set; }
         public SelectList MonthList { get; set; } = new SelectList(new Dictionary<string, int> {
             { "January", 1 },

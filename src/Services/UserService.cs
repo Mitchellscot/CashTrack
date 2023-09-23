@@ -18,6 +18,7 @@ public interface IUserService
     Task<bool> UpdatePasswordAsync(ChangePassword request);
     Task<bool> UpdateUsernameAsync(ChangeUsername request);
     Task<bool> UpdateLastImportDate(int userId);
+    Task<bool> UpdateNameAsync(string name);
     Task<decimal> GetDefaultTax(string userName);
     Task<bool> UpdateDefaultTax(string userName, decimal newTax);
 }
@@ -130,6 +131,23 @@ public class UserService : IUserService
         user.LastImport = DateTime.Now;
         var update = await _userManager.UpdateAsync(user);
         return update.Succeeded;
+    }
+    //the users name is "new user" until they change their password, then it's just "user"
+    //this allows me to display 'Change Your Password' messages
+    public async Task<bool> UpdateNameAsync(string name)
+    {
+        var user = await _userManager.FindByNameAsync(name);
+        if (user == null)
+            throw new ArgumentNullException(nameof(user));
+
+        if (user.FirstName.ToLower().Contains("new"))
+        {
+            user.FirstName = "user";
+            var update = await _userManager.UpdateAsync(user);
+            return update.Succeeded;
+        }
+        else
+            return true;
     }
 }
 public class UserMapperProfile : Profile

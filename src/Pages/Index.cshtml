@@ -38,7 +38,7 @@
     {
         <div class="alert alert-info spin-it text-center">You have @Model.ReviewAmount transactions to review. <a asp-page="./Import/Expenses">Review them here</a></div>
     }
-    @if (User.Identity.IsAuthenticated && User.Identity.Name.IsEqualTo("cash"))
+    @if (Model.ChangeCreds)
     {
         <div class="row d-flex justify-content-center">
             <div class="alert alert-danger spin-it text-center col-auto">

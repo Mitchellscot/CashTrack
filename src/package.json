@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "@types/bootstrap": "^5.2.6",
+    "@types/bootstrap": "^5.2.7",
     "@types/jest": "^29.4.0",
     "@types/jquery": "^3.5.14",
     "@types/jqueryui": "^1.12.16",
@@ -9,7 +9,7 @@
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "@webpack-cli/generators": "^2.5.0",
-    "bootswatch": "^5.3.0",
+    "bootswatch": "^5.3.2",
     "clean-webpack-plugin": "^4.0.0",
     "eslint": "^8.30.0",
     "eslint-config-prettier": "^8.5.0",
@@ -32,15 +32,15 @@
   },
   "version": "1.0.0",
   "description": "A Budget App",
-  "name": "cash-track",
+  "name": "cashtrack",
   "scripts": {
     "build": "webpack --mode=production --node-env=production && sass --no-source-map --style=compressed Styles/index.scss wwwroot/css/index.css",
     "dev": "webpack --mode=development --node-env=development && sass --update --style=expanded Styles/index.scss wwwroot/css/index.css",
     "test": "jest"
   },
   "dependencies": {
-    "@popperjs/core": "^2.11.6",
-    "bootstrap": "^5.3.0",
+    "@popperjs/core": "^2.11.8",
+    "bootstrap": "^5.3.2",
     "eslint-webpack-plugin": "^3.2.0",
     "jquery": "^3.6.3",
     "jquery-ui": "^1.13.2",

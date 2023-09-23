@@ -34,8 +34,8 @@ namespace CashTrack.Tests.Services
             var sharedDB = new AppDbContextFactory().CreateDbContext();
             _repo = new UserRepository(sharedDB);
 
-            _userManager = new Mock<UserManager<UserEntity>>(Mock.Of<IUserStore<UserEntity>>(), null, null, null, null, null, null, null, null);
-            _signInManager = new Mock<SignInManager<UserEntity>>(_userManager.Object, Mock.Of<IHttpContextAccessor>(), Mock.Of<IUserClaimsPrincipalFactory<UserEntity>>(), null, null, null, null);
+            _userManager = new Mock<UserManager<UserEntity>>(Mock.Of<IUserStore<UserEntity>>(), null!, null!, null!, null!, null!, null!, null!, null!);
+            _signInManager = new Mock<SignInManager<UserEntity>>(_userManager.Object, Mock.Of<IHttpContextAccessor>(), Mock.Of<IUserClaimsPrincipalFactory<UserEntity>>(), null!, null!, null!, null!);
 
             _sut = new UserService(_repo, _mapper, _userManager.Object, _signInManager.Object);
 

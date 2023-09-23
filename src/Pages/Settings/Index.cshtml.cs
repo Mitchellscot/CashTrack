@@ -108,6 +108,7 @@ namespace CashTrack.Pages.Settings
                 ModelState.AddModelError("", "There was an error changing your password. Try again.");
                 return Page();
             }
+            var changeName = await _userService.UpdateNameAsync(User.Identity.Name);
             SuccessMessage = "Successfully changed your password!";
             return LocalRedirect("/Settings");
         }
