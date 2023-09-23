@@ -27,7 +27,7 @@
         },
         {
           "from": "../../../Data/cashtrack.db",
-          "to": "bin/Data/cashtrack.db",
+          "to": "bin/cashtrack.db",
           "filter": [ "**/*" ]
         }
       ],

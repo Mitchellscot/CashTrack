@@ -1,5 +1,5 @@
-Remove-Item -Path .\src\obj\ -Recurse -Force 
-Remove-Item -Path .\src\bin\ -Recurse -Force 
+Remove-Item -Path .\src\obj\ -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -Path .\src\bin\ -Recurse -Force -ErrorAction SilentlyContinue
 
 $process = Get-Process -Name 'Electron' -ErrorAction SilentlyContinue
 if ($process) {
@@ -13,4 +13,4 @@ if ($process) {
 new-item -ItemType Directory -path .\src\obj\Host\bin\Data -Force
 Copy-Item -Path .\src\Data\cashtrack.db* -Destination .\src\obj\Host\bin\Data -Force
 cd .\src\
-electronize start
+electronize start /PublishSingleFile false /watch

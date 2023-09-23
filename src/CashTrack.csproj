@@ -2,12 +2,14 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
-    <IsPackable>false</IsPackable>
+	<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
     <NoLogo>true</NoLogo>
     <LangVersion>10.0</LangVersion>
     <UserSecretsId>eb60d0d3-72b8-4c85-a8a9-ab136dc652dc</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>
+	<IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="$(AssemblyName).Tests" />
@@ -15,6 +17,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <NoWarn>1701,1702,80001;</NoWarn>
   </PropertyGroup>
+	
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="CsvHelper" Version="30.0.1" />

@@ -9,7 +9,7 @@
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "@webpack-cli/generators": "^2.5.0",
-    "bootswatch": "^5.3.1",
+    "bootswatch": "^5.3.2",
     "clean-webpack-plugin": "^4.0.0",
     "eslint": "^8.30.0",
     "eslint-config-prettier": "^8.5.0",
@@ -32,7 +32,7 @@
   },
   "version": "1.0.0",
   "description": "A Budget App",
-  "name": "cash-track",
+  "name": "cashtrack",
   "scripts": {
     "build": "webpack --mode=production --node-env=production && sass --no-source-map --style=compressed Styles/index.scss wwwroot/css/index.css",
     "dev": "webpack --mode=development --node-env=development && sass --update --style=expanded Styles/index.scss wwwroot/css/index.css",

@@ -46,6 +46,8 @@ using ElectronNET.API;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
 using ElectronNET.API.Entities;
+using System.Linq;
+using System.Diagnostics;
 
 namespace CashTrack
 {
@@ -70,13 +72,11 @@ namespace CashTrack
             var app = builder.Build();
 
             ConfigureMiddleware(app);
+
             if (IsProduction())
-                ConfigureProductionEndpoints(app);
+                ConfigureEndpoints(app);
             else
                 ConfigureEndpoints(app);
-
-
-            app.Logger.LogInformation($"Using environment: {_env}");
 
             if (IsElectron())
             {
@@ -91,7 +91,7 @@ namespace CashTrack
         {
             app.Services.Configure<AppSettingsOptions>(app.Configuration.GetSection(AppSettingsOptions.AppSettings));
 
-            return IsProduction() || IsElectron() ? $"Data Source={Path.Join(Directory.GetCurrentDirectory(), app.Configuration[$"AppSettings:ConnectionStrings:{_env}"])}" : $"Data Source={Path.Join(Directory.GetCurrentDirectory(), "Data", app.Configuration[$"AppSettings:ConnectionStrings:{_env}"])}";
+            return IsProduction() ? $"Data Source={Path.Join(Directory.GetCurrentDirectory(), app.Configuration[$"AppSettings:ConnectionStrings:{_env}"])}" : $"Data Source={Path.Join(Directory.GetCurrentDirectory(), "Data", app.Configuration[$"AppSettings:ConnectionStrings:{_env}"])}";
         }
 
         private static void ConfigureServices(WebApplicationBuilder app, string connectionString)

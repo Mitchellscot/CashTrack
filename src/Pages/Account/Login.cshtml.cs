@@ -18,10 +18,14 @@ namespace CashTrack.Pages
         private readonly ILogger<LoginModel> _logger;
         [BindProperty]
         public AuthenticationModels.Request LoginRequest { get; set; } = new AuthenticationModels.Request();
+        public bool DisplayWelcomeMessage { get; set; } = false;
         public LoginModel(SignInManager<UserEntity> signInManager, UserManager<UserEntity> userManager, ILogger<LoginModel> logger) => (_signInManager, _userManager, _logger) = (signInManager, userManager, logger);
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
+            var user = await _userManager.FindByNameAsync("Cash");
+            if (user is not null && user.LastImport == DateTime.MinValue)
+                DisplayWelcomeMessage = true;
             return Page();
         }
 
