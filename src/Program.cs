@@ -178,11 +178,12 @@ namespace CashTrack
 
                 });
             }
-            app.UseHttpsRedirection();
+            
             app.UseStaticFiles();
-            app.UseHsts();
-            if (IsProduction())
+            if (!UseHttp())
             {
+                app.UseHttpsRedirection();
+                app.UseHsts();
                 app.UseExceptionHandler("/Error");
                 app.UseMiddleware<IpAddressMiddleware>();
             }
@@ -247,7 +248,7 @@ namespace CashTrack
         }
 
         private static bool UseHttp()
-            => _env.Equals(CashTrackEnv.Development, StringComparison.CurrentCultureIgnoreCase) || _env.Equals(CashTrackEnv.Docker, StringComparison.CurrentCultureIgnoreCase);
+            => _env.Equals(CashTrackEnv.Electron, StringComparison.CurrentCultureIgnoreCase) || _env.Equals(CashTrackEnv.Docker, StringComparison.CurrentCultureIgnoreCase);
         private static bool IsProduction()
             => _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase);
         private static bool IsDocker()
