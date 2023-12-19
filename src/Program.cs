@@ -38,7 +38,6 @@ using CashTrack.Services.BudgetService;
 using CashTrack.Services.SummaryService;
 using CashTrack.Common.Middleware;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Logging;
 using System.IO;
 using CashTrack.Repositories.ImportRepository;
 using CashTrack.Services.ImportProfileService;
@@ -46,9 +45,6 @@ using ElectronNET.API;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
 using ElectronNET.API.Entities;
-using System.Linq;
-using System.Diagnostics;
-using Microsoft.Extensions.FileProviders;
 
 namespace CashTrack
 {
@@ -182,12 +178,12 @@ namespace CashTrack
 
                 });
             }
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseHsts();
             if (IsProduction())
             {
                 app.UseExceptionHandler("/Error");
-                app.UseHsts();
-                app.UseHttpsRedirection();
                 app.UseMiddleware<IpAddressMiddleware>();
             }
             app.UseRouting();

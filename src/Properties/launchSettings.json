@@ -16,17 +16,19 @@
     "CashTrack": {
       "commandName": "Project",
       "launchBrowser": true,
+      "https_port": 443,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_PRINT_TELEMETRY_MESSAGE": "false"
       },
       "hotReloadEnabled": true,
-      "applicationUrl": "http://localhost:5000"
+      "applicationUrl": "https://localhost:5001"
     },
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "http://+:5000",
+      "https_port": 443,
+      "launchUrl": "https://+:5001",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Docker",
         "DOTNET_PRINT_TELEMETRY_MESSAGE": "false"

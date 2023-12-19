@@ -1,13 +1,13 @@
 ﻿# https://hub.docker.com/_/microsoft-dotnet
 FROM mcr.microsoft.com/dotnet/sdk:6.0-jammy AS build
 WORKDIR /dist
-EXPOSE 5000
+EXPOSE 5001
 # copy csproj and restore as distinct layers
 COPY src/*.csproj .
 RUN dotnet restore --use-current-runtime  
 
 # install node
-ENV NODE_MAJOR 18
+ENV NODE_MAJOR 20
 RUN apt-get update \
        && apt-get install -y ca-certificates curl gnupg apt-utils \
        && mkdir -p /etc/apt/keyrings \
