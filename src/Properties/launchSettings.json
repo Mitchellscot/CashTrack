@@ -27,7 +27,6 @@
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "https_port": 443,
       "launchUrl": "http://+:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Docker",
