@@ -1,7 +1,7 @@
 ﻿# https://hub.docker.com/_/microsoft-dotnet
 FROM mcr.microsoft.com/dotnet/sdk:6.0-jammy AS build
 WORKDIR /dist
-EXPOSE 5001
+EXPOSE 5000
 # copy csproj and restore as distinct layers
 COPY src/*.csproj .
 RUN dotnet restore --use-current-runtime  

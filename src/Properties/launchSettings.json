@@ -28,7 +28,7 @@
       "commandName": "Docker",
       "launchBrowser": true,
       "https_port": 443,
-      "launchUrl": "https://+:5001",
+      "launchUrl": "http://+:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Docker",
         "DOTNET_PRINT_TELEMETRY_MESSAGE": "false"
