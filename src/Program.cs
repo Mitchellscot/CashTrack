@@ -169,24 +169,34 @@ namespace CashTrack
         }
         private static void ConfigureMiddleware(IApplicationBuilder app)
         {
-            //Forwards request headers from nginx proxy to the app
             if (IsDocker())
             {
+                //Forwards request headers from nginx proxy to the app
                 app.UseForwardedHeaders(new ForwardedHeadersOptions
                 {
                     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
-
                 });
             }
+            if(IsDevelopment() || IsDocker())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            
+            if (UseHttps())
+            {
+                app.UseHsts();
+                app.UseHttpsRedirection();
+
+                if(IsProduction())
+                {
+                    app.UseMiddleware<IpAddressMiddleware>();
+                    app.UseExceptionHandler("/Error");
+                }
+            }
+            if(IsElectron())
+                app.UseExceptionHandler("/Error");
             
             app.UseStaticFiles();
-            if (!UseHttp())
-            {
-                app.UseHttpsRedirection();
-                app.UseHsts();
-                app.UseExceptionHandler("/Error");
-                app.UseMiddleware<IpAddressMiddleware>();
-            }
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -247,11 +257,13 @@ namespace CashTrack
             window.OnReadyToShow += () => window.Show();
         }
 
-        private static bool UseHttp()
-            => _env.Equals(CashTrackEnv.Electron, StringComparison.CurrentCultureIgnoreCase) || _env.Equals(CashTrackEnv.Docker, StringComparison.CurrentCultureIgnoreCase);
+        private static bool UseHttps()
+            => _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase) || _env.Equals(CashTrackEnv.Development, StringComparison.CurrentCultureIgnoreCase);
         private static bool IsProduction()
             => _env.Equals(CashTrackEnv.Production, StringComparison.CurrentCultureIgnoreCase);
         private static bool IsDocker()
+            => _env.Equals(CashTrackEnv.Docker, StringComparison.CurrentCultureIgnoreCase);
+        private static bool IsDevelopment()
             => _env.Equals(CashTrackEnv.Docker, StringComparison.CurrentCultureIgnoreCase);
         private static bool IsElectron()
             => _env.Equals(CashTrackEnv.Electron, StringComparison.CurrentCultureIgnoreCase);
