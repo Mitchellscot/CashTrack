@@ -12,5 +12,5 @@ if ($process) {
 . .\Seed-Db.ps1
 new-item -ItemType Directory -path .\src\obj\Host\bin\Data -Force
 Copy-Item -Path .\src\Data\cashtrack.db* -Destination .\src\obj\Host\bin\Data -Force
-cd .\src\
+Set-Location .\src\
 electronize start /PublishSingleFile false /watch

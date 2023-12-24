@@ -26,14 +26,15 @@
     },
     "Docker": {
       "commandName": "Docker",
+      "httpPort": 5000,
       "launchBrowser": false,
-      "launchUrl": "http://+:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Docker",
-        "DOTNET_PRINT_TELEMETRY_MESSAGE": "false"
+        "DOTNET_PRINT_TELEMETRY_MESSAGE": "false",
+        "ASPNETCORE_URLS": "http://+:5000"
       },
       "publishAllPorts": false,
-      "useSSL": false,
+      "useSSL": false
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
