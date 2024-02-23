@@ -1,5 +1,5 @@
 ﻿# https://hub.docker.com/_/microsoft-dotnet
-FROM mcr.microsoft.com/dotnet/sdk:6.0-jammy AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
 WORKDIR /dist
 EXPOSE 5000
 # copy csproj and restore as distinct layers
@@ -22,7 +22,7 @@ RUN dotnet publish -c Release -o /app --use-current-runtime --self-contained fal
 COPY src/Data/cashtrack.db /app/Data/cashtrack.db
 
 # final stage/image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app .
 ENTRYPOINT ["dotnet", "CashTrack.dll", "--environment=Docker"]
