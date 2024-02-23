@@ -92,7 +92,7 @@ namespace CashTrack.Data
                     SecurityStamp = Guid.NewGuid().ToString("D"),
                     EmailConfirmed = true
                 };
-                var hashed = passwordHasher.HashPassword(seededUser, "track");
+                var hashed = passwordHasher.HashPassword(seededUser, "Track");
                 seededUser.PasswordHash = hashed;
                 mb.Entity<UserEntity>().HasData(seededUser);
                 var claim = new IdentityUserClaim<int>()
