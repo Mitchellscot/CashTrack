@@ -1,3 +1,5 @@
+#to run this you need to have the dotnet-ef tool installed
+
 #Remove the migration files
 Get-ChildItem  ./src/Data/Migrations -Recurse | Remove-Item
 #Remove the old database

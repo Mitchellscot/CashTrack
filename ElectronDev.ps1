@@ -1,3 +1,5 @@
+#to run this you need to have the Electron .net CLI tool installed
+
 Remove-Item -Path .\src\obj\ -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item -Path .\src\bin\ -Recurse -Force -ErrorAction SilentlyContinue
 

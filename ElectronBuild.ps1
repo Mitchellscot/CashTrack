@@ -1,3 +1,5 @@
+#to run this you need to have the Electron .net CLI tool installed
+
 param(
     [Parameter(Mandatory=$false)]
     [string]$Framework = "win"
