@@ -310,7 +310,7 @@ namespace CashTrack.Tests.Services
                 var categoryRepo = new IncomeCategoryRepository(db);
                 var service = new IncomeService(repo, sourceRepo, _mapper, categoryRepo, new TestWebHostEnvironment());
 
-                var expectedId = (repo.GetCount(x => true).Result) + 1;
+                var expectedId = await repo.GetCount(x => true) + 1;
                 var result = await service.CreateIncomeAsync(income);
                 var createdIncome = await repo.FindById(expectedId);
                 //auto set refund category if IsRefund is set to true

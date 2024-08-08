@@ -1,10 +1,10 @@
 ﻿@model CashTrack.Pages.Budget.TypePercentagesDonut
 @{
     var variable = string.Join("", Enumerable.Repeat(0, 6).Select(n => (char)new Random().Next(97, 122)));
-    var elementId = "typePercentagesDonut";
+    const string elementId = "typePercentagesDonut";
 }
     <script>
-        const @variable = document.getElementById(@Json.Serialize(elementId)).getContext('2d');
+        const @(variable) = document.getElementById(@Json.Serialize(elementId)).getContext('2d');
         const @Model.ElementId = new Chart(@variable, {
             type: 'doughnut',
             data: {

@@ -41,21 +41,21 @@ namespace CashTrack.Tests.Services
 
         }
         [Fact]
-        public async void GetAllUsers()
+        public async Task GetAllUsers()
         {
             var result = await _sut.GetAllUsersAsync();
             result.FirstOrDefault()!.FirstName.ShouldBe("Test");
             result.FirstOrDefault()!.Email.ShouldBe("test@example.com");
         }
         [Fact]
-        public async void GetById()
+        public async Task GetById()
         {
             var result = await _sut.GetUserByIdAsync(1);
             result.FirstName.ShouldBe("Test");
             result.Id.ShouldBe(1);
         }
         [Fact]
-        public async void CreateUser()
+        public async Task CreateUser()
         {
             var user = new AddEditUser()
             {

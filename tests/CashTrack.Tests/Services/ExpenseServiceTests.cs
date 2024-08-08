@@ -400,7 +400,7 @@ namespace CashTrack.Tests.Services
                 var merchantRepo = new MerchantRepository(db);
                 var subCategoryRepo = new SubCategoryRepository(db);
                 var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo, new TestWebHostEnvironment());
-                var expectedId = (repo.GetCount(x => true).Result) + 1;
+                var expectedId = await repo.GetCount(x => true) + 1;
                 var result = await service.CreateExpenseAsync(expense);
 
                 result.ShouldBe(expectedId);
@@ -424,7 +424,7 @@ namespace CashTrack.Tests.Services
                 var merchantRepo = new MerchantRepository(db);
                 var subCategoryRepo = new SubCategoryRepository(db);
                 var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo, new TestWebHostEnvironment());
-                var expectedId = (repo.GetCount(x => true).Result) + 1;
+                var expectedId = await repo.GetCount(x => true) + 1;
                 var result = await service.CreateExpenseFromSplitAsync(expense);
 
                 result.ShouldBe(expectedId);
@@ -453,7 +453,7 @@ namespace CashTrack.Tests.Services
                 var merchantRepo = new MerchantRepository(db);
                 var subCategoryRepo = new SubCategoryRepository(db);
                 var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo, new TestWebHostEnvironment());
-                var expectedId = (repo.GetCount(x => true).Result) + 1;
+                var expectedId = await repo.GetCount(x => true) + 1;
                 var result = await service.CreateExpenseFromSplitAsync(expense);
                 result.ShouldBe(expectedId);
 
@@ -485,7 +485,7 @@ namespace CashTrack.Tests.Services
                 var merchantRepo = new MerchantRepository(db);
                 var subCategoryRepo = new SubCategoryRepository(db);
                 var service = new ExpenseService(repo, incomerepo, merchantRepo, _mapper, subCategoryRepo, new TestWebHostEnvironment());
-                var expectedId = (repo.GetCount(x => true).Result) + 1;
+                var expectedId = await repo.GetCount(x => true) + 1;
                 var result = await service.CreateExpenseFromSplitAsync(expense);
                 result.ShouldBe(expectedId);
 
