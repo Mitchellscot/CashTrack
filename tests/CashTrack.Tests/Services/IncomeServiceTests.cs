@@ -146,7 +146,7 @@ namespace CashTrack.Tests.Services
         [Fact]
         public async Task Get_Income_Current_Month()
         {
-            var testDate = DateTime.Today.AddDays(-1);
+            var testDate = DateTime.Today.Day == 1 ? DateTime.Today : DateTime.Today.AddDays(-1);
 
             var income = new Income()
             {
