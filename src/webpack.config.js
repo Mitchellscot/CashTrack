@@ -1,5 +1,5 @@
 const path = require('path');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const webpack = require('webpack');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const TerserPlugin = require("terser-webpack-plugin");
@@ -50,7 +50,6 @@ const config = {
 			extensions: ['.ts', '.tsx'],
 			exclude: 'node_modules',
 			context: './Scripts',
-
 		}),
 	],
 	module: {
@@ -88,7 +87,7 @@ module.exports = (env, argv) => {
 			}]
 		}
 	}
-	config.cache = argv.env.WEBPACK_WATCH ? {type: 'memory'} : {type: 'filesystem'};
+	config.cache = argv.env.WEBPACK_WATCH ? { type: 'memory' } : { type: 'filesystem' };
 
 	return config;
 };

@@ -31,14 +31,6 @@ describe('Hide Category When Savings Is Selected Add Modal', () => {
 	});
 });
 
-
-
-
-
-
-
-
-
 export function forceMonthSelectionWhenIncomeIsCheckedAddModal() {
 	const checkboxes = document.querySelectorAll('.handle-timespan-select-js');
 	checkboxes.forEach(x => {
@@ -49,8 +41,8 @@ export function forceMonthSelectionWhenIncomeIsCheckedAddModal() {
 
 function handleMonthSelectionForAddModal(e: Event): void {
 	const isChecked
-    = (e.target as HTMLInputElement).checked
-    && (e.target as HTMLInputElement).value === '2';
+		= (e.target as HTMLInputElement).checked
+		&& (e.target as HTMLInputElement).value === '2';
 	const monthElement = document.getElementById(
 		'monthSelectList',
 	) as HTMLSelectElement;
