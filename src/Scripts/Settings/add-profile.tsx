@@ -1,6 +1,4 @@
-﻿import { hide } from '@popperjs/core';
-import React from 'react';
-import {useState} from 'react';
+﻿import React, {useState} from 'react';
 import {createRoot} from 'react-dom/client';
 
 const container = document.getElementById('add-profile-modal');
