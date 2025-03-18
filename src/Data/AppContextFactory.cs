@@ -28,6 +28,7 @@ namespace CashTrack.Data
 
             var connectionString = env.Equals(CashTrackEnv.Production, StringComparison.InvariantCultureIgnoreCase) ? $"Data Source={Path.Join(Directory.GetCurrentDirectory(), settings.ConnectionStrings[env])}" : $"Data Source={Path.Join(Directory.GetCurrentDirectory(), "Data", settings.ConnectionStrings[env])}";
             optionsBuilder.UseSqlite(connectionString);
+            optionsBuilder.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
 
             var arguments = args.Length > 0 ? args[0] : string.Empty;
 
