@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using CashTrack.Common;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace CashTrack.Data
 {
